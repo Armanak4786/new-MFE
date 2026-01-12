@@ -1,0 +1,112 @@
+{
+  "releaseVersion": "19.0.0",
+  "releaseDate": "2025-12-04",
+  "description": "-",
+  "angular": {
+    "version": "20251204.2.5706",
+    "Release": "Release-109",
+    "Portal": "DO"
+  },
+  "microservices": {
+    "AssetSummaryService": {
+      "version": "20251112.1.5336",
+      "Release": "Release-144",
+      "releaseType": "-"
+    },
+    "BrandService": {
+      "version": "20251112.1.5337",
+      "Release": "Release-34",
+      "releaseType": "-"
+    },
+    "ContractService": {
+      "version": "20251203.5.5696",
+      "Release": "Release-63",
+      "releaseType": "-"
+    },
+    "CryptographyService": {
+      "version": "20251112.1.5350",
+      "Release": "Release-30",
+      "releaseType": "-"
+    },
+    "CustomerService": {
+      "version": "20251204.1.5704",
+      "Release": "Release-41",
+      "releaseType": "-"
+    },
+    "DeclarationService": {
+      "version": "20251112.1.5357",
+      "Release": "Release-12",
+      "releaseType": "-"
+    },
+    "DocumentService": {
+      "version": "20251112.1.5341",
+      "Release": "Release-20",
+      "releaseType": "-"
+    },
+    "I18NService": {
+      "version": "16.0.0",
+      "Release": "Release-15",
+      "releaseType": "-"
+    },
+    "LookUpService": {
+      "version": "20251112.1.5345",
+      "Release": "Release-22",
+      "releaseType": "-"
+    },
+    "MotocheckService": {
+      "version": "20251112.1.5344",
+      "Release": "Release-17",
+      "releaseType": "-"
+    },
+    "Note": {
+      "version": "20251112.1.5346",
+      "Release": "Release-15",
+      "releaseType": "-"
+    },
+    "ProductService": {
+      "version": "20251112.3.5334",
+      "Release": "Release-17",
+      "releaseType": "-"
+    },
+    "ProgramService": {
+      "version": "20251112.1.5335",
+      "Release": "Release-16",
+      "releaseType": "-"
+    },
+    "QuickQuoteService": {
+      "version": "20251112.1.5343",
+      "Release": "Release-15",
+      "releaseType": "-"
+    },
+    "RolePermissionService": {
+      "version": "20251114.1.5398",
+      "Release": "Release-13",
+      "releaseType": "-"
+    },
+    "SettlementService": {
+      "version": "20251111.2.5326",
+      "Release": "Release-18",
+      "releaseType": "-"
+    },
+    "UsersService": {
+      "version": "20251125.1.5573",
+      "Release": "Release-23",
+      "releaseType": "-"
+    },
+    "ValidationFrameworkService": {
+      "version": "20251112.1.5356",
+      "Release": "Release-12",
+      "releaseType": "-"
+    },
+    "WorkflowService": {
+      "version": "20251121.2.5512",
+      "Release": "Release-23",
+      "releaseType": "-"
+    }
+  },
+  "apiGateway": {
+    "version": "20250924.1.4569",
+    "Release": "Release-19"
+  },
+  "Dbschema": "16.0.0"
+}

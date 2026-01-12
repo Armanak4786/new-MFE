@@ -1,0 +1,76 @@
+// Theme Specific Variables
+$primaryColor: #0f86b1;
+$primaryDarkColor: #1e88e5;
+$primaryDarkerColor: #1976d2;
+$primaryLightColor: #d5edf5;
+$primaryLighterColor: #fafdff;
+$headerbgColor: #ebf7fb;
+$primaryTextColor: #ffffff;
+$secondaryColor: #aab734;
+$secondaryLightColor: #c7ffbe;
+$backgroundColorPrimary: #ffff;
+$backgroundColorDark: #000000;
+$backgroundColorTransparentDark: #00000080;
+$backgroundColorSecondary: #f3f3f3;
+$backgroundColorSecondaryLight: #fafdfe;
+$backgroundColorSecondaryDark: #0095db26;
+$disableColor: #ccc;
+$inputDisableColor: #000;
+$labelColor: #666666;
+$primaryBorderColor: #0095db;
+$danger: #d80027;
+//start:typograpghy
+//end:typograpghy
+$colors: (
+  "blue": #2196f3,
+  "green": #4caf50,
+  "yellow": #fbc02d,
+  "cyan": #00bcd4,
+  "pink": #e91e63,
+  "indigo": #3f51b5,
+  "teal": #009688,
+  "orange": #f57c00,
+  "bluegray": #607d8b,
+  "purple": #9c27b0,
+  "red": #ff4032,
+  "primary": $primaryColor,
+);
+
+// Mandatory Designer Variables
+@import "./variables/general";
+@import "./variables/form";
+@import "./variables/button";
+@import "./variables/panel";
+@import "./variables/_data";
+@import "./variables/_overlay";
+@import "./variables/_message";
+@import "./variables/_menu";
+@import "./variables/_media";
+@import "./variables/_misc";
+
+:root {
+  //starts:new added \
+  --primary-color: #{$primaryColor};
+  --primary-light-color: #{$primaryLightColor};
+  --primary-lighter-color: #{$primaryLighterColor};
+  --secondary-color: #{$secondaryColor};
+  --secondary-light-color: #{$secondaryLightColor};
+  --primary-text-color: #{$primaryTextColor};
+  --disable-color: #{$disableColor};
+  --input-disable-color: #{$inputDisableColor};
+  --background-color-primary: #{$backgroundColorPrimary};
+  --background-color-dark: #{$backgroundColorDark};
+  --background-color-transparent-dark: #{$backgroundColorTransparentDark};
+  --background-color-secondary: #{$backgroundColorSecondary};
+  --background-color-secondary-light: #{$backgroundColorSecondaryLight};
+  --background-color-secondary-dark: #{$backgroundColorSecondaryDark};
+  --font-size: #{$fontSize};
+  --card-shadow: #{$cardShadow};
+  --header-bg-color: #{$headerbgColor};
+  --label-color: #{$labelColor};
+  --primary-border-color: #{$primaryBorderColor};
+  --danger-color: #{$danger};
+
+  --login-bg-image: "assets/images/auth-background.png";
+  //ends
+}

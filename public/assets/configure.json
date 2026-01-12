@@ -1,0 +1,59 @@
+{
+  "SPAssetHdrCfdLuExtract": "apportalsp_get_asset_hdr_cfd_lu_extract",
+  "SPIndustryTypeExtract": "udcsp_get_industry_type_extract",
+  "SPPartyCfdLuExtract": "apportalsp_get_party_cfd_lu_extract",
+  "SPProgramListExtract": "apportalsp_get_program_list_extract",
+  "SPContractCfdLuExtract": "apportalsp_get_contract_cfd_lu_extract",
+  "SPPromotionalProgramExtract": "udcsp_get_promotional_program_extract",
+  "LoanPurpose": "Personal",
+  "LoanPurposeBusiness": "Business",
+  "financialPosition": {
+    "defaultFrequency": 3533
+  },
+  "workflowStatus": {
+    "view": [
+      "Submitted",
+      "Contract Active",
+      "Execute Credit BR's",
+      "Referred",
+      "Performing Settlement Review",
+      "Performing Final Checks",
+      "Settlement on Hold",
+      "Expired",
+      "Withdrawn",
+      "Auto Declined",
+      "Declined",
+      "End- Decline",
+      "Contract Activation",
+      "ACM Payout Process",
+      "Assessment on Hold",
+      "Assigned for Assessment",
+      "Awaiting Commercial Settlement Review",
+      "Commercial Approved",
+      "Commercial Declined",
+      "Commercial Referred",
+      "Credit CAD Review",
+      "Document Production",
+      "Final Settlement Checks",
+      "In Assessment",
+      "Post CAD Review",
+      "Relationship CAD Review",
+      "Settlement Checks",
+      "Submitted for Assessment - Business Lending",
+      "Submitted for Assessment - High Value Lending ",
+      "Tier 1 Credit",
+      "Tier 1 Relationship"
+    ],
+    "edit": [
+      "Awaiting Assessment - Retail Lending",
+      "Awaiting Assessment - Small Business",
+      "Escalated Credit CAD",
+      "Escalated Relationship CAD",
+      "Internal on Hold",
+      "Performing Assessment",
+      "Awaiting Info from Dealer",
+      "Generate documents",
+      "Awaiting Settlement Review"
+    ]
+  }
+}

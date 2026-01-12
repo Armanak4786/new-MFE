@@ -1,0 +1,65 @@
+{
+    "data": {
+        "number": {
+            "minFractionDigits": "2",
+            "maxFractionDigits": "4"
+        },
+        "rate": {
+            "minFractionDigits": "2",
+            "maxFractionDigits": "4"
+        },
+        "toast":{
+            "life":10000
+       },
+        "date": {
+            "format": "dd-mm-yyyy"
+        },
+        "time": {
+            "format": "HH:mm:ss"
+        },
+        "mobile": {
+            "mask": "",
+            "pattern": "[0-9]"
+        },
+        "identification": {
+            "mask": "9999-9999-9999",
+            "pattern": "\\d{4}-\\d{4}-\\d{4}"
+        },
+        "email": {
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        },
+        "corporate": {
+            "pattern": ""
+        },
+        "name": {
+            "pattern": "/^[A-Za-z]*$/"
+        },
+        "country":[
+            {
+              "countryCode": "+91",
+              "countryFlag": "auro-ui-assets/images/india.png",
+              "countryLabel": "India",
+              "isDefault": true,
+              "isActive": true,
+              "order": "1"
+            },
+            {
+              "countryCode": "+1",
+              "countryFlag": "auro-ui-assets/images/us.png",
+              "countryLabel": "United States",
+              "isDefault": false,
+              "isActive": true,
+              "order": "2"
+            },
+            {
+                "countryCode": "+44",
+                "countryFlag": "auro-ui-assets/images/uk.jpg",
+                "countryLabel": "United Kingdom",
+                "isDefault": false,
+                "isActive": true,
+                "order": "2"
+              }
+          ]
+    }
+
+}

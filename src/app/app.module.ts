@@ -1,18 +1,63 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { AppComponent } from "./app.component";
+import { AppRoutingModule } from "./app-routing.module";
+import { AuroUiFrameWork, ConfigService, loadConfigAndSetEnv } from "auro-ui";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
+import { TranslateModule } from "@ngx-translate/core";
+import { JwtModule } from "@auth0/angular-jwt";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { CurrencyMaskModule } from "ng2-currency-mask";
+import { LoginComponent } from "./login/login.component";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+export function tokenGetter() {
+  return localStorage.getItem("id_token");
+}
+
+export function initializeAppEnv(configService: ConfigService) {
+  return loadConfigAndSetEnv(configService, "assets/config.json");
+}
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent
   ],
+  bootstrap: [AppComponent],
   imports: [
+    BrowserAnimationsModule,
+    FormsModule,
+    CommonModule,
     BrowserModule,
-    AppRoutingModule
+    RouterModule,
+    AppRoutingModule,
+    AuroUiFrameWork,
+    CurrencyMaskModule,
+    TranslateModule.forRoot(),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+      },
+    }),
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    ConfirmationService,
+    MessageService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAppEnv,
+      deps: [ConfigService],
+      multi: true,
+    },
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
 })
 export class AppModule { }

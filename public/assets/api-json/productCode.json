@@ -1,0 +1,340 @@
+{
+  "ProductCode": [
+    {
+      "name": "Finance Lease - Business Dir",
+      "description": "Finance Lease - Business Direct",
+      "category": "Lease",
+      "code": "FL",
+      "parentCode": "FL"
+    },
+    {
+      "name": "Operating Lease - Business Asg",
+      "description": "Operating Lease -  Business Assigned",
+      "category": "Lease",
+      "code": "OL",
+      "parentCode": "OL"
+    },
+    {
+      "name": "Finance Lease",
+      "description": "Finance Lease",
+      "category": "Lease",
+      "code": "FL",
+      "parentCode": "FL"
+    },
+    {
+      "name": "Operating Lease",
+      "description": "Operating Lease",
+      "category": "Lease",
+      "code": "OL",
+      "parentCode": "OL"
+    },
+    {
+      "name": "Assured Future Value",
+      "description": "Assured Future Value",
+      "category": "Lease",
+      "code": "AFV",
+      "parentCode": "AFV"
+    },
+    {
+      "name": "Assured Future Value - Busines",
+      "description": "Assured Future Value - Busines",
+      "category": "Lease",
+      "code": "AFVB",
+      "parentCode": "AFV"
+    },
+    {
+      "name": "Assured Future Value -Consumer",
+      "description": "Assured Future Value - Consumer",
+      "category": "Lease",
+      "code": "AFVC",
+      "parentCode": "AFV"
+    },
+    {
+      "name": "AFV-B-Assigned",
+      "description": "Assured Future Value - Business -Dealer Introduced",
+      "category": "Lease",
+      "code": "AFVB",
+      "parentCode": "AFV"
+    },
+    {
+      "name": "AFV-C-Assigned",
+      "description": "Assured Future Value - Consumer -Dealer Introduced",
+      "category": "Lease",
+      "code": "AFVC",
+      "parentCode": "AFV"
+    },
+    {
+      "name": "Credit Sale Agreement",
+      "description": "Credit Sale Agreement",
+      "category": "Lease",
+      "code": "CSA",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "Credit Sale Agreement-Business",
+      "description": "Credit Sale Agreement-Business",
+      "category": "Lease",
+      "code": "CSAB",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-B-Direct",
+      "description": "Credit Sale Agreement - Business - Direct",
+      "category": "Lease",
+      "code": "CSA-B-D",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-B-Direct Fixed",
+      "description": "Credit Sale Agreement - Business - Direct- Fixed",
+      "category": "Lease",
+      "code": "CSA-B-D",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-B-Assigned",
+      "description": "Credit Sale Agreement - Business-Dealer Introduced",
+      "category": "Lease",
+      "code": "CSAB",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-B-Direct Variable",
+      "description": "Credit Sale Agreement - Business - Direct-Variable",
+      "category": "Lease",
+      "code": "CSA-B-D",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "Credit Sale Agreement-Consumer",
+      "description": "Credit Sale Agreement-Consumer",
+      "category": "Lease",
+      "code": "CSAC",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-C-Assigned",
+      "description": "Credit Sale Agreement - Consumer-Dealer Introduced",
+      "category": "Lease",
+      "code": "CSAC",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-C-Direct",
+      "description": "Credit Sale Agreement - Consumer - Direct",
+      "category": "Lease",
+      "code": "CSA-C-D",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "CSA-C-Direct Fixed",
+      "description": "Credit Sale Agreement-Consumer- Direct-Fixed Intre",
+      "category": "Lease",
+      "code": "CSA-C-D",
+      "parentCode": "CSA"
+    },
+    {
+      "name": "Term Loan",
+      "description": "Term Loan",
+      "category": "Lease",
+      "code": "TL",
+      "parentCode": "TL"
+    },
+    {
+      "name": "Term Loan - Business",
+      "description": "Term Loan - Business",
+      "category": "Lease",
+      "code": "TLB",
+      "parentCode": "TL"
+    },
+    {
+      "name": "Term Loan - Consumer",
+      "description": "Term Loan - Consumer",
+      "category": "Lease",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Assigned Deact",
+      "description": "Term Loan - Business - Dealer Introduced (Deact)",
+      "category": "Loan Account",
+      "code": "TLB",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Direct Fixed Deact",
+      "description": "Term Loan - Business - Direct - Fixed (Deact)",
+      "category": "Loan Account",
+      "code": "TLB- D",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-C-Assigned Deact",
+      "description": "Term Loan - Consumer - Assigned (Deact)",
+      "category": "Loan Account",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-C-Direct Fixed Deact",
+      "description": "Term Loan - Consumer - Direct- Fixed (Deact)",
+      "category": "Loan Account",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "EFS Lease",
+      "description": "EFS Lease",
+      "category": "Lease",
+      "code": "EFSLS",
+      "parentCode": "FL"
+    },
+    {
+      "name": "EFS Loan",
+      "description": "EFS Loan",
+      "category": "Lease",
+      "code": "EFSLN",
+      "parentCode": "FL"
+    },
+    {
+      "name": "EFS Lease - Business",
+      "description": "EFS Lease - Business",
+      "category": "Lease",
+      "code": "EFSLS",
+      "parentCode": "FL"
+    },
+    {
+      "name": "EFS Lease - Consumer",
+      "description": "EFS Lease - Consumer",
+      "category": "Lease",
+      "code": "EFSLS",
+      "parentCode": "FL"
+    },
+    {
+      "name": "EFS Loan - Consumer Deact",
+      "description": "EFS Loan - Consumer (Deact)",
+      "category": "Loan Account",
+      "code": "EFSLN",
+      "parentCode": "FL"
+    },
+    {
+      "name": "EFS Loan- Business Deact",
+      "description": "EFS Loan- Business (Deact)",
+      "category": "Loan Account",
+      "code": "EFSLN",
+      "parentCode": "FL"
+    },
+    {
+      "name": "TL-C-Direct Variable Deact",
+      "description": "Term Loan- Consumer-Direct-Variable (Deact)",
+      "category": "Loan Account",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Direct Variable Deact",
+      "description": "Term Loan - Business - Direct - Variable (Deact)",
+      "category": "Loan Account",
+      "code": "TLB- D",
+      "parentCode": "TL"
+    },
+    {
+      "name": "Finance Lease - Business Asg",
+      "description": "Finance Lease Business - Assigned",
+      "category": "Lease",
+      "code": "FL",
+      "parentCode": "FL"
+    },
+    {
+      "name": "Term Loan Business - Direct",
+      "description": "Term Loan Business - Direct",
+      "category": "Lease",
+      "code": "TLB- D",
+      "parentCode": "TL"
+    },
+    {
+      "name": "Term Loan Business - Facility",
+      "description": "Term Loan Business - Facility",
+      "category": "Lease",
+      "code": "TLB -F",
+      "parentCode": "TL"
+    },
+    {
+      "name": "EFS Loan - Consumer",
+      "description": "EFS Loan - Consumer",
+      "category": "Lease",
+      "code": "EFSLN",
+      "parentCode": "FL"
+    },
+    {
+      "name": "EFS Loan - Business",
+      "description": "EFS Loan- Business",
+      "category": "Lease",
+      "code": "EFSLN",
+      "parentCode": "FL"
+    },
+    {
+      "name": "TL-B-Direct Fixed",
+      "description": "Term Loan - Business - Direct - Fixed",
+      "category": "Lease",
+      "code": "TLB- D",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Direct Variable",
+      "description": "Term Loan - Business - Direct - Variable",
+      "category": "Lease",
+      "code": "TLB- D",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Facility Fixed",
+      "description": "Term Loan - Facility - Fixed",
+      "category": "Lease",
+      "code": "TLB -F",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Facility Variable",
+      "description": "Term Loan - Facility - Variable",
+      "category": "Lease",
+      "code": "TLB -F",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-B-Assigned",
+      "description": "Term Loan - Business - Dealer Introduced",
+      "category": "Lease",
+      "code": "TLB",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-C-Assigned",
+      "description": "Term Loan - Consumer - Assigned",
+      "category": "Lease",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-C-Direct Fixed",
+      "description": "Term Loan - Consumer - Direct- Fixed",
+      "category": "Lease",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "TL-C-Direct Variable",
+      "description": "Term Loan - Consumer - Direct - Variable",
+      "category": "Lease",
+      "code": "TLC",
+      "parentCode": "TL"
+    },
+    {
+      "name": "Term Loans",
+      "description": "Term Loans",
+      "category": "Loan",
+      "code": "LN",
+      "parentCode": "TL"
+    }
+  ]
+}

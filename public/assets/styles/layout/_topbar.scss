@@ -1,0 +1,270 @@
+.main-layout-topbar {
+  // position: sticky;
+  // top: 0%;
+  // padding-top: 18px;
+  // z-index: 99;
+  // background-color: var(--surface-ground);
+  position: fixed;
+  top: 0%;
+  padding-top: 12px;
+  background-color: var(--surface-ground);
+  height: 60px;
+  width: 92.8vw;
+  right: 1%;
+  z-index: 9;
+
+  .sidebar-control {
+    color: #ffffff;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.3s ease;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 12px;
+    font-size: 18px;
+  }
+  .layout-topbar {
+    // position: fixed;
+    height: 3.5rem;
+    z-index: 997;
+    top: 0;
+    width: -webkit-fill-available;
+    /* width:90.4vw; */
+    display: flex;
+    justify-content: space-evenly;
+
+    padding: 0;
+    background-color: var(--primary-color);
+    transition: left $transitionDuration;
+    display: flex;
+    align-items: center;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05),
+      0px 1px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+
+    .layout-topbar-logo {
+      display: flex;
+      align-items: center;
+      // border-top-left-radius: 10px; /* Adjust the radius as needed */
+      // border-bottom-left-radius: 10px; /* Adjust the radius as needed */
+      border: 1px solid var(--primary-color);
+
+      color: var(--surface-900);
+      font-size: 1.5rem;
+      font-weight: 500;
+      width: 150px;
+      height: 3.4rem;
+      background-color: var(--surface-overlay);
+      img {
+        height: 2rem;
+        margin-right: 0.5rem;
+        padding: 0 2rem;
+      }
+
+      &:focus {
+        @include focused();
+      }
+    }
+
+    .layout-text {
+      color: var(--surface-card);
+    }
+
+    .layout-topbar-button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      color: var(--surface-card);
+      border-radius: 50%;
+      width: 2.7rem;
+      // margin: 0px 2px;
+      // height: 3rem;
+      cursor: pointer;
+      transition: background-color $transitionDuration;
+
+      &:hover {
+        color: var(--surface-card);
+        background-color: var(--surface-hover);
+        border-radius: none;
+      }
+
+      &:focus {
+        @include focused();
+      }
+
+      i {
+        font-size: 1.2rem;
+      }
+
+      span {
+        font-size: 1rem;
+        display: none;
+      }
+    }
+    .layout-topbar-button-disable {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      color: rgb(239 235 235);
+      border-radius: 50%;
+      width: 2.7rem;
+      transition: none;
+
+      pointer-events: none;
+      opacity: 0.6;
+      cursor: not-allowed;
+
+      &:hover {
+        color: rgb(190, 186, 186);
+        background-color: transparent !important;
+        border-radius: none;
+      }
+
+      &:focus {
+        @include focused();
+      }
+
+      i {
+        font-size: 1.2rem;
+      }
+
+      span {
+        font-size: 1rem;
+        display: none;
+      }
+    }
+
+    .vertical-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-left: 1px solid white; /* Adjust color and width */
+      height: auto; /* Adjust height */
+    }
+
+    .layout-topbar-button-profile {
+      color: var(--primary-color);
+
+      width: 2rem;
+      height: 2rem;
+    }
+
+    /* .layout-menu-button {
+        margin-left: 2rem;
+    } */
+
+    .layout-topbar-menu-button {
+      display: none;
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+
+    .layout-topbar-menu {
+      margin: 0 0 0 auto;
+      padding: 0;
+      padding-right: 10px;
+      list-style: none;
+      display: flex;
+
+      /*  .layout-topbar-button {
+            margin-left: 1rem;
+        } */
+    }
+
+    .user-info-container {
+      cursor: default;
+      top: 2.125rem;
+    }
+  }
+}
+@media (min-width: 992px) {
+  .layout-topbar {
+    right: 1%; //Adjusting position of topbar for desktop layout.
+  }
+  .layout-topbar-logo {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+  .sidebar-control {
+    display: none;
+  }
+}
+@media (max-width: 991px) {
+  .layout-topbar {
+    justify-content: space-between;
+    width: 95%;
+
+    //     .layout-topbar-logo {
+    //       width: auto;
+    //       order: 2;
+    //     }
+
+    //     .layout-menu-button {
+    //       margin-left: 0;
+    //       order: 1;
+    //     }
+
+    //     .layout-topbar-menu-button {
+    //       display: inline-flex;
+    //       margin-left: 0;
+    //       order: 3;
+    //     }
+
+    //     .layout-topbar-menu {
+    //       margin-left: 0;
+    //       position: absolute;
+    //       flex-direction: column;
+    //       background-color: var(--primary-color);
+    //       box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02),
+    //         0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+    //       border-radius: 12px;
+    //       padding: 1rem;
+    //       right: 2rem;
+    //       top: 3rem;
+    //       //  min-width: 15rem;
+    //       display: none;
+    //       -webkit-animation: scalein 0.15s linear;
+    //       animation: scalein 0.15s linear;
+
+    //       &.layout-topbar-menu-mobile-active {
+    //         display: block;
+    //       }
+
+    //       .layout-topbar-button {
+    //         margin-left: 0;
+    //         display: flex;
+    //         width: 10%;
+    //         height: auto;
+    //         justify-content: flex-start;
+    //         border-radius: 12px;
+    //         padding: 1rem;
+
+    //         i {
+    //           font-size: 1rem;
+    //           margin-right: 0.5rem;
+    //         }
+
+    //         span {
+    //           font-weight: medium;
+    //           display: block;
+    //         }
+    //       }
+    .layout-topbar-button-profile {
+      color: var(--primary-color);
+
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}
+
+.main-layout-topbar.expanded .layout-topbar {
+  width: 83%;
+  position: relative;
+  left: 17%;
+}
