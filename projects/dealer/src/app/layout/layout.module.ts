@@ -11,6 +11,7 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { UserProfileOverlayComponent } from './components/user-profile-overlay/user-profile-overlay.component';
 
+
 @NgModule({
     declarations: [
         TopbarComponent,
@@ -18,6 +19,7 @@ import { UserProfileOverlayComponent } from './components/user-profile-overlay/u
         FooterComponent,
         NotificationBellComponent,
         UserProfileOverlayComponent,
+
     ],
     imports: [
         CommonModule,
@@ -32,6 +34,7 @@ import { UserProfileOverlayComponent } from './components/user-profile-overlay/u
         FooterComponent,
         NotificationBellComponent,
         UserProfileOverlayComponent,
+
     ]
 })
 export class LayoutModule { }
