@@ -1,0 +1,8 @@
+::ng-deep {
+    .microservices {
+        .gen-table .p-datatable>.p-datatable-wrapper {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    }
+}

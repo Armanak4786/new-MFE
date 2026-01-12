@@ -1,0 +1,20 @@
+$gutter: 0.5rem; //for primeflex grid system
+
+/* @import "primeng/resources/themes/lara-light-blue/theme.css"; */
+@import "primeng/resources/primeng.min.css";
+@import "primeflex/primeflex.scss";
+@import "primeicons/primeicons.css";
+
+@import "../external-lib/fontawesome-pro-6.4.2-web/css/fontawesome.min.css";
+@import "../external-lib/fontawesome-pro-6.4.2-web/css/brands.css";
+
+// custom theme to overide\
+@import "./themes/mytheme/theme.scss";
+
+@import "./layout/layout.scss";
+
+// base theme to load
+@import "./themes/material/material-light/standard/deeppurple/theme.scss";
+
+
+

@@ -1,0 +1,23 @@
+{
+  "production": true,
+  "apiUrl": "https://devportalgateway.aurionpro.com/gateway",
+  "clientId": "AURPRIA.RESTAPI.DEVPORTAL",
+  "authority": "https://login10.fisglobal.com/idp/aurionpro",
+  "redirectUrl": "https://devportaludc.aurionpro.com/authentication/login",
+  "postLogoutRedirectUri": "window.location.origin + '/post-logout'",
+  "scope": "openid profile email offline_access",
+  "autoUserInfo": false,
+  "responseType": "code",
+  "silentRenew": true,
+  "useRefreshToken": true,
+  "secureRoutes": [""],
+  "maxIdTokenIatOffsetAllowedInSeconds": 600,
+  "grant_type": "client_credentials",
+  "validationURL": "https://devportalgateway.aurionpro.com/gateway/validationrule/GetPropertyValidationFramework",
+  "currency": "https://devportalgateway.aurionpro.com/gateway/LookUpServices/currency",
+  "CommonConfiguration": "auro-ui-assets/api-json/commonConfiguration.json",
+  "FIS": true,
+  "revokeSessionUrlEntra": "https://graph.microsoft.com/v1.0/me/revokeSignInSessions",
+  "revokeAllTokenFIS": "https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me",
+  "ActiveClient": "UDCDO"
+}

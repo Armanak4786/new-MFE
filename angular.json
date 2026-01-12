@@ -146,6 +146,11 @@
                 "glob": "**/*",
                 "input": "projects/dealer/public",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/"
               }
             ],
             "styles": [

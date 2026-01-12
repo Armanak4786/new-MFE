@@ -1,2 +1,19 @@
-<router-outlet />
-<p>dealer</p>
+<!-- <router-outlet />
+<p>dealer</p> -->
+
+<div class="layout-wrapper" [ngClass]="containerClass">
+    <app-topbar></app-topbar>
+    <app-sidemenu></app-sidemenu>
+    <div class="layout-main-container" [ngClass]="{
+      expanded: isSidemenuLocked,
+      auth: authRoute
+    }">
+        <!-- To check for sidemenu and route -->
+        <app-breadcrumb></app-breadcrumb>
+        <div class="layout-main">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <app-footer></app-footer>
+    <div class="layout-mask"></div>
+</div>

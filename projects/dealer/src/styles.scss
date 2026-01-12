@@ -1,1 +1,771 @@
 /* You can add global styles to this file, and also import other style files */
+
+$gutter: 0.5rem; //for primeflex grid system
+@import "../../../node_modules/auro-ui/src/auro-ui-assets/styles/layout/layout.scss";
+@import "../../../node_modules/auro-ui/src/auro-ui-assets/styles/global.scss";
+
+/* PrimeNG */
+@import "../../../node_modules/primeng/resources/primeng.min.css";
+@import "../../../node_modules/primeflex/primeflex.scss";
+@import "../../../node_modules/primeicons/primeicons.css";
+@import "../../../node_modules/@geoapify/geocoder-autocomplete/styles/minimal.css";
+
+/* Demos */
+// @import assets/demo/styles/flags/flags.css";"
+// @import assets/demo/styles/badges.scss";"
+// @import assets/demo/styles/code.scss";"
+
+// Theme Specific Variables
+$primaryColor: #0f86b1;
+$primaryDarkColor: #1e88e5;
+$primaryDarkerColor: #1976d2;
+$primaryLightColor: #d5edf5;
+$primaryLighterColor: #fafdfe;
+$headerbgColor: #ebf7fb;
+$primaryTextColor: #ffffff;
+$secondaryColor: #aab734;
+$secondaryLightColor: #c7ffbe;
+$backgroundColorPrimary: #ffff;
+$backgroundColorDark: #000000;
+$backgroundColorTransparentDark: #00000080;
+$backgroundColorSecondary: #f3f3f3;
+$backgroundColorSecondaryLight: #fafdfe;
+$backgroundColorSecondaryDark: #0095db26;
+$disableColor: #ccc;
+$inputDisableColor: #000;
+$labelColor: #666666;
+$primaryBorderColor: #0095db;
+$danger: #d80027;
+//start:typograpghy
+//end:typograpghy
+$colors: (
+    "blue": #2196f3,
+    "green": #4caf50,
+    "yellow": #fbc02d,
+    "cyan": #00bcd4,
+    "pink": #e91e63,
+    "indigo": #3f51b5,
+    "teal": #009688,
+    "orange": #f57c00,
+    "bluegray": #607d8b,
+    "purple": #9c27b0,
+    "red": #ff4032,
+    "primary": #0f86b1,
+);
+
+:root {
+    //starts:new added \
+    --primary-color: #0f86b1 !important;
+    --primary-light-color: #d5edf5 !important;
+    --primary-lighter-color: #fafdfe !important;
+    --secondary-color: #aab734 !important;
+    --secondary-light-color: #c7ffbe !important;
+    --primary-text-color: #ffffff !important;
+    --disable-color: #ccc !important;
+    --input-disable-color: #000 !important;
+    --background-color-primary: #ffff !important;
+    --background-color-dark: #000000 !important;
+    --background-color-transparent-dark: #00000080 !important;
+    --background-color-secondary: #f3f3f3 !important;
+    --background-color-secondary-light: #fafdfe !important;
+    --background-color-secondary-dark: #0095db26 !important;
+    --font-size: #{$fontSize};
+    --card-shadow: #{$cardShadow};
+    --header-bg-color: #{$headerbgColor};
+    --label-color: #{$labelColor};
+    --primary-border-color: #0095db !important;
+    --danger-color: #{$danger};
+
+    --login-bg-image: "assets/images/auth-background.png";
+    //ends
+
+    /// Padding of a button, must be defined with a shorthand for vertical and horizontal values e.g. ".5rem .5rem"
+    /// @group button
+    $buttonPadding: 0.5rem 1rem;
+
+    /// Width of a button having an icon with no label
+    /// @group button
+    $buttonIconOnlyWidth: 2.357rem;
+
+    /// Padding of a button having an icon with no label
+    /// @group button
+    $buttonIconOnlyPadding: 0.5rem 0;
+
+    /// Background of a button
+    /// @group button
+    $buttonBg: #0095db !important;
+
+    /// Text color of a button
+    /// @group button
+    $buttonTextColor: #ffffff !important;
+
+    /// Border of a button
+    /// @group button
+    $buttonBorder: 1px solid #0095db !important;
+
+    /// Background of a button in hover state
+    /// @group button
+    $buttonHoverBg: #1e88e5 !important;
+
+    /// Text color of a button in hover state
+    /// @group button
+    $buttonTextHoverColor: #ffffff !important;
+
+    /// Border color of a button in hover state
+    /// @group button
+    $buttonHoverBorderColor: #1e88e5 !important;
+
+    /// Background of a button in pressed state
+    /// @group button
+    $buttonActiveBg: #1e88e5 !important;
+
+    /// Color of a button in pressed state
+    /// @group button
+    $buttonTextActiveColor: #ffffff !important;
+
+    /// Border color of a button in pressed state
+    /// @group button
+    $buttonActiveBorderColor: #1976d2 !important;
+
+    /// Shadow of a raised button
+    /// @group button
+    $raisedButtonShadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
+    /// Border radius of a rounded button
+    /// @group button
+    $roundedButtonBorderRadius: 2rem;
+
+    /// Alpha level of a text button background in hover state
+    /// @group button
+    $textButtonHoverBgOpacity: 0.04;
+
+    /// Alpha level of a text button background in active state
+    /// @group button
+    $textButtonActiveBgOpacity: 0.16;
+
+    /// Border style of a outlined button
+    /// @group button
+    $outlinedButtonBorder: 1px solid;
+
+    /// Text color of a plain text button
+    /// @group button
+    $plainButtonTextColor: #6c757d;
+
+    /// Background color of a plain text button in hover state
+    /// @group button
+    $plainButtonHoverBgColor: #e9ecef;
+
+    /// Background color of a plain text button in active state
+    /// @group button
+    $plainButtonActiveBgColor: #dee2e6;
+
+    /// Background of a secondary button
+    /// @group button
+    $secondaryButtonBg: #607d8b;
+
+    /// Text color of a secondary button
+    /// @group button
+    $secondaryButtonTextColor: #ffffff;
+
+    /// Border of a secondary button
+    /// @group button
+    $secondaryButtonBorder: 1px solid #607d8b;
+
+    /// Background of a secondary button in hover state
+    /// @group button
+    $secondaryButtonHoverBg: #546e7a;
+
+    /// Text color of a secondary button in hover state
+    /// @group button
+    $secondaryButtonTextHoverColor: #ffffff;
+
+    /// Border color of a secondary button in hover state
+    /// @group button
+    $secondaryButtonHoverBorderColor: #546e7a;
+
+    /// Background of a secondary button in pressed state
+    /// @group button
+    $secondaryButtonActiveBg: #455a64;
+
+    /// Text color of a secondary button in pressed state
+    /// @group button
+    $secondaryButtonTextActiveColor: #ffffff;
+
+    /// Border color of a secondary button in pressed state
+    /// @group button
+    $secondaryButtonActiveBorderColor: #455a64;
+
+    /// Box shadow of a secondary button in focused state
+    /// @group button
+    $secondaryButtonFocusShadow: 0 0 0 0.2rem #b0bec5;
+
+    /// Background of an info button
+    /// @group button
+    $infoButtonBg: #03a9f4;
+
+    /// Text color of an info button
+    /// @group button
+    $infoButtonTextColor: #ffffff;
+
+    /// Border of an info button
+    /// @group button
+    $infoButtonBorder: 1px solid #03a9f4;
+
+    /// Background of an info button in hover state
+    /// @group button
+    $infoButtonHoverBg: #039be5;
+
+    /// Text color of an info button in hover state
+    /// @group button
+    $infoButtonTextHoverColor: #ffffff;
+
+    /// Border color of an info button in hover state
+    /// @group button
+    $infoButtonHoverBorderColor: #039be5;
+
+    /// Background of an info button in pressed state
+    /// @group button
+    $infoButtonActiveBg: #0288d1;
+
+    /// Text color of an info button in pressed state
+    /// @group button
+    $infoButtonTextActiveColor: #ffffff;
+
+    /// Border color of an info button in pressed state
+    /// @group button
+    $infoButtonActiveBorderColor: #0288d1;
+
+    /// Box shadow of an info button in focused state
+    /// @group button
+    $infoButtonFocusShadow: 0 0 0 0.2rem lighten($infoButtonBg, 35%);
+
+    /// Background of a success button
+    /// @group button
+    $successButtonBg: #4caf50;
+
+    /// Text color of a success button
+    /// @group button
+    $successButtonTextColor: #ffffff;
+
+    /// Border of a success button
+    /// @group button
+    $successButtonBorder: 1px solid #4caf50;
+
+    /// Background of a success button in hover state
+    /// @group button
+    $successButtonHoverBg: #43a047;
+
+    /// Text color of a success button in hover state
+    /// @group button
+    $successButtonTextHoverColor: #ffffff;
+
+    /// Border color of a success button in hover state
+    /// @group button
+    $successButtonHoverBorderColor: #43a047;
+
+    /// Background of a success button in pressed state
+    /// @group button
+    $successButtonActiveBg: #388e3c;
+
+    /// Text Color of a success button in pressed state
+    /// @group button
+    $successButtonTextActiveColor: #ffffff;
+
+    /// Border color of a success button in pressed state
+    /// @group button
+    $successButtonActiveBorderColor: #388e3c;
+
+    /// Box shadow of a success button in focused state
+    /// @group button
+    $successButtonFocusShadow: 0 0 0 0.2rem lighten($successButtonBg, 35%);
+
+    /// Background of a warning button
+    /// @group button
+    $warningButtonBg: #ffc107;
+
+    /// Text color of a warning button
+    /// @group button
+    $warningButtonTextColor: $textColor;
+
+    /// Border of a warning button
+    /// @group button
+    $warningButtonBorder: 1px solid #ffc107;
+
+    /// Background of a warning button in hover state
+    /// @group button
+    $warningButtonHoverBg: #ffb300;
+
+    /// Text color of a warning button in hover state
+    /// @group button
+    $warningButtonTextHoverColor: $textColor;
+
+    /// Border color of a warning button in hover state
+    /// @group button
+    $warningButtonHoverBorderColor: #ffb300;
+
+    /// Background of a warning button in pressed state
+    /// @group button
+    $warningButtonActiveBg: #ffa000;
+
+    /// Text color of a warning button in pressed state
+    /// @group button
+    $warningButtonTextActiveColor: $textColor;
+
+    /// Border color of a warning button in pressed state
+    /// @group button
+    $warningButtonActiveBorderColor: #ffa000;
+
+    /// Box shadow of a warning button in focused state
+    /// @group button
+    $warningButtonFocusShadow: 0 0 0 0.2rem lighten($warningButtonBg, 35%);
+
+    /// Background of a help button
+    /// @group button
+    $helpButtonBg: #9c27b0;
+
+    /// Text color of a help button
+    /// @group button
+    $helpButtonTextColor: #ffffff;
+
+    /// Border of a help button
+    /// @group button
+    $helpButtonBorder: 1px solid #9c27b0;
+
+    /// Background of a help help in hover state
+    /// @group button
+    $helpButtonHoverBg: #8e24aa;
+
+    /// Text color of a help button in hover state
+    /// @group button
+    $helpButtonTextHoverColor: #ffffff;
+
+    /// Border color of a help button in hover state
+    /// @group button
+    $helpButtonHoverBorderColor: #8e24aa;
+
+    /// Background of a help button in pressed state
+    /// @group button
+    $helpButtonActiveBg: #7b1fa2;
+
+    /// Text color of a help button in pressed state
+    /// @group button
+    $helpButtonTextActiveColor: #ffffff;
+
+    /// Border color of a help button in pressed state
+    /// @group button
+    $helpButtonActiveBorderColor: #7b1fa2;
+
+    /// Box shadow of a help button in focused state
+    /// @group button
+    $helpButtonFocusShadow: 0 0 0 0.2rem #ce93d8;
+
+    /// Background of a danger button
+    /// @group button
+    $dangerButtonBg: #f44336;
+
+    /// Text color of a danger button
+    /// @group button
+    $dangerButtonTextColor: #ffffff;
+
+    /// Border of a danger button
+    /// @group button
+    $dangerButtonBorder: 1px solid #f44336;
+
+    /// Background of a danger button in hover state
+    /// @group button
+    $dangerButtonHoverBg: #e53935;
+
+    /// Text color of a danger button in hover state
+    /// @group button
+    $dangerButtonTextHoverColor: #ffffff;
+
+    /// Border color of a danger button in hover state
+    /// @group button
+    $dangerButtonHoverBorderColor: #e53935;
+
+    /// Background of a danger button in pressed state
+    /// @group button
+    $dangerButtonActiveBg: #d32f2f;
+
+    /// Text color of a danger button in pressed state
+    /// @group button
+    $dangerButtonTextActiveColor: #ffffff;
+
+    /// Border color of a danger button in pressed state
+    /// @group button
+    $dangerButtonActiveBorderColor: #d32f2f;
+
+    /// Box shadow of a danger button in focused state
+    /// @group button
+    $dangerButtonFocusShadow: 0 0 0 0.2rem lighten($dangerButtonBg, 35%);
+
+    /// Text color of a link button
+    /// @group button
+    $linkButtonColor: #1976d2 !important;
+
+    /// Text color of a link button in hover state
+    /// @group button
+    $linkButtonHoverColor: #1976d2 !important;
+
+    /// Text decoration of a link button in hover state
+    /// @group button
+    $linkButtonTextHoverDecoration: underline;
+
+    /// Box shadow of a link button in focused state
+    /// @group button
+    $linkButtonFocusShadow: 0 0 0 0.2rem $focusOutlineColor;
+
+    /// Background of a toggle button
+    /// @group button
+    $toggleButtonBg: #ffffff;
+
+    /// Border of a toggle button
+    /// @group button
+    $toggleButtonBorder: 1px solid #ced4da;
+
+    /// Text color of a toggle button
+    /// @group button
+    $toggleButtonTextColor: $textColor;
+
+    /// Icon color of a toggle button
+    /// @group button
+    $toggleButtonIconColor: $textSecondaryColor;
+
+    /// Background of a toggle button in hover state
+    /// @group button
+    $toggleButtonHoverBg: #e9ecef;
+
+    /// Border color of a toggle button in hover state
+    /// @group button
+    $toggleButtonHoverBorderColor: #ced4da;
+
+    /// Text color of a toggle button in hover state
+    /// @group button
+    $toggleButtonTextHoverColor: $textColor;
+
+    /// Icon color of a toggle button in hover state
+    /// @group button
+    $toggleButtonIconHoverColor: $textSecondaryColor;
+
+    /// Background of a toggle button in selected state
+    /// @group button
+    $toggleButtonActiveBg: #0f86b1 !important;
+
+    /// Border color of a toggle button in selected state
+    /// @group button
+    $toggleButtonActiveBorderColor: #0f86b1 !important;
+
+    /// Text color of a toggle button in selected state
+    /// @group button
+    $toggleButtonTextActiveColor: $primaryTextColor;
+
+    /// Icon color of a toggle button in selected state
+    /// @group button
+    $toggleButtonIconActiveColor: $primaryTextColor;
+
+    /// Hover background of a toggle button in selected state
+    /// @group button
+    $toggleButtonActiveHoverBg: #1e88e5 !important;
+
+    /// Hover border color of a toggle button in selected state
+    /// @group button
+    $toggleButtonActiveHoverBorderColor: #1e88e5 !important;
+
+    /// Hover text color of a toggle button in selected state
+    /// @group button
+    $toggleButtonTextActiveHoverColor: #ffffff !important;
+
+    /// Hover icon of a toggle button in selected state
+    /// @group button
+    $toggleButtonIconActiveHoverColor: #ffffff !important;
+
+    /// Width of a floating action button on speed dial
+    /// @group button
+    $speedDialButtonWidth: 4rem;
+
+    /// Height of a floating action button on speed dial
+    /// @group button
+    $speedDialButtonHeight: 4rem;
+
+    /// Font Size of a floating action button on speed dial
+    /// @group button
+    $speedDialButtonIconFontSize: 1.3rem;
+
+    /// Width of any action button on speed dial
+    /// @group button
+    $speedDialActionWidth: 3rem;
+
+    /// Height of any action button on speed dial
+    /// @group button
+    $speedDialActionHeight: 3rem;
+
+    /// Background color of any action button on speed dial
+    /// @group button
+    $speedDialActionBg: #495057;
+
+    /// Background color of any action button on speed dial in hover state
+    /// @group button
+    $speedDialActionHoverBg: #343a40;
+
+    /// Color of any action button on speed dial
+    /// @group button
+    $speedDialActionTextColor: #fff;
+
+    /// Color of any action button on speed dial in hover state
+    /// @group button
+    $speedDialActionTextHoverColor: #fff;
+}
+
+.p-button {
+    min-width: auto;
+
+    &.p-highlight {
+        background: var(--primary-color);
+    }
+}
+
+.p-button.p-button-outlined {
+    background-color: transparent !important;
+}
+
+.p-button.p-button-text {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.floating-label-container {
+    position: relative;
+    width: 100% !important;
+}
+
+//auro UI
+//_topbar.scss:18
+
+.main-layout-topbar.expanded .layout-topbar {
+    left: 16%;
+    position: fixed;
+}
+
+.layout-sidemenu {
+    z-index: 99;
+    position: fixed;
+    top: 3%;
+}
+
+//_topbar.scss:1
+.main-layout-topbar {
+    position: fixed;
+    padding-top: 15px;
+
+    .layout-topbar {
+        position: unset;
+        top: 2%;
+        width: 92.8vw;
+        margin-left: 6vw;
+    }
+}
+
+//_content.scss:10
+.layout-main {
+    overflow: unset;
+}
+
+.ng-select {
+    margin-top: -14px;
+}
+
+.horizontal-label {
+    display: flex !important;
+}
+
+.horizon {
+    display: flex;
+    margin-left: -10px !important;
+}
+
+.dashboard .lg\:col-10 {
+    width: 81%;
+}
+
+.dashboard .lg\:col-2 {
+    width: 19%;
+}
+
+.p-datatable .p-datatable-tbody>tr {
+    span.text-right {
+        margin-left: auto;
+    }
+}
+
+.grid.vertical-label {
+    display: block !important;
+}
+
+form {
+    label {
+        color: var(--label-color) !important;
+    }
+}
+
+.grid.vertical-label {
+    display: block !important;
+}
+
+.status {
+    background-color: var(--primary-color);
+    color: var(--background-color-primary) !important;
+    border-radius: 20px;
+
+    label,
+    .p-dropdown {
+        color: var(--background-color-primary) !important;
+        border-bottom: none;
+        background-color: transparent !important;
+
+        label.col-12.py-0 {
+            margin-left: -5px;
+        }
+
+        label.col-12.py-0 {
+            margin-left: -5px;
+        }
+
+        .p-inputtext {
+            color: var(--background-color-primary) !important;
+        }
+
+        .p-dropdown-trigger {
+            color: var(--background-color-primary) !important;
+        }
+    }
+}
+
+.originatorCSS {
+    background: transparent !important;
+    color: white !important;
+
+    .p-icon {
+        color: white !important;
+    }
+
+    .p-dropdown .p-dropdown-label.p-placeholder {
+        color: #ffffff !important;
+    }
+
+    .p-inputtext {
+        color: #fff;
+    }
+
+    &:active,
+    &:focus,
+    &:hover {
+        color: #fff;
+        background: transparent !important;
+        outline: 0;
+        border: 0;
+    }
+
+    .p-dropdown:not(.p-disabled).p-focus,
+    .p-dropdown:not(.p-disabled).p-inputwrapper-focus {
+        box-shadow: none;
+        background-color: transparent !important;
+    }
+
+    // .p-input-filled .p-dropdown:not(.p-disabled).p-focus, .p-input-filled .p-dropdown:not(.p-disabled).p-inputwrapper-focus {
+    //     // box-shadow: none;
+    //      background-color: transparent !important;
+    //      color: white !important
+    //     // background-size: 100% 2px, 100% 1px;
+    // }
+    // .p-input-filled .p-dropdown .p-inputtext
+    //  {
+    //     color: white !important;
+    // }
+    // .p-input-filled .p-dropdown .p-inputtext {
+    //     border: 0 none;
+    //     color: white !important;
+    //     background-color: transparent !important;
+    // }
+}
+
+.input-wrapper {
+    position: relative;
+
+    display: inline-block;
+}
+
+.input-wrapper input {
+    /* Leave space for the unit */
+}
+
+.input-wrapper::after {
+    content: "CC";
+    /* Change to 'cc' if needed */
+
+    position: absolute;
+
+    right: 35%;
+
+    top: 50%;
+
+    pointer-events: none;
+
+    color: #555;
+}
+
+.odo-wrapper {
+    position: relative;
+
+    display: inline-block;
+}
+
+.odo-wrapper input {
+    /* Leave space for the unit */
+}
+
+.odo-wrapper::after {
+    content: "KM";
+    /* Change to 'cc' if needed */
+
+    position: absolute;
+
+    right: 35%;
+
+    top: 50%;
+
+    pointer-events: none;
+
+    color: #555;
+}
+
+// .originatorCSS:hover{
+//   background: transparent !important;
+// }
+
+// .originatorCSS:focus  ::-moz-focus-inner{
+//   background: transparent !important;
+// }
+
+.layout-main-container {
+    position: relative;
+    padding-bottom: 10rem;
+    padding-top: 5rem;
+}
+
+.stepper-footer {
+    position: absolute;
+    //width: 92.8vw;
+    bottom: 4rem !important;
+    z-index: 2 !important;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+.layout-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 4;
+}

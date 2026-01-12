@@ -1,0 +1,12 @@
+{
+    "status": "1",
+    "message": "Currency Data Fetched Successfully",
+    "currencyId": 1,
+    "currencyName": "USA",
+    "currencyIsoCode": "USD",
+    "defaultFraction": 2,
+    "symbol": "$",
+    "defaultGroupingSeparator": ",",
+    "defaultDecimalSeparator": ".",
+    "align":"right"
+}
