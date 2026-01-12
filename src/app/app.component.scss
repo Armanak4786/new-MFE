@@ -1,0 +1,36 @@
+.layout-main-container {
+    background-position: center;
+    background-size: cover;
+
+    ::ng-deep {
+        .info-panel {
+            p {
+                color: var(--background-color-primary);
+            }
+
+            .p-carousel-indicators {
+                padding: 1rem 0px;
+                justify-content: start;
+
+                .p-carousel-indicator {
+                    margin-right: 0.5rem;
+                    margin-top: auto !important;
+                    margin-bottom: auto !important;
+
+                    button {
+                        width: 50px;
+                        height: 3px;
+                        border-radius: 30px;
+                        transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+                    }
+                }
+
+                .p-carousel-indicator.p-highlight button {
+                    background: var(--primary-color);
+                    color: #fff;
+                    height: 6px;
+                }
+            }
+        }
+    }
+}

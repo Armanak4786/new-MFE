@@ -1,1 +1,26 @@
-<router-outlet></router-outlet>
+<div class="layout-wrapper" [ngClass]="containerClass">
+    <div class="layout-main-container" [ngStyle]="{
+      'background-image': 'url(assets/images/auth-background.png)'
+    }">
+        <div class="grid justify-content-center my-auto">
+            <div class="col-10 my-auto">
+                <div class="grid">
+                    <div class="col-6 my-auto">
+                        <div class="block vertical-align-top info-panel">
+                            <p-carousel [showNavigators]="false" [value]="loginQuote" [numVisible]="1" [numScroll]="1"
+                                [circular]="true" [autoplayInterval]="3000" class="text-color-inverted loginQuote">
+                                <ng-template let-product pTemplate="item">
+                                    <p class="text-4xl m-0">{{ product.heading }}</p>
+                                    <p class="text-sm mt-3 mb-1">{{ product.text }}</p>
+                                </ng-template>
+                            </p-carousel>
+                        </div>
+                    </div>
+                    <div class="col-5 lg:col-offset-1">
+                        <router-outlet></router-outlet>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,46 +1,19 @@
-<div class="layout-wrapper">
-    <div class="layout-main-container" [ngStyle]="{
-      'background-image': 'url(assets/images/auth-background.png)'
-    }">
-        <div class="grid justify-content-center my-auto">
-            <div class="col-10 my-auto">
-                <div class="grid">
-                    <div class="col-6 my-auto">
-                        <div class="block vertical-align-top info-panel">
-                            <p-carousel [showNavigators]="false" [value]="loginQuote" [numVisible]="1" [numScroll]="1"
-                                [circular]="true" [autoplayInterval]="3000" class="text-color-inverted loginQuote">
-                                <ng-template let-product pTemplate="item">
-                                    <p class="text-4xl m-0">{{ product.heading }}</p>
-                                    <p class="text-sm mt-3 mb-1">{{ product.text }}</p>
-                                </ng-template>
-                            </p-carousel>
-                        </div>
-                    </div>
-                    <div class="col-5 lg:col-offset-1">
-                        <ng-container *ngIf="pageType === 'login'">
-                            <form class="form loginForm">
-                                <div class="my-2 login-btn">
-                                    <div class="mt-3 text-center">
-                                        <gen-button [btnLabel]="'Login with FIS'"
-                                            (onClick)="loginWithOidc()"></gen-button>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-xs mt-4">
-                                        By accessing UDC Live! you confirm you are an authorised user and have
-                                        agreed to the application
-                                        <a href="javascript:void(0)" class="text-color-primary text-decoration-none"
-                                            routerLink="/authentication/terms-condition">Conditions of Use</a>.
-                                        Unauthorised use may be referred to the
-                                        appropriate authorities.
-                                    </p>
-                                </div>
-                            </form>
-                        </ng-container>
-
-                    </div>
-                </div>
+<ng-container *ngIf="pageType === 'login'">
+    <form class="form loginForm">
+        <div class="my-2 login-btn">
+            <div class="mt-3 text-center">
+                <gen-button [btnLabel]="'Login with FIS'" (onClick)="loginWithOidc()"></gen-button>
             </div>
         </div>
-    </div>
-</div>
+        <div class="text-center">
+            <p class="text-xs mt-4">
+                By accessing UDC Live! you confirm you are an authorised user and have
+                agreed to the application
+                <a href="javascript:void(0)" class="text-color-primary text-decoration-none"
+                    routerLink="/authentication/terms-condition">Conditions of Use</a>.
+                Unauthorised use may be referred to the
+                appropriate authorities.
+            </p>
+        </div>
+    </form>
+</ng-container>

@@ -1,0 +1,37 @@
+<ng-container>
+    <div class="landingContainer">
+        <div class="text-color-inverted text-center m-2">
+            <p class="text-2xl text-white">
+                {{ "Select Application" | apsTranslate }}
+            </p>
+        </div>
+
+        <!-- Large Cards (Full Width) -->
+        <div class="flex justify-content-center align-items-center" *ngFor="let module of largeModules">
+            <a [href]="module.route"
+                class="border-1 border-round-sm border-white w-5 flex-column p-2 cursor-pointer text-decoration-none">
+                <div class="flex justify-content-center">
+                    <img [src]="module.icon" [alt]="module.title" />
+                </div>
+                <div [style.color]="module.color" class="mb-2 text-center">
+                    {{ module.title | apsTranslate }}
+                </div>
+            </a>
+        </div>
+
+        <!-- Small Cards (Side by Side) -->
+        <div class="flex flex-row justify-content-center">
+            <ng-container *ngFor="let module of smallModules">
+                <a [href]="module.route"
+                    class="border-1 border-round-sm border-white w-4 flex-column p-2 cursor-pointer m-2 text-decoration-none">
+                    <div class="flex justify-content-center">
+                        <img [src]="module.icon" [alt]="module.title" />
+                    </div>
+                    <div [style.color]="module.color" class="mb-2 text-center">
+                        {{ module.title | apsTranslate }}
+                    </div>
+                </a>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>

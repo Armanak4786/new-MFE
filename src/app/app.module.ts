@@ -16,6 +16,7 @@ import { JwtModule } from "@auth0/angular-jwt";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { LoginComponent } from "./login/login.component";
+import { LandingComponent } from "./landing/landing.component";
 
 export function tokenGetter() {
   return localStorage.getItem("id_token");
@@ -29,7 +30,8 @@ export function initializeAppEnv(configService: ConfigService) {
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    LandingComponent
   ],
   bootstrap: [AppComponent],
   imports: [
