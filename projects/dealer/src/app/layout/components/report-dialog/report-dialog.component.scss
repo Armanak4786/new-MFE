@@ -1,0 +1,169 @@
+.report-dialog-content {
+    padding: 10px 0;
+}
+
+.report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+
+        .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+    }
+
+    input,
+    ::ng-deep .p-dropdown,
+    ::ng-deep .p-calendar {
+        width: 100%;
+    }
+
+    ::ng-deep .p-dropdown {
+        border-radius: 6px;
+
+        &:hover {
+            border-color: #3498db;
+        }
+
+        &.p-focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+    }
+
+    ::ng-deep .p-calendar {
+        .p-inputtext {
+            border-radius: 6px;
+        }
+
+        &:hover .p-inputtext {
+            border-color: #3498db;
+        }
+    }
+
+    ::ng-deep .p-inputtext {
+        border-radius: 6px;
+        padding: 10px 12px;
+
+        &:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+    }
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 10px;
+
+    button {
+        min-width: 120px;
+    }
+
+    .p-button-outlined {
+        border-color: #747474;
+        color: #747474;
+
+        &:hover {
+            background-color: #f5f5f5;
+            border-color: #333;
+            color: #333;
+        }
+    }
+
+    .p-button-primary {
+        background-color: #3498db;
+        border-color: #3498db;
+
+        &:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        &:disabled {
+            background-color: #bdc3c7;
+            border-color: #bdc3c7;
+        }
+    }
+}
+
+// Dialog styling overrides
+::ng-deep .p-dialog {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
+    .p-dialog-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 16px 20px;
+
+        .p-dialog-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .p-dialog-header-icon {
+            color: #747474;
+
+            &:hover {
+                background-color: #e9ecef;
+                color: #333;
+            }
+        }
+    }
+
+    .p-dialog-content {
+        padding: 20px;
+    }
+
+    .p-dialog-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #e0e0e0;
+        padding: 16px 20px;
+    }
+}
+
+// Loading state
+::ng-deep .p-button-loading {
+    .p-button-icon {
+        margin-right: 8px;
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+    ::ng-deep .p-dialog {
+        width: 95vw !important;
+        max-width: 95vw !important;
+    }
+
+    .dialog-footer {
+        flex-direction: column;
+
+        button {
+            width: 100%;
+        }
+    }
+}

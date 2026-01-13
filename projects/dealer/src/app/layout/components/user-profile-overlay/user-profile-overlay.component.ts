@@ -3,6 +3,7 @@ import { AuthenticationService, environment } from 'auro-ui';
 import { Router } from '@angular/router';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { LayoutService } from 'shared-lib';
+import { DashboardService } from '../../../dashboard/services/dashboard.service';
 
 @Component({
     selector: 'app-user-profile-overlay',
@@ -17,8 +18,7 @@ export class UserProfileOverlayComponent {
     constructor(
         private overlayService: LayoutService,
         public authSvc: AuthenticationService,
-        // public dashboardService: DashboardService,
-        // private standardQuoteSvc: StandardQuoteService,
+        public dashboardService: DashboardService,
         public layoutService: LayoutService,
         public router: Router
     ) { }
@@ -29,8 +29,8 @@ export class UserProfileOverlayComponent {
         });
 
         let accessToken = sessionStorage.getItem("accessToken");
-        // let decodedToken = this.dashboardService.decodeToken(accessToken);
-        // this.userName = decodedToken?.sub.replace(".", " ");
+        let decodedToken = this.dashboardService.decodeToken(accessToken);
+        this.userName = decodedToken?.sub.replace(".", " ");
     }
 
     logout() {
@@ -40,9 +40,9 @@ export class UserProfileOverlayComponent {
                     localStorage.clear();
                     sessionStorage.clear();
                     this.authSvc.clearAuth();
-                    //   this.router.navigate(["/authentication/login"]).then(() => {
-                    //     window.location.reload();
-                    //   });
+                    this.router.navigate(["/authentication/login"]).then(() => {
+                        window.location.reload();
+                    });
                 },
             });
         } else {
@@ -55,7 +55,7 @@ export class UserProfileOverlayComponent {
     }
 
     changePassword() {
-        // this.router.navigateByUrl("/authentication/change-password");
+        this.router.navigateByUrl("/authentication/change-password");
     }
 }
 

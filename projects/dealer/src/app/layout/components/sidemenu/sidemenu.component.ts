@@ -3,6 +3,10 @@ import { CommonService, AuthenticationService, ToasterService } from 'auro-ui';
 import { Router } from '@angular/router';
 import { LayoutService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
+import { DashboardService } from '../../../dashboard/services/dashboard.service';
+import { QuickQuoteService } from '../../../quick-quote/services/quick-quote.service';
+import { AssetTradeSummaryService } from '../../../standard-quote/components/asset-insurance-summary/asset-trade.service';
+import { StandardQuoteService } from '../../../standard-quote/services/standard-quote.service';
 
 @Component({
     selector: 'app-sidemenu',
@@ -16,12 +20,12 @@ export class SidemenuComponent {
         public layoutService: LayoutService,
         public svc: CommonService,
         public authSvc: AuthenticationService,
-        // private standardQuoteSvc: StandardQuoteService,
-        // private assetTradeSvc: AssetTradeSummaryService,
+        private standardQuoteSvc: StandardQuoteService,
+        private assetTradeSvc: AssetTradeSummaryService,
         private router: Router,
-        // private quickquoteService: QuickQuoteService,
+        private quickquoteService: QuickQuoteService,
         private sidemenuService: SidemenuService,
-        // private dashboardSvc: DashboardService,
+        private dashboardSvc: DashboardService,
         private toasterSvc: ToasterService
     ) { }
 
@@ -36,31 +40,31 @@ export class SidemenuComponent {
             this.sidemenuService.toggleSidemenu(false);
         }
     }
-    // showConfirmationDialog(targetPath: string, callback: () => void): void {
-    //     const currentUrl = this.router.url.split("?")[0]; // remove query params
+    showConfirmationDialog(targetPath: string, callback: () => void): void {
+        const currentUrl = this.router.url.split("?")[0]; // remove query params
 
-    //     const onStandardQuote =
-    //         currentUrl.includes("/standard-quote") ||
-    //         currentUrl.includes("/individual") ||
-    //         currentUrl.includes("/business") ||
-    //         currentUrl.includes("/trust") ||
-    //         currentUrl.includes("/sole-trade")
+        const onStandardQuote =
+            currentUrl.includes("/standard-quote") ||
+            currentUrl.includes("/individual") ||
+            currentUrl.includes("/business") ||
+            currentUrl.includes("/trust") ||
+            currentUrl.includes("/sole-trade")
 
-    //     const isSameRoute = currentUrl === targetPath;
-    //     if (isSameRoute) {
-    //         return;
-    //     }
-    //     if (onStandardQuote) {
-    //         this.svc.ui.showOkDialog(
-    //             "Any unsaved changes will be lost. Are you sure you want to cancel?",
-    //             "",
-    //             () => callback(),
-    //             () => { }
-    //         );
-    //     } else {
-    //         callback();
-    //     }
-    // }
+        const isSameRoute = currentUrl === targetPath;
+        if (isSameRoute) {
+            return;
+        }
+        if (onStandardQuote) {
+            this.svc.ui.showOkDialog(
+                "Any unsaved changes will be lost. Are you sure you want to cancel?",
+                "",
+                () => callback(),
+                () => { }
+            );
+        } else {
+            callback();
+        }
+    }
 
     onMouseLeave() {
         //Shrinks sidemenu on mouse leave
@@ -80,45 +84,45 @@ export class SidemenuComponent {
     @Output() iconClick = new EventEmitter<string>(); // Placeholder to emulate click behavior
 
     onIconClick(icon: string): void {
-        // this.showConfirmationDialog("menu", () => {
-        //     this.isSubmenuOpen = false;
-        //     //Remove once paths are decided. Use naviagate below.
-        //     this.iconClick.emit(icon);
-        // });
+        this.showConfirmationDialog("menu", () => {
+            this.isSubmenuOpen = false;
+            //Remove once paths are decided. Use naviagate below.
+            this.iconClick.emit(icon);
+        });
     }
 
     navigate(path: string) {
-        // this.showConfirmationDialog(path, () => {
-        //     this.isSubmenuOpen = false;
-        //     const isExternalUser = sessionStorage.getItem("externalUserType");
-        //     if (isExternalUser?.includes("External")) {
-        //         if (!this.dashboardSvc.userSelectedOption) {
-        //             this.dashboardSvc.dealerAnimate = true;
-        //             setTimeout(() => {
-        //                 this.dashboardSvc.dealerAnimate = false;
-        //             }, 5000);
+        this.showConfirmationDialog(path, () => {
+            this.isSubmenuOpen = false;
+            const isExternalUser = sessionStorage.getItem("externalUserType");
+            if (isExternalUser?.includes("External")) {
+                if (!this.dashboardSvc.userSelectedOption) {
+                    this.dashboardSvc.dealerAnimate = true;
+                    setTimeout(() => {
+                        this.dashboardSvc.dealerAnimate = false;
+                    }, 5000);
 
-        //             this.toasterSvc.showToaster({
-        //                 detail: "Please select a dealer.",
-        //             });
-        //             return;
-        //         }
-        //     }
+                    this.toasterSvc.showToaster({
+                        detail: "Please select a dealer.",
+                    });
+                    return;
+                }
+            }
 
-        //     //Function to redirect from menu.
-        //     sessionStorage.removeItem("productCode");
-        //     this.standardQuoteSvc.resetBaseDealerFormData();
-        //     this.standardQuoteSvc.activeStep = 0;
-        //     this.assetTradeSvc.resetData();
-        //     this.quickquoteService.resetData();
-        //     this.router.navigateByUrl(path);
-        // });
+            //Function to redirect from menu.
+            sessionStorage.removeItem("productCode");
+            this.standardQuoteSvc.resetBaseDealerFormData();
+            this.standardQuoteSvc.activeStep = 0;
+            this.assetTradeSvc.resetData();
+            this.quickquoteService.resetData();
+            this.router.navigateByUrl(path);
+        });
     }
 
     toggleSubmenu() {
-        // this.showConfirmationDialog("reports", () => {
-        //     this.isSubmenuOpen = !this.isSubmenuOpen;
-        // });
+        this.showConfirmationDialog("reports", () => {
+            this.isSubmenuOpen = !this.isSubmenuOpen;
+        });
     }
 
     closeSubmenu() {

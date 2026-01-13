@@ -43,8 +43,10 @@
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Reports</span>
             </li>
 
-            <!-- <app-sub-sidemenu [ngClass]="{ expanded: isExpanded || isLocked }" *ngIf="isSubmenuOpen"
-                class="sub-sidemenu" (mouseleave)="closeSubmenu()"></app-sub-sidemenu> -->
+            <app-sub-sidemenu *ngIf="isSubmenuOpen" class="sub-sidemenu"
+                [ngClass]="{ expanded: isExpanded || isLocked }" [isExpanded]="isExpanded || isLocked"
+                (closeSubmenu)="closeSubmenu()" (navigate)="navigate($event)">
+            </app-sub-sidemenu>
         </ul>
     </nav>
 </div>

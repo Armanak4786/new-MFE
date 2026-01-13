@@ -2,6 +2,8 @@ import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/
 import { AuthenticationService, DataService } from 'auro-ui';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { LayoutService } from 'shared-lib';
+import { QuickQuoteService } from '../../../quick-quote/services/quick-quote.service';
+import { StandardQuoteService } from '../../../standard-quote/services/standard-quote.service';
 
 @Component({
     selector: 'app-notification-bell',
@@ -27,8 +29,8 @@ export class NotificationBellComponent {
         public authSvc: AuthenticationService,
         private eRef: ElementRef,
         private dataService: DataService,
-        // private quickquoteService: QuickQuoteService,
-        // private standardQuoteService: StandardQuoteService
+        private quickquoteService: QuickQuoteService,
+        private standardQuoteService: StandardQuoteService
     ) { }
 
     @HostListener("document:click", ["$event"])
@@ -87,8 +89,8 @@ export class NotificationBellComponent {
     }
 
     logout() {
-        // this.quickquoteService.quickQuoteData = [];
-        // this.standardQuoteService.resetBaseDealerFormData();
+        this.quickquoteService.quickQuoteData = [];
+        this.standardQuoteService.resetBaseDealerFormData();
     }
 
     dismissAll() {
