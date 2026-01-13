@@ -1,0 +1,208 @@
+<gen-card
+  [headerText]="'Citizenship Details'"
+  #mainForm
+  [cardBgColor]="'--background-color-secondary'"
+  [cardType]="'non-border'"
+>
+  <ng-container body>
+    <form [formGroup]="citizenshipForm">
+      <ng-container formArrayName="citizenships">
+        <div *ngFor="let citizenships of citizenships.controls; let i = index">
+          <div [formGroupName]="i" class="mt-2">
+            <div class="grid p-fluid">
+              <div class="col-3 pr-0" *ngIf="i == 0">
+                <div class="flex">
+                  <label class="mt-2 text-600">
+                  New Zealand Resident?<span class="text-red-500">*</span>
+                  </label>
+
+                  <!-- <p-inputSwitch
+                  formControlName="isNewZealandResident"
+                  #inputSwitch
+                  class="mt-2 ml-3"
+                  [(ngModal)]="isNewZealandResident"
+                  (onChange)="onSwitchChange($event)"
+                  [style]="{ width: '2.7rem', height: '1rem' }"
+                >
+                </p-inputSwitch> -->
+                  <!-- <span class="ml-2 mt-2">{{
+                  citizenships.get("isNewZealandResident")?.value ? "Yes" : "No"
+                }}</span> -->
+                  <p-dropdown
+                    [options]="residentOptions"
+                    optionValue="value"
+                    optionLabel="label"
+                    formControlName="isNewZealandResident"
+                    class="ml-2 w-4"
+                  ></p-dropdown>
+                </div>
+                <div
+                  *ngIf="
+                    citizenships.get('isNewZealandResident').touched &&
+                    citizenships.get('isNewZealandResident').invalid
+                  "
+                >
+                  <small
+                    class="p-error"
+                    *ngIf="
+                      citizenships
+                        .get('isNewZealandResident')
+                        .hasError('required')
+                    "
+                    >New Zealand Resident is required</small
+                  >
+                </div>
+              </div>
+
+              <div *ngIf="i === 0" class="col-3">
+                <div class="flex">
+                  <label class="mt-2 text-600"
+                    >Country of Birth<span class="text-red-500">* </span></label
+                  >
+                  <p-dropdown
+                    [options]="countryList"
+                    [filter]="countryList?.length > 5"
+                    optionValue="name"
+                    optionLabel="name"
+                    formControlName="countryOfBirth"
+                    [filter]="true"
+                    class="ml-2 w-6"
+                  ></p-dropdown>
+                </div>
+
+                <div
+                  *ngIf="
+                    citizenships.get('countryOfBirth').touched &&
+                    citizenships.get('countryOfBirth').invalid
+                  "
+                >
+                  <small
+                    class="p-error"
+                    *ngIf="
+                      citizenships.get('countryOfBirth').hasError('required')
+                    "
+                    >Country of Birth is required</small
+                  >
+                </div>
+              </div>
+              <div class="col-3" *ngIf="i === 0">
+                <div class="flex">
+                  <label class="mt-2 text-600"
+                    >Country of Citizenship<span class="text-red-500"
+                      >*
+                    </span></label
+                  >
+                  <p-dropdown
+                    [options]="countryList"
+                    [filter]="countryList?.length > 5"
+                    optionValue="name"
+                    optionLabel="name"
+                    formControlName="countryOfCitizenship"
+                    [filter]="true"
+                    class="ml-2 w-6"
+                  ></p-dropdown>
+                </div>
+                <div
+                  *ngIf="
+                    citizenships.get('countryOfCitizenship').touched &&
+                    citizenships.get('countryOfCitizenship').invalid
+                  "
+                >
+                  <small
+                    class="p-error"
+                    *ngIf="
+                      citizenships
+                        .get('countryOfCitizenship')
+                        .hasError('required')
+                    "
+                    >Country of Citizenship is required</small
+                  >
+                </div>
+              </div>
+              <div class="col-3 col-offset-6" *ngIf="i === 1">
+                <div class="flex">
+                  <label class="mt-2 text-600"
+                    >Country of Citizenship<span class="text-red-500"
+                      >*
+                    </span></label
+                  >
+                  <p-dropdown
+                    [options]="countryList"
+                    [filter]="countryList?.length > 5"
+                    optionValue="name"
+                    optionLabel="name"
+                    formControlName="countryOfCitizenship"
+                    [filter]="true"
+                    class="ml-2 w-6"
+                  ></p-dropdown>
+                </div>
+                <div
+                  *ngIf="
+                    citizenships.get('countryOfCitizenship').touched &&
+                    citizenships.get('countryOfCitizenship').invalid
+                  "
+                >
+                  <small
+                    class="p-error"
+                    *ngIf="
+                      citizenships
+                        .get('countryOfCitizenship')
+                        .hasError('required')
+                    "
+                    >Country of Citizenship is required</small
+                  >
+                </div>
+              </div>
+              <div class="col-3 col-offset-6" *ngIf="i === 2">
+                <div class="flex">
+                  <label class="mt-2 text-600"
+                    >Country of Citizenship<span class="text-red-500"
+                      >*
+                    </span></label
+                  >
+                  <p-dropdown
+                    [options]="countryList"
+                    [filter]="countryList?.length > 5"
+                    optionValue="name"
+                    optionLabel="name"
+                    formControlName="countryOfCitizenship"
+                    [filter]="true"
+                    class="ml-2 w-6"
+                  ></p-dropdown>
+                </div>
+                <div *ngIf="citizenships.touched && citizenships.invalid">
+                  <small
+                    class="p-error"
+                    *ngIf="
+                      citizenships
+                        .get('countryOfCitizenship')
+                        .hasError('required')
+                    "
+                    >Country Of Citizenship is required</small
+                  >
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <gen-button
+                  *ngIf="i === 0 && !isCitizenshipAdded"
+                  [btnLabel]="'Add Citizenship'"
+                  [btnType]="'plus-btn'"
+                  (onClick)="addOtherCitizenship()"
+                ></gen-button>
+              </div>
+              <div class="col-1" *ngIf="i != 0">
+                <gen-button
+                  [btnIcon]="'fa fa-trash'"
+                  [btnType]="'non-bg-btn'"
+                  (onClick)="removePhone(i)"
+                  class="mt-2"
+                ></gen-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </ng-container>
+</gen-card>

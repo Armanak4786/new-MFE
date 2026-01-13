@@ -1,0 +1,14 @@
+<base-form
+  #mainForm
+  [formConfig]="formConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+    (onInput)="onValueTyped($event)"
+  (onBlur)="onBlurEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+>
+</base-form>

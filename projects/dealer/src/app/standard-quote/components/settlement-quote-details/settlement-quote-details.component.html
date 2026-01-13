@@ -1,0 +1,244 @@
+<div class="mt-3">
+  <gen-card [headerText]="'Customer Details'">
+    <ng-container body>
+      <div class="grid">
+        <div class="col-10">
+          <gen-table [columns]="header" [dataList]="custumerDetails">
+          </gen-table>
+        </div>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>
+<div class="my-4">
+  <gen-card [headerText]="'Asset Details'" *ngIf="assetDetails">
+    <ng-container body>
+      <div class="grid">
+        <div class="col-10">
+          <gen-table [columns]="assetHeader" [dataList]="assetDetails">
+          </gen-table>
+        </div>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>
+
+<div class="grid">
+  <div class="col-12" *ngIf="contractData?.product?.productCode=='AFV'">
+    <p class="text-sm mb-2 heading"><i>Assured Future Value</i></p>
+    <p>
+      <i
+        >Please advise the customer that settling the loan through the
+        application will result in their Future Value Agreement being
+        terminated.</i
+      >
+    </p>
+  </div>
+
+  <div class="col-6">
+    <gen-card>
+      <ng-container body>
+        <div class="flex align-items-center">
+          <p-radioButton
+            name="settlementAmount"
+            value="Standard"
+            [(ngModel)]="settlementAmount"
+            inputId="Standard"
+            (ngModelChange)="radiobuttonclick($event)"
+          />
+          <label for="Standard" class="ml-2 text-base font-bold">
+            Settlement Amount (Standard)
+          </label>
+        </div>
+
+        <div
+          class="grid justify-content-center mt-3"
+          *ngIf="standardSettlementAmountData"
+        >
+          <div class="col-11">
+            <p class="para">
+              Outstanding Balance & Accrued Interest
+              <span class="float-right" *ngIf="standardSettlementAmountData?.SettlementAmount
+                  ?.outStandingBalanceAndAccuredInterest > 0">{{
+                standardSettlementAmountData?.SettlementAmount
+                  ?.outStandingBalanceAndAccuredInterest  | currency
+              }}</span>
+            </p>
+            <p class="text-primary-color font-bold">Add</p>
+            <p class="para" *ngIf="standardSettlementAmountData?.SettlementAmount?.overdueAmount > 0" >
+              Overdue Amount/s
+              <span class="float-right">
+                {{
+                standardSettlementAmountData?.SettlementAmount?.overdueAmount | currency
+              }}</span>
+            </p>
+            <p class="para" *ngIf="standardSettlementAmountData?.SettlementAmount?.overdueInterest > 0">
+              Overdue Interest
+              <span class="float-right">
+                {{standardSettlementAmountData?.SettlementAmount?.overdueInterest |currency }}</span>
+            </p>
+            <p class="para" *ngIf="standardSettlementAmountData?.SettlementAmount?.earlyPaymentLossFee > 0">
+              Early Payment Loss Fee
+              <span class="float-right" >
+                {{ standardSettlementAmountData?.SettlementAmount ?.earlyPaymentLossFee | currency }}
+              </span>
+            </p>
+            <p class="para" *ngIf="standardSettlementAmountData?.SettlementAmount?.earlySettlementAdminFee > 0">
+              Early Settlement Admin Fee
+              <span class="float-right" >
+                {{
+                standardSettlementAmountData?.SettlementAmount
+                  ?.earlySettlementAdminFee | currency
+              }}</span>
+            </p>
+            <p class="para">
+              Treasury Break Cost
+              <span class="float-right" *ngIf="standardSettlementAmountData?.SettlementAmount?.treasuryBreakCost > 0">
+                {{
+                standardSettlementAmountData?.SettlementAmount
+                  ?.treasuryBreakCost  | currency
+              }}</span>
+            </p>
+            <p class="text-danger-color font-bold">Less</p>
+            <p class="para" *ngIf="standardSettlementAmountData?.SettlementAmount?.cciRefund > 0">
+              CCI Refund
+              <span class="float-right" >
+                {{
+                standardSettlementAmountData?.SettlementAmount?.cciRefund | currency
+              }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="primary-background-color px-3 total"
+          *ngIf="standardSettlementAmountData"
+        >
+          <p class="text-color-inverted py-2">
+            Total
+            <span class="float-right" *ngIf="standardSettlementAmountData?.SettlementAmount?.Total > 0">{{
+              standardSettlementAmountData?.SettlementAmount?.Total  | currency
+            }}</span>
+          </p>
+        </div>
+      </ng-container>
+    </gen-card>
+  </div>
+  <div class="col-6">
+    <gen-card>
+      <ng-container body>
+        <div class="flex align-items-center">
+          <p-radioButton
+            name="settlementAmount"
+            value="Refinancing"
+            [(ngModel)]="settlementAmount"
+            inputId="Refinancing"
+            (ngModelChange)="radiobuttonclick($event)"
+          />
+          <label for="Refinancing" class="ml-2 text-base font-bold">
+            Settlement Amount (Refinancing)
+          </label>
+        </div>
+        <div
+          class="grid justify-content-center mt-3"
+          *ngIf="refinancingSettlementAmountData"
+        >
+          <div class="col-11">
+            <p class="para">
+              Outstanding Balance & Accrued Interest
+              <span class="float-right" *ngIf="refinancingSettlementAmountData?.SettlementAmount
+                  ?.outStandingBalanceAndAccuredInterest > 0">{{
+                refinancingSettlementAmountData?.SettlementAmount
+                  ?.outStandingBalanceAndAccuredInterest | currency
+              }}</span>
+            </p>
+            <p class="text-primary-color font-bold">Add</p>
+            <p class="para" *ngIf="refinancingSettlementAmountData?.SettlementAmount?.overdueAmount > 0">
+              Overdue Amount/s
+              <span class="float-right">
+                {{
+                refinancingSettlementAmountData?.SettlementAmount
+                  ?.overdueAmount | currency
+              }}</span>
+            </p>
+            <p class="para" *ngIf="refinancingSettlementAmountData?.SettlementAmount ?.overdueInterest > 0">
+              Overdue Interest
+              <span class="float-right">
+                {{
+                refinancingSettlementAmountData?.SettlementAmount
+                  ?.overdueInterest  | currency
+              }}</span>
+            </p>
+            <p class="para" *ngIf="refinancingSettlementAmountData?.SettlementAmount?.earlyPaymentLossFee > 0">
+              Early Payment Loss Fee
+              <span class="float-right">
+                {{
+                refinancingSettlementAmountData?.SettlementAmount
+                  ?.earlyPaymentLossFee | currency
+              }}</span>
+            </p>
+            <p class="para" *ngIf="refinancingSettlementAmountData?.SettlementAmount?.earlySettlementAdminFee > 0">
+              Early Settlement Fee-Refin
+              <span class="float-right">
+                {{
+                refinancingSettlementAmountData?.SettlementAmount
+                  ?.earlySettlementAdminFee | currency
+              }}</span>
+            </p>
+            <p class="para" *ngIf="refinancingSettlementAmountData?.SettlementAmount?.treasuryBreakCost > 0">
+              Treasury Break Cost
+              <span class="float-right">
+                {{
+                refinancingSettlementAmountData?.SettlementAmount
+                  ?.treasuryBreakCost | currency
+              }}</span>
+            </p>
+
+            <p class="text-danger-color font-bold">Less</p>
+
+            <p class="para" *ngIf="refinancingSettlementAmountData?.SettlementAmount?.cciRefund > 0">
+              CCI Refund
+              <span class="float-right" >{{
+                refinancingSettlementAmountData?.SettlementAmount?.cciRefund | currency
+              }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="primary-background-color px-3 total">
+          <p
+            class="text-color-inverted py-2"
+            *ngIf="refinancingSettlementAmountData"
+          >
+            Total
+            <span class="float-right" *ngIf="refinancingSettlementAmountData?.SettlementAmount?.Total > 0">{{
+              refinancingSettlementAmountData?.SettlementAmount?.Total | currency
+            }}</span>
+          </p>
+        </div>
+      </ng-container>
+    </gen-card>
+  </div>
+
+  <div class="col-12">
+    <div class="flex justify-content-between">
+      <p class="para text-sm" *ngIf="standardSettlementAmountData">
+        <i
+          >This quote will be valid until
+          {{ standardSettlementAmountData.expiryDate }}</i
+        >
+      </p>
+      <div class="flex">
+        <gen-button
+          [btnLabel]="'Add this Settlement Amount to the Quote'"
+          (onClick)="addAmount($event)"
+        ></gen-button>
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'Cancel'"
+          class="ml-4"
+          (onClick)="cancelsettlement()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

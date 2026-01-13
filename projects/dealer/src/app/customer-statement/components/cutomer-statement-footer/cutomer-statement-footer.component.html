@@ -1,0 +1,29 @@
+<div class="footer">
+  <gen-card>
+    <ng-container body>
+      <div class="flex justify-content-between">
+        <div>
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [btnIcon]="'pi pi-chevron-left text-sm mr-2'"
+            [btnLabel]="' Previous'"
+            class="font-bold"
+             (onClick)="previous()"
+          ></gen-button>
+
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [btnLabel]="'Cancel'"
+            class="ml-3 text-danger-color font-bold"
+           (onClick)="cancel()"
+          ></gen-button>
+        </div>
+        <gen-button
+          [btnLabel]="'Edit'"
+          class="text-danger-color"
+          (onClick)="standarquote()"
+        ></gen-button>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>

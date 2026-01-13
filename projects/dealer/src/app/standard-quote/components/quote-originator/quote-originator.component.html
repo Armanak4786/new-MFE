@@ -1,0 +1,74 @@
+<base-form
+  #mainForm
+  [formConfig]="formConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+  (onInput)="onValueTyped($event)"
+  (onBlur)="onBlurEvent($event)"
+  (onValueChange)="onValueEvent($event)"
+>
+
+<ng-container text-select-overlay-content>
+   <div class="flex-column cursor-pointer">
+      <div *ngFor="let option of workflowOptions"
+        class="flex justify-content-center action-item p-1 px-3"
+        (click)="onWorkflowOptionSelect(option)"
+      >
+        {{ option }}
+      </div>
+    </div>
+</ng-container>
+
+
+</base-form>
+
+
+<p-dialog
+  [(visible)]="showWithdrawDialog"
+  [modal]="true"
+  [closable]="false"
+  [dismissableMask]="false"
+  styleClass="loan-date-dialog"
+>
+    <div class="dialog-body">
+      <p class="msg-main">Are you sure you want to withdraw this quote?</p>
+      
+      <p class="msg-main">You can view the quote in your Expired Listing </p>
+      <p class="bottom-msg">Do you want to continue?</p>
+        <div class="action-buttons">
+          <button pButton label="No, Go back" class="no-btn p-button-outlined" (click)="onNo()"></button>
+          <button pButton label="Yes, Cancel" class="yes-btn" (click)="onYes()"></button>
+        </div>
+     </div>
+</p-dialog>
+<p-dialog 
+  [(visible)]="showLoanPastDialog"
+  [modal]="true"
+  [closable]="false"
+  [dismissableMask]="false"
+  styleClass="loan-date-dialog"
+>
+    <ng-template pTemplate="header">
+        <span class="dialog-title"><strong>Loan Date</strong></span>
+        <button type="button" class="custom-close-btn" (click)="showLoanPastDialog = false">
+            <span class="pi pi-times"></span>
+            <span class="close-text">Close</span>
+        </button>
+    </ng-template>
+    
+    <div class="dialog-body">
+        <p class="msg-main">Loan date is in the past. Update to today?</p>
+
+        <div class="action-buttons">
+            <button pButton label="Yes" class="yes-btn" (click)="onLoanYes()"></button>
+            <button pButton label="No" class="no-btn" (click)="onLoanNo()"></button>
+        </div>
+
+        <p class="msg-main">To update to another loan date, return to the quote screen.</p>
+    </div>
+</p-dialog>

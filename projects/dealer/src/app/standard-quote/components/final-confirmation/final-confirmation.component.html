@@ -1,0 +1,33 @@
+<div class="relative">
+  <button
+    class="absolute top-0 right-0 text-black font-bold focus:outline-none bg-transparent border-none cursor-pointer"
+    (click)="ref.close()"
+    type="button"
+    aria-label="Close"
+  >
+    X Close
+  </button>
+  <div class="below-close-button">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <i class="fa-light fa-circle-check checkmark-icon secondary-accent"></i>
+      <label class="font-bold text-2xl text-primary mt-3">
+        <text [mode]="'label'" [label]="borrowerName"></text
+      ></label>
+      <label class="secondary-accent font-semibold text-lg mt-1">
+        <!-- <text [mode]="'label'" [label]="'lbl_applicationSubmitted'"></text> -->
+        <text [mode]="'label'" [label]="'lbl_applicationSubmittedCorrect'"></text>
+      </label>
+    </div>
+    <div class="flex flex-column mt-5 button-wrapper">
+      <div
+        class="flex align-items-center justify-content-center text-size-24 text-bold text-color-primary"
+      >
+        <p-button
+          class="view-btn reversed-button"
+          label="View Application Listing"
+          (click)="redirectToDashBoard()"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -769,3 +769,9 @@ form {
     width: 100%;
     z-index: 4;
 }
+
+@media (min-width: 992px) {
+    .layout-wrapper.layout-static .layout-main-container {
+        margin-left: 6vw;
+    }
+}

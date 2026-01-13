@@ -1,0 +1,14 @@
+ <div class="mt-3">
+<base-form
+  #mainForm
+  [formConfig]="formConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (formReady)="onFormReady()"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+>
+</base-form>
+</div>

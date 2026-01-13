@@ -1,0 +1,42 @@
+<gen-card [headerText]="'Insurance'" >
+  <ng-container body >
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (onInput)="onValueTyped($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+      (formReady)="onFormReady()"
+      (onBlur)="onBlurEvent($event)"
+      class="insuRequire"
+    >
+    </base-form>
+      <ng-container body *ngIf="allowedInsurance.length == 0">
+   <div class="alert alert-error" >
+            <!-- <i class="pi pi-exclamation-circle"></i> -->
+            <span class="message-text"> {{'err_NoDataAvailable' | translate}}</span>
+        </div>
+ 
+</ng-container >
+    <div class="pt-3 grid justify-content-between" *ngIf="allowedInsurance.length > 0">
+      <div class="col-8"></div>
+ 
+     
+        <!-- <label>Sub-Total Insurances:
+          {{ subTotalInsuranceRequirementValue | currency }}
+        </label> -->
+                      <div class="subtotalBox col-4">
+                                      <amount [label]="'Sub-Total Insurances: '" [mode]="'label'" [value] ="subTotalInsuranceRequirementValue"></amount>
+ 
+                        </div>
+ 
+     
+    </div>
+  </ng-container>
+</gen-card>
+ 
+ 

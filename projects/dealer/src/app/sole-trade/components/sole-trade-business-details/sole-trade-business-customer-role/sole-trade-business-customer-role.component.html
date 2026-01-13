@@ -1,0 +1,49 @@
+  <base-form
+    #mainForm
+    [formConfig]="formConfig"
+    [mode]="mode"
+    [id]="id"
+    [data]="data"
+    (valueChanges)="onValueChanges($event)"
+    (formEvent)="onFormEvent($event)"
+    (formButtonEvent)="onButtonClick($event)"
+    (formReady)="onFormReady()"
+    (onInput)="onValueTyped($event)"
+    (onBlur) ="onBlurEvent($event)"
+    (onValueChange)="onValueEvent($event)"
+  >
+  </base-form>
+
+<!-- <gen-card [cardType]="'non-border'" [cardBgColor]="'--surface-ground'">
+  <ng-container body>
+    <div class="grid">
+      <div class="col-2">
+        <span class="p-float-label mt-3">
+          <p-dropdown
+            [options]="customerRoleData"
+            optionLabel="label"
+             optionValue="value"
+            placeholder="Customer Role"
+              (onChange)="getvalue($event.value)"
+          />
+          <label><text [mode]="'label'" [label]="'lbl_customerRole'"></text></label>
+        </span>
+      </div>
+      <div class="col-4 pt-3">
+        <span>
+          <label>
+            {{
+              "Entity Type Is Partnership?
+            "
+            }}
+          </label>
+          <p-inputSwitch
+            class="ml-2"
+            [(ngModel)]="privousChecked"
+          ></p-inputSwitch>
+          <label class="ml-2">{{ privousChecked ? "Yes" : "No" }}</label>
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</gen-card> -->

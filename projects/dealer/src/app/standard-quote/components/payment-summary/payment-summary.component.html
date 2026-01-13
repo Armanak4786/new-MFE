@@ -1,0 +1,45 @@
+
+<gen-card
+  [headerText]="'Payment Summary'"
+  [cardType]="'shadow-non-border'"
+  [cardBgColor]="'--primary-lighter-color'"
+>
+  <!-- *ngIf="user_role?.includes('payment_summary')" -->
+  <ng-container body>
+    <div class="mt-2">
+      <div class="PaymentSummary">
+        <base-form
+          #mainForm
+          [formConfig]="formConfig"
+          [mode]="mode"
+          [id]="id"
+          [data]="data"
+          (valueChanges)="onValueChanges($event)"
+          (formEvent)="onFormEvent($event)"
+          (formButtonEvent)="onButtonClick($event)"
+          (formReady)="onFormReady()"
+          (onInput)="onValueTyped($event)"
+          (onBlur)="onBlurEvent($event)"
+          (onValueChange)="onValueEvent($event)"
+        >
+        </base-form>
+      </div>
+      <ng-container *ngIf="baseSvc?.showResult">
+        <app-payment-summary-result></app-payment-summary-result>
+      </ng-container>
+      <div class="flex justify-content-between mt-2 ml-2 mr-3">
+        <div>
+          @if (baseFormData?.purposeofLoan === configuredLoanPurpose){
+          <app-key-info-button *ngIf="isKeyInfo"></app-key-info-button>
+          }
+        </div>
+        <div>
+          <span *ngIf="baseFormData?.termMonthAndDays"
+            >Total Term: {{ baseFormData?.termMonthAndDays | titlecase }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</gen-card>
+

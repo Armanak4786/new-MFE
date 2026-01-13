@@ -1,0 +1,39 @@
+.card {
+  .border-right-1 {
+    border-right: 1px dashed;
+  }
+  .pi {
+    font-size: 25px;
+    margin-right: 10px;
+  }
+}
+
+.custom-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 10px;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: 9px;
+}
+
+.legend-text {
+  color: var(--text-color);
+}
+
+::ng-deep .applicationOutcome p-chart canvas {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  height: 100px;
+}

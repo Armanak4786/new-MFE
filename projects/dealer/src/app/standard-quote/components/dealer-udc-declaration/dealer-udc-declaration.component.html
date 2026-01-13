@@ -1,0 +1,45 @@
+<!-- <div class="aps-card">-->
+
+<div class="border-1 border-round-lg declaration-box p-3 flex  ">
+  <p-checkbox
+    class="inline-block"
+    [(ngModel)]="isPrivacyAuthorization"
+    [binary]="true"
+    inputId="privacyAuthorization"
+    label=""
+    (onChange)="onValueChanges($event)"
+  />
+  <p class="text-size-12 ml-3 px-2" [innerHTML]="originationData?.[0]?.message"></p>
+</div>
+<div class="border-1 border-round-lg mt-3 declaration-box p-3 flex">
+ 
+  <p-checkbox
+    [(ngModel)]="isFinancialAdvise"
+    label=""
+    name="'financialAdvise'"
+    [binary]="true"
+    (onChange)="onValueChanges($event)"
+    class="inline-block"
+  />
+
+  <p class="text-size-12 ml-3 px-2"[innerHTML]="originationData?.[1]?.message" ></p>
+</div>
+
+<div class="grid mt-4 mb-0 pb-0">
+  <div class="col-6">
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      class="text-danger-color"
+      [btnLabel]="'Cancel'"
+      (onClick)="close()"
+    ></gen-button>
+  </div>
+  <div class="col-6 text-right">
+    <gen-button
+      [btnType]="''"
+      [btnLabel]="'Proceed'"
+      [disabled]="!(isFinancialAdvise && isPrivacyAuthorization)"
+      (onClick)="passDataToParent()"
+    ></gen-button>
+  </div>
+</div>

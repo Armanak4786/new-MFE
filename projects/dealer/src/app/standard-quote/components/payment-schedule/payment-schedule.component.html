@@ -1,0 +1,128 @@
+<gen-card
+  [cardType]="'shadow-non-border'"
+  [cardBgColor]="'--primary-lighter-color'"
+  [headerText]="dynamicHeaderText"
+  *ngIf="hidden"
+>
+  <ng-container body>
+    <div class="ps-scope">
+    <div *ngIf="value == 'first'">
+      <gen-table
+        [columns]="columnDefs"
+        [dataList]="paymentSchedule"
+        [tableStyle]="'stripped-rows'"
+        [headingClass]="
+          'text-size-12 text-semi-bold text-color-dark-shade-3 background-color-dark-4 scope-payment-schedule'
+        "
+        [bodyClass]="'text-size-12'"
+      ></gen-table>
+   <ng-container *ngIf="productCode == 'FL'">
+   <div class="mt-2 mb-2 ml-2 font-bold" >Residual Value </div>
+   
+   <gen-table
+    [columns]="residualValueColumnDefs"
+    [dataList]="residualValueList"
+    [tableStyle]="'stripped-rows'"
+    [headingClass]="
+      'text-size-12 text-semi-bold text-color-dark-shade-3 background-color-dark-4'
+    "
+    [bodyClass]="'text-size-12'"
+    ></gen-table>
+    </ng-container>
+      <ng-container *ngIf="customerStatment != 'Customer Statement'">
+        <div class="text-right">
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [iconPos]="'left'"
+            [btnIcon]="'fa-regular fa-pen-to-square mr-1 text-base'"
+            [disabled]="
+              paymentSchedule?.length == 0 ||
+              !paymentSchedule ||
+              (baseFormData?.paymentStructure != 'None' &&
+                baseFormData?.paymentStructure) || (baseFormData?.noOfRentalsInAdvance > 0) ||
+                isDisable
+            "
+            [btnLabel]="'Edit Payment Schedule'"
+            (onClick)="showDialogEditPaymentSmall()"
+          >
+          </gen-button>
+        </div>
+      </ng-container>
+    </div>
+
+    <div *ngIf="value == 'second'" class="paymentScheduleTable">
+  <gen-table
+    [columns]="secondColumnDefs"
+    [dataList]="
+         (showAllRows
+            ? paymentScheduleSvc.paymentScheduleList
+            : (paymentScheduleSvc.paymentScheduleList | slice:0:12))"
+    [isScrollable]="true"
+    [tableStyle]="'stripped-rows'"
+    [headingClass]="'text-size-12 text-semi-bold text-color-dark-shade-3 background-color-dark-4'"
+    [bodyClass]="'text-size-12'"
+    [disabled]="
+      paymentScheduleSvc?.paymentScheduleList?.length == 0 ||
+      !paymentScheduleSvc?.paymentScheduleList
+    "
+  ></gen-table>
+  <div
+    class="flex items-center mt-2 w-full"
+    *ngIf="paymentScheduleSvc?.paymentScheduleList?.length > 12"
+  >
+    <!-- Left space -->
+    <div class="flex-1"></div>
+
+    <!-- New center More button -->
+     <div class="flex-none" >
+      <gen-button
+        [btnType]="'non-bg-btn'"
+        [btnLabel]="
+          showAllRows
+            ? 'Less ' + paymentScheduleSvc?.paymentScheduleList?.length + ' <'
+            : 'More ' + paymentScheduleSvc?.paymentScheduleList?.length + ' >'
+        "
+        (onClick)="toggleRows()"
+      >
+      </gen-button>
+    </div>
+
+     <div class="flex-1 text-right">
+     
+      <gen-button
+        [btnType]="'non-bg-btn'"
+        [iconPos]="'left'"
+        [btnIcon]="'fa fa-edit'"
+        [btnLabel]="'Edit Payment Schedule'"
+        [disabled]="
+          baseSvc?.accessMode == 'view' ||
+          (baseFormData?.paymentStructure != 'None' &&
+            baseFormData?.paymentStructure) ||
+          (baseFormData?.noOfRentalsInAdvance > 0) ||
+           isDisable
+        "
+        (onClick)="showDialogEditPaymentLarge()"
+      >
+      </gen-button>
+      
+    </div>
+  </div>
+</div>
+ </div>
+
+  </ng-container>
+
+  <ng-container header *ngIf="customerStatment != 'Customer Statement'">
+    <p-selectButton
+      [options]="justifyOptions"
+      [(ngModel)]="value"
+      optionLabel="icon"
+      optionValue="value"
+      (click)="onClick(value)"
+    >
+      <ng-template let-item pTemplate>
+        <i [class]="item.icon"></i>
+      </ng-template>
+    </p-selectButton>
+  </ng-container>
+</gen-card>

@@ -1,0 +1,37 @@
+.contentStyle {
+  border: 1px solid var(--primary-border-color);
+  background-color: var(--primary-lighter-color);
+}
+
+.dealerFinancebtn {
+  .p-accordion-header {
+    display: none;
+  }
+
+  .p-accordion-header-text {
+    font-size: var(--font-size-12) !important;
+    font-weight: bold;
+  }
+
+  .p-accordion-content {
+    border: none;
+    padding: 0%;
+  }
+
+  .p-accordion-tab {
+    box-shadow: none;
+  }
+
+  .p-icon-wrapper {
+    // margin-left: auto;
+    order: 2;
+  }
+}
+
+::ng-deep {
+  .text-input-left {
+    .p-inputnumber input {
+      text-align: left;
+    }
+  }
+}

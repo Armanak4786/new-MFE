@@ -1,0 +1,79 @@
+<div class="grid-field">
+  <p-accordion [activeIndex]="activeIndex">
+     @if (!userRole?.functions?.includes('submit_applications')) {
+    <div class="mb-2">
+      <!-- (click)="qq.toggle($event)" -->
+      <!-- [btnIcon]="'fas fa-angle-down'"
+      [iconPos]="'right'" -->
+      <!-- [className]="'standardQuote'" -->
+       
+      <gen-button
+        [btnLabel]="'+ Create Quick Quote'"
+        [btnWidth]="'full'"
+        (click)="quickquote($event)"
+
+      >
+      </gen-button>
+    </div>
+    
+    <gen-button
+      [btnLabel]="'+ Create Standard Quote'"
+      [btnIcon]="'fas fa-angle-down'"
+      [iconPos]="'right'"
+      (click)="op.toggle($event)"
+      [btnWidth]="'full'"
+    >
+    </gen-button>
+  }
+    <p-overlayPanel #op>
+      <ul class="quick-quote-links">
+        <li *ngFor="let item of list; let i = index">
+          <a
+            href="javascript:void(0)"
+            class="link-quickquote"
+            (click)="OnClickRedirect(item)"
+          >
+            {{ item.name }} </a
+          ><i class="fal fa-chevron-right float-right"></i>
+        </li>
+      </ul>
+    </p-overlayPanel>
+    <!-- <p-overlayPanel #qq>
+      <ul class="quick-quote-links">
+        <li *ngFor="let item of list2; let i = index">
+          <a
+            href="javascript:void(0)"
+            class="link-quickquote"
+            (click)="quickquote(item)"
+          >
+            {{ item.name }} </a
+          ><i class="fal fa-chevron-right float-right"></i>
+        </li>
+      </ul>
+    </p-overlayPanel> -->
+  </p-accordion>
+</div>
+
+<div class="notitaskcard mt-3">
+  <gen-card [headerText]="'Notifications'">
+    <ng-container body>
+      <p-carousel
+        [value]="taskmanager"
+        [numVisible]="1"
+        [numScroll]="1"
+        [circular]="true"
+        effect="fade"
+        [showIndicators]="false"
+        (onPage)="onPageChange($event)"
+      >
+        <ng-template let-data pTemplate="item">
+          <p class="mb-0 mt-2">{{ data.heading }}</p>
+          <p class="">{{ data.msg }}</p>
+        </ng-template>
+      </p-carousel>
+      <div class="count">
+        {{ activeSlide + 1 + " / " + taskmanager?.length }}
+      </div>
+    </ng-container>
+  </gen-card>
+</div>

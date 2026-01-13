@@ -1,0 +1,92 @@
+.grid-field {
+  ::ng-deep {
+    .p-accordion p-accordiontab {
+      .p-accordion-tab {
+        box-shadow: none;
+        .p-accordion-header-link {
+          padding: 10px;
+          font-size: 10px;
+          margin-bottom: 10px;
+          background-color: var(--primary-color);
+          color: var(--background-color-primary);
+          border-radius: 10px;
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
+  }
+  .quick-quote-links {
+    padding-left: 0px;
+    margin: 0;
+    list-style: none;
+    li {
+      margin-bottom: 10px;
+      .link-quickquote {
+        color: var(--background-color-dark);
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .p-overlaypanel {
+    margin-top: 0px;
+    width: 13rem;
+  }
+  .p-overlaypanel:after,
+  .p-overlaypanel:before {
+    display: none;
+  }
+  .p-overlaypanel-content {
+    padding: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    border-radius: 8px;
+    overflow: hidden;
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        margin-bottom: 10px;
+        &:last-child {
+          margin-bottom: 0px;
+        }
+        a {
+          color: var(--background-color-dark);
+        }
+      }
+    }
+  }
+}
+.notitaskcard {
+  position: relative;
+
+  .count {
+    border-radius: 20px;
+    position: absolute;
+    right: 40%;
+    bottom: 5%;
+  }
+  ::ng-deep {
+    gen-card {
+      .p-card {
+        height: 300px;
+      }
+    }
+    p-carousel {
+      .p-carousel-prev,
+      .p-carousel-next {
+        position: absolute;
+        bottom: 0%;
+      }
+      .p-carousel-prev {
+        left: 10%;
+        z-index: 9;
+      }
+      .p-carousel-next {
+        right: 10%;
+      }
+    }
+  }
+}

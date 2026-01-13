@@ -1,0 +1,46 @@
+.empty-boxes {
+  border: 1px dashed var(--primary-color);
+  border-radius: 8px;
+  height: 100%;
+}
+
+.icon {
+  gen-button {
+    float: right;
+    line-height: normal;
+    ::ng-deep {
+      button {
+        color: var(--background-color-dark);
+        padding: 5px 10px 0;
+      }
+    }
+  }
+}
+
+
+// @media print {
+//   /* Topbar Styles */
+//   .topbar {
+//     position: relative;
+//     background-color: #0f86b1;
+//     padding: 10px;
+//     text-align: center;
+//     color: white;
+//   }
+
+//   /* Footer Styles */
+//   .footer {
+//     position: relative;
+//     background-color: #0f86b1;
+//     color: white;
+//     font-size: 12px;
+//     padding: 10px;
+//     text-align: center;
+//     border-radius: 12px 12px 0 0;
+//   }
+
+//   /* Hide elements not needed in print */
+//   .no-print {
+//     display: none;
+//   }
+// }

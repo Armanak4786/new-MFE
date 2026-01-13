@@ -1,0 +1,26 @@
+<form [formGroup]="form">
+  <div class="brand-option">
+    <div class="grid">
+      <div class="col-4" *ngFor="let brand of brands">
+        <div class="flex align-items-start">
+          <p-radioButton
+            formControlName="brandSelection"
+            [value]="brand?.name"
+            name="brandSelection"
+            [inputId]="brand.name"
+            class="mt-1"
+          ></p-radioButton>
+          <label [for]="brand?.name">
+            <img [src]="brand?.BrandImage" class="w-full h-7rem" />
+          </label>
+        </div>
+      </div>
+
+      <!-- <div class="col">Hii</div> -->
+    </div>
+  </div>
+</form>
+
+<div class="text-center">
+  <gen-button [btnLabel]="'Add'" (onClick)="passDataToParent()"></gen-button>
+</div>

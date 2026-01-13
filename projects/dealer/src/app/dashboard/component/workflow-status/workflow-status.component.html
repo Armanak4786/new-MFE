@@ -1,0 +1,38 @@
+<div class="card mt-3">
+  <div class="card-body p-3">
+    <div class="flex flex-wrap flex-justify-between">
+      <p class="mt-0 mb-2 text-m font-bold">
+        <text [mode]="'label'" [label]="'lbl_workflowStatus'"></text>
+      </p>
+     <a href="javascript:void(0)" 
+         class="ml-auto view-toggle flex align-items-center" 
+         [class.expanded]="showAll"
+         (click)="toggleViewAll()">
+        <span>{{ showAll ? 'View Less' : 'View All' }}</span>
+        <i class="pi pi-chevron-right ml-1"></i>
+      </a>
+    </div>
+
+    <div class="grid">
+      <div
+        [class]="(isInternalSalesDashboard || isFullWidth) ? 'sm:col-12 col-12 md:col-2 px-2 py-2' : 'sm:col-12 col-12 md:col-4 px-2 py-2'"
+        *ngFor="let data of (showAll ? workFlow : (workFlow | slice:0:6))"
+      >
+        <div
+          class="bordersummary text-center flex justify-content-between justify-content-center align-items-center border-0 border-round-lg p-1"
+        >
+          <div
+            class="borderunit border-0 border-round-sm p-1"
+            style="color: #666666;"
+          >
+            {{ data?.label }}
+          </div>
+          <div>
+            <p class="m-0 text-xs font-bold">{{ data?.amount | currency }}</p>
+            <p class="m-0" style="color: #1D1D1B;font-size: 8px;">{{ data?.count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

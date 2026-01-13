@@ -1,0 +1,8 @@
+.residualValueSection {
+  background-color: #efefef;
+  font-weight: bold;
+}
+:host ::ng-deep .ps-scope thead th.col-end .header-content {
+  justify-content: flex-end !important; 
+}
+

@@ -1,0 +1,21 @@
+<lib-stepper
+  [steps]="steps"
+  (onChange)="changeStep($event)"
+  (onSubmit)="onSubmit()"
+  [activeStep]="activeStep"
+  [tabNavigation]="true"
+  [stepperType]="'type2'"
+  (onCancel)="cancel()"
+>
+  <div class="mt-2">
+    <div *ngIf="activeStep == 0">
+      <app-partnership-details></app-partnership-details>
+    </div>
+    <div *ngIf="activeStep == 1"></div>
+
+    <div *ngIf="activeStep == 2"></div>
+    <div *ngIf="activeStep == 3"></div>
+    <div *ngIf="activeStep == 4"></div>
+    <div *ngIf="activeStep == 5"></div>
+  </div>
+</lib-stepper>

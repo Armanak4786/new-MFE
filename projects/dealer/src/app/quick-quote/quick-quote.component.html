@@ -1,0 +1,59 @@
+<div class="grid px-3 py-0">
+  <div class="col-12 py-0 icon mb-2">
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [iconPos]="'left'"
+      [btnLabel]="'Download'"
+      [btnIcon]="'fa-regular fa-arrow-down-to-line'"
+      (onClick)="onPrintAndDownload(true)"
+    ></gen-button>
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [iconPos]="'left'"
+      [btnLabel]="'Mail'"
+      [btnIcon]="'fa-regular fa-envelope'"
+      (onClick)="mail()"
+      class="border-left-2 border-right-2"
+      [disabled]="true"
+    ></gen-button>
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [iconPos]="'left'"
+      [btnLabel]="'Print'"
+      [btnIcon]="'fa-light fa-print'"
+      class=""
+      (onClick)="onPrintAndDownload(false)"
+    ></gen-button>
+  </div>
+
+  <div
+    class="col-12 md:col-4 lg:col-4"
+    *ngFor="let data of quickQuote; let i = index"
+  >
+    <ng-container *ngIf="data?.form == true">
+      <app-create-quick-quote
+        id="quote"
+        [index]="i"
+        (formSubmitted)="formSubmitted($event, i)"
+        (hideQuote)="(hideQuote)"
+        (buttonEvent)="receiveMessage($event, i)"
+        (dataEmitter)="hideCard(i)"
+      ></app-create-quick-quote>
+    </ng-container>
+    <ng-container *ngIf="data?.form == false">
+      <div
+        class="empty-boxes border-radius-6 flex justify-content-center align-items-center flex-wrap"
+      >
+        <div class="button">
+          <gen-button
+            class="flex justify-content-center align-items-center"
+            [btnType]="'plus-btn'"
+            btnLabel="Add Comparison {{ i + 1 }}"
+            (onClick)="btnClick(i)"
+            [disabled]="data?.btnDisabled"
+          ></gen-button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

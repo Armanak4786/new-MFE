@@ -1,0 +1,13 @@
+<base-form
+  #mainForm
+  [formConfig]="trusteeFormConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="formData"
+  (childValueChanges)="onChildValueChanges($event)"
+  (childFormEvent)="onChildFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+>
+</base-form>
+<br />

@@ -1,0 +1,31 @@
+<div class="grid">
+  <div class="col-4 mb-2 mt-3 text-sm">
+    <span *ngIf="baseFormData?.customerNo">
+      <label class="mt-2">
+        {{ "Have the Employment Details Changed?" }}
+      </label>
+      <p-inputSwitch
+        class="ml-2 mt-3" 
+        [(ngModel)]="checkPreviousEmployees"
+        (ngModelChange)="getvalue($event)"
+        [style]="{ width: '2.7rem', height: '0.9rem' }"
+      ></p-inputSwitch>
+      <label class="ml-2 mt-4" *ngIf="!checkPreviousEmployees">{{
+        "No"
+      }}</label>
+      <label class="ml-2 mt-4" *ngIf="checkPreviousEmployees">{{
+        "Yes"
+      }}</label>
+    </span>
+  </div>
+  <div class="col-12 py-0">
+    <app-current-employment [checkPreviousEmployees]="checkPreviousEmployees" (employementYearChange)="onEmployementYearChange($event)"></app-current-employment>
+
+    <ng-container
+      *ngIf="isEnable && baseFormData?.customerNo"
+    >
+      <br />
+      <app-previous-employee></app-previous-employee>
+    </ng-container>
+  </div>
+</div>

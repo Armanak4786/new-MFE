@@ -1,0 +1,31 @@
+<div class="mb-3" >
+  <gen-card [headerText]="'Supplier'">
+    <ng-container body>
+      <!-- <ng-container> -->
+        @if( dataList?.length > 0){
+        <gen-table
+          [columns]="columns"
+          [dataList]="dataList"
+          [rowHeight]="12"
+          [headingClass]="'font-medium text-500 px-0'"
+          [bodyClass]="'px-0 py-0'"
+          (onCellClick)="onCellClick($event)"
+        ></gen-table
+        ><br />
+        }
+        
+        
+
+
+        <ng-container *ngIf="baseSvc.activeStep == 1">
+          <gen-button
+            [btnLabel]="'lbl_addSupplier'"
+            [btnType]="'plus-btn'"
+            (onClick)="showSearchSupplierPopup()"
+            [disabled]="baseSvc?.accessMode == 'view' || disableState"
+          ></gen-button> </ng-container
+        >
+      </ng-container>
+    <!-- </ng-container> -->
+  </gen-card>
+</div>

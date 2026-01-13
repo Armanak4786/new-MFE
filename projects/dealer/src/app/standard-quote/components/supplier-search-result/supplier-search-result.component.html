@@ -1,0 +1,139 @@
+<ng-container body >
+  <div class="tab-header-with-close">
+<p-tabView>
+
+
+  <p-tabPanel header="Add Existing">
+
+<div class="result-container">
+
+<div *ngIf="suppliers.length===0">
+  <gen-card>
+    <ng-container body>
+      <div class="flex justify-center items-center flex-col">
+        <img
+          src="assets/images/noResultsReturned.png"
+          alt="No Data Found"
+          class="w-20 h-20 mb-6 mt-6"
+        />
+      </div>
+    </ng-container>
+  </gen-card>
+</div>
+
+<div *ngIf="suppliers.length > 0">
+<div class="mt-3" *ngFor="let s of suppliers; let i = index">
+
+
+    <gen-card>
+      <ng-container body>
+        <div class="px-3">
+          
+          <!-- Supplier Name -->
+          <p class="m-0 text-base text-primary-color font-semibold">
+{{ (s?.supplierName || s?.companyName) | titlecase }}
+          </p>
+
+          <!-- First Row -->
+          <div class="grid mt-1">
+            <!-- Address -->
+            <div class="sm:col-12 md:col-4">
+              <p class="m-0 heading">
+                <text mode="label" label="Customer Address"></text>
+              </p>
+              <p class="m-0 mt-1">
+                {{ s?.address || "-" }}
+              </p>
+            </div>
+
+            <!-- Right Section -->
+            <div class="sm:col-12 md:col-8">
+              <div class="grid">
+
+                <!-- BUSINESS ONLY -->
+                <div class="col-2 border-left" *ngIf="searchType === 'business'">
+                  <p class="m-0 heading">
+                    <text mode="label" label="Trading Name"></text>
+                  </p>
+                  <p class="m-0 mt-1">
+                    {{ s?.tradingName || "-" }}
+                  </p>
+                </div>
+
+                <!-- INDIVIDUAL ONLY -->
+                <div class="col-3 border-left" *ngIf="searchType === 'individual'">
+                  <p class="m-0 heading">
+                    <text mode="label" label="Supplier No"></text>
+                  </p>
+                  <p class="m-0 mt-1">
+                    {{ s?.supplierNo || "-" }}
+                  </p>
+                </div>
+
+                <!-- Common -->
+                <div class="col-3 border-left">
+                  <p class="m-0 heading">
+                    <text mode="label" label="Customer Type"></text>
+                  </p>
+                  <p class="m-0 mt-1">
+                    {{ s?.supplierType || "-" }}
+                  </p>
+                </div>
+
+                <!-- BUSINESS ONLY -->
+                <div class="col-3 border-left" *ngIf="searchType === 'business'">
+                  <p class="m-0 heading">
+                    <text mode="label" label="UDC Supplier Number"></text>
+                  </p>
+                  <p class="m-0 mt-1">
+                    {{ s?.supplierNo || "-" }}
+                  </p>
+                </div>
+
+                <!-- INDIVIDUAL ONLY -->
+                <div class="col-3 border-left" *ngIf="searchType === 'individual'">
+                  <p class="m-0 heading">
+                    <text mode="label" label="Date of Birth"></text>
+                  </p>
+                  <p class="m-0 mt-1">
+                    {{ s?.dob || "-" }}
+                  </p>
+                </div>
+
+                <!-- Add Button -->
+                <div class="col my-auto">
+                  <gen-button
+                    btnLabel="Add"
+                    btnWidth="full"
+                    (onClick)="addSupplier(s)"
+                  ></gen-button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+    </gen-card>
+  </div>
+
+</div>
+
+</div>
+</p-tabPanel >
+</p-tabView>
+
+  <div class="flex justify-content-center align-items-center mt-3">
+  <span><text [mode]="'label'" [label]="'lbl_notinlist'"></text></span>
+  <gen-button
+    [btnType]="'plus-btn'"
+    [btnLabel]="'Add New Supplier'"
+    (onClick)="newSupplier()"
+  ></gen-button>
+</div>
+
+    <i class="pi pi-times close-tab-icon" (click)="onClose()" title="Close"></i>
+
+    </div>
+</ng-container>

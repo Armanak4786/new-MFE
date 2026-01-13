@@ -1,0 +1,17 @@
+.search-result{
+    &::ng-deep{
+        table{
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            
+        }
+        .dataRow{
+            background-color: var(--surface-100);
+            // border-radius: 5px;
+            // border: 1px solid black
+        }
+        .p-checkbox{
+         display: none !important;
+        }
+    }
+}

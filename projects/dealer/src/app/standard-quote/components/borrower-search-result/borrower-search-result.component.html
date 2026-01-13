@@ -1,0 +1,185 @@
+<!-- <p class="mt-2 text-sm text-primary cursor-pointer" (onClick)="redirectToHome()">
+  < Back to Search
+</p> -->
+<div *ngIf="baseSvc.searchCustomerData?.length === 0" >
+  <gen-card>
+ <ng-container body>
+      <div class="flex justify-content-center align-items-center flex-column">
+        <img
+          src="assets/images/noResultsReturned.png"
+          alt="No Data Found"
+          class="w-20 h-20 mb-6 mt-6"
+        />
+      </div>
+    </ng-container>
+  </gen-card>
+
+</div>
+
+<div *ngIf="baseSvc.searchCustomerData?.length > 0">
+<div
+  class="mt-3"
+  *ngFor="let customer of baseSvc.searchCustomerData; let i = index"
+>
+  <gen-card>
+    <ng-container body>
+      <div class="px-3">
+        <p class="m-0 text-base text-primary-color font-semibold">
+          {{
+            customer?.firstName + " " + (customer?.lastName || "") | titlecase
+          }}
+        </p>
+        <div class="grid mt-1">
+          <div class="sm:col-12 md:col-4">
+            <p class="ml-0 m-0 heading">
+              <text [mode]="'label'" [label]="'lbl_customerAddress'"></text>
+            </p>
+            <p class="m-0 mt-1">
+              {{ customer?.address || "-" }}
+            </p>
+          </div>
+          <div class="sm:col-12 md:col-8">
+            <div class="grid">
+              <div class="col-2 border-left" *ngIf="searchType == 'business'">
+                <p class="ml-0 m-0 heading">
+                  <text [mode]="'label'" [label]="'lbl_tradingName'"></text>
+                </p>
+                <p class="m-0 mt-1">
+                  {{ customer?.tradingName || "-" }}
+                </p>
+              </div>
+              <div class="col-3 border-left" *ngIf="searchType == 'individual'">
+                <p class="ml-0 m-0 heading">
+                  <text
+                    [mode]="'label'"
+                    [label]="'lbl_driverLicenceNumber'"
+                  ></text>
+                </p>
+                <p class="m-0 mt-1">
+                  {{ customer?.driversLicenceNo || "-" }}
+                </p>
+              </div>
+              <div class="col-3 border-left">
+                <p class="ml-0 m-0 heading">
+                  <text
+                    [mode]="'label'"
+                    [label]="'lbl_uDCCustomerNumber'"
+                  ></text>
+                </p>
+                <p class="m-0 mt-1">
+                  {{ customer?.customerNo || "-" }}
+                </p>
+              </div>
+              <div class="col-3 border-left" *ngIf="searchType == 'business'">
+                <p class="ml-0 m-0 heading">
+                  <text
+                    [mode]="'label'"
+                    [label]="'lbl_registeredNumber'"
+                  ></text>
+                </p>
+                <p class="m-0 mt-1">
+                  {{ customer?.registeredNo || "-" }}
+                </p>
+              </div>
+              <div class="col border-left">
+                <p class="ml-0 m-0 heading">
+                  <text [mode]="'label'" [label]="'lbl_customerType'"></text>
+                </p>
+                <p class="m-0 mt-1">
+                  {{ customer?.customerType || "-" }}
+                </p>
+              </div>
+              <div class="col border-left" *ngIf="searchType == 'individual'">
+                <p class="ml-0 m-0 heading">
+                  <text [mode]="'label'" [label]="'lbl_dateofBirth'"></text>
+                </p>
+                <p class="m-0 mt-1">
+                  {{ customer?.dateOfBirth | date : "dd/MM/yyyy" || "-" }}
+                </p>
+              </div>
+              
+              <div class="col my-auto">
+                <gen-button
+                  [btnLabel]="'Add'"
+                  [btnWidth]="'full'"
+                  (onClick)="addCustomer(customer?.customerNo)"
+                ></gen-button>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="grid mt-0">
+          <div class="col-12">
+            <p-dropdown
+              *ngIf="customer"
+              [options]="customerQuoteOptions[customer.customerNo]"
+              [(ngModel)]="customerQuoteTypes[customer.customerNo]"
+              optionLabel="name"
+              optionValue="code"
+
+              (onChange)="onQuoteTypeChange(customer?.customerNo)"
+            />
+
+            @if (customerContracts[customer?.customerNo]){
+            <div class="mt-3 custom-table">
+              <gen-table
+                [columns]="customerQuoteTypes[customer.customerNo] === 'Quote' ? quoteColumns : activateLoanColumns"
+                [dataList]="
+                  expandedCustomers[i]
+                    ? getFilteredContracts(customer?.customerNo)
+                    :getFilteredContracts(customer?.customerNo).slice(0, 3)
+                "
+                [bodyClass]="'header-bg-color'"
+                (onCellClick)="onCellClick($event)" 
+                [currencyAlignment]="left"
+              ></gen-table>
+              <ng-container body *ngIf="getFilteredContracts(customer.customerNo).length === 0">
+                <div class="alert alert-error" >
+                  <!-- <i class="pi pi-exclamation-circle"></i> -->
+                  <span class="message-text"> {{'err_NoDataAvailable' | translate}}</span>
+                </div>
+              </ng-container>
+              <div
+                class="text-center"
+                *ngIf="getFilteredContracts(customer?.customerNo).length > 3"
+              >
+                <a href="javascript:void(0)" (click)="toggleExpand(i)">{{
+                  expandedCustomers[i]
+                    ? "Show Less"
+                    : "More " + (getFilteredContracts(customer?.customerNo).length - 3)
+                }}</a>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>
+</div>
+<div class="flex justify-content-center align-items-center mt-3">
+  <span><text [mode]="'label'" [label]="'lbl_notinlist'"></text></span>
+  <gen-button
+    [btnType]="'plus-btn'"
+    [btnLabel]="'Add New Customer'"
+    (onClick)="newCustomer()"
+  ></gen-button>
+</div>
+
+<div class="stepper-footer ">
+  <gen-card>
+    <ng-container body>
+      <div class="flex justify-content-between">
+        <gen-button
+          [className]="'text-danger-color'"
+          [btnLabel]="'Cancel'"
+          [btnType]="'non-bg-btn'"
+          (onClick)="redirectToHome()"
+        ></gen-button>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>

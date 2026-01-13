@@ -1,0 +1,85 @@
+.PaymentSummaryResult {
+  &::ng-deep {
+    .subtle-left {
+      .p-inputnumber input {
+        text-align: left !important;
+        text-indent: 2.1rem !important; // Small adjustment - change this value as needed
+      }
+    }
+    .subtl-left {
+      .p-inputtext {
+        text-align: left !important;
+        text-indent: 2rem !important;
+      }
+    }
+    .subtl-right {
+      .p-inputtext {
+        text-align: right !important;
+        padding-right: 0rem !important;
+      }
+    }
+    .p-card-body {
+      border: solid 1px var(--primary-color);
+      border-radius: 10px;
+    }
+
+    .p-inputtext {
+      border: none;
+      padding-right: 0px;
+    }
+
+    .leftAlignNumber {
+      .p-inputnumber input {
+        text-align: center;
+      }
+    }
+
+    .leftAlignText {
+      .p-inputtext {
+        text-align: left !important;
+      }
+    }
+
+    .rightAlignText {
+      .p-inputtext {
+        text-align: right !important;
+      }
+    }
+
+    .text-center {
+      text-align: center !important;
+
+      .p-inputnumber input {
+        text-align: center !important;
+      }
+
+      label {
+        text-align: center !important;
+      }
+    }
+
+    .text-right {
+      text-align: right !important;
+
+      .p-inputtext {
+        text-align: right !important;
+      }
+
+      label {
+        text-align: right !important;
+      }
+    }
+
+    .text-left {
+      text-align: left !important;
+
+      .p-inputtext {
+        text-align: left !important;
+      }
+
+      label {
+        text-align: left !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,258 @@
+<gen-card [headerText]="'Add Registration and Service Plans'">
+  <ng-container body *ngIf="this.baseFormData?.servicePlan?.length > 0 || this.baseFormData?.registrations?.length > 0">
+    <div class="grid labelCls">
+      <div class="col-4" *ngIf="this.baseFormData?.registrations?.length > 0">
+        <div class="grid">
+          <div class="col-3"></div>
+          <div class="col-3">
+            <text [mode]="'label'" [label]="'lbl_amount'"></text>
+          </div>
+          <div class="col-2">
+            <text [mode]="'label'" [label]="'lbl_months'"></text>
+          </div>
+          <div class="col-1"></div>
+        </div>
+      </div>
+
+      <div class="col-4" *ngIf="this.baseFormData?.servicePlan?.length > 0">
+        <div class="grid">
+          <div class="col-3"></div>
+          <div class="col-3">
+            <text [mode]="'label'" [label]="'lbl_amount'"></text>
+          </div>
+          <div class="col-2">
+            <text [mode]="'label'" [label]="'lbl_months'"></text>
+          </div>
+          <div class="col-1"></div>
+        </div>
+      </div>
+
+      <div class="col-4" *ngIf="servicePlan.length >= 2">
+        <!-- {{servicePlan.length}} -->
+        <div class="grid" *ngIf="showHeader">
+          <div class="col-3"></div>
+          <div class="col-3">
+            <text [mode]="'label'" [label]="'lbl_amount'"></text>
+          </div>
+          <div class="col-2">
+            <text [mode]="'label'" [label]="'lbl_months'" ></text>
+          </div>
+          <div class="col-1" *ngIf="!showMonthsHeader">
+             <text [mode]="'label'" [label]="'lbl_description'" ></text>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="servicePlanForm" #mainForm>
+      <div class="grid">
+        <ng-container formArrayName="registrations" *ngIf="this.baseFormData?.registrations?.length > 0">
+          <div
+            *ngFor="let acc of registrations.controls; let i = index"
+            class="col-4"
+          >
+            <div [formGroupName]="i">
+              <div class="grid">
+                <div class="col-3 p-fluid mt-2 text-600">
+                  <text [mode]="'label'" [label]="'lbl_registration'" class="black-label" ></text>
+                  <!-- <input
+                    type="text"
+                    pInputText
+                    formControlName="name"
+                  /> -->
+                </div>
+                <div class="col-3 p-fluid">
+                  <!-- <p-inputNumber
+                    formControlName="amount"
+                    mode="currency"
+                    currency="USD"
+                    [alwaysPos]="'true'"
+                    [inputStyle]="{ 'text-align': 'right' }"
+                    [minFractionDigits]="2"
+                    maxlength="11"
+                  /> -->
+                  <amount formControlName="amount" [value]="amount"></amount>
+                  <div
+                    *ngIf="
+                      acc.get('amount').touched && acc.get('amount').invalid
+                    "
+                  >
+                    <small class="p-error"
+                      ><text
+                        [mode]="'label'"
+                        [label]="'lbl_invalidInput'"
+                      ></text
+                    ></small>
+                  </div>
+                </div>
+                <div class="col-2 p-fluid">
+                  <input
+                    type="text"
+                    pInputText
+                    regexPattern="[^0-9]*"
+                    maxlength="3"
+                    formControlName="months"
+                  />
+                </div>
+                   <!-- <div class="col-3 p-fluid" *ngIf="acc.get('name').value === 'Others'">
+                  <text
+                    type="text"
+                    pInputText
+                    formControlName="reference"
+                  ></text>
+                </div> -->
+                <div class="col-1"></div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container formArrayName="servicePlan" *ngIf="this.baseFormData?.servicePlan?.length > 0">
+           <ng-container *ngFor="let acc of servicePlan.controls; let i = index">
+          <div
+    class="col-4"
+    [formGroupName]="i"
+    *ngIf="acc.get('changeAction').value !== 'Delete'"
+  >
+            <!-- <div [formGroupName]="i" *ngIf="acc.get('changeAction').value !== 'delete'" -->
+
+              <div class="grid">
+                @if (i==0){
+                <div class="col-3 p-fluid mt-2 black-label" >Service Plan</div>
+                } @else{
+                <div class="col-3 p-fluid">
+                  <p-dropdown
+                    formControlName="name"
+                    [options]="[{ label: 'Others', value: 'Other Service Plan' }]"
+                    optionLabel="label"
+                    optionValue="value"
+                      (onChange)="onServicePlanChange($event, i)"
+                    placeholder="Select Plan"
+                    [pTooltip]="getSelectedTooltip(i)" 
+                    tooltipPosition="top" 
+                  >
+                  </p-dropdown>
+                </div>
+                }
+                <div class="col-3 p-fluid">
+                  <!-- <p-inputNumber
+                    formControlName="amount"
+                    mode="currency"
+                    currency="USD"
+                    [alwaysPos]="'true'"
+                    [inputStyle]="{ 'text-align': 'right' }"
+                    [minFractionDigits]="2"
+                    maxlength="11"
+                  /> -->
+                  <amount formControlName="amount" [value]="amount" (input)="onAmountInput(i)"></amount>
+                  <div
+                    *ngIf="
+                      acc.get('amount').touched && acc.get('amount').invalid
+                    "
+                  >
+                    <small class="p-error"
+                      ><text
+                        [mode]="'label'"
+                        [label]="'lbl_invalidInput'"
+                      ></text
+                    ></small>
+                  </div>
+                </div>
+                <div class="col-2 p-fluid" >
+                  <input
+                    type="text"
+                    pInputText
+                    regexPattern="[^0-9]*"
+                    formControlName="months"
+                    maxlength="3"
+                  />
+                <div *ngIf="acc.get('months').hasError('required')">
+                  <small class="p-error">Month is required</small>
+                </div>
+                  <!-- <text [mode]="'edit'" [label]="'lbl_months'"  [pattern]="'^[0-9]*'" [labelType]="'vertical'"  formControlName="months"
+></text> -->
+                </div>
+                 <div class="col-3 p-fluid" *ngIf="acc.get('name').value === 'Other Service Plan'">
+                
+                    <text [mode]="'edit'" [labelType]="'vertical'"  formControlName="description" [value] = "description"
+></text>
+                    <div *ngIf="acc.get('description').hasError('required')">
+                      <small class="p-error">Description is required</small>
+                    </div>
+                    <!-- <input
+                      type="text"
+                      pInputText
+                      placeholder="Enter description"
+                      formControlName="description"
+                      [labelType]=" vertical"
+                    /> -->
+                </div>
+                <div class="col-1" *ngIf="i != 0">
+                  <gen-button [btnIcon]="'fa fa-trash'" [btnType]="'non-bg-btn'"
+                    [disabled]="baseSvc?.accessMode == 'view' || isDisabled()" (onClick)="removeOthers(i)"
+                    class="mt-2"></gen-button>
+                </div>
+                <!-- <div class="col-1"></div> -->
+              </div>
+            <!-- </div> -->
+          </div>
+          </ng-container>
+        </ng-container>
+
+        <!-- <ng-container formArrayName="other">
+          <div *ngFor="let acc of other.controls; let i = index" class="col-4">
+            <div [formGroupName]="i">
+              <div class="grid">
+                <div class="col-4 p-fluid">
+                  <p-dropdown formControlName="name" [options]="[{ label: 'Others', value: 'Others' }]"
+                    optionLabel="label" optionValue="value">
+                  </p-dropdown>
+                </div>
+                <div class="col-3 p-fluid">
+                  <p-inputNumber formControlName="amount" mode="currency" currency="USD"
+                    [inputStyle]="{ 'text-align': 'right' }" [minFractionDigits]="2" maxlength="11" />
+                  <div *ngIf="
+                      acc.get('amount').touched && acc.get('amount').invalid
+                    ">
+                    <small class="p-error">Invalid Input</small>
+                  </div>
+                </div>
+                <div class="col-3 p-fluid">
+                  <input type="text" pInputText regexPattern="[^0-9]*" formControlName="months" maxlength="3" />
+                </div>
+                <div class="col-1">
+                  <gen-button [btnIcon]="'fa fa-trash'" [btnType]="'non-bg-btn'" (onClick)="removeOthers(i)"
+                    class="mt-2" [disabled]="baseSvc?.accessMode == 'view'"></gen-button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container> -->
+      </div>
+    </form>
+
+    <div class="pt-3 grid justify-content-between">
+       <div class="col-8"> 
+      <gen-button
+        [btnLabel]="'Add'"
+        [btnType]="'plus-btn'"
+        (onClick)="addOtherServicePlan()"
+        [disabled]="baseSvc?.accessMode == 'view' || isDisabled()"
+      ></gen-button>
+      </div>
+              <div class="subtotalBox col-4">
+
+        <!-- <label>Sub-Total AddOns: {{ sum |currency }} </label> -->
+        <amount [label]="'Sub-Total Add Ons: '" [mode]="'label'" [value] ="sum"></amount>
+        </div>
+     
+    </div>
+  </ng-container>
+
+    <ng-container body *ngIf="this.baseFormData?.servicePlan?.length == 0 && this.baseFormData?.registrations.length == 0">
+   <div class="alert alert-error" >
+            <!-- <i class="pi pi-exclamation-circle"></i> -->
+            <span class="message-text"> {{'err_NoDataAvailable' | translate}}</span>
+        </div>
+
+</ng-container>
+</gen-card>

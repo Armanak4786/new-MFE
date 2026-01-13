@@ -1,0 +1,18 @@
+<!-- <div *ngIf="showCard"> -->
+<gen-card [headerText]="headerText" [cardBgColor]="'--primary-lighter-color'">
+  <ng-container body>
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+      (formReady)="onFormReady()"
+    >
+    </base-form>
+  </ng-container>
+</gen-card>
+<!-- </div> -->

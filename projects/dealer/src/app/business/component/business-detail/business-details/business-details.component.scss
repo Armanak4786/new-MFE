@@ -1,0 +1,36 @@
+:host ::ng-deep .p-dropdown-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Adjust the width as needed */
+}
+
+
+::ng-deep .business_details .p-error {
+  text-wrap: auto;
+  min-width: 120px;
+}
+
+.customer-role{
+  font-size: 12px;
+}
+
+::ng-deep .customwidth{
+  width:15.9rem;
+}
+::ng-deep .icc{
+  width: 102% !important;
+    margin-left: -8px;
+}
+::ng-deep .lcc{
+  
+ transform: translateX(-0.5rem);
+}
+::ng-deep .gss{
+  
+ transform: translateX(-0.5rem);
+}
+::ng-deep .gsts{
+  width: 102% !important;
+    margin-left: -8px;
+}

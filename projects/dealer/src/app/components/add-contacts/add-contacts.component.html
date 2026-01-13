@@ -1,0 +1,43 @@
+<ng-container body>
+  @if(!modalType && !viewMode){
+  <div class="tab-header-with-close relative">
+    <p-tabView>
+      @if(parent == 'Signatories' && !rowData){
+      <p-tabPanel header="Add Existing">
+        <app-add-existing-contact-signatories
+          [signatoriesData]="signatoriesData"
+        ></app-add-existing-contact-signatories>
+      </p-tabPanel>
+      }
+      <p-tabPanel header="Add New">
+        <app-customer-type
+          [parent]="parent"
+          [modalType]="modalType"
+          [rowData]="rowData"
+          [signatoriesData]="signatoriesData"
+          [IndividualformConfig]="IndividualformConfig"
+          [BusinessformConfig]="BusinessformConfig"
+        ></app-customer-type>
+      </p-tabPanel>
+    </p-tabView>
+    <i class="pi pi-times close-tab-icon" (click)="onClose()" title="Close"></i>
+  </div>
+  } @if(modalType || viewMode){
+  <app-customer-type
+    [parent]="parent"
+    [modalType]="modalType"
+    [rowData]="rowData"
+    [IndividualformConfig]="IndividualformConfig"
+    [BusinessformConfig]="BusinessformConfig"
+    [signatoriesData]="signatoriesData"
+  ></app-customer-type>
+
+  <i
+    *ngIf="parent == 'Contact' || parent == 'Trustees'"
+    class="pi pi-times edit-close-tab-icon"
+    (click)="onClose()"
+    title="Close"
+  ></i>
+
+  }
+</ng-container>

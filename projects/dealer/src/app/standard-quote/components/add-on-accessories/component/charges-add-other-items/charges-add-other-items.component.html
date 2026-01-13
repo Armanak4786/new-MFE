@@ -1,0 +1,65 @@
+<gen-card [headerText]="'Charges / Add Other Items'">
+  <ng-container body>
+    <!-- <div class="pt-3 grid justify-content-between">
+      <div class="col-8">
+        <gen-button [btnLabel]="'Add'" [btnType]="'plus-btn'" (onClick)="addCharges()"></gen-button>
+      </div>
+    </div> -->
+      <form [formGroup]="chargesForm">
+      <ng-container formArrayName="charges">
+
+        <div class="grid" *ngFor="let charge of charges.controls; let i = index" [formGroupName]="i">
+          <div class="col-3">
+            <input
+              type="text"
+              pInputText
+              formControlName="description"
+              placeholder="Description"
+            />
+            <!-- <div *ngIf="charge.get('description')?.touched && charge.get('description')?.invalid">
+              <small class="p-error">Description is required</small>
+            </div> -->
+          </div>
+
+          <div class="col-2">
+            <input
+              type="number"
+              pInputText
+              formControlName="amount"
+              placeholder="Amount"
+              
+            />
+            <!-- <div *ngIf="charge.get('amount')?.touched && charge.get('amount')?.invalid">
+              <small class="p-error">Valid amount is required</small>
+            </div> -->
+          </div>
+
+          <div class="col-2">
+            <gen-button
+              [btnIcon]="'fa fa-trash'"
+              [btnType]="'non-bg-btn'"
+              (onClick)="removeCharge(i)">
+            </gen-button>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <div class="pt-3 grid justify-content-between">
+        <div class="col-8">
+          <gen-button
+            [btnLabel]="'Add'"
+            [btnType]="'plus-btn'"
+            (onClick)="addCharges()">
+          </gen-button>
+        </div>
+      </div>
+
+       <div class="pt-3 grid justify-content-end">
+        <div class="col-3 text-right font-bold">
+          Sub-Total: {{ subtotal }}
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</gen-card>

@@ -1,0 +1,254 @@
+<gen-card
+  [cardType]="'non-border'"
+  [headerText]="'Income Details'"
+  [cardBgColor]="'--background-color-secondary'"
+>
+  <ng-container body>
+    <div class="grid">
+      <label class="assetTypelabel col-4 text-size-12 pl-3">Income Type</label>
+      <label class="assetTypelabel col-3 text-size-12 text-center">Amount</label>
+      <label class="assetTypelabel col-3 text-size-12 text-center"
+        >Frequency<span class="text-red-500"> * </span></label
+      >
+    </div>
+    <form [formGroup]="incomeDetailsForm">
+      <div formArrayName="incomeDetails" class="income-details-form">
+        <div
+          *ngFor="let income of incomeDetails.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="grid">
+            <div class="col-4 pl-3 align-content-center">
+              <span class="label-text" *ngIf="i === 0" style="color: var(--label-color)">
+                {{ income.get("incomeType").value }}
+                <span class="text-red-500">* </span>
+              </span>
+              <span class="label-text" *ngIf="i === 1" style="color: var(--label-color)">
+                Spouse / Partner Pay<br>
+                <span style="font-size: 10px;">(Must live at the same address)</span>
+              </span>
+              <span class="label-text" *ngIf="i > 1"
+                style="color: var(--label-color)">{{ incomeDescriptionMapId.get(income.get("incomeType").value)
+                }}
+                <!-- <span class="text-red-500">* </span> -->
+              </span>
+            </div>
+            <div class="col-3 p-fluid">
+              <p-inputNumber
+                [inputStyle]="{ 'text-align': 'right' }"
+                inputId="currency-us"
+                mode="currency"
+                currency="USD"
+                locale="en-US"
+                formControlName="amount"
+                (ngModelChange)="updateAssetDetails(i)"
+              />
+              <div
+                class="p-error"
+                *ngIf="
+                  income?.get('amount')?.invalid &&
+                  (income.get('amount')?.touched || income.get('amount')?.dirty)
+                "
+              >
+                <small
+                  style="text-wrap: nowrap;"
+                  *ngIf="income?.get('amount').errors?.required && i === 0"
+                >
+                  Take Home Pay is required
+                </small>
+                <small *ngIf="income?.get('amount').errors?.min && i === 0">
+                  Amount should be greater than 0
+                </small>
+                <small *ngIf="income?.get('amount').errors?.max"
+                  >Amount cannot exceed (18,4)</small
+                >
+                <small *ngIf="income?.get('amount').value < 0 && i > 0">
+                  Amount cannot be negative
+                </small>
+              </div>
+            </div>
+            <div class="col-3 p-fluid">
+              <p-dropdown
+                formControlName="frequency"
+                [options]="incomeFrequencyOptions"
+                [filter]="incomeFrequencyOptions?.length > 5"
+                optionLabel="name"
+                optionValue="code"
+                placeholder="Select Frequency"
+                (ngModelChange)="updateAssetDetails(i)"
+                [appendTo]="'body'"
+              ></p-dropdown>
+              <div
+                class="p-error"
+                *ngIf="
+                  income?.get('frequency')?.invalid &&
+                  income?.get('frequency')?.touched
+                "
+              >
+                <small
+                  style="text-wrap: nowrap;"
+                  *ngIf="income.get('frequency').errors?.required"
+                  >Frequency is required.</small
+                >
+              </div>
+            </div>
+            <div class="col-2 text-center">
+              <gen-button
+                [btnType]="'non-bg-btn'"
+                [btnIcon]="'fa-regular fa-trash-can text-lg'"
+                [btnColor]="'danger'"
+                (onClick)="deleteRow(i)"
+                [disabled]="i <= 1"
+                >Delete</gen-button
+              >
+              <!-- " [disabled]="income.get('incomeType').value !== 'Other'">Delete</gen-button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="col-4 p-fluid">
+          <p-dropdown
+            formControlName="financialIncomeType"
+            [filter]="incomeTypeOptions?.length > 5"
+            [options]="incomeTypeOptions"
+            optionLabel="name"
+            optionValue="code"
+            placeholder="Others"
+          ></p-dropdown>
+        </div>
+        <div class="col-3 p-fluid">
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="4"
+            [min]="0"
+            formControlName="financialIncomeTypeAmount"
+            placeholder="Amount"
+          />
+          <!-- Add validation error display for financialIncomeTypeAmount -->
+          <div class="p-error" *ngIf="
+              incomeDetailsForm.get('financialIncomeTypeAmount')?.invalid &&
+              (incomeDetailsForm.get('financialIncomeTypeAmount')?.touched || incomeDetailsForm.get('financialIncomeTypeAmount')?.dirty)
+            ">
+            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.required">Amount is required.</small>
+            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.min">Amount should be greater than 0.</small>
+            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.max">Amount cannot exceed (18,4)</small>
+          </div>
+        </div>
+        <div class="col-3 p-fluid">
+          <p-dropdown
+            formControlName="financialIncomeFrequency"
+            [options]="incomeFrequencyOptions"
+            [filter]="incomeFrequencyOptions?.length > 5"
+            optionLabel="name"
+            optionValue="code"
+            placeholder="Select Frequency"
+          ></p-dropdown>
+        </div>
+        <div class="col-2 text-center">
+          <gen-button
+            [btnType]="'bg-btn'"
+            [btnIcon]="'pi pi-angle-right text-lg'"
+            (click)="addRow()"
+          ></gen-button>
+        </div>
+      </div>
+
+
+      <div>
+        <!-- <textarea
+        pTextarea
+        id="over_label"
+        formControlName="myTextarea"
+        rows="5"
+        cols="30"
+        style="resize: none"
+        class="h-full"
+      ></textarea>
+        <label for="on_label">On Label</label> -->
+
+
+        <div class="flex">
+          <p class="mr-3 pl-2" style="color: var(--label-color)">
+            Is your income likely to decrease over the next 12 months
+            <span class="text-red-500">*</span>
+          </p>
+          <div class="field-radiobutton mr-2">
+            <p-radioButton
+              name="isIncomeDecrease"
+              value="true"
+              formControlName="isIncomeDecrease"
+              (onClick)="isIncomeDecrease($event)"
+              inputId="yesOption"
+            ></p-radioButton>
+            <label for="yesOption">Yes</label>
+          </div>
+          <!-- (ngModelChange)="updateAssetDetails()" -->
+
+
+          <div class="field-radiobutton mr-2">
+            <p-radioButton
+              name="isIncomeDecrease"
+              value="false"
+              formControlName="isIncomeDecrease"
+              (onClick)="isIncomeDecrease($event)"
+              inputId="noOption"
+            ></p-radioButton>
+            <label for="noOption">No</label>
+            <!-- (ngModelChange)="updateAssetDetails()" -->
+          </div>
+        </div>
+
+
+        <div class="flex flex-column gap-1 pl-2">
+          <label
+            >{{ "Details" | translate }}
+            <span class="text-red-500" *ngIf="isIncomeDecreaseValue === 'true'"
+              >*</span
+            >
+          </label>
+
+
+          <!-- (input)="isIncomeDecrease($eve)" -->
+          <textarea
+            rows="5"
+            pInputTextarea
+            formControlName="myTextarea"
+            [autoResize]="true"
+            (input)="textAreaValue($event)"
+            class="border-solid border-1 border-400 border-round-md h-auto"
+          >
+          </textarea>
+          <!-- (ngModelChange)="updateAssetDetails()" -->
+          <!-- <small *ngIf="field?.hint">{{ field.hint }}</small>
+          <div
+            *ngIf="form.get(field.name).touched && form.get(field.name).invalid"
+          >
+            <small class="p-error">{{ getErrorMessage(field) }}</small>
+          </div> -->
+          <div
+            *ngIf="incomeDetailsForm.get('myTextarea')?.invalid && incomeDetailsForm.get('myTextarea')?.touched"
+          >
+            <small
+              class="p-error"
+              *ngIf="incomeDetailsForm.get('myTextarea')?.errors?.required"
+            >
+              Details are required when income is likely to decrease
+            </small>
+            <small
+              class="p-error"
+              *ngIf="incomeDetailsForm.get('myTextarea')?.errors?.maxlength"
+            >
+              Maximum 255 characters allowed
+            </small>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</gen-card>

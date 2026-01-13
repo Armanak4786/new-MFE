@@ -1,0 +1,120 @@
+<div class="grid mt-3">
+  <ng-container *ngIf="loanDetails?.length > 0">
+    <div class="col-12">
+
+      <div class="flex justify-content-between align-items-center">
+        <p class="font-bold text-base ">
+          <text [mode]="'label'" [label]="'lbl_loanDetails'"></text>
+        </p>
+        <a href="javascript:void(0)" class="text-xs mb-3">
+          <u><small><text [mode]="'label'" [label]="'lbl_finaceLeaseAgree'"></text></small></u>
+        </a>
+      </div>
+
+
+      <p class="text-sm flex justify-content-between">
+        <span><text [mode]="'label'" [label]="'lbl_product'"></text></span>
+        <span><text [mode]="'label'" [value]="loanDetails[0]?.product"></text></span>
+      </p>
+
+
+      <p class="text-sm flex justify-content-between">
+        <span>Term</span>
+        <span style="white-space: nowrap;">{{loanDetails[0]?.term}} Months</span>
+      </p>
+
+
+      <p class="text-sm flex justify-content-between">
+        <span>Interest Rate</span>
+        <span>
+          <percentage [mode]="'label'" [value]="loanDetails[0]?.interestRate"></percentage>
+        </span>
+      </p>
+
+      <p class="text-sm">
+        Loan Date
+        <span class="float-right">
+          <date [mode]="'label'" [value]=" loanDetails[0]?.loanDate"></date>
+        </span>
+      </p>
+
+      <p class="text-sm">
+        Maturity Date
+        <span class="float-right">
+          <date [mode]="'label'" [value]=" loanDetails[0]?.maturityDate"></date>
+        </span>
+      </p>
+
+      <p class="text-sm">
+        Loan Amount
+        <span class="float-right">
+          <amount [mode]="'label'" [value]=" loanDetails[0]?.loanAmount"></amount>
+        </span>
+      </p>
+
+      <p class="text-sm">
+        Interest Charge
+        <span class="float-right">
+          <amount [mode]="'label'" [value]=" loanDetails[0]?.interestCharge"></amount>
+        </span>
+      </p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="productCode == 'AFV'">
+    <div class="col-12">
+      <p class="font-bold text-base"><text [mode]="'label'" [label]="'lbl_assuredFutureValue'"></text></p>
+
+      <p class="text-sm">
+        Future Value Amount
+        <span class="float-right">
+          <amount [mode]="'label'" [value]=" assuredFuture[0]?.futureValue"></amount>
+        </span>
+      </p>
+
+      <p class="text-sm">
+        Future Value Date
+        <span class="float-right">
+          <date [mode]="'label'" [value]=" assuredFuture[0]?.futureDate"></date>
+        </span>
+      </p>
+    </div>
+    <div class="col-12">
+      <p class="font-bold text-base"><text [mode]="'label'" [label]="'lbl_CustDecision'"></text></p>
+
+      <p class="text-sm"><text [mode]="'label'" [label]="'lbl_return'"></text></p>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="productCode == 'OL'">
+    <div class="col-12">
+      <p-divider type="dashed"></p-divider>
+      <p class="font-bold text-base"><text [mode]="'label'" [label]="'lbl_buyBack'"></text></p>
+
+      <p class="text-sm">
+        Residual Value (Excl)
+        <span class="float-right">
+          <amount [mode]="'label'" [value]=" operatingLease[0]?.residualValueExcl"></amount>
+        </span>
+      </p>
+
+      <p class="text-sm">
+        GST
+        <span class="float-right">
+          <amount [mode]="'label'" [value]=" operatingLease[0]?.gst"></amount>
+        </span>
+      </p>
+      <p class="text-sm">
+        Residual Value (Incl)
+        <span class="float-right">
+          <amount [mode]="'label'" [value]=" operatingLease[0]?.residualValueIncl"></amount>
+        </span>
+      </p>
+      <p class="text-sm">
+        End Date
+        <span class="float-right">
+          <date [mode]="'label'" [value]=" operatingLease[0]?.endDate"></date>
+        </span>
+      </p>
+    </div>
+  </ng-container>
+</div>

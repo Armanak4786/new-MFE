@@ -1,0 +1,134 @@
+<div class="grid mt-2">
+  <div class="sm:col-12 md:col-6 lg:col-2">
+    <p-dropdown
+      [options]="isInternalSales ? internalSalesListData : listData"
+      [(ngModel)]="selecListData"
+      optionLabel="name"
+      placeholder="Select Quote Type"
+      (onChange)="ChangeDealerList($event)"
+    />
+  </div>
+  <div class="lg:col-10 md:col-6 sm:col-12">
+    <div class="flex flex-row">
+      <div class="ml-auto w-15rem">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchContractId"
+          placeholder="Search Quote"
+          (input)="eraseData('id')"
+        />
+      </div>
+      <div class="ml-3 w-8rem">
+        <p-calendar
+          [(ngModel)]="selectedFromDate"
+          dateFormat="mm/dd/yy"
+          placeholder="MM/DD/YYYY"
+          (onSelect)="eraseData('date')"
+        />
+      </div>
+      <div class="ml-3 my-auto">
+        <p>To</p>
+      </div>
+      <div class="ml-3 w-8rem">
+        <p-calendar
+          [(ngModel)]="selectedToDate"
+          dateFormat="mm/dd/yy"
+          placeholder="MM/DD/YYYY"
+          (onSelect)="eraseData('date')"
+        />
+      </div>
+      <div class="flex flex-row pl-2 buttons gap-2">
+         @if (!userRole?.functions?.includes('view_loans')) {
+        <gen-button
+          [btnLabel]="'View'"
+          (onClick)="onClickSearch()"
+        ></gen-button>
+         }
+         
+        <gen-button
+          [btnLabel]="'Reset'"
+          [btnType]="'border-btn'"
+          class="reset-btn-color"
+          (onClick)="onClickReset()"
+        ></gen-button>
+      </div>
+      <div class="flex flex-row m-1 justify-content-center">
+        <a
+          href="javascript:void(0)"
+          class="text-decoration-none text-color-dark-shade-2 mx-4 text-sm"
+          (click)="isInternalSales ? assign(internalSalesRowData) :assign()"
+        >
+          Assign</a
+        >
+        <a
+          href="javascript:void(0)"
+          class="text-sm text-900"
+          (click)="showAssetSearchPopup('Export')"
+          ><i class="pi pi-file-import pl-2"></i> Export</a
+        >
+        <a
+          href="javascript:void(0)"
+          (click)="onPrint()"
+          class="text-sm text-900"
+        >
+          <i class="pi pi-print pl-3"></i> Print</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid">
+  <div class="lg:col-12">
+    <ng-container *ngIf="rowData?.length > 0; else dataNotFound">
+      <gen-table
+        [id]="tableId"
+        #dt
+        [columns]="columnsAsset"
+        [dataList]="rowData"
+        [showFilter]="true"
+        [tableStyle]="'stripped-rows'"
+        [rowHeight]="'12px'"
+        [paginatorFlag]="false"
+        [sortFlag]="true"
+        [bodyClass]="''"
+        [headingClass]="''"
+        [selection]="selectionMode"
+        [selectionType]="'checkbox'"
+        [currencyAlignment]="'left'"
+        [selectedRowData]="selectedRowData"
+     
+        (onCellClick)="onCellClick($event)"
+          [sortFlag]="true"
+        [sortable]="true"
+        [filter]="true"
+      ></gen-table>
+
+      <div class="flex justify-content-end">
+        <p-paginator
+          (onPageChange)="onPageChange($event)"
+          [first]="first"
+          [rows]="rows"
+          [totalRecords]="totalRecord * rows"
+          [rowsPerPageOptions]="[10, 20, 30]"
+        />
+      </div>
+      <!-- </div> -->
+    </ng-container>
+    <ng-template #dataNotFound>
+      <gen-card>
+        <ng-container body>
+          <div
+            class="flex justify-content-center align-items-center flex-column"
+          >
+            <img
+              src="assets/images/datanotfound.png"
+              alt="No Data Found"
+              class="mb-6 mt-6"
+            />
+          </div>
+        </ng-container>
+      </gen-card>
+    </ng-template>
+  </div>
+</div>

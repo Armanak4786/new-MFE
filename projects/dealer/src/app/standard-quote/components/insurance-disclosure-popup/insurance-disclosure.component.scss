@@ -1,0 +1,73 @@
+.insurance-table {
+    width: 100%;
+    margin: 0 ;
+    border-collapse: separate; 
+    border-spacing: 0; 
+    margin-bottom: 20px;
+   
+    th, td {
+      border: 0.5px solid #ccc; 
+      padding: 10px;
+      text-align: left;
+      font-size: 12px;
+    }
+  
+    th {
+      font-weight: bold;
+      text-align: center;
+    }
+
+  tr:first-child td:first-child {
+      border-top-left-radius: 8px;
+    }
+    
+    tr:first-child td:last-child {
+      border-top-right-radius: 8px;
+    }
+    
+    tr:last-child td:first-child {
+      border-bottom-left-radius: 8px;
+    }
+    
+    tr:last-child td:last-child {
+      border-bottom-right-radius: 8px;
+    }
+  }
+
+
+  .main {
+    overflow-y: auto;
+    max-height: 70vh;
+  }
+  
+
+ .sticky-footer {
+  position: sticky;  
+  bottom: -10px;        
+  background: var(--primary-lighter-color);   
+  padding: 10px 0;   
+  z-index: 100;      
+}
+  .fixed-question {
+  min-width: 300px;
+ 
+  }
+  .para{
+    font-size: smaller;
+  }
+  .customerName{
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .employmentType{
+    font-size: 11px;
+    margin-bottom: 4px;
+    text-align: center;
+    display: block;
+    white-space: nowrap;
+  }
+  .custom-message {
+  font-size: 11px !important;  
+}
+ 

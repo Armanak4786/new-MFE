@@ -1,0 +1,11 @@
+.footer {
+  position: sticky;
+  bottom: 2%;
+  gen-button {
+    ::ng-deep {
+      button {
+        font-weight: bold !important;
+      }
+    }
+  }
+}

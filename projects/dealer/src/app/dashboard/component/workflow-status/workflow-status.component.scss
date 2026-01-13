@@ -1,0 +1,42 @@
+.card {
+   p, 
+   a { 
+    font-size: 12px; 
+  } 
+  .bordersummary 
+  { 
+    background-color: var(--secondary-light-color); 
+    height: 38px; 
+    .borderunit { 
+      font-size: 8px; 
+      font-weight: 400;
+       max-width: 90px;
+      background-color: var(--surface-section); 
+      height: 28px; 
+      width: 70px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-content: center; 
+      text-align: center; 
+
+      padding: 0 0.25rem;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+   white-space: normal;
+    } 
+  // .text-size-8 {
+  //   font-size: 0.75rem;
+  //   color: #666666;
+  //   line-height: 1.2;
+  //   word-break: break-word;
+  //   text-align: center;
+  // }
+
+   
+  
+  }
+}
+

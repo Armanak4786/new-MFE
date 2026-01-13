@@ -1,0 +1,67 @@
+<form [formGroup]="emailForm" #mainForm>
+  <ng-container formArrayName="emails">
+    <div *ngFor="let email of emails.controls; let i = index">
+      <div [formGroupName]="i" class="mt-2">
+        <div class="grid">
+          <div class="col-1 pt-3">
+            <label class="text-600 mr-3"
+              >Email<span
+                *ngIf="isRequired(email.controls.value)"
+                class="text-red-500"
+                >*
+              </span></label
+            >
+          </div>
+          <div class="col-5 pr-5 p-fluid">
+            <input
+              type="text"
+              pInputText
+              formControlName="value"
+              (input)="getvalue()"
+            />
+            <div *ngIf="(email.dirty || email.touched) && email.invalid">
+              <ng-container *ngIf="email.get('value').errors as errors">
+                <small class="p-error" *ngIf="errors.pattern">
+                  Email is in an incorrect format
+                </small>
+                <small class="p-error" *ngIf="!errors.pattern && errors.maxlength">
+                  Email should not exceed 50 characters
+                </small>
+                <small class="p-error" *ngIf="!errors.pattern && !errors.maxlength && errors.required">
+                  Email is required
+                </small>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-2 mt-3" *ngIf="shouldShowCheckbox(i)">
+            <p-checkbox
+              formControlName="emailChk"
+              [binary]="true"
+              [label]="'No Email'"
+              (onChange)="onCheckboxChange($event, i)"
+            ></p-checkbox>
+          </div>
+
+          <div class="col-1" *ngIf="i != 0">
+            <gen-button
+              [btnIcon]="'fa fa-trash'"
+              [btnType]="'non-bg-btn'"
+              (onClick)="removeEmail(i)"
+              class="mt-2"
+            ></gen-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-3">
+      <gen-button
+        *ngIf="emails.length < 3"
+        [btnLabel]="'Add Other Email'"
+        [btnType]="'plus-btn'"
+        (onClick)="addOtherEmail()"
+        [disabled]="emailChk"
+      ></gen-button>
+    </div>
+  </ng-container>
+</form>

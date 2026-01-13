@@ -1,0 +1,37 @@
+
+
+<div class="card p-3 my-4">
+  @if(productCode == 'OL'){
+  <div class="">
+    <app-maintenance-requirement></app-maintenance-requirement>
+  </div>
+}
+  <div class="my-4">
+  <app-service-plan></app-service-plan>
+  </div>
+  <div class="my-4">
+    <app-accessories></app-accessories>
+  </div>
+  <app-insurance-requirement></app-insurance-requirement>
+
+  <div class="grid mt-4">
+    <div class="sm:col-12 md:col-12 text-right">
+      <p class="p-3 border-round-md">Total Charges: {{ total |currency }}</p>
+    </div>
+  </div>
+ 
+</div>
+
+<div class="card flex justify-content-between flex-wrap p-2">
+  <div class="flex align-items-center justify-content-center">
+    <gen-button
+      (onClick)="redirectToHome()"
+      [className]="'text-danger-color'"
+      [btnType]="'non-bg-btn'"
+      [btnLabel]="'Cancel'"
+    ></gen-button>
+  </div>
+  <div class="flex align-items-center justify-content-center">
+    <p-button label="{{'lbl_save' | translate}}" (onClick)="addAccessories()"></p-button>
+  </div>
+</div>

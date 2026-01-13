@@ -1,0 +1,174 @@
+<div class="quick-quote">
+  <gen-card headerText=" Quick Quote {{ ind + 1 }}">
+    <ng-container header>
+      <gen-button
+        [btnType]="'border-btn'"
+        [btnIcon]="'fas fa-times'"
+        class="float-right close"
+        *ngIf="ind !== 0"
+        (onClick)="closeCard(ind)"
+      ></gen-button>
+    </ng-container>
+    <ng-container body>
+      <base-form
+        #mainForm
+        [formConfig]="formConfig"
+        [mode]="mode"
+        [id]="id"
+        [data]="data"
+        (valueChanges)="onValueChanges($event)"
+        (formEvent)="onFormEvent($event)"
+        (formButtonEvent)="onButtonClick($event)"
+        (formReady)="onFormReady()"
+        (onInput)="onValueTyped($event)"
+        (onBlur)="onBlurEvent($event)"
+        (onValueChange)="onValueEvent($event)"
+      >
+        <ng-container text-select-overlay-content>
+          <p-listbox
+            [options]="assetOptionsList"
+            [(ngModel)]="selectedAsset"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="assetOptionsList.length > 5"
+            [style]="{ width: '30rem' }"
+            (onChange)="selectAsset(); mainForm.textSelectOP.hide()"
+          />
+        </ng-container>
+      </base-form>
+
+      <div
+        class="grid justify-content-center createquickQuote"
+        *ngIf="result && hideQuote"
+      >
+        <div class="csm:col-12 md:col-10 lg:col-11 primary-light-color p-4">
+          <div class="grid">
+            <div style="display: contents">
+              <div class="sm:col-12 md:col-5 lg:col-5 text-right pr-3">
+                <p class="heading">
+                  {{ sessionProductCode == 'FL' ? 'Lease Amount' : 'Loan Amount' }}
+                </p>
+
+                <!-- <p class="value" id="loanAmount"> -->
+                <amount
+                  class="value float-right"
+                  [mode]="'label'"
+                  [value]="calculatedResult?.loanAmount"
+                ></amount>
+                <!-- </p> -->
+              </div>
+              <div class="sm:col-12 md:col-5 lg:col-7 text-right">
+                <p class="heading">Total Fees</p>
+                <!-- <p class="">{{calculatedResult.frequency}}</p> -->
+                <amount
+                  class="value float-right"
+                  [mode]="'label'"
+                  [value]="calculatedResult?.totalFees"
+                ></amount>
+                <!-- <p-dropdown
+                [options]="frequencyList"
+                [(ngModel)]="calculatedResult.frequency"
+                optionLabel="lookupValue"
+                placeholder="Frequency"
+                optionValue="lookupValue"
+                class="float-right"
+              >
+              </p-dropdown> -->
+              </div>
+              <!-- <div class="sm:col-12 md:col-6 lg:col-6 text-right"> -->
+              <!-- <p class="heading">Payment</p> -->
+              <!-- <text class="heading float-right" [mode]="'label'" [label]="'lbl_payment'"></text> -->
+              <!-- <amount
+                  class="value float-right pr-2"
+                  [mode]="'label'"
+                  [value]="calculatedResult.payment"
+                ></amount> -->
+              <!-- <div class="-ml-8">
+                <p-inputNumber
+                  [(ngModel)]="calculatedResult.payment"
+                  inputId="currency-us"
+                  mode="currency"
+                  currency="USD"
+                  locale="en-US"
+                 
+                  [minFractionDigits]="3"
+                  [min]="0"
+                ></p-inputNumber>
+              </div> -->
+              <!-- </div> -->
+
+              <!-- <div
+                class="sm:col-12 md:col-6 lg:col-6 text-right"
+                *ngIf="checkProduct !== 'FL' && checkProduct !== 'TL'"
+              > -->
+              <!-- <text class="heading float-right" [mode]="'label'" [label]="'lbl_lastPayment'"></text> -->
+              <!-- <p class="heading">Last Payment</p> -->
+              <!-- <p class="value">
+                {{ calculatedResult?.lastPayment }}
+              </p> -->
+              <!-- <date
+                  class="value float-right pr-2"
+                  [mode]="'label'"
+                  [value]="calculatedResult?.lastPayment"
+                ></date>
+              </div> -->
+              <div
+                class="sm:col-12 md:col-5 lg:col-5 text-right"
+                *ngIf="checkProduct == 'FL'"
+              >
+                <p class="heading">Residual Value</p>
+                <amount
+                  class="value float-right"
+                  [mode]="'label'"
+                  [value]="calculatedResult?.residulValue"
+                ></amount>
+                <!-- <p class="value">{{ calculatedResult?.residulValue | currency:'NZD':'symbol' }}</p> -->
+              </div>
+              <div class="sm:col-12 md:col-5 lg:col-5 text-right pr-3">
+                <p class="heading">Total Interest</p>
+                <p class="value">
+                  <amount
+                    class="value float-right"
+                    [mode]="'label'"
+                    [value]="calculatedResult?.totalInterest"
+                  ></amount>
+                </p>
+              </div>
+              <ng-container>
+                <div class="sm:col-12 md:col-6 lg:col-7 text-right ">
+                  <!-- <text class="heading float-right" [mode]="'label'" [label]="'lbl_totalCost'"></text> -->
+                  <p class="heading">Total Amount Payable</p>
+                  <amount
+                    class="value float-right"
+                    [mode]="'label'"
+                    [value]="calculatedResult?.totalAmountPayable"
+                  ></amount>
+                  <!-- <p class="value">{{ calculatedResult?.totalCost | currency:'NZD':'symbol' }}</p> -->
+                </div>
+              </ng-container>
+            </div>
+            <ng-container *ngIf="checkProduct == 'TL'">
+              <div class="sm:col-12 md:col-5 lg:col-5"></div>
+            </ng-container>
+
+            <div class="sm:col-12 md:col-6 lg:col-6">
+              <gen-button
+                [btnLabel]="'Reset'"
+                [btnType]="'border-btn'"
+                [btnWidth]="'full'"
+                (onClick)="resetForm(ind)"
+              ></gen-button>
+            </div>
+            <div class="sm:col-12 md:col-6 lg:col-6">
+              <gen-button
+                [btnLabel]="'Create Quote'"
+                [btnWidth]="'full'"
+                (onClick)="sendDataStandardQuote(quickQuoteData)"
+              ></gen-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>

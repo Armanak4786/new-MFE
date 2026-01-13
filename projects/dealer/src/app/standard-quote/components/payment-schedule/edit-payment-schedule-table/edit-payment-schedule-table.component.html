@@ -1,0 +1,122 @@
+<form [formGroup]="editPaymentForm" #mainForm>
+  <p-table class="custom-table" [value]="segments.controls" [dataKey]="'value.id'" [tableStyle]=""
+    [tableStyle]="{ 'min-width': '20rem' }" scrollHeight="300px" [scrollable]="true">
+    <ng-template pTemplate="header">
+      <tr class="custom-header-row">
+        <!-- <th><text [mode]="'label'" [label]="'lbl_fixed'"></text></th>-->
+        <th ><text [mode]="'label'" [label]="'lbl_date'"></text></th>
+        <th><text [mode]="'label'" [label]="'lbl_number'" [required]="true"></text></th>
+        <th><text [mode]="'label'" [label]="'lbl_type'"></text></th>
+        <th class="text-right"><text [mode]="'label'" [label]="'lbl_amount'" [required]="true"></text></th>
+        <th><text [mode]="'label'" [label]="''"></text></th>
+      </tr>
+    </ng-template>
+
+    <ng-container formArrayName="segments">
+      <ng-template pTemplate="body" let-seg let-index="rowIndex">
+        <tr [formGroupName]="index">
+          <td class="col-3 p-fluid">
+            <!-- {{ index + 1}}  -->
+            {{seg.value.paymentScheduleDate | date: 'dd/MM/yyyy'}}
+          </td>
+          <td class="col-2 p-fluid">
+            <!-- {{ index + 1}}  -->
+            {{seg.value.installments}}
+          </td>
+          <td class="col-4 p-fluid">
+            @if (seg.value.segmentType != 'Balloon Payment' && !seg?.value?.keepDisable && (!seg.value.customDisable)){
+            <p-dropdown [options]="(baseFormData?.productCode === 'FL' || baseFormData?.productCode === 'OL') ? flpaymentTypeOptions : paymentTypeOptions" formControlName="segmentType" optionLabel="label"
+              optionValue="value" appendTo="body"></p-dropdown>}
+            @else {
+            {{ paymentTypeKeys?.[seg?.value?.segmentType] }}
+            }
+          </td>
+          <!-- <td class="col-2 mt-2">
+            {{ seg.value.paymentScheduleFrequency }}
+          </td> -->
+          <td class="col-4 p-fluid text-right">
+            @if (seg?.value?.segmentType == 'Payment Total' && !seg?.value?.keepDisable && (!seg.value.customDisable)){
+            <p-inputNumber formControlName="paymentSchedulePayment" mode="currency" currency="USD" [min]="0" (onInput)="onInput(seg.value.paymentSchedulePayment,index)"/>
+            }@else {
+            {{ seg?.value?.paymentSchedulePayment || 0 | currency }}
+            }
+          </td>
+          <td class="col-1">
+            <!-- <p-checkbox formControlName="isInterestOnly" [binary]="true" /> -->
+          </td>
+          <!-- <td class="col">
+            <gen-button [btnIcon]="'fa-light fa-trash-can text-red-600 text-base'" [btnType]="'non-bg-btn'"
+              (onClick)="removeSegments(index)" [btnColor]="'danger'"></gen-button>
+          </td> -->
+        </tr>
+
+        @if (balloonSegment && index == segments?.value?.length -1){
+        <tr>
+          <td class="col-3 p-fluid">
+            <!-- {{ index + 1}}  -->
+            {{balloonSegment?.paymentScheduleDate | date: 'dd/MM/yyyy'}}
+          </td>
+          <td class="col-2 p-fluid">
+            1
+          </td>
+          <td class="col-4 p-fluid">
+            <div class="px-2">{{ balloonSegment?.segmentType }}</div>
+          </td>
+          <td class="col-4 p-fluid text-right">
+            {{ balloonSegment?.paymentSchedulePayment || 0 | currency }}
+          </td>
+          <td class="col-1">
+          </td>
+        </tr>
+        }
+      </ng-template>
+    </ng-container>
+  </p-table>
+</form>
+
+@if(!editPaymentForm.disabled){
+  <div class="pt-3">
+    <gen-button [btnLabel]="'Add Segment'" [btnType]="'plus-btn'" [className]="'buttonChange'"
+      (click)="addSegment()"></gen-button>
+  </div>
+}
+
+<!-- <div class="flex justify-content-center mt-2">
+  <span class="text-500">Balloon Amount - </span> {{ baseFormData?.balloonAmount | currency}}
+</div> -->
+
+<div class="grid mt-2">
+  <div class="col-6 p-fluid">
+    <gen-button [btnType]="'border-btn'" [btnLabel]="'Reset'" (onClick)="resetSegments()"></gen-button>
+  </div>
+  <div class="col-6 p-fluid">
+    <gen-button [btnLabel]="'Calculate'" (onClick)="calculate()"></gen-button>
+  </div>
+</div>
+
+<div class="border-primary border-1 px-4 py-3 bg-blue-50 border-round-md">
+  <div class="flex justify-content-between gap-3">
+    <div>
+      <span class="text-500">Number Of Payments </span> {{ baseFormData?.numberofFlows }}
+    </div>
+    <div>
+      <span class="text-500">Total Term </span> {{ (baseFormData?.termMonthAndDays)}}
+    </div>
+  </div>
+</div>
+
+<div class="flex justify-content-center mt-2" *ngIf="showGst">
+  <span class="text-500">GST : &nbsp;</span> {{ taxOnAsset || 0 | currency}}
+</div>
+
+<div class="flex justify-content-between gap-3 mt-2">
+  <div>
+    <gen-button [btnLabel]="'CANCEL'" [className]="'mr-3 btn-size text-danger-color font-bold'" [btnType]="'non-bg-btn'"
+      (onClick)="closeDialog()"></gen-button>
+  </div>
+  <div>
+    @if(!editPaymentForm.disabled){
+    <gen-button [btnLabel]="'APPLY'" [className]="'btn-size'" (onClick)="save()"></gen-button>
+    }
+  </div>
+</div>

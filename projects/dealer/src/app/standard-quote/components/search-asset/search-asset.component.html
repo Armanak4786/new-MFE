@@ -1,0 +1,24 @@
+<text [mode]="'label'" [label]="'lbl_searchType'"></text>
+<div class="radioButtonCheck">
+<div class="my-3 mr-3 flex gap-8">
+  <p-radioButton [(ngModel)]="searchType" label="Motocheck" value="motocheck"></p-radioButton>
+  @if (modalType == 'Search Asset'){
+  <p-radioButton class="ml-5"[(ngModel)]="searchType" label="Dealer Inventory" value="dealerInventory" [disabled] = "isInternalAndDirect"></p-radioButton>
+  }
+</div>
+</div>
+<br />
+
+<div>
+  @if (searchType=='motocheck'){
+  <motocheck-tab [addType]="buttonName"></motocheck-tab>
+  } @if (searchType=='dealerInventory'){
+  <app-dealer-inventory-tab></app-dealer-inventory-tab>
+  }
+</div>
+
+@if(modalType == 'Search Trade in Asset' || !hideAddButton){
+<div class="flex justify-content-center mt-4" >
+  <gen-button [btnLabel]="buttonName" [btnType]="'plus-btn'" (onClick)="redirectToAsset()"></gen-button>
+</div>
+}

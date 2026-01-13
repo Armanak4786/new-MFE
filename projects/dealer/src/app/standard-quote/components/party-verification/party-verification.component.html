@@ -1,0 +1,14 @@
+ <div class="flex-column cursor-pointer">
+      <div *ngFor="let item of options"
+        class="flex justify-content-center action-item p-1 px-3"
+        (click)="onClick(item)"
+      >
+        {{ item.label }}
+      </div>
+      <!-- <div
+        class="flex justify-content-center action-item p-1 px-3"
+        (click)="electronicClick($event)"
+      >
+        Electronic
+      </div> -->
+    </div>

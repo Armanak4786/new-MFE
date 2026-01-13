@@ -1,0 +1,19 @@
+<div class="standardPaymentOptions">
+  <p-accordion>
+    <p-accordionTab header="Excess Allowance">
+      <base-form
+        #mainForm
+        [formConfig]="formConfig"
+        [mode]="mode"
+        [id]="id"
+        [data]="data"
+        (valueChanges)="onValueChanges($event)"
+        (formEvent)="onFormEvent($event)"
+        (formButtonEvent)="onButtonClick($event)"
+        (formReady)="onFormReady()"
+        (onInput)="onValueTyped($event)"
+      >
+      </base-form>
+    </p-accordionTab>
+  </p-accordion>
+</div>

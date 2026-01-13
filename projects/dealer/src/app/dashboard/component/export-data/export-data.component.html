@@ -1,0 +1,21 @@
+<div class="flex justify-content-center">
+<label class="text-lg pt-1 label-spacing "><text [mode]="'label'" [label]="'lbl_exportAs'"></text></label>
+  <p-dropdown
+    [options]="exportData"
+    [(ngModel)]="selectedExportValue"
+    optionLabel="name"
+    optionValue="code"
+    placeholder="Select Quote Type"
+    (onChange)="changeExportEvent($event)"
+  />
+</div>
+<div class="flex justify-content-center gap-3 pt-5">
+  <gen-button [btnLabel]="'Export'" (onClick)="export()"></gen-button>
+
+  <gen-button
+    [btnType]="'border-btn'"
+    [btnColor]="'danger'"
+    [btnLabel]="'Cancel'"
+    (onClick)="close()"
+  ></gen-button>
+</div>

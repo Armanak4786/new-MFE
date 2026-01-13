@@ -1,0 +1,17 @@
+::ng-deep .p-input-filled .p-inputtext:enabled:focus {
+  background-color: transparent;
+}
+
+::ng-deep p.-mt-1.max-w-0.text-600 {
+  margin-top: 0 !important;
+}
+::ng-deep .ic{
+  margin-top:-0.7rem!important;
+}
+:host::ng-deep .dependents-age-array {
+  margin-top: 20px;
+  input.p-inputtext {
+    padding: 0.25rem !important;
+    width: 23px;
+  }
+}

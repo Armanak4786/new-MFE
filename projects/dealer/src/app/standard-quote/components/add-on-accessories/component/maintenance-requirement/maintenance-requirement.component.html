@@ -1,0 +1,67 @@
+<gen-card [headerText]="'Maintenance Requirement'">
+  <ng-container body>
+    
+    <div class="grid">
+      <div class="col-4 flex align-items-center gap-2">
+        <text [mode]="'label'" [label]="'lbl_tyres'"></text>
+
+      
+        <p-checkbox
+          name="tyresCheckbox"
+          binary="true"
+          [(ngModel)]="isTyresChecked"
+          inputId="tyresCheckbox"
+          class="tyres-checkbox"
+          (onChange)="onTyresCheckboxChange($event)"
+        ></p-checkbox>
+
+       
+        <p-inputNumber
+          [(ngModel)]="tyreCount"
+          [showButtons]="false"
+          class="tyreInput "
+          (ngModelChange)="updateMaintenanceData()"
+        ></p-inputNumber>
+      </div>
+    </div>
+
+    <!-- Service agent section -->
+    <div class="grid">
+      <div class="col-4 flex align-items-center gap-2 mt-2">
+        <text [mode]="'label'" [label]="'lbl_service_agent'"></text>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="serviceAgentDescription"
+          class="ml-2 serviceAgentDescription"
+          (ngModelChange)="updateMaintenanceData()"
+        />
+      </div>
+    </div>
+
+    <!-- Specific returns (Description) -->
+    <div class="grid">
+      <div class="col-12 mt-3">
+        <text
+          [mode]="'label'"
+          [label]="'lbl_specific_returns'"
+          class="font-bold"
+        ></text>
+      </div>
+      <div class="col-12 mb-1">
+        <label class="enter-description-text">Description</label>
+      </div>
+      <div class="col-12">
+        <textarea
+          pInputTextarea
+          [(ngModel)]="specificReturnsDescription"
+          rows="4"
+          cols="50"
+          placeholder="Enter description"
+          class="w-full description-box"
+          (ngModelChange)="updateMaintenanceData()"
+        ></textarea>
+      </div>
+    </div>
+  </ng-container>
+</gen-card>

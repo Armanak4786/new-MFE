@@ -1,0 +1,22 @@
+<div *ngIf="!hidden">
+  <gen-card [headerText]="headerText" [cardType]="'border'">
+    <ng-container body>
+      <gen-table
+        [columns]="columnDefs"
+        [dataList]="standarPaymentRowData"
+        [tableStyle]="'stripped-rows'"
+      >
+      </gen-table>
+      <div class="text-right">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [iconPos]="'left'"
+          [btnIcon]="'fa fa-edit'"
+          [btnLabel]="'Edit Payment Schedule'"
+          (onClick)="showDialogEditPaymentLarge()"
+        >
+        </gen-button>
+      </div>
+    </ng-container>
+  </gen-card>
+</div>

@@ -1,0 +1,52 @@
+<p class="mt-2 text-sm text-primary cursor-pointer" (click)="redirectToSearch()">
+   <i class="pi pi-angle-left vertical-align-middle"></i> Back to Search
+</p>
+<ng-container *ngIf="apiData?.length === 0">
+  <gen-card>
+    <ng-container body>
+      <div class="flex justify-content-center align-items-center flex-column">
+        <img
+          src="assets/images/datanotfound.png"
+          alt="No Data Found"
+          class="w-20 h-20 mb-6 mt-6"
+        />
+      </div>
+    </ng-container>
+  </gen-card>
+</ng-container>
+<gen-card *ngIf="apiData?.length > 0">
+  <ng-container body>
+    <div class="search-result px-4 py-1">
+      <gen-table
+        [columns]="columns"
+        [selection]="true"
+        [selectionType]="'radio'"
+        [selectedRowData]="selectedRowData"
+        [selectedRowKey]="'assetId'"
+        [dataList]="dataList"
+        [headingClass]="'font-medium text-700 py-0'"
+        [tableStyle]="'normal'"
+        (onRowSelection)="getSelectedRow($event)"
+      ></gen-table>
+    </div>
+  </ng-container>
+</gen-card>
+<br />
+<gen-card *ngIf="apiData?.length > 0">
+  <ng-container body>
+    <div class="flex justify-content-between">
+      <gen-button
+        [className]="'text-danger-color'"
+        [btnLabel]="'Cancel'"
+        [btnType]="'non-bg-btn'"
+        (onClick)="redirectToHome()"
+      ></gen-button>
+      <gen-button
+        [btnLabel]="'Add Asset'"
+        (onClick)="onClickAdd()"
+      ></gen-button>
+    </div>
+  </ng-container>
+</gen-card>
+
+<!--  -->

@@ -1,0 +1,94 @@
+::ng-deep {
+  .custom-signatories-table {
+    .p-datatable-table {
+      // Your existing styles
+    }
+
+    .p-datatable-thead > tr > th {
+      background-color: #EFEFEF !important;
+    }
+
+    .p-datatable-tbody > tr {
+      background-color: #F9F9F9 !important;
+    }
+
+    .p-row-expansion > td {
+      background-color: #F9F9F9 !important;
+    }
+  }
+
+  // .custom-overlay-panel {
+  //   &.p-overlaypanel {
+  //     width: 400px !important; // Fixed width
+  //     min-width: 350px;
+  //     max-width: calc(100vw - 2rem); // Prevent exceeding screen width
+      
+  //     .p-overlaypanel-content {
+  //       padding: 0;
+  //       max-height: 400px;
+  //       overflow-y: auto;
+  //     }
+  //   }
+
+  //   // Hide default arrow
+  //   &:before, &:after {
+  //     display: none !important;
+  //   }
+  // }
+
+  // // Force overlay positioning to be relative to the cell
+  // .p-overlaypanel {
+  //   position: absolute !important;
+    
+  //   // Ensure it aligns properly with the cell
+  //   &.p-connected-overlay-enter-done {
+  //     position: absolute !important;
+  //     margin-top: 0.5rem;
+  //   }
+  // }
+}
+
+.table-loader-container {
+  text-align: center;
+}
+
+.id-verification-cell {
+  background-color: var(--primary-color);
+  display: flex;
+  border-radius: 13px;
+  justify-content: center;
+  margin-top: 14px;
+  position: relative;
+  width: 100%; // Ensure cell takes full width
+}
+
+.id-verification-cell-data {
+  color: #FFFFFF;
+  width: 100%;
+  text-align: center;
+  padding: 0px 8px; // Add some padding
+}
+
+// .overlay-content {
+//   padding: 1rem;
+//   min-height: 200px;
+// }
+
+.disabled-div {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+::ng-deep .eml{
+  position:sticky;
+  margin-top:-1px;
+}
+::ng-deep .soi{
+  margin-top:8px;
+}
+::ng-deep .togsig{
+  margin-bottom: 1.7rem;
+}
+::ng-deep .ctsig{
+  margin-top: -1px;
+}

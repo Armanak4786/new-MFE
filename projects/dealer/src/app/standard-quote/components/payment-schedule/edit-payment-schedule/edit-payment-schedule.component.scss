@@ -1,0 +1,35 @@
+.paymentScheduleResult {
+  background-color: var(--background-color-secondary-dark);
+  border-color: var(--primary-border-color);
+  padding: 4px;
+  border-radius: 6px;
+}
+
+td,
+th {
+  border-left: 10px solid rgba(0, 0, 0, 0);
+  border-right: 10px solid rgba(0, 0, 0, 0);
+}
+
+th {
+  background-color: white;
+}
+
+td:nth-child(1),
+th:nth-child(1) {
+  border-right: 10px solid rgba(0, 0, 0, 0);
+  border-left: 0px solid rgba(0, 0, 0, 0);
+}
+
+td:nth-child(4),
+th:nth-child(4) {
+  border-left: 10px solid rgba(0, 0, 0, 0);
+  border-right: 0px solid rgba(0, 0, 0, 0);
+
+}
+
+::ng-deep {
+  .text-left input {
+    text-align: left;
+  }
+}

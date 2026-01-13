@@ -1,0 +1,112 @@
+<div class="grid main" #mainSection>
+
+  <div class="col-12">
+    <p class="para">  
+      Please refer to the Insurance/Extended Warranty <span class="text-primary-color font-semi-bold cursor-pointer" (click)="showKeyInfoDisclosure()">Key Information Disclosure</span> to explain the key features of the insurance or warranty contract to each customer to enable them to make an informed decision.  Then, please read each statement below to each customer and select “Yes” from the dropdown to confirm that each statement is correct or “Not Financed” if the statement relates to an insurance product that the borrower does not require.  If there is more than one borrower, you must obtain an answer from each borrower before you can confirm that the statement is correct.  If a borrower answers “No” to questions 2 to 7, you cannot proceed until the borrower is provided with further information or seeks advice to enable them to confirm that the statement is correct.
+    </p>
+  </div>
+
+  <div class="col-12">
+    <table class="insurance-table">
+
+      <tbody>
+        <tr>
+           <td rowspan="2" colspan="2">
+            <div  class="fixed-question" [innerHTML]="resData[0]?.messageContent" class="custom-message"></div>
+           </td>
+
+           <td *ngFor="let customer of customersToDisplay" >
+            <span class="customerName">{{ customer.name }}</span>
+           </td>
+        </tr>
+
+        <tr>
+          <td *ngFor="let customer of customersToDisplay">
+           <p-dropdown class="small-dropdown" [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
+                  optionLabel="label" optionValue="value"  [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[0]?.id].declarationResponse"></p-dropdown>
+           </td>
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <div [innerHTML]="resData[1]?.messageContent" class="custom-message"></div>
+          </td>
+          <td *ngFor="let customer of customersToDisplay">
+            <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
+                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[1]?.id].declarationResponse"></p-dropdown>
+          </td>
+        
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <div [innerHTML]="resData[2]?.messageContent" class="custom-message"></div>
+          </td>
+          <td *ngFor="let customer of customersToDisplay">
+            <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
+                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[2]?.id].declarationResponse"></p-dropdown>
+          </td>
+         
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <div [innerHTML]="resData[3]?.messageContent" class="custom-message"></div>
+          </td>
+          <td *ngFor="let customer of customersToDisplay">
+            <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
+                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[3]?.id].declarationResponse"></p-dropdown>
+          </td>
+        
+          
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <div [innerHTML]="resData[4]?.messageContent" class="custom-message"></div>
+          </td>
+          <td *ngFor="let customer of customersToDisplay">
+            <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'Not Financed', value: 'Not Financed' }]"
+                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[4]?.id].declarationResponse"></p-dropdown>
+          </td>
+          
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <div [innerHTML]="resData[5]?.messageContent" class="custom-message"></div>
+          </td>
+          <td *ngFor="let customer of customersToDisplay">
+            <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'Not Financed', value: 'Not Financed' }]"
+                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[5]?.id].declarationResponse"></p-dropdown>
+          </td>
+          
+        </tr>
+
+        <tr>
+          <td colspan="2">
+            <div [innerHTML]="resData[6]?.messageContent" class="custom-message"></div>
+          </td>
+          <td *ngFor="let customer of customersToDisplay">
+            <span class="employmentType">{{customer.employmentStatus}}</span>
+            <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'Not Financed', value: 'Not Financed' }]"
+                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[6]?.id].declarationResponse"></p-dropdown>
+          </td>
+        
+        </tr>
+
+
+      </tbody>
+    </table>
+  </div>
+  <div class="col-12 grid  pr-0 sticky-footer ">
+    <div class="col-6">
+    <gen-button [btnType]="'border-btn'"[btnLabel]="'Cancel'" (onClick)="close()"></gen-button>
+    </div>
+     <div class="col-6 text-right pr-0">
+    <gen-button [btnLabel]="'Submit'" (onClick)="submitForm()"></gen-button>
+    </div>
+  </div>
+  
+  
+</div>

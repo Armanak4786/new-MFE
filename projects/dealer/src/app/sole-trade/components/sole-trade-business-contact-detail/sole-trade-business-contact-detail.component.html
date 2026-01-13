@@ -1,0 +1,22 @@
+<gen-card [headerText]="'Contact Details'">
+  <ng-container body>
+    <div class="grid p-0 m-0">
+      <div class="col-6 p-0 m-0">
+        <base-form
+          #mainForm
+          [formConfig]="formConfig"
+          [mode]="mode"
+          [id]="id"
+          [data]="data"
+          (valueChanges)="onValueChanges($event)"
+          (formEvent)="onFormEvent($event)"
+          (formButtonEvent)="onButtonClick($event)"
+          (formReady)="onFormReady()"
+        ></base-form>
+      </div>
+      <div class="col-6 p-0 m-p">
+        <app-sole-trade-email-contact-detail></app-sole-trade-email-contact-detail>
+      </div>
+    </div>
+  </ng-container>
+</gen-card>

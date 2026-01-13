@@ -1,0 +1,16 @@
+<ng-container>
+<div class="grid ">
+   <div class="col-12">
+    <p>
+        <text [mode]="'label'" [label]="'lbl_pleaseconfirm'"></text>
+       </p>
+   </div>
+    <div class="col-6 text-right">
+        <gen-button [btnLabel]="'Yes'" (onClick)="passDataToParent('proceed')"></gen-button>
+    </div>
+    <div class="col-6 ">
+        <gen-button [btnType]="'border-btn'" [btnLabel]="'No'" (onClick)="close()"></gen-button>
+    </div>
+
+  </div>
+  </ng-container>

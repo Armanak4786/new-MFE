@@ -1,0 +1,226 @@
+<form #disbursmentForm="ngForm" class="disbursementDetailHeader">
+  <p-accordion>
+    <p-accordionTab header="{{ headerText }}" [selected]="false">
+      <!-- <gen-card>
+        <ng-container body> -->
+      <div class="grid align-items-center">
+        <div class="col-8">
+          <div class="grid">
+            <div
+              class="col-12 md:col-5 lg:col-6 mt-2 ml-2 custom-label-wrapper"
+            >
+              <label>Payable to UDC Finance</label>
+            </div>
+
+            <div class="col-12 md:col-4 lg:col-4 col-offset-1 ml-6">
+              <!-- <p-inputNumber
+                mode="currency"
+                currency="USD"
+                locale="en-US"
+                [(ngModel)]="payableToUDC.amount"
+                name="payableToUDC"
+                [inputStyle]="{ 'text-align': 'right', width: '120px' }"
+                maxlength="15"
+                [minFractionDigits]="2"
+                [maxFractionDigits]="2"
+                (onInput)="getValue()"
+              ></p-inputNumber> -->
+              <amount
+                [(ngModel)]="payableToUDC.amount"
+                name="payableToUDC"
+                className="currency-amount-input"
+                valueClass="text-right"
+                (ngModelChange)="getValue()"
+              ></amount>
+            </div>
+          </div>
+
+          <div class="grid align-items-center">
+            <div
+              class="col-12 md:col-5 lg:col-6 mt-2 ml-2 custom-label-wrapper"
+            >
+              <label>Payable to {{ originatorName }}</label>
+            </div>
+            <div class="col-12 md:col-4 lg:col-4 col-offset-1 ml-6">
+              <!-- <p-inputNumber
+                mode="currency"
+                currency="USD"
+                locale="en-US"
+                [(ngModel)]="payableToDealer.amount"
+                name="payableToDealer"
+                [inputStyle]="{ 'text-align': 'right', width: '120px' }"
+                maxlength="15"
+                [minFractionDigits]="2"
+                [maxFractionDigits]="2"
+                (onInput)="getValue()"
+              ></p-inputNumber> -->
+              <amount
+                [(ngModel)]="payableToDealer.amount"
+                name="payableToDealer"
+                className="currency-amount-input"
+                valueClass="text-right"
+                (ngModelChange)="getValue()"
+              ></amount>
+            </div>
+          </div>
+
+          <div *ngFor="let item of disbursmentLookup; let i = index">
+            <div class="grid">
+              <div class="col-12 md:col-5 lg:col-5">
+                <label>{{ item?.lookupName }}</label>
+              </div>
+              <div class="col-12 md:col-4 lg:col-4 col-offset-1">
+                <!-- <p-inputNumber
+                  mode="currency"
+                  currency="USD"
+                  locale="en-US"
+                  [inputStyle]="{ 'text-align': 'right', width: '120px' }"
+                  [(ngModel)]="
+                    disbursmentData.disrbursmentType[item.lookupName]
+                  "
+                  maxlength="15"
+                  [minFractionDigits]="2"
+                  name="disrbursmentType_{{ i }}"
+                  (onInput)="getValue()"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="2"
+                ></p-inputNumber> -->
+                <amount
+                  [(ngModel)]="disbursmentData.disrbursmentType[item.lookupName]"
+                  name="disrbursmentType_{{ i }}"
+                  className="currency-amount-input"
+                  valueClass="text-right"
+                  (ngModelChange)="getValue()"
+                ></amount>
+                <!-- <div
+                  *ngIf="errorMessages[item.lookupName]"
+                  class="error-message text-red-500"
+                >
+                  {{ errorMessages[item.lookupName] }}
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="p-0 text-center mt-6 ml-5">
+            <gen-button
+              [btnLabel]="'Add Supplier'"
+              [btnType]="'plus-btn'"
+              (click)="addSupplier()"
+              [disabled]="isDisabled()"
+            >
+            </gen-button>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngFor="let supplier of disbursmentData.suppliers; let i = index">
+         <div class="grid" *ngIf="supplier.changeAction !== 'Delete'">
+          <div class="col-6 md:col-3 lg:col-4 ml-2">
+            <input
+              style="width: 100%"
+              type="text"
+              placeholder="Supplier Name"
+              [(ngModel)]="supplier.supplierName"
+              name="supplierName_{{ i }}"
+              (ngModelChange)="
+                validateSupplierName(supplier);
+                getValue();
+                validateSupplierAmount(supplier)
+              "
+              pInputText
+              required
+            />
+            <div
+              *ngIf="supplier.nameError"
+              class="p-error"
+              style="font-size: 0.7rem"
+            >
+              {{ supplier.nameErrorMessage }}
+            </div>
+          </div>
+          <div class="col-6 md:col-3 lg:col-3 col-offset-1 ml-6">
+            <!-- <p-inputNumber
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+              [(ngModel)]="supplier.supplierAmount"
+              [inputStyle]="{ 'text-align': 'right', width: '120px' }"
+              name="supplierAmount_{{ i }}"
+              (onInput)="getValue()"
+              [minFractionDigits]="2"
+              maxlength="15"
+              [maxFractionDigits]="2"
+              placeholder="Enter amount"
+              required
+              (ngModelChange)="validateSupplierAmount(supplier)"
+            ></p-inputNumber> -->
+            <amount
+              [(ngModel)]="supplier.supplierAmount"
+              name="supplierAmount_{{ i }}"
+              className="currency-amount-input"
+              valueClass="text-right"
+              required
+              (ngModelChange)="getValue(); validateSupplierAmount(supplier)"
+            ></amount>
+            <div
+              *ngIf="supplier.showError"
+              class="p-error"
+              style="font-size: 0.7rem"
+            >
+              <!-- <text [mode]="'label'" [label]="'lbl_amountgreater'"></text> -->
+              {{ "lbl_amountgreater" | translate }}
+            </div>
+          </div>
+          <div class="col-4 md:col-3 lg:col-3 text-left">
+            <gen-button
+              [btnIcon]="'fa fa-trash'"
+              [btnType]="'non-bg-btn'"
+              [className]="'text-danger-color'"
+              (click)="removeSupplier(i)"
+            ></gen-button>
+          </div>
+        </div>
+      
+      </ng-container>
+      
+    
+      <div class="grid mt-1">
+        <div class="col-8">
+          <div class="grid">
+            <div class="col-12 md:col-5 lg:col-6 ml-2 mt-0 custom-label-wrapper">
+              <label class="font-bold">
+                <text [mode]="'label'" [label]="'lbl_total'"></text>
+              </label>
+            </div>
+            <div class="col-12 md:col-4 lg:col-4 col-offset-1 ml-6">
+              <!-- <p-inputNumber 
+              mode="currency" 
+              currency="USD" 
+              locale="en-US" 
+              [ngModel]="totalCaluclationOfDisbursmentDetails"
+              name="totalAmount"
+              [readonly]="true" 
+              [inputStyle]="{ 'text-align': 'right', width: '120px', border: 'none', background: 'transparent' }" 
+              [minFractionDigits]="2"
+              [maxFractionDigits]="2"
+              ></p-inputNumber> -->
+              <amount
+                [value]="totalCaluclationOfDisbursmentDetails"
+                mode="label"
+                valueClass="text-right"
+                className="currency-amount-label"
+              ></amount>
+              <div *ngIf="showError" class="text-red-500 text-right" style="font-size: 0.7rem; text-wrap-mode: nowrap">
+                <text [mode]="'label'" [label]="'lbl_totalamountfinanced'"></text>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  <!-- </ng-container>
+      </gen-card> -->
+    </p-accordionTab>
+  </p-accordion>
+</form>

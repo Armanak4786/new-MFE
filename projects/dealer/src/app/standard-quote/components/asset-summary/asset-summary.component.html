@@ -1,0 +1,166 @@
+<div class="asset-summary">
+    
+   <p-carousel
+    [value]="baseFormData?.defaultAsset"
+    [numScroll]="3"
+    [circular]="true"
+    [showNavigators]="assets?.length > 1"
+    [showIndicators]="false"
+    [responsiveOptions]="responsiveOptions"
+  >
+    <ng-template let-product pTemplate="item">
+      <div class="text-center">
+        <img [src]="product?.BrandImage" alt="" />
+      </div>
+    </ng-template>
+  </p-carousel>
+  
+
+  <ng-container *ngIf="customerStatment !== 'Customer Statement'">
+    <!-- "hh == 'kk'" -->
+    <!-- {{activeStepNum}} -->
+    <ng-container *ngIf="!activeStepNum || activeStepNum == 0">
+      <div class="text-right mt-4">
+        <button
+          (click)="showSelectBrands()"
+          class="cursor-pointer"
+          [disabled]="isBrandEditDisabled"
+        >
+          <i class="fa-regular fa-pen-to-square mr-1 text-base"></i>Edit
+        </button>
+      </div>
+      <hr class="banner" />
+
+      <base-form
+        #mainForm
+        [formConfig]="formConfig"
+        [mode]="mode"
+        [id]="id"
+        [data]="data"
+        (valueChanges)="onValueChanges($event)"
+        (formEvent)="onFormEvent($event)"
+        (onInput)="onValueTyped($event)"
+        (formButtonEvent)="onButtonClick($event)"
+        (formReady)="onFormReady()"
+        (onBlur)="onBlurEvent($event)"
+        (onValueChange)="onValueEvent($event)"
+      >
+        <ng-container text-select-overlay-content (onClose)="clearSerach();">
+          <p-listbox
+          #assetListbox
+            [options]="assetOptionsList"
+            [(ngModel)]="selectedAsset"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [style]="{ width: '30rem' }"
+            (onChange)="selectAsset(); mainForm.textSelectOP.hide();clearSerach();"
+          />
+          <!-- [style]="{ width: '15rem' }" [listStyle]="{'max-height': '220px'}" -->
+        </ng-container>
+      </base-form>
+      <div class="buttons">
+        
+        <!-- <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'Asset, Insurance & Trade-in Summary >'"
+          [btnLabel]="productCode === 'OL' ? 'Asset & Insurance Summary >' : 'Asset, Insurance & Trade-in Summary >'"
+          (onClick)="showAssetSummaryPopup()"
+          [disabled]="baseFormData?.productCode == 'AFV'"
+        ></gen-button> -->
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'Asset, Insurance & Trade-in Summary >'"
+          (onClick)="showAssetSummaryPopup()"
+        ></gen-button>
+        
+
+        <!-- <div class="flex justify-content-between">
+          @if (accessGranted?.['search_and_add_asset']){
+          <gen-button
+            [btnType]="'plus-btn'"
+            [btnLabel]="'Search & Add Asset'"
+            (onClick)="showAssetSearchPopup('Search Asset')"
+            [disabled]="
+              baseFormData?.productCode == 'AFV' || accessMode == 'view'
+            "
+          ></gen-button
+          >} @if (baseFormData?.productCode != 'OL' && baseFormData?.productCode
+          != 'FL' && baseFormData?.productCode != 'AFV' &&
+          accessGranted?.['search_and_add_trade']){
+
+          <gen-button
+            [btnType]="'plus-btn'"
+            [btnLabel]="'Search & Add Trade'"
+            (onClick)="showAssetSearchPopup('Search Trade')"
+            [disabled]="accessMode == 'view'"
+          ></gen-button>
+          }
+        </div> -->
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <!-- <ng-container *ngIf="activeStepNum != 0">
+    <div class="mt-4 primary-light-color">
+      <gen-card [cardType]="'non-border'">
+        <ng-container body>
+          <div class="grid">
+            <div class="sm:col-12 md:col-11 lg:col-12">
+              <p class="px-3">
+                Total Cash Price of Assets
+                <span class="float-right">{{ cashPriceValue || 0 |currency }}</span>
+              </p>
+
+              <p-divider type="dashed"></p-divider>
+
+              <p class="px-3">
+                Total Amount Borrowed
+                <span class="float-right">{{
+                  totalBorrowedAmount || 0 |currency
+                }}</span>
+                <small class="block"
+                  >incl. GST of
+                  <span class="float-right">{{
+                    gstFee || 0 |currency
+                  }}</span></small
+                >
+              </p>
+
+              <p class="px-3">
+                Loan Maintenance Fees
+                <span class="float-right">{{ loanFee || 0 |currency }}</span>
+              </p>
+            </div>
+          </div>
+        </ng-container>
+      </gen-card>
+    </div>
+  </ng-container> -->
+
+  <ng-container *ngIf="customerStatment == 'Customer Statement'">
+    <p-divider type="dashed"></p-divider>
+    <div class="mt-4 primary-light-color">
+      <gen-card [cardType]="'non-border'">
+        <ng-container body>
+          <div class="grid">
+            <div class="sm:col-12 md:col-12 lg:col-12">
+              <p class="px-1 font-bold mb-1">Asset</p>
+
+              <p class="px-1 label-color">
+                {{ assetName || 'N/A' }}
+              </p>
+            </div>
+
+            <div class="sm:col-12 md:col-6 lg:col-6">
+              <p class="px-1">Reg : {{ regNo || 'N/A' }}</p>
+            </div>
+            <div class="sm:col-12 md:col-6 lg:col-6">
+              <p class="px-1">VIN : {{ vin || 'N/A' }}</p>
+            </div>
+          </div>
+        </ng-container>
+      </gen-card>
+    </div>
+  </ng-container>
+</div>

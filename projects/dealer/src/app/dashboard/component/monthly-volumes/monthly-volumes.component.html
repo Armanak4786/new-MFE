@@ -1,0 +1,28 @@
+<div class="card p-1">
+  <div class="flex justify-content-between flex-wrap">
+    <p class="pl-2 pt-2">
+      <text [mode]="'label'" [label]="'lbl_monthlyVolumes'"></text>
+    </p>
+    <div class="flex align-items-center justify-content-center">
+      <p-dropdown
+        [options]="items"
+        [(ngModel)]="time"
+        optionLabel="name"
+        placeholder="Year"
+      />
+    </div>
+    <div class="flex align-items-center justify-content-center">
+      <div class="flex">
+        <p class="text-size-12 text-bold my-1 mr-1">{{ year }}</p>
+        <p class="m-0 text-size-8 upDown">
+          <i
+            class="pi pi-angle-up block cursor-pointer"
+            (click)="increment()"
+          ></i>
+          <i class="pi pi-angle-down cursor-pointer" (click)="decrement()"></i>
+        </p>
+      </div>
+    </div>
+  </div>
+  <p-chart type="bar" [data]="data" [options]="options" height="300" />
+</div>

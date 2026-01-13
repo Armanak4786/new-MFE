@@ -1,0 +1,16 @@
+
+    ::ng-deep .assetType{
+        margin-top:1rem
+    }
+     ::ng-deep .sname{
+        padding-top: 1rem;
+    margin-top: 2px;
+    }
+
+    ::ng-deep .assetType .p-inputgroup .p-inputgroup-addon .p-button-label{
+    display: none !important;
+}
+
+::ng-deep .assetType .p-inputgroup .p-inputgroup-addon {
+  border-left: none !important; // removes the vertical line
+}

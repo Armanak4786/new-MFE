@@ -1,0 +1,153 @@
+
+
+  <div class="grid main">
+
+    <div class="col-12">
+      <p><text [mode]="'label'" [label]="'lbl_ pleaseWarranty'"></text>  
+        <span class="text-primary-color font-semi-bold cursor-pointer" (onClick)="showKeyInfoDisclosure()">Key Information Disclosure</span>
+        to explain the key features of the insurance or warranty contract to each customer to enable them to make an informed decision. Then, please read each statement below to each customer and select “yes” from the dropdown to confirm that each statement is correct or “N/A” if the statement relates to an insurance product that the borrower does not require. If there is more than one borrower, you must obtain an answer from each borrower before you can confirm that the statement is correct. If a borrower answers “No” to any statement, you cannot proceed until the borrower is provided with further information or seeks advice to enable them to confirm that the statement is correct.</p>
+    </div>
+  
+    <div class="col-12">
+      <table class="insurance-table">
+        <thead>
+          <tr>
+            <th colspan="2">Do you have any existing insurance policies in place that may provide protection for some or all of the risks you want to cover?</th>
+            <th><text [mode]="'label'" [label]="'lbl_b1'"></text><br><text [mode]="'label'" [label]="'lbl_yesNo'"></text></th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          <tr>
+            <td colspan="2">
+              <label for="policy1_borrower1">You confirm that:</label>
+              <ul>
+                <li><text [mode]="'label'" [label]="'lbl_thekeyfeatures'"></text></li>
+                <li><text [mode]="'label'" [label]="'lbl_ifanyexclusions'"></text></li>
+                <li><text [mode]="'label'" [label]="'lbl_youunderstand'"></text></li>
+              </ul>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy1_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <tr>
+            <td colspan="2">
+              <label for="policy2_borrower1">You confirm that:</label>
+              <ul>
+               <li><text [mode]="'label'" [label]="'lbl_keyfeaturesyou'"></text></li>
+                <li><text [mode]="'label'" [label]="'lbl_exclusionsPolicy'"></text></li>
+                <li><text [mode]="'label'" [label]="'lbl_youunderstand'"></text></li>
+                <li><text [mode]="'label'" [label]="'lbl_understandmandatory'"></text></li>
+                <li><text [mode]="'label'" [label]="'lbl_understandpremiums'"></text></li>
+              </ul>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy2_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <tr>
+            <td colspan="2">
+              <label for="policy3_borrower1">
+                <text [mode]="'label'" [label]="'lbl_wantthepremiums'"></text>
+              </label>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy3_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <tr>
+            <td colspan="2">
+              <label for="policy4_borrower1">
+                <text [mode]="'label'" [label]="'lbl_motorseparately'"></text>
+              </label>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy4_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <tr>
+            <td colspan="2">
+              <label for="policy5_borrower1">
+                <text [mode]="'label'" [label]="'lbl_differentperiod'"></text>
+              </label>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy5_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <tr>
+            <td colspan="2">
+              <label for="policy6_borrower1">
+                <text [mode]="'label'" [label]="'lbl_consumerCredit'"></text> 
+                <span class="text-danger-color"><text [mode]="'label'" [label]="'lbl_employmenttype'"></text></span>
+              </label>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy6_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <tr>
+            <td colspan="2">
+              <label for="policy7_borrower1">
+                <text [mode]="'label'" [label]="'lbl_sectionbelow'"></text>
+              </label>
+            </td>
+            <td>
+              <p-dropdown [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'NA', value: 'NA' }]"
+                          optionLabel="label" optionValue="value" [(ngModel)]="policy7_b1"></p-dropdown>
+            </td>
+          </tr>
+  
+          <!-- Add Date row -->
+          <tr>
+            <td colspan="4">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- Date input with only bottom border -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                  <input type="date" id="signDate_borrower1" [(ngModel)]="signDate_b1" style="border: none; border-bottom: 1px solid #000; outline: none;" />
+                  <label for="signDate_borrower1"><text [mode]="'label'" [label]="'lbl_date'"></text></label>
+                </div>
+            
+                <!-- Signature input with only bottom border -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                  <input type="text" 
+                  id="signature_borrower1" 
+                  [(ngModel)]="signature_b1" 
+                  style="border: none; border-bottom: 1px solid #000; outline: none;" 
+                  pattern="^[A-Za-z\s]{1,20}$" 
+                  maxlength="20" 
+                  required />
+                  <label for="signature_borrower1"><text [mode]="'label'" [label]="'lbl_signature'"></text></label>
+                </div>
+              </div>
+            </td>
+          </tr>
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- <div class="col-6">
+    <gen-button [btnType]="'border-btn'"[btnLabel]="'Cancel'" (onClick)="close()"></gen-button>
+    </div> -->
+    <div class="col-12 text-right">
+      <gen-button [btnLabel]="'Close'" (onClick)="passDataToParent()"></gen-button>
+    </div>
+  </div>
+  
+

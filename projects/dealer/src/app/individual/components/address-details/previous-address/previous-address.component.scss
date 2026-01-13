@@ -1,0 +1,21 @@
+::ng-deep {
+  p-dropdown {
+    display: block;
+    padding: 0 !important;
+  }
+  label.col-12.py-0 {
+    margin-bottom: 7px;
+    display: block;
+  }
+  .col-2.customLabel.px-0 {
+    padding: 0 !important;
+  }
+  .-my-3.w-8 {
+    margin: 0 !important;
+  }
+  .previous_address .p-error {
+    text-wrap: auto;
+    min-width: 120px;
+  }
+
+}

@@ -1,0 +1,143 @@
+<gen-card
+  [headerText]="'Expenditure'"
+  [cardBgColor]="'--background-color-secondary'"
+  [cardType]="'non-border'"
+>
+  <ng-container body>
+    <div class="grid">
+      <label class="assetTypelabel col-4 text-size-12 pl-3"
+        >Recurring Household Expenditure</label
+      >
+      <label class="assetTypelabel col-3 text-size-12 text-center"
+        >Amount</label
+      >
+      <label class="assetTypelabel col-3 text-size-12 text-center"
+        >Frequency<span class="text-red-500"> * </span></label
+      >
+    </div>
+    <form [formGroup]="expenditureDetailsForm">
+      <div formArrayName="expenditureDetails">
+        <div
+          *ngFor="let expenditure of expenditureDetails.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="grid">
+            <div class="col-4 pl-3 align-content-center">
+              <!-- <span class="label-text" *ngIf="i <= 5">{{
+                expenditure.get("expenditure").value
+                }}<span class="text-red-500">* </span></span> -->
+              <!-- <span *ngIf="expenditureStaticFields"> -->
+              <span
+                class="label-text"
+                *ngIf="i >= 0"
+                style="color: var(--label-color)"
+                >{{
+                  expenditureDescriptionMapId.get(
+                    expenditure.get("expenditureDescription").value
+                  )
+                }}
+                <!-- <span class="text-red-500">* </span> -->
+              </span>
+              <!-- </span> -->
+            </div>
+            <div class="col-3 p-fluid">
+              <p-inputNumber
+                [inputStyle]="{ 'text-align': 'right' }"
+                inputId="currency-us"
+                mode="currency"
+                currency="USD"
+                locale="en-US"
+                formControlName="amtExpenditure"
+                placeholder="Amount"
+                [fractionDigits]="4"
+                [maxFractionDigits]="4"
+                [minFractionDigits]="2"
+                (ngModelChange)="updateExpenditureDetails(i)"
+              />
+              <div
+                class="p-error"
+                *ngIf="
+                  expenditure?.get('amtExpenditure')?.invalid &&
+                  (expenditure.get('amtExpenditure')?.touched ||
+                    expenditure.get('amtExpenditure')?.dirty)
+                "
+              >
+                <small
+                  style="text-wrap: nowrap"
+                  *ngIf="expenditure?.get('amtExpenditure').errors?.required"
+                >
+                  Amount is required
+                </small>
+                <small *ngIf="expenditure?.get('amtExpenditure').errors?.min">
+                  Amount should be greater than 0
+                </small>
+                <small *ngIf="expenditure?.get('amtExpenditure').errors?.max"
+                  >Amount cannot exceed (18,4)</small
+                >
+              </div>
+            </div>
+            <div class="col-3 p-fluid">
+              <p-dropdown
+                formControlName="expenditureFrequency"
+                [options]="expenditureFrequencyOptions"
+                optionLabel="name"
+                optionValue="code"
+                placeholder="Select Frequency"
+              ></p-dropdown>
+              <div
+                class="p-error"
+                *ngIf="
+                  expenditure?.get('expenditureFrequency')?.invalid &&
+                  expenditure?.get('expenditureFrequency')?.touched
+                "
+              >
+                <small
+                  style="text-wrap: nowrap"
+                  *ngIf="
+                    expenditure?.get('expenditureFrequency').errors?.required
+                  "
+                  >Frequency is required.</small
+                >
+              </div>
+            </div>
+            <div class="col-2 text-center">
+              <!-- <gen-button [btnType]="'non-bg-btn'" [btnIcon]="'fa-regular fa-trash-can text-lg'" [btnColor]="'danger'"
+                (click)="
+                  expenditure.get('expenditure').value === 'Other'
+                    ? deleteRow(i)
+                    : null
+                " [disabled]="
+                  expenditure.get('expenditure').value !== 'Other'
+                ">Delete</gen-button> -->
+              <gen-button
+                [btnType]="'non-bg-btn'"
+                [btnIcon]="'fa-regular fa-trash-can text-lg'"
+                [btnColor]="'danger'"
+                (onClick)="deleteRow(i)"
+                [disabled]="i <= 5"
+                >Delete</gen-button
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="grid">
+        <div class="col-4 p-fluid">
+          <p-dropdown formControlName="financialExpenditureType" [options]="expenditureTypeOptions" optionLabel="name"
+            optionValue="code" placeholder="Expenditure Type"></p-dropdown>
+        </div>
+        <div class="col-3 p-fluid">
+          <p-inputNumber [inputStyle]="{ 'text-align': 'right' }" inputId="currency-us" mode="currency" currency="USD"
+            locale="en-US" formControlName="financialExpenditureTypeAmount" placeholder="Amount" />
+        </div>
+        <div class="col-3 p-fluid">
+          <p-dropdown formControlName="financialExpenditureFrequency" [options]="expenditureFrequencyOptions"
+            optionLabel="name" optionValue="code" placeholder="Select Frequency"></p-dropdown>
+        </div>
+        <div class="col-2 text-center">
+          <gen-button [btnType]="'bg-btn'" [btnIcon]="'pi pi-angle-right text-lg'" (click)="addRow()"></gen-button>
+        </div>
+      </div> -->
+    </form>
+  </ng-container>
+</gen-card>

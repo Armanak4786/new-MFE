@@ -1,0 +1,42 @@
+::ng-deep {
+    .formConfigCls {
+        gen-card {
+            .col {
+                flex: 0 0 auto;
+                padding: 0.5rem;
+                width: 15%;
+                padding-right: 1rem;
+
+                p-dropdown.col-12 {
+                    padding: 0;
+                    margin-top: 11px;
+                    display: block;
+                }
+
+                input {
+                    margin-top: 4px;
+                }
+
+                .custom-date-input {
+                    margin-top: 0;
+                }
+
+                .vertical-label.grid {
+                    margin: 0;
+                }
+            }
+
+            .col.col-Smll {
+                width: 6.2%;
+                padding-right:0;
+            }
+            .lblCls label {color: #fff !important;}
+
+            label {
+                display: block;
+                margin-bottom: 7px !important;
+                
+            }
+        }
+    }
+}

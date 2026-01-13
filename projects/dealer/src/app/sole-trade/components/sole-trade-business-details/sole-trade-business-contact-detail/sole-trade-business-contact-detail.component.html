@@ -1,0 +1,166 @@
+<gen-card
+  id="gencard"
+  [headerText]="'Contact Details'"
+  [cardBgColor]="'--background-color-secondary'"
+  [cardType]="'non-border'"
+>
+  <ng-container body>
+    <div class="grid p-0 m-0">
+      <div class="col-6 p-0 m-0">
+        <form [formGroup]="phoneForm">
+          <ng-container formArrayName="phone">
+            <div *ngFor="let phone of phone.controls; let i = index">
+              <div [formGroupName]="i" class="mt-2">
+                <div class="grid">
+                  <div class="col-1 ml-2 mr-6 pt-3">
+                    <label class="text-600 mr-3 mobile-label"
+                      >
+                      <!-- {{ businessLabel[i]}} -->
+                      {{ getPhoneLabel(phone.get('type').value) }}
+                      <span class="text-red-500" *ngIf="i === 0">* </span>
+                    </label>
+                  </div>
+                  <div class="col-2 pl-4 p-fluid">
+                    <p-dropdown
+                      [options]="countryCodeOptionsList"
+                      [filter]="countryCodeOptionsList?.length > 5"
+                      formControlName="code"
+                      optionLabel="label"
+                      optionValue="value"
+                      [filter]="true"
+                      [editable]="true"
+                      (onClick)="clearSearchFilter(dropdown)"
+                      (onChange)="onCountryCodeChange($event, i)"
+                      #dropdown
+                    ></p-dropdown>
+
+                    <div
+                      class="p-error"
+                      *ngIf="
+                        phone.get('code').invalid && (phone.get('code').touched || phone.get('code').dirty)
+                      "
+                    >
+                      <small
+                        *ngIf="
+                          phone.get('code')?.invalid &&
+                          (phone.get('code')?.touched ||
+                            phone.get('code')?.dirty)
+                        "
+                        class="p-error"
+                      >
+                        {{ getPhoneErrorMessage(i, "code") }}
+                      </small>
+                      <!-- <small *ngIf="phone.get('code').errors?.required"
+                      >Code is required.</small -->
+                      <!-- > -->
+                    </div>
+                  </div>
+
+                  <div class="col-2">
+                    <!-- <input
+                      type="text"
+                      pInputText
+                      regexPattern="[^0-9]*"
+                      formControlName="areacode"
+                      (input)="getvalue()"
+                      class="w-full"
+                      maxlength="4"
+                    />
+                    <div
+                      class="p-error"
+                      *ngIf="
+                        phone.get('areacode').invalid &&
+                        phone.get('areacode').touched
+                      "
+                    >
+                    <small *ngIf="phone.get('areacode')?.invalid && phone.get('areacode')?.touched" class="p-error">
+                      {{getPhoneErrorMessage(i, 'areacode')}}
+                    </small> -->
+                                        <input
+                                        #areacodeInput
+                      type="text"
+                      pInputText
+                      formControlName="areacode"
+                     (input)="onAreaCodeInputChange($event, i, valueInput)"
+                      (blur)="phone.get('areacode')?.markAsTouched()"
+                      class="w-full"
+                      placeholder="Area code"
+                      />
+                      <!-- [maxlength]="getAreaCodeMaxLength(i)" -->
+
+                    <div
+                      class="p-error"
+                      *ngIf="
+                        phone.get('areacode').invalid &&
+                        (phone.get('areacode').touched || phone.get('areacode').dirty)
+                      "
+                    >
+                      <small *ngIf="phone.get('areacode')?.invalid && (phone.get('areacode')?.touched || phone.get('areacode')?.dirty)" 
+                           class="p-error block mt-1">
+                      {{ getPhoneErrorMessage(i, 'areacode') }}
+                    </small>
+                      <!-- <small *ngIf="phone.get('areacode').errors?.required"
+                        >Area Code is required.</small
+                      > -->
+                    </div>
+                  </div>
+                  <div class="m-2 mt-3">-</div>
+                  <div class="col-3">
+                     <input
+                     #valueInput
+                      type="text"
+                      pInputText
+                      formControlName="value"
+                      (input)="getvalue()"
+                      (blur)="phone.get('value')?.markAsTouched()"
+                      class="w-full"
+                      placeholder="Phone number"
+                    />
+                      <!-- [maxlength]="phone.get('code')?.value === '+91' ? 10 : 
+               (phone.get('code')?.value === '+61' ? 8 : 
+               (phone.get('code')?.value === '+64' ? 8 : 15))" -->
+                    <div
+                      class="p-error"
+                      *ngIf="
+                        phone.get('value').invalid && (phone.get('value').touched || phone.get('value').dirty)
+                      "
+                    >
+                      <small *ngIf="phone.get('value')?.invalid && (phone.get('value')?.touched || phone.get('value')?.dirty)" 
+                           class="p-error block mt-1">
+                      {{ getPhoneErrorMessage(i, 'value') }}
+                    </small>
+                      <!-- <small *ngIf="phone.get('value').errors?.required"
+                        >Phone number is required.</small
+                      > -->
+                    </div>
+                  </div>
+
+                  <div class="col-1" *ngIf="i != 0">
+                    <gen-button
+                      [btnIcon]="'fa fa-trash'"
+                      [btnType]="'non-bg-btn'"
+                      (onClick)="removePhone(i)"
+                      class="mt-2"
+                    ></gen-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3">
+              <gen-button
+                *ngIf="phone.length < 3"
+                [btnLabel]="'Add Other Number'"
+                [btnType]="'plus-btn'"
+                (onClick)="addOtherPhone()"
+              ></gen-button>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+      <div class="col-6 p-0 m-p">
+        <app-sole-trade-email-contact-detail></app-sole-trade-email-contact-detail>
+      </div>
+    </div>
+  </ng-container>
+</gen-card>

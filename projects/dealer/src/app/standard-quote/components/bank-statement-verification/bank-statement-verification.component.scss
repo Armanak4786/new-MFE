@@ -1,0 +1,22 @@
+ .action-item {
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .action-item:hover {
+        background-color: var(
+          --primary-color
+        ); 
+        color: white;
+      }
+
+      ::ng-deep {
+        .p-overlaypanel-content {
+          padding: 8px;
+        }
+        .p-overlaypanel:after {
+        border: none !important;
+        }
+        .p-overlaypanel:before {
+          border: none !important;
+        }
+      }

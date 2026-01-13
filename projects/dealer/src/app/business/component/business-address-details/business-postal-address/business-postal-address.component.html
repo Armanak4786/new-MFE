@@ -1,0 +1,77 @@
+<!-- <gen-card [cardType]="'border'" [headerText]="'Postal Address'"> -->
+  <ng-container body>
+
+<!-- <div class="flex">
+    <div class="field-radiobutton mr-2">
+          <p-radioButton name="poBox" value="poBox" ></p-radioButton>
+            <label >P. O. Box</label>
+         
+          <p-radioButton name="street" value="street" ></p-radioButton>
+            <label >Street</label>
+            </div>
+        </div> -->
+
+        <!-- <div class="flex gap-8 align-items-center">
+          <div class="field-radiobutton">
+            <p-radioButton
+              name="addressType"
+              value="poBox"
+              [(ngModel)]="selectedAddressType"
+              inputId="poBoxOption"
+              (onClick)="changeEvent('poBox')"
+            ></p-radioButton>
+            <label for="poBoxOption">P. O. Box</label>
+          </div>
+          <div class="field-radiobutton">
+            <p-radioButton
+              name="addressType"
+              value="street"
+              [(ngModel)]="selectedAddressType"
+              inputId="streetOption"
+              (onClick)="changeEvent('street')"
+            ></p-radioButton>
+            <label for="streetOption">Street</label>
+          </div>
+      </div> -->
+
+    <div class="grid">
+      <div class="customerAddress-table col-4 pl-3 py-0">
+        <!-- <label for="street" class="p-float-label">{{ "Search" }}</label> -->
+        <!-- <geoapify-geocoder-autocomplete
+          [(ngModel)]="physicalSeachValue"
+          [placeholder]="'Search'"
+          [skipIcons]="true"
+          (placeSelect)="placeSelected($event,index)"
+          [postprocessingHook]="postprocessingHook"
+          (suggestionsChange)="suggestionsChanged($event)"
+        ></geoapify-geocoder-autocomplete> -->
+        <!-- <form *ngIf="customerRoleForm" [formGroup]="customerRoleForm">
+          <geoapify-geocoder-autocomplete
+            formControlName="physicalSeachValue"
+            name="physicalSeachValue"
+            [placeholder]="'Search'"
+            [skipIcons]="true"
+            (placeSelect)="placeSelected($event, index)"
+            [postprocessingHook]="postprocessingHook"
+            (suggestionsChange)="suggestionsChanged($event)"
+          ></geoapify-geocoder-autocomplete>
+        </form> -->
+      </div>
+    </div>
+    <base-form
+    #mainForm
+    [formConfig]="formConfig"
+    [mode]="mode"
+    [id]="id"
+    [data]="data"
+    (valueChanges)="onValueChanges($event)"
+    (formEvent)="onFormEvent($event)"
+    (formButtonEvent)="onButtonClick($event)"
+    (formReady)="onFormReady()"
+    (onInput)="onValueTyped($event)"
+    (onBlur) ="onBlurEvent($event)"
+    (onValueChange)="onValueEvent($event)"
+  >
+  </base-form>
+  </ng-container>
+<!-- </gen-card> -->

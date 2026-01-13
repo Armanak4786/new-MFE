@@ -1,0 +1,26 @@
+<gen-card>
+  <ng-container body>
+    <p-tabView (onChange)="loadTabSpecificData($event)">
+      <!-- @if(activeSteps != 1) {
+      <p-tabPanel header="Additional Approval Condition">
+        <app-additional-approval></app-additional-approval>
+      </p-tabPanel>
+      } -->
+      <p-tabPanel header="Upload">
+        <app-upload-document></app-upload-document>
+      </p-tabPanel>
+      <p-tabPanel header="Documents">
+        <app-generate-document></app-generate-document>
+      </p-tabPanel>
+      <p-tabPanel header="Signing & Verification">
+          <app-signatories></app-signatories>
+      </p-tabPanel>
+      @if(activeSteps == 2) {
+      <p-tabPanel header="Credit Conditions">
+          <app-credit-condition></app-credit-condition>
+      </p-tabPanel>
+      }
+
+    </p-tabView>
+  </ng-container>
+</gen-card>

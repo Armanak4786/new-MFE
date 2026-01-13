@@ -1,0 +1,86 @@
+
+<div *ngIf="!referenceDetails?.length" class="full-width-add-button col-12">
+  <gen-button
+    [btnType]="'plus-btn'"
+    [btnLabel]="'Add Trustees Details'"
+    (onClick)="showReferenceDetailPopup()"
+    class="add-contact-btn full-width-btn"
+  ></gen-button>
+</div>
+
+<ng-container *ngFor="let reference of referenceDetails; let i = index">
+  <gen-card [cardType]="'non-border'" [cardBgColor]="'--background-color-secondary'" class="reference-card mb-4">
+    <ng-container body>
+      <div class="grid align-items-center">
+        <div class="col-10">
+          <div class="reference-header">
+            {{ reference.contactType }}
+            <!-- <span *ngIf="reference.classification === 'business'" class="classification-badge">(Business)</span> -->
+          </div>
+          <div class="grid reference-details">
+            <!-- Display different fields based on classification -->
+            <ng-container *ngIf="reference.classification === 'Individual'; else businessFields">
+              <!-- Individual fields -->
+              <div class="col-12 md:col-3 lg:col-3 ml-3">
+                <div class="field-label">First Name</div>
+                <div>{{ reference.firstName }}</div>
+              </div>
+              
+              <div class="col-12 md:col-3 lg:col-3">
+                <div class="field-label">Last Name</div>
+                <div>{{ reference.lastName }}</div>
+              </div>
+            </ng-container>
+
+            <ng-template #businessFields>
+              <!-- Business fields - only Legal Name -->
+              <div class="col-12 md:col-6 lg:col-6 ml-3">
+                <div class="field-label">Legal Name</div>
+                <div>{{ reference.customerName }}</div>
+              </div>
+            </ng-template>
+            
+            <!-- Common fields -->
+            <div class="col-12 md:col-3 lg:col-2">
+              <div class="field-label">Phone</div>
+              <div>{{ reference.phoneExt }} {{reference.areaCode}} {{ reference.phoneNo }}</div>
+            </div>
+            
+            <div class="col-12 md:col-3 lg:col-2">
+              <div class="field-label">Email</div>
+              <div>{{ reference.email }}</div>
+            </div>
+            
+            <div class="col-12 md:col-2 lg:col-1">
+              <div class="field-label">Signatory</div>
+              <div>{{ reference.isSignatory ? 'Yes' : 'No' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2 text-right mb-5 pb-3">
+          <gen-button
+            [btnIcon]="'fa fa-edit text-lg'"
+            [btnType]="'non-bg-btn'"
+            [className]="'text-primary-color'"
+            (click)="editReference(reference, i)"
+          ></gen-button>
+          <gen-button
+            [btnIcon]="'fa-regular fa-trash-can text-lg'"
+            [btnType]="'non-bg-btn'"
+            [className]="'text-danger-color'"
+            (click)="removeReference(reference, i)"
+          ></gen-button>
+        </div>
+      </div>
+    </ng-container>
+  </gen-card>
+</ng-container>
+
+<ng-container *ngIf="referenceDetails?.length">
+  <gen-button
+    [btnType]="'plus-btn'"
+    [btnLabel]="'Add Trustees Details'"
+    (onClick)="showReferenceDetailPopup()"
+    class="add-contact-btn"
+  ></gen-button>
+</ng-container>

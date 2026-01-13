@@ -1,0 +1,222 @@
+<ng-container>
+  <div class="mt-4 primary-light-color asset-summary">
+    <gen-card [cardType]="'non-border'">
+      <ng-container body>
+        <div class="grid">
+          <div class="sm:col-12 md:col-11 lg:col-12">
+            <p class="px-3">
+              <amount
+                class="value"
+                className="flex justify-content-between"
+                [mode]="'label'"
+                [label]="'lbl_cashPriceAsset'"
+                [value]="cashPriceValue || 0"
+              ></amount>
+              <!-- [label]="'lbl_totalAssets'" -->
+            </p>
+
+            <p-divider type="dashed"></p-divider>
+
+            <p class="px-3">
+              <amount
+                className="flex justify-content-between"
+                [label]="'lbl_totalBorrowed'"
+                class="value"
+                [mode]="'label'"
+                [value]="totalBorrowedAmount || 0"
+              ></amount>
+            </p>
+
+            <p class="px-3" *ngIf="productCode !== 'CSA' && productCode !== 'TL'">
+              <small class="block">
+                <amount
+                  class="value"
+                  className="flex justify-content-between"
+                  [mode]="'label'"
+                  [label]="'lbl_inclGST'"
+                  [value]="gstFee || 0"
+                ></amount>
+              </small>
+            </p>
+
+            <p class="px-3">
+              <amount
+                class="value"
+                [mode]="'label'"
+                className="flex justify-content-between"
+                [label]="'lbl_loanFee'"
+                [value]="loanFee || 0"
+              ></amount>
+              <!-- [label]="'lbl_loanFees'" -->
+            </p>
+          </div>
+        </div>
+      </ng-container>
+    </gen-card>
+  </div>
+</ng-container>
+
+<div class="grid justify-content-center">
+  <div class="col-11">
+    <p class="mt-3 text-base font-bold">
+      <text [mode]="'label'" [label]="'lbl_paymentSummary'"></text>
+    </p>
+  </div>
+  <div class="col-11">
+    <p class="text-sm text-color-normal">
+      <number
+        [mode]="'label'"
+        className="flex justify-content-between"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        [label]="'lbl_term_only'"
+        [value]="term"
+      ></number>
+      <!-- [label]="'lbl_term'" -->
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <text
+        [mode]="'label'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_frequency'"
+        [value]="frequency"
+      ></text>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <percentage
+        [mode]="'label'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_interestRate'"
+        [value]="interestRate"
+      ></percentage>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <date
+        [mode]="'label'"
+        [label]="'lbl_loanDate'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [value]="loanDate"
+      ></date>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <date
+        [mode]="'label'"
+        [label]="'lbl_firstPayment'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [value]="firstPaymentDate"
+      ></date>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <amount
+        class="value"
+        [mode]="'label'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_balloonAmount'"
+        [value]="balloonValue || 0"
+      ></amount>
+    </p>
+
+    <p class="text-sm text-color-normal" *ngIf="productCode !== 'CSA'">
+      <date
+        [mode]="'label'"
+        [label]="'lbl_lastPayment'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [value]="lastPaymentDate"
+      ></date>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <amount
+        class="value"
+        [mode]="'label'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_paymentAmount'"
+        [value]="paymentAmount || 0"
+      ></amount>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <amount
+        class="value"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_interestCharge'"
+        [mode]="'label'"
+        [value]="interestCharges || 0"
+      ></amount>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <amount
+        class="value"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_totalAmountRepay'"
+        [mode]="'label'"
+        [value]="totalAmountToRepay || 0"
+      ></amount>
+    </p>
+
+    <p class="text-sm text-color-normal">
+      <number
+        [mode]="'label'"
+        valueClass="float-right text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between"
+        [label]="'lbl_totalPaymentst'"
+        [value]="totalInstallments || 0"
+      ></number>
+    </p>
+  </div>
+</div>
+
+<ng-container *ngIf="productCode === 'AFV'">
+  <div class="grid justify-content-center">
+    <div class="col-11">
+      <p class="mt-3 text-base font-bold">
+        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
+      </p>
+    </div>
+    <div class="col-11">
+      <p class="text-sm text-color-normal">
+        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
+        <span class="float-right text-color-dark-shade-3 font-bold">
+          <amount class="value" [mode]="'label'" [value]="futureValue"></amount>
+        </span>
+      </p>
+
+      <p class="text-sm text-color-normal">
+        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
+        <span class="float-right text-color-dark-shade-3 font-bold">
+          <date [mode]="'label'" [value]="futureValueDate"></date>
+        </span>
+      </p>
+    </div>
+
+    <div class="col-11">
+      <p class="mt-3 text-base font-bold">
+        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
+      </p>
+    </div>
+    <div class="col-11">
+      <p-dropdown
+        [options]="AFVoptions"
+        [(ngModel)]="selectedOption"
+        optionLabel="label"
+        (onChange)="onOptionSelect($event)"
+        placeholder="Select an option"
+      >
+      </p-dropdown>
+    </div>
+  </div>
+</ng-container>

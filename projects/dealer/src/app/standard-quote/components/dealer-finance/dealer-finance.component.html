@@ -1,0 +1,102 @@
+<gen-card
+  [cardType]="'shadow-non-border'"
+  [headerText]="isInternalUser? 'Finance':'Finance'"
+  [cardBgColor]="'--primary-lighter-color'"
+  *ngIf="showCard"
+>
+  <ng-container body>
+    
+    <ng-container>
+      <div class="p-0">
+        <p-accordion
+          (activeIndexChange)="activeIndexChange($event)"
+          [activeIndex]="activeIndex"
+        >
+          <p-accordionTab class="dealerFinancebtn">
+            <div
+              class="contentStyle px-3 py-3 mt-1 mb-3 border-round-lg col-12 text-size-12 border-1"
+            >
+              <div class="flex gap-8">
+                <div class="flex items-center gap-2">
+                  <!-- <label><text [mode]="'label'" [label]="'lbl_baseInterestRate'"></text>
+                  <percentage class="text-bold" [mode]="'label'" [value]="dealerBaseInterestRate"></percentage></label> -->
+                  <text
+                    [mode]="'label'"
+                    [label]="'lbl_baseInterestRate'"
+                  ></text>
+                  <b class="text-bold">
+                    <percentage
+                      [mode]="'label'"
+                      [value]="dealerBaseInterestRate"
+                    ></percentage>
+                  </b>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <text
+                    [mode]="'label'"
+                    [label]="'lbl_estimatedCommission'"
+                  ></text>
+                  <b>
+                    <amount
+                      class="text-bold"
+                      [mode]="'label'"
+                      [value]="estimateCommissions"
+                    ></amount>
+                  </b>
+                </div>
+
+                @if(this.baseFormData?.productCode !== 'FL' && this.productCode !== 'OL' ){
+                <div class="flex items-center gap-2">
+                  <text
+                    [mode]="'label'"
+                    [label]="'lbl_establishmentFee'"
+                  ></text>
+                  <b>
+                    <amount
+                      class="text-bold"
+                      [mode]="'label'"
+                      [value]="establishmentFeeShares"
+                    ></amount>
+                  </b>
+                  <!-- <app-dealer-finance-panel></app-dealer-finance-panel> -->
+
+                </div>
+                }
+              </div>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+      </div> </ng-container
+    >
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+      (formReady)="onFormReady()"
+      (onInput)="onValueTyped($event)"
+      (onBlur)="onBlurEvent($event)"
+      (onValueChange)="onValueEvent($event)"
+    >
+    </base-form>
+  </ng-container>
+
+  <ng-container header>
+    <div class="">
+      <gen-button
+        [btnIcon]="
+          activeIndex === 0 ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down'
+        "
+        [iconPos]="'right'"
+        [btnType]="'non-bg-btn'"
+        [btnLabel]="'Dealer Finance'"
+        (onClick)="activeIndexChange(0)"
+      ></gen-button>
+    </div>
+  </ng-container>
+</gen-card>

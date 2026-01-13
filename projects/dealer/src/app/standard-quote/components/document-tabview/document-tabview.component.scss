@@ -1,0 +1,24 @@
+// .haulerSourceBody {
+//   position: relative;
+//   overflow: hidden;
+// }
+
+.long-hr {
+  margin-top: -0.9rem;
+}
+
+.Generated-hr {
+  border: none;
+  height: 13px;
+  margin: 5px 0 10px 0;
+  width: 18%;
+  margin-left: 20% !important;
+  border-radius: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.active-label {
+  font-weight: bold;
+  border-bottom: solid 5px var(--primary-color);
+}

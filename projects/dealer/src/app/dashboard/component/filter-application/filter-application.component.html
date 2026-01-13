@@ -1,0 +1,90 @@
+<!-- <p-accordion>
+  <p-accordionTab header="Filter Application">
+    <div class=" filter-card">
+      <div class="mt-2 grid">
+        <div *ngFor="let field of fields" class="col-4">
+        <p-checkbox [binary]="true" name="field" value="{{field.name}}" label="{{field.name}}" [(ngModel)]="field.default" (onChange)="getSelected()" class="mr-3 mb-2"></p-checkbox>
+        </div>
+      </div>
+
+      <div class="filter-footer">
+        <p-checkbox name="selectAll" value="selectAll" label="Select All" (onChange)="getAllSelected()" class="mr-3 mb-2"></p-checkbox>
+     
+        <p-button label="Search" class="p-button-sm p-button-outlined" (click)="search()"></p-button>
+        <p-button label="Reset" class="p-button-sm p-button-outlined ml-2" (click)="clearFilters()"  styleClass="p-button-outlined reset-btn-color"></p-button>
+        
+      </div>
+</div>
+</p-accordionTab>
+</p-accordion> -->
+
+<div class="card">
+  <div class="filter-header flex flex-wrap flex-justify-between">
+<!-- <div class="flex flex-wrap flex-justify-between"> -->
+    <p class="mt-0 p-3 mb-2 text-m font-bold">
+      <text [mode]="'label'" [label]="'lbl_filterApplication'"></text>
+    </p>
+     <a href="javascript:void(0)" class="ml-auto view-toggle flex align-items-center"  (click)="toggleShowAll()">
+        <span>{{ showAll ? 'View Less' : 'View All' }}</span>
+  <i class="pi pi-chevron-right ml-1"></i>
+      </a>
+
+  </div>
+  <div class="filter-card">
+    <div class="grid ml-2">
+      <div *ngFor="let field of visibleFields" class="col-4">
+        <p-checkbox
+          [binary]="true"
+          name="field"
+          [value]="field.partyId"
+          [label]="field.extName"
+          [(ngModel)]="field.checked"
+          (onChange)="getSelected(field)"
+          class="mr-3 mb-2"
+        >
+        </p-checkbox>
+      </div>
+
+<!-- 
+        <div class="col-4">
+        <p-checkbox
+  [binary]="true"
+  name="field"
+  [value]="fields?.partyId"
+  [label]="fields?.extName"
+  [(ngModel)]="fields.checked"
+  (onChange)="getSelected()"
+  class="filter-checkbox mr-3 mb-2"
+>
+</p-checkbox>
+
+      </div> -->
+    </div>
+    <div class="filter-divider"></div>
+
+    <div class="filter-footer mt-3">
+     
+      <div class="footer-buttons">  
+        <p-checkbox
+          name="selectAll"
+          value="selectAll"
+          label="Select All"
+          (onChange)="getAllSelected()"
+          class="mr-3 mb-2"
+        >
+        </p-checkbox>  
+
+          <gen-button
+          [btnLabel]="'Search'"
+          (onClick)="search()"
+        ></gen-button>
+         <gen-button
+          [btnLabel]="'Reset'"
+          [btnType]="'border-btn'"
+          class="reset-btn-color ml-2"
+          (onClick)="clearFilters()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

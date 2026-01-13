@@ -1,0 +1,73 @@
+
+
+  <ng-container body>
+
+    <gen-table
+          [columns]="generatedDocsColumns"
+          [dataList]="generatedDocuments"
+          [rowHeight]="12"
+          [headingClass]="'font-medium text-500 px-0'"
+          [bodyClass]="'px-0 py-2'"
+          (onCellClick)="onCellClick($event)"
+          (onCellValueChange)="updateCustRole($event)"
+          [selectionType]="'checkbox'"
+          [selection]="'true'"
+        ></gen-table>
+    
+    <!-- <div class="flex scrollabel">
+      <ng-container *ngFor="let doc of generatedDocuments; let i = index">
+        <div class="col-fixed w-10rem">
+          <div class="border-1 border-300 border-round-sm p-1">
+            @if (accessGranted?.['generated_documents_select']){
+            <p-checkbox [(ngModel)]="doc.checked" [binary]="true" inputId="binary"></p-checkbox>
+            }
+            <div class="text-center m-1 my-2">
+              <img src="{{ imagePaths[doc.type] }}" style="width: 70px" />
+            </div>
+            <div
+              class="text-center surface-overlay h-3rem text-sm white-space-wrap overflow-hidden text-overflow-ellipsis"
+              [pTooltip]="tooltipContent" tooltipPosition="bottom">
+              {{ doc?.name }}
+            </div>
+            <ng-template #tooltipContent>
+              <div class="flex align-items-center">
+                <span>{{ doc?.name }}</span>
+              </div>
+            </ng-template>
+          </div>
+
+          <p class="text-xs text-center text-500">
+            {{ doc?.loaded | date : "dd/MM/yyyy | h:mm a" }}
+          </p>
+        </div>
+      </ng-container>
+    </div> -->
+    <div class="full-width-divider"></div>
+    <div class="flex pt-2">
+      
+      <gen-button id="preview-button" [btnLabel]="'Preview'" [btnIcon]="'far fa-eye pr-2'" [btnType]="'non-bg-btn'"
+        (onClick)="onPreviewFile(0)"></gen-button>
+      <p class="text-right mb-0 divider-class mt-2 text-primary">|</p>
+
+      
+      <gen-button [btnLabel]="'Download'" [btnIcon]="'pi pi-download pr-2'" [btnType]="'non-bg-btn'"></gen-button>
+      <p class="text-right mb-0 divider-class mt-2 text-primary">|</p>
+
+      
+      <gen-button [btnLabel]="'Print'" [btnIcon]="'pi pi-print pr-2'" [btnType]="'non-bg-btn'"></gen-button>
+      <p class="text-right mb-0 divider-class mt-2 text-primary">|</p>
+
+      
+      <gen-button [btnLabel]="'Email'" [btnIcon]="'pi pi-envelope pr-2'" [btnType]="'non-bg-btn'">
+      </gen-button>
+      <p class="mb-0 px-0 divider-class mt-2 text-primary">|</p>
+    
+
+      
+      <gen-button [btnLabel]="'Docsign'" [btnIcon]="'fa-regular fa-shield-keyhole pr-2'"
+        [btnType]="'non-bg-btn'"></gen-button>
+    </div>
+    <div *ngIf="displayDoc">
+      <iframe [src]="getSanitizedUrl(displayDoc)" frameborder="0" width="100%" height="500px" id="iframe"></iframe>
+    </div>  </ng-container>
+    

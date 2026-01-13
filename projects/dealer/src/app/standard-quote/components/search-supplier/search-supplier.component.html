@@ -1,0 +1,39 @@
+<ng-container body >
+  <div class="tab-header-with-close relative">
+
+<p-tabView>
+
+  <p-tabPanel header="Add Existing">
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+      (formReady)="onFormReady()"
+    >
+    </base-form>
+
+    <div class="mt-3">
+      <ng-container *ngIf="searchType === 'individual'">
+        <app-supplier-individual-tab
+        
+          #individualTab
+        ></app-supplier-individual-tab>
+      </ng-container>
+
+      <ng-container *ngIf="searchType === 'business'">
+        <app-supplier-business-tab
+          #businessTab
+        >
+        </app-supplier-business-tab>
+      </ng-container>
+    </div>
+  </p-tabPanel>
+</p-tabView>
+    <i class="pi pi-times close-tab-icon" (click)="onClose()" title="Close"></i>
+    </div>
+</ng-container>

@@ -1,0 +1,98 @@
+<gen-card [cardType]="'non-border'" [headerText]="'Liabilities'" [cardBgColor]="'--background-color-secondary'">
+  <ng-container body>
+    <div class="grid">
+      <label class="assetTypelabel col-4 text-size-12 pl-3">Liabilities Type</label>
+      <label class="assetTypelabel col-2 text-size-12 white-space-nowrap text-center">Balance / Limit</label>
+      <label class="assetTypelabel col-2 text-size-12 text-center">Amount</label>
+      <label class="assetTypelabel col-3 text-size-12 text-center">Frequency<span class="text-red-500"> * </span></label>
+    </div>
+    <form [formGroup]="liabilitiesDetailsForm">
+      <div formArrayName="liabilitiesDetails">
+        <div *ngFor="let liabilities of liabilitiesDetails.controls; let i = index" [formGroupName]="i">
+          <div class="grid" *ngIf="shouldShowLiability(liabilities.get('liabilityDescription').value)">
+            <div class="col-4 align-content-center pl-3">
+              <span class="label-text" style="color: var(--label-color)">{{ getDisplayText(liabilities.get('liabilityDescription').value) }}</span>
+            </div>
+            <div class="col-2 p-fluid">
+              <p-inputNumber 
+                [inputStyle]="{ 'text-align': 'right' }" 
+                inputId="currency-us" 
+                mode="currency" 
+                currency="USD"
+                locale="en-US" 
+                placeholder="Amount" 
+                formControlName="amtBalanceLimit"
+                [maxFractionDigits]="4"
+                (ngModelChange)="updateLiabilityDetails(i)"
+              />
+              <!-- Enhanced Error messages for Balance/Limit -->
+              <div class="p-error" *ngIf="
+                  liabilities?.get('amtBalanceLimit')?.invalid &&
+                  (liabilities.get('amtBalanceLimit')?.touched || liabilities.get('amtBalanceLimit')?.dirty)
+                ">
+                <small style="text-wrap: nowrap" *ngIf="
+                    liabilities?.get('amtBalanceLimit').errors?.required
+                  ">
+                  Field is required
+                </small>
+                <small *ngIf="
+                    liabilities?.get('amtBalanceLimit').errors?.min
+                  ">
+                  Amount should be greater than 0
+                </small>
+                <small *ngIf="liabilities?.get('amtBalanceLimit').errors?.max">Amount cannot exceed (18,4)</small>
+              </div>
+            </div>
+            <div class="col-2 p-fluid">
+              <p-inputNumber 
+                [inputStyle]="{ 'text-align': 'right' }" 
+                inputId="currency-us" 
+                mode="currency"
+                currency="USD" 
+                locale="en-US" 
+                placeholder="Amount" 
+                formControlName="amtLiability"
+                [maxFractionDigits]="4"
+                (ngModelChange)="updateLiabilityDetails(i)"
+              />
+              <!-- Enhanced Error messages for Amount -->
+         <div class="p-error" *ngIf="shouldShowError(liabilities, 'amtLiability')">
+
+
+                <small style="text-wrap: nowrap" *ngIf="
+                    liabilities?.get('amtLiability').errors?.required
+                  ">
+                  Amount is required
+                </small>
+                <small *ngIf="
+                  liabilities?.get('amtLiability').errors?.min
+                ">
+                  Amount should be greater than 0
+                </small>
+                <small *ngIf="liabilities?.get('amtLiability').errors?.max">Amount cannot exceed (18,4)</small>
+              </div>
+            </div>
+            <div class="col-3 p-fluid">
+              <p-dropdown formControlName="liabilityFrequency" [options]="liabilitiesFrequencyOptions"
+                optionLabel="name" optionValue="code" placeholder="Select Frequency"></p-dropdown>
+              <!-- Error messages... -->
+              <div class="p-error" *ngIf="
+                  liabilities?.get('liabilityFrequency')?.invalid &&
+                  liabilities?.get('liabilityFrequency')?.touched
+                ">
+                <small style="text-wrap: nowrap" *ngIf="
+                    liabilities.get('liabilityFrequency').errors
+                      ?.required
+                  ">Frequency is required.</small>
+              </div>
+            </div>
+            <div class="col-1 text-center">
+              <gen-button [btnType]="'non-bg-btn'" [btnIcon]="'fa-regular fa-trash-can text-lg'" [btnColor]="'danger'"
+                (click)="deleteRow(i)" [disabled]="i <= 4">Delete</gen-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</gen-card>

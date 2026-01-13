@@ -1,0 +1,10 @@
+:host ::ng-deep .p-dropdown-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px; /* Adjust the width as needed */
+}
+
+.business-contact-details-form{
+  background-color: var(--background-color-secondary);
+}

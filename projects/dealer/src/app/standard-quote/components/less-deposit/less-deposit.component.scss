@@ -1,0 +1,11 @@
+::ng-deep .p-dialog-title {
+  text-align: right;
+  
+}
+
+/* For better positioning with flexbox */
+::ng-deep .p-dialog-header {
+  justify-content: space-between;
+}
+
+

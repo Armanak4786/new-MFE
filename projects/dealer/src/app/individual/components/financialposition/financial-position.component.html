@@ -1,0 +1,130 @@
+<div class="grid">
+  <div class="col-12" *ngIf="formData?.role === 2 && showSSOP">
+    <gen-card [cardType]="'non-border'">
+      <div body>
+        <div class="flex align-items-center">
+          <label class="mr-3">Is all income and expenses shared between Borrower and Co-borrower?</label>
+          <p-inputSwitch [(ngModel)]="IsSharedFinancialPosition" [style]="{ width: '2.7rem', height: '1rem' }"
+            (onChange)="onSharedToggle()"></p-inputSwitch>
+          <span class="ml-2 font-bold">{{IsSharedFinancialPosition ? 'Yes' : 'No'}}</span>
+        </div>
+      </div>
+    </gen-card>
+  </div>
+
+  <div class="col-12" *ngIf="shouldShowFinancialPosition()">
+    <div class="grid">
+      <div class="col-6">
+        <div class="mt-2 mb-2">
+          <gen-card [cardType]="'non-border'">
+            <div body>
+              <div class="grid">
+                <div class="col-12 md:col-12 lg:col-6 text-size-12">
+                  <label>
+                    {{ "Assets (Total) : " | apsTranslate }}
+                    <span class="font-bold text-size-12">
+                      <!-- {{assetValue |currency}} -->
+                      <ng-container *ngIf="assetValue === Infinity || assetValue >= 1e18; else normalValue">
+                        Infinity
+                      </ng-container>
+                      <ng-template #normalValue>
+                        {{ assetValue | currency }}
+                      </ng-template>
+                    </span>
+                  </label>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6 pt-2">
+                  <div class="assetprogress">
+                    <p-progressBar [value]="getProgressPercentage(assetValue)" [showValue]="true"
+                      [style]="{ height: '20px', 'border-radius': '5px' }" />
+                  </div>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6 text-size-12">
+                  <label>
+                    {{ "Liabilities (Balance / Limit) : " | apsTranslate }}
+                    <span class="font-bold text-size-12">
+                      <ng-container *ngIf="totalLiabilites === Infinity || totalLiabilites >= 1e18; else normalLiabilities">
+                        Infinity
+                      </ng-container>
+                      <ng-template #normalLiabilities>
+                        {{ totalLiabilites | currency }}
+                      </ng-template>
+                    </span>
+                  </label>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6 pt-2">
+                  <div class="liabilitiesprogress">
+                    <p-progressBar [value]="getProgressPercentage(totalLiabilites)" [showValue]="false"
+                      [style]="{ height: '20px', 'border-radius': '5px' }" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </gen-card>
+        </div>
+        <div class="mt-3">
+          <app-individual-asset-details></app-individual-asset-details>
+        </div>
+        <div class="mt-3">
+          <app-individual-liabilities></app-individual-liabilities>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="mt-2 mb-2">
+          <gen-card [cardType]="'non-border'">
+            <div body>
+              <div class="grid">
+                <div class="col-12 md:col-12 lg:col-6 text-size-12">
+                  <label>
+                    {{ "Income (Monthly) : " | apsTranslate }}
+                    <span class="font-bold text-size-12">
+                      <ng-container *ngIf="incomeValue === Infinity || incomeValue >= 1e18; else normalIncome">
+                        Infinity
+                      </ng-container>
+                      <ng-template #normalIncome>
+                        {{ incomeValue | currency }}
+                      </ng-template>
+                    </span>
+                  </label>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6 pt-2">
+                  <div class="incomeprogress">
+                    <p-progressBar [value]="getProgressPercentage(incomeValue)" [showValue]="false"
+                      [style]="{ height: '20px', 'border-radius': '5px' }" />
+                  </div>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6 text-size-12">
+                  <label>
+                    {{ "Expenditure (Monthly) : " | apsTranslate }}
+                    <span class="font-bold text-size-12">
+                      <ng-container *ngIf="expenditureMonthly  === Infinity || expenditureMonthly >= 1e18; else normalExpenditure">
+                        Infinity
+                      </ng-container>
+                      <ng-template #normalExpenditure>
+                        {{ expenditureMonthly  | currency }}
+                      </ng-template>
+                    </span>
+                  </label>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6 pt-2">
+                  <div class="expenditureprogress">
+                    <p-progressBar [value]="getProgressPercentage(expenditureMonthly)" [showValue]="false"
+                      [style]="{ height: '20px', 'border-radius': '5px' }" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </gen-card>
+        </div>
+        <div class="mt-3">
+          <app-income-details></app-income-details>
+        </div>
+        <div class="mt-3">
+          <app-individual-expenditure></app-individual-expenditure>
+        </div>
+        <div class="mt-3">
+          <app-regular-recurring-frequency></app-regular-recurring-frequency>
+        </div>
+      </div>
+    </div>
+  </div>

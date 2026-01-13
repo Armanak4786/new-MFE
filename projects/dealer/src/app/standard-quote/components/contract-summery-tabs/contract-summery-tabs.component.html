@@ -1,0 +1,44 @@
+<gen-card>
+  <ng-container body>
+    <div class="haulerSourceBody">
+      <div class="col-12">
+        <div>
+          <label class=" documentUpload-label pb-3" [ngClass]="{ 'active-label': activeSteps === 0 }"
+            (click)="activeSteps = 0; manageSelectedRow(activeSteps)">
+            {{ stepss[0] }}
+          </label>
+
+          <label class=" documentUpload-label ml-4 pb-3" [ngClass]="{ 'active-label': activeSteps === 1 }"
+            (click)="activeSteps = 1; manageSelectedRow(activeSteps)">
+            {{ stepss[1] }}
+          </label>
+
+          <label class=" documentUpload-label ml-4 pb-3" [ngClass]="{ 'active-label': activeSteps === 2 }"
+            (click)="activeSteps = 2; manageSelectedRow(activeSteps)">
+            {{ stepss[2] }}
+          </label>
+        </div>
+      </div>
+
+      <hr class='Generated-hr'>
+      <hr class="long-hr">
+
+      <div class="col-12">
+        @if (activeSteps == 0)
+        {
+        <app-additional-approval></app-additional-approval>
+        }
+        @if (activeSteps == 1)
+        {
+        <app-upload-document></app-upload-document>
+        }
+        @if (activeSteps == 2)
+        {
+        <app-generate-document></app-generate-document>
+        }
+
+      </div>
+    </div>
+
+  </ng-container>
+</gen-card>

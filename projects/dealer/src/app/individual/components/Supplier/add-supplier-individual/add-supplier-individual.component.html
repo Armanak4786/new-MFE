@@ -1,0 +1,16 @@
+
+<ng-container *ngIf="isReady">
+  <lib-stepper #libStepper [steps]="steps" (onChange)="changeStep($event)" (onSubmit)="onSubmit()"
+    [activeStep]="activeStep" [tabNavigation]="true" [stepperType]="'type2'" (onCancel)="cancel()"
+    [saveBtnLabel]="'Save'" [submitAtLast]="true">
+    <div *ngIf="activeStep == 0">
+      <app-supplier-personal-details></app-supplier-personal-details>
+    </div>
+    <div *ngIf="activeStep == 1">
+       <app-supplier-bank-details (bankUpdate)="onBankUpdate($event)"></app-supplier-bank-details>
+    </div>
+    <div *ngIf="activeStep == 2">
+      <app-supplier-address-details></app-supplier-address-details>
+    </div>
+   </lib-stepper>
+</ng-container> 

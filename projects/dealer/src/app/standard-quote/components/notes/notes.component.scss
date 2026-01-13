@@ -1,0 +1,53 @@
+// .commercial-notes {
+//   &::ng-deep {
+//     .udc-card-body {
+//       padding-top: 5px !important;
+//     }
+//   }
+// }
+
+.notes-container {
+  flex-wrap: wrap;
+  flex-wrap: wrap;
+  // overflow-x: auto;
+}
+.scroll-wrapper {
+max-height: 170px; 
+overflow-y: auto;
+overflow-x: hidden;
+}
+
+.invisible{
+  button{
+    background-color: transparent;
+    border: none;
+  }
+}
+
+.notes-card-color{
+  height: 150px;
+  background-color: var(--surface-100);
+}
+// .notesCard {
+//   border: solid 1px var(--primary-color);
+//   border-radius: 5px;
+//   text-wrap: wrap;
+//   word-wrap: break-word;
+//   background-color: var(--primary-color-light-shade-2);
+// }
+
+// .search-box {
+//   &::ng-deep {
+//     .input-control {
+//       width: 88% !important;
+//     }
+//   }
+// }
+::ng-deep {
+  .empty-state-box gen-card .p-card {
+    max-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

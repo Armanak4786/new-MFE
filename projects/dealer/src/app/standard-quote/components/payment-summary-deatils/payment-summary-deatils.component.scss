@@ -1,0 +1,23 @@
+.text-color-normal {
+  color: var(--label-color);
+}
+
+.primary-light-color {
+  border-radius: 8px;
+}
+
+.invisible{
+  height: 0;
+  button{
+    background-color: transparent;
+    border: none;
+  }
+}
+
+::ng-deep {
+  .asset-summary {
+    .p-divider.p-divider-horizontal:before {
+      border-color: var(--primary-color) !important;
+    }
+  }
+}

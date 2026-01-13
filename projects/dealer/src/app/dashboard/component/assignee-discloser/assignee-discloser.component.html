@@ -1,0 +1,14 @@
+<div class="grid">
+    <div class="col-12 text-center py-0">
+    Quote ID: 212233 is now assigned to Dealer A <br> 
+    Some details may be impacted by this change.
+    Please ensure you review the quote.
+    </div>
+
+    <div class="col-12 mt-3 flex justify-content-center gap-3">
+
+        <gen-button [btnType]="'border-btn'"    [btnLabel]="'Cancel'"  (onClick)="closePopup()" ></gen-button>
+        <gen-button [btnType]="'border-btn'"    [btnLabel]="'View Quote'"  (onClick)="viewQuote()" ></gen-button> 
+        <!-- <udc-button   [btnType]="'border-btn'"    [btnLabel]="' Cancel'" ></udc-button> -->
+    </div>
+</div>

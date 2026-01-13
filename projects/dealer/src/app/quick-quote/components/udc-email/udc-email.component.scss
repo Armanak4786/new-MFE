@@ -1,0 +1,82 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.row2 {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+::ng-deep .custom_EmailTextBox .p-inputtext {
+  width: 60px !important;
+}
+
+.col-left,
+.col-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.col-right {
+  margin-left: 10px;
+}
+// .gray-card {
+//   background: #F6F6F6;
+//   border: 1px dashed #7D7D7D;
+//   // display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: auto;
+//   width: 100%;
+//   border-radius: 10px;
+// }
+.gray-card {
+  background: #f6f6f6;
+  border: 1px dashed #7d7d7d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10rem;
+  width: 100%;
+  border-radius: 10px;
+}
+.file-icon-container {
+  display: flex;
+  gap: 60px;
+  justify-content: start;
+  align-items: center;
+  color: #666;
+  width: 60%;
+}
+
+.file-icon-container i {
+  font-size: 2rem; /* Increase the icon size */
+  margin-bottom: 0.5rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Horizontally center the buttons */
+  align-items: center; /* Vertically center the buttons */
+  // gap: 5px;              /* Set gap between buttons */
+}
+
+.hover-button {
+  padding-left: 0.51rem;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+.hover-button:hover {
+  background-color: rgba(38, 38, 38, 0.16);
+}
+
+.mail-pdf {
+  margin: 0.7rem 0.7rem 0.1rem 0.7rem;
+}

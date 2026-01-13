@@ -1,0 +1,45 @@
+<div class="grid">
+  <div class="sm:col-12 md:col-6 lg:col-5">
+    @if (!userRole?.functions?.includes('monthly_volumes'))
+    {
+    <app-monthly-volumes></app-monthly-volumes>
+    }
+   @if (!userRole?.functions?.includes('workflow_status') && 
+         !userRole?.functions?.includes('average_sale_price') && 
+         !userRole?.functions?.includes('fees_and_commission') && 
+         !userRole?.functions?.includes('margins_on_loans_paid_out') && 
+         !userRole?.functions?.includes('online_application_status') && 
+         !userRole?.functions?.includes('application_outcome')) {
+      <app-workflow-status></app-workflow-status>
+    }
+  </div>
+  <div class="sm:col-12 md:col-6 lg:col-7 pb-2">
+    <app-average-sales></app-average-sales>
+ 
+    @if (
+         !userRole?.functions?.includes('online_application_status') && 
+         !userRole?.functions?.includes('application_outcome'))  {
+      <app-application-outcome></app-application-outcome>
+    }
+  
+ 
+  </div>
+  @if (userRole?.functions?.includes('application_outcome') && 
+       !userRole?.functions?.includes('online_application_status') && userRole?.functions?.includes('average_sale_price') && 
+        userRole?.functions?.includes('fees_and_commission') && 
+        userRole?.functions?.includes('margins_on_loans_paid_out')){
+        
+    <div class="sm:col-6 md:col-7 lg:col-12 ">
+      <app-application-outcome [isFullWidth2]="true"></app-application-outcome>
+    </div>
+  }
+   @if (!userRole?.functions?.includes('workflow_status') && 
+       userRole?.functions?.includes('average_sale_price') && 
+        userRole?.functions?.includes('fees_and_commission') && 
+        userRole?.functions?.includes('margins_on_loans_paid_out')) {
+    <div class="sm:col-12 md:col-12 lg:col-12 pb-2">
+      <app-workflow-status [isFullWidth]="true"></app-workflow-status>
+    </div>  
+  }
+  
+</div>

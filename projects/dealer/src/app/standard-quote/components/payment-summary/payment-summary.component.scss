@@ -1,0 +1,15 @@
+.PaymentSummary {
+    &::ng-deep {
+        .balloonInput {
+
+            .p-disabled,
+            .p-component:disabled {
+                // opacity: 0.5;
+                border-bottom: 0px solid !important; 
+                text-align: left !important;
+                color:  #ccc
+            }
+        }
+    }
+
+}

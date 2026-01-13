@@ -1,0 +1,23 @@
+.field-radiobutton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+::ng-deep {
+  p-dropdown {
+    display: block;
+    padding: 0 !important;
+  }
+  label.col-12.py-0 {
+    margin-bottom: 7px;
+    display: block;
+  }
+  .col-2.customLabel.px-0 {
+    padding: 0 !important;
+  }
+  .-my-3.w-8 {
+    margin: 0 !important;
+  }
+
+}

@@ -1,0 +1,11 @@
+
+    <gen-table
+        [columns]="eSignDetailsColumns"
+        [dataList]=""
+        [rowHeight]="12"
+        [headingClass]="'font-medium text-500 px-0'"
+        [bodyClass]="'px-0 py-2'"
+        (onCellClick)="onCellClick($event)"
+        (onCellValueChange)="onCellValueChange($event)"
+        tableStyle="stripped-rows"
+    ></gen-table>

@@ -1,0 +1,50 @@
+::ng-deep {
+    .motocheck-tab {
+        .p-card {
+            .card-body {
+                padding-left: 0;
+                padding-right: 0;
+                margin-top: 20px;
+            }
+        }
+    }
+}
+
+::ng-deep {
+    .dealer-inventory-tab {
+        .p-card {
+            .card-body {
+                padding-left: 0;
+                padding-right: 0;
+                margin-left: -4px;
+
+
+                .col-3.ng-star-inserted {
+                    margin-top: 17px;
+                }
+
+
+            }
+        }
+
+    }
+}
+
+::ng-deep {
+    .radioButtonCheck {
+        margin-bottom: -2rem !important;
+    }
+
+    :not(.p-radiobutton-disabled).p-radiobutton-focused {
+        box-shadow: none !important;
+        // border: none !important;
+
+    }
+
+    :not(.p-disabled).p-focus {
+        // border: none !important;
+        box-shadow: none !important;
+
+    }
+
+}

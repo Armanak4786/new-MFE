@@ -1,0 +1,80 @@
+<div class="grid">
+  <div class="col-12" *ngIf="formData?.role === 2 && showSSOP">
+    <gen-card [cardType]="'non-border'">
+      <div body>
+        <div class="flex align-items-center">
+          <label class="mr-3">Is all income and expenses shared between Borrower and Co-borrower?</label>
+          <p-inputSwitch [(ngModel)]="IsSharedFinancialPosition" 
+                         [style]="{ width: '2.7rem', height: '1rem' }"
+                        (onChange)="onSharedToggle()"></p-inputSwitch>
+          <span class="ml-2 font-bold">{{IsSharedFinancialPosition ? 'Yes' : 'No'}}</span>
+        </div>
+      </div>
+    </gen-card>
+  </div>
+
+  <ng-container *ngIf="shouldShowFinancialPosition(); then mainLayout else noFinancialPosition">
+  </ng-container>
+
+  <ng-template #mainLayout>
+    <ng-container *ngIf="formData?.role !== 3; then borrowerLayout else guarantorLayout">
+    </ng-container>
+  </ng-template>
+
+  <ng-template #borrowerLayout>
+    <div class="grid mt-2">
+      <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+        <app-sole-trade-profit-declaration></app-sole-trade-profit-declaration>
+        <div class="mt-2">
+          <app-sole-trade-turnover-info></app-sole-trade-turnover-info>
+        </div>
+        <div class="mt-2">
+          <app-sole-trade-balance-info></app-sole-trade-balance-info>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+        <gen-card [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'" [headerText]="'Personal Statement of Position'">
+          <ng-container body>
+            <!-- <p class="m-0 p-0">(Sole Trader/Individual)</p> -->
+            <p-divider></p-divider>
+            <p class="p-0 font-bold">Assets</p>
+            <app-sole-trade-assets></app-sole-trade-assets>
+            <p-divider type="dashed"></p-divider>
+            <p class="p-0 font-bold">Liabilities</p>
+            <app-sole-trade-liabilities></app-sole-trade-liabilities>
+            <p-divider></p-divider>
+            <app-total-payment-amount></app-total-payment-amount>
+          </ng-container>
+        </gen-card>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #guarantorLayout>
+    <div class="grid mt-2">
+      <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+        <gen-card [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'">
+          <ng-container body>
+            <p class="p-0 font-bold">Assets</p>
+            <app-sole-trade-assets></app-sole-trade-assets>
+          </ng-container>
+        </gen-card>
+      </div>
+      <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+        <gen-card [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'">
+          <ng-container body>
+            <p class="p-0 font-bold">Liabilities</p>
+            <app-sole-trade-liabilities></app-sole-trade-liabilities>
+          </ng-container>
+        </gen-card>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #noFinancialPosition>
+    <!-- Content to show when shouldShowFinancialPosition() is false -->
+    <!-- <div class="p-3 text-center">
+      Financial position information is not required.
+    </div> -->
+  </ng-template>
+</div>

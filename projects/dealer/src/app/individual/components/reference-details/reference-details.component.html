@@ -1,0 +1,113 @@
+<!-- <base-form
+  #mainForm
+  [formConfig]="formConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+>
+</base-form> -->
+
+<div *ngIf="!referenceDetails?.length" class="full-width-add-button col-12">
+  <gen-button
+    [btnType]="'plus-btn'"
+    [btnLabel]="'Add Contact Details'"
+    (onClick)="showReferenceDetailPopup()"
+    class="add-contact-btn full-width-btn"
+  ></gen-button>
+</div>
+
+<ng-container *ngFor="let reference of referenceDetails; let i = index">
+  <gen-card [cardType]="'non-border'" [cardBgColor]="'--background-color-secondary'" class="reference-card mb-4">
+    <ng-container body>
+      <div class="grid align-items-center">
+        <div class="col-11">
+          <div class="reference-header ml-0 mb-4">
+            {{ reference.contactType }}
+            <!-- <span *ngIf="reference.classification === 'business'" class="classification-badge">(Business)</span> -->
+          </div>
+          <div class="grid reference-details">
+            <!-- Display different fields based on classification -->
+            <ng-container *ngIf="reference.classification === 'Individual'; else businessFields">
+              <!-- Individual fields -->
+              <div class="col-12 md:col-3 lg:col-2 ml-3 mr-5">
+                <div class="field-label mb-3">First Name</div>
+                <div class="truncate-text" pTooltip="{{ reference.firstName }}">
+                {{ reference.firstName }}
+                </div>
+            </div>
+              
+              <div class="col-12 md:col-3 lg:col-2 mr-5">
+                <div class="field-label mb-3">Last Name</div>
+                <div class="truncate-text" pTooltip="{{ reference.lastName }}">
+                {{ reference.lastName }}
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-template #businessFields>
+              <!-- Business fields - only Legal Name -->
+              <div class="col-12 md:col-3 lg:col-2 ml-3 mr-5">
+                <div class="field-label mb-3">Legal Name</div>
+                <div class="truncate-text" pTooltip="{{ reference.customerName }}">
+                {{ reference.customerName }}
+                </div>
+              </div>
+            </ng-template>
+            
+            <!-- Common fields -->
+            <div class="col-12 md:col-3 lg:col-2 mr-5">
+              <div class="field-label mb-3">Phone</div>
+              <div>{{ reference.phoneExt }} {{reference.areaCode}} {{ reference.phoneNo }}</div>
+            </div>
+            
+            <div class="col-12 md:col-3 lg:col-2 mr-5">
+              <div class="field-label mb-3">Email</div>
+              <div class="truncate-text" pTooltip="{{ reference.email }}">
+                {{ reference.email }}
+                </div>
+            </div>
+            
+            <div class="col-12 md:col-3 lg:col-2">
+              <div class="field-label mb-3">Signatory</div>
+              <div>{{ reference.isSignatory ? 'Yes' : 'No' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-1 text-right mb-5 pb-3">
+          <gen-button
+            [btnIcon]="'fa fa-edit text-lg'"
+            [btnType]="'non-bg-btn'"
+            [className]="'text-primary-color'"
+            (click)="editReference(reference, i)"
+          ></gen-button>
+          <gen-button
+            [btnIcon]="'fa-regular fa-trash-can text-lg'"
+            [btnType]="'non-bg-btn'"
+            [className]="'text-danger-color'"
+            (click)="removeReference(reference, i)"
+          ></gen-button>
+        </div>
+      </div>
+    </ng-container>
+  </gen-card>
+</ng-container>
+
+<ng-container *ngIf="referenceDetails?.length">
+  <gen-button
+    [btnType]="'plus-btn'"
+    [btnLabel]="'Add Contact Details'"
+    (onClick)="showReferenceDetailPopup()"
+    class="add-contact-btn"
+  ></gen-button>
+</ng-container>
+
+<!-- <app-customer-reference></app-customer-reference> -->
+
+  <div class="mt-2">
+    <app-individual-reference-confirmation></app-individual-reference-confirmation>
+  </div>
+

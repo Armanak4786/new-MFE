@@ -1,0 +1,21 @@
+<!-- <gen-card [cardType]="'border'" [headerText]="'Previous Physical Address'"> -->
+  <ng-container body>
+  <div class="previous_address">
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+      (formReady)="onFormReady()"
+      (onInput)="onValueTyped($event)"
+    (onBlur) ="onBlurEvent($event)"
+    (onValueChange)="onValueEvent($event)"
+    >
+    </base-form>
+    </div>
+  </ng-container>
+<!-- </gen-card> -->

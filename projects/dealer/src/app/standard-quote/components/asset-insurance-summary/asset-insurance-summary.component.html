@@ -1,0 +1,40 @@
+<div class="asset-popup">
+  <gen-table
+    [columns]="columnsAsset"
+    [dataList]="assetList"
+    [tableStyle]="'stripped-rows'"
+    [rowHeight]="'12px'"
+    [currencyAlignment]="'right'"
+    (onCellClick)="onAssetCellClick($event)"
+  ></gen-table>
+  <gen-button
+    [btnLabel]="'Search & Add Asset'"
+    [btnType]="'plus-btn'"
+    [disabled]="baseSvc?.accessMode == 'view' || isDisable"
+    (onClick)="showAssetSearchPopup('Search Asset')"
+  ></gen-button>
+
+  <br /><br /><br />
+
+  @if (baseFormData?.productCode != 'OL' && baseFormData?.productCode != 'FL' ){
+  <label class="font-semibold text-base"
+    ><text [mode]="'label'" [label]="'lbl_tradeSummary'"></text
+  ></label>
+  <div class="mt-4">
+    <gen-table
+      [columns]="columnsTrade"
+      [dataList]="visibleTradeList"
+      [tableStyle]="'stripped-rows'"
+      (onCellClick)="onTradeCellClick($event)"
+      [currencyAlignment]="'left'"
+    ></gen-table>
+  </div>
+
+  <gen-button
+    [btnLabel]="'btn_searchAddTradein'"
+    [btnType]="'plus-btn'"
+    [disabled]="baseSvc?.accessMode == 'view' || isDisable"
+    (onClick)="showAssetSearchPopup('Search Trade in Asset')"
+  ></gen-button
+  >}
+</div>

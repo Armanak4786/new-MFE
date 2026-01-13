@@ -1,0 +1,103 @@
+@if(rowData && parent == 'Signatories' && !isEditEnabled) {
+<div class="flex justify-content-end mb-2">
+  <!-- <gen-button
+      [btnLabel]="isEditEnabled ? 'Editing Enabled' : 'Edit'"
+      [btnType]="isEditEnabled ? 'filled-btn' : 'border-btn'"
+      (onClick)="edit()"
+    ></gen-button> -->
+  <gen-button
+    [btnIcon]="'fa fa-edit text-lg'"
+    [btnType]="'non-bg-btn'"
+    [className]="'text-primary-color'"
+    (click)="edit()"
+    [disabled]="isDisabled()"
+  ></gen-button>
+</div>
+}
+<text [mode]="'label'" [label]="'Customer Type'"></text>
+<div class="radioButtonCheck">
+  <div class="my-3 mr-3 flex gap-8">
+    <p-radioButton
+      [(ngModel)]="searchType"
+      label="Individual"
+      value="Individual"
+      [disabled]="individualClassificationDisabled"
+    ></p-radioButton>
+    <p-radioButton
+      class="ml-5"
+      [(ngModel)]="searchType"
+      label="Business"
+      value="Business"
+      [disabled]="businessClassificationDisabled"
+    ></p-radioButton>
+  </div>
+</div>
+
+<!-- @if(parent == "Signatories"){
+    <div class="radioButtonCheck">
+    <div class="my-3 mr-3 flex gap-8">
+        <p-dropdown
+        [options]="[{ label: 'Individual', value: 'Individual' }, { label: 'Business', value: 'Business' }]"
+        [(ngModel)]="signatoriesSearchType"
+        [disabled]="rowData"
+        placeholder="Select Type">
+        </p-dropdown>
+    </div>
+    </div>
+    } -->
+<br />
+
+@if(searchType == "Individual"){
+<base-form
+  #mainForm
+  [formConfig]="formConfig1"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+  (onInput)="onValueTyped($event)"
+  (onBlur)="onBlurEvent($event)"
+  (onValueChange)="onValueEvent($event)"
+>
+</base-form>
+} @if(searchType == "Business"){
+<base-form
+  #mainForm
+  [formConfig]="formConfig2"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+  (onInput)="onValueTyped($event)"
+  (onBlur)="onBlurEvent($event)"
+  (onValueChange)="onValueEvent($event)"
+>
+</base-form>
+} @if(parent == "Contact" || parent == "Trustees"){
+<div class="flex justify-content-center gap-4 mt-4">
+  <gen-button
+    [btnLabel]="'Cancel'"
+    [btnType]="'border-btn'"
+    (onClick)="closeDialog('cancel')"
+  ></gen-button>
+  <gen-button [btnLabel]="'Add Contact'" (onClick)="AddContacts()"></gen-button>
+</div>
+} @if(parent == "Signatories"){
+<div class="flex justify-content-end gap-2 mt-3">
+  <gen-button
+    [btnLabel]="'CANCEL'"
+    [btnType]="'border-btn'"
+    (onClick)="closeDialog('cancel')"
+  ></gen-button>
+  <gen-button
+    [btnLabel]="'SAVE'"
+    (onClick)="AddOrUpdateSignatories()"
+  ></gen-button>
+</div>
+}

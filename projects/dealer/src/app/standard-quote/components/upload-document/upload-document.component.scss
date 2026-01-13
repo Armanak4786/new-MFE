@@ -1,0 +1,116 @@
+
+.long-hr {
+  margin-top: -0.9rem;
+}
+
+.Generated-hr {
+  border: none;
+  /* Remove default border */
+  height: 13px;
+  
+  margin: 5px 0 10px 0;
+  /* Optional: Add margin for spacing around the line */
+  width: 18%;
+  margin-left: 20% !important;
+  border-radius: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.active-label {
+  font-weight: bold;
+  border-bottom: solid 5px var(--primary-color);
+  ;
+}
+
+.browse-files-btn {
+  background-color: var(--surface-300);  /* Background color */
+  color: #000;  /* Text color */
+  border: 1px solid var(--primary-color);
+  padding: 11px 70px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.full-width-divider {
+  width: 100%;
+  border-bottom: 1px solid #ccc; /* Adjust the border color as needed */
+ 
+}
+
+.scrollabel{
+  overflow-x: auto;
+}
+
+.document-tile {
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+}
+
+.fixed-height-card {
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+::ng-deep {
+  .table-scroll-wrapper {
+    gen-table {
+      p-table {
+
+        tr {
+         
+          th:nth-child(1),
+          td:nth-child(1) {
+            max-width: 30px;
+          }
+          th:nth-child(2),
+          td:nth-child(2) {
+            min-width: 300px;
+            max-width: 400px;
+          }
+          th:nth-child(3),
+          td:nth-child(3) {
+            max-width: 100px;
+          }
+          th:nth-child(4),
+          td:nth-child(4) {
+            min-width: 100px;
+            max-width: 120px;
+        }
+        th:nth-child(5),
+          td:nth-child(5) {
+            min-width: 80px;
+            max-width: 100px;
+        }
+          
+      }
+    }
+  }
+}
+}
+.fas, .fa-solid {
+    font-weight: 900;
+    padding: 0.2rem;
+}
+.table-scroll-wrapper {
+  max-height: 250px;       /* Maximum height for scrolling */
+  overflow-y: auto;        /* Only adds scrollbar if needed */
+}
+
+.disabled-upload {
+  opacity: 0.5;
+  pointer-events: none; /* disables click */
+  cursor: not-allowed;
+}
+
+
+
+

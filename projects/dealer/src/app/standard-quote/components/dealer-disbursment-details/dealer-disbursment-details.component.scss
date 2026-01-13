@@ -1,0 +1,52 @@
+.disbursementDetailHeader 
+{
+    margin-top: 15px;
+  &::ng-deep {
+    .p-accordion-header {
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+    .p-accordion-header-link {
+      // border-top-left-radius: 0.5rem;
+      // border-top-right-radius: 0.5rem;
+      background-color: var(--primary-lighter-color) !important ;
+      padding: 1rem;
+      border-bottom: 0;
+
+      .p-accordion-header-text {
+        font-size: 1rem;
+        color: var(--input-disable-color)
+      }
+    }
+  
+    .p-icon-wrapper {
+      margin-left: auto;
+      order: 2;
+    }
+  }
+}
+
+.custom-label-wrapper label {
+  color:var(--input-disable-color) !important;
+}
+
+// Styles for editable amount input fields
+::ng-deep .currency-amount-input {
+  input {
+    width: 120px !important; // Override w-full class from amount component
+    text-align: right;
+    display: block;
+  }
+}
+
+// Styles for readonly amount label (mode="label")
+::ng-deep .currency-amount-label {
+  span.text-right {
+    width: calc(120px - 0.5rem); 
+    text-align: right;
+    display: inline-block;
+    box-sizing: border-box;
+    color: var(--label-color) !important;
+    font-weight: bold;
+  }
+}

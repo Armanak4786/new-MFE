@@ -1,0 +1,55 @@
+<div class="grid">
+  <div
+    class="col-4 mt-3 mb-2 text-sm"
+    *ngIf="params?.mode && params.mode !== 'create'"
+  >
+    <span>
+      <label class="mt-2">
+        {{ "Create new and copy to previous Address" }}
+      </label>
+      <p-inputSwitch
+        class="ml-2 mt-3"
+        [(ngModel)]="copyToPreviousAddress"
+        (click)="getvalue(copyToPreviousAddress)"
+        [style]="{ width: '2.7rem', height: '1rem' }"
+      ></p-inputSwitch>
+      <label class="ml-2 mt-3" *ngIf="!copyToPreviousAddress">{{ "No" }}</label>
+      <label class="ml-2 mt-3" *ngIf="copyToPreviousAddress">{{ "Yes" }}</label>
+    </span>
+  </div>
+  <div class="col-3 mt-3 mb-2 text-sm">
+    <span *ngIf="role != 1">
+      <label class="mt-2">
+        {{ "Copy primary borrower's address?" }}
+      </label>
+      <p-inputSwitch
+        class="ml-2 mt-3"
+        [(ngModel)]="copyFromborrowerAddress"
+        (ngModelChange)="
+          onFormEvent({ name: 'copyFromborrowerAddress', value: $event })
+        "
+        (change)="eventCall($event)"
+        [style]="{ width: '2.7rem', height: '1rem' }"
+      ></p-inputSwitch>
+      <label class="ml-2 mt-3" *ngIf="!copyFromborrowerAddress"
+        >{{ "No" }}</label
+      >
+      <label class="ml-2 mt-3" *ngIf="copyFromborrowerAddress"
+        >{{ "Yes" }}</label
+      >
+    </span>
+  </div>
+
+  <div class="col-12 py-0">
+    <app-physical-address></app-physical-address>
+
+    <ng-container
+      *ngIf="copyToPreviousAddress || baseFormData?.previousTextArea || year"
+    >
+      <br />
+      <app-previous-address></app-previous-address>
+    </ng-container>
+    <br />
+    <app-postal-address></app-postal-address>
+  </div>
+</div>

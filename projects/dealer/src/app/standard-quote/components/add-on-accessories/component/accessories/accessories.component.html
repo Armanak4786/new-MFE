@@ -1,0 +1,127 @@
+<gen-card [headerText]="'Accessories'" >
+  <ng-container body *ngIf="!showError">
+    <div class="grid labelCls">
+      <div class="col-4">
+        <div class="grid">
+          <div class="col-4"></div>
+          <div class="col-3">
+            <text [mode]="'label'" [label]="'lbl_amount'"></text>
+          </div>
+          <div class="col-1"></div>
+        </div>
+      </div>
+
+      <div class="col-4" *ngIf="accessories.length >= 2">
+        <div class="grid">
+          <div class="col-4"></div>
+          <div class="col-3"> <text [mode]="'label'" [label]="'lbl_amount'"></text></div>
+          <div class="col-1"></div>
+        </div>
+      </div>
+
+      <div class="col-4" *ngIf="accessories.length >= 3">
+        <div class="grid">
+          <div class="col-4"></div>
+          <div class="col-3"> <text [mode]="'label'" [label]="'lbl_amount'"></text></div>
+          <div class="col-1" *ngIf="showDescHeader">Description</div>
+        </div>
+      </div>
+    </div>
+    <form [formGroup]="accessoriesForm" #mainForm>
+      <ng-container formArrayName="accessories" >
+        <div class="grid ">
+           <ng-container *ngFor="let acc of accessories.controls; let i = index" class="col-4">
+            <div [formGroupName]="i" class="m-0 col-4 grid" *ngIf="acc.get('changeAction').value !== 'delete'">
+              <!-- <div class="grid"> -->
+                <!-- <div class="col-3 p-fluid mt-2 text-600" *ngIf="i == 0">
+                  Stereo
+                </div>
+                <div class="col-4 p-fluid" *ngIf="i > 0">
+                  <p-dropdown formControlName="name" [options]="[
+                      { label: 'Booster seats', value: 'Booster seats' },
+                      { label: 'Others', value: 'Others' }
+                    ]" optionLabel="label" optionValue="value">
+                  </p-dropdown>
+                </div> -->
+                    <!-- <pre>{{ acc.value | json }}</pre> -->
+                 @if (i < defaultLength && acc?.value?.isDefault ){
+
+                   <div class="col-4 p-fluid mt-2 text-600">
+                  <!-- If it's a default accessory, show label -->
+                  <ng-container >
+                    <text [mode]="'label'" [label]="acc?.value?.name" class="black-label"></text>
+                  </ng-container>
+                </div>
+              } @else{
+
+                <div class="col-4 p-fluid">
+
+                  <!-- <ng-template #dropdownAccessory> -->
+                    <p-dropdown
+                      formControlName="name"
+                      [options]="otherAccessories"
+                      optionLabel="valueText"
+                      optionValue="valueText"
+                      placeholder="Select Accessory"
+                      (onChange)="onAccessoryChange($event, i)"
+                      [pTooltip]="getSelectedTooltip(i)" 
+                      tooltipPosition="top"
+                    >
+                    </p-dropdown>
+                  <!-- </ng-template> -->
+                  </div>
+              }
+                  <!-- If it's from Others, show dropdown -->
+         
+                <div class="col-3 p-fluid">
+                  <!-- <p-inputNumber formControlName="amount" mode="currency" currency="USD" [alwaysPos]="'true'"
+                    [inputStyle]="{ 'text-align': 'right' }" [minFractionDigits]="2" maxlength="11" /> -->
+                   <amount  formControlName="amount" [value] ="amount" [maxlength]="11"></amount> 
+                  <div *ngIf="
+                      acc.get('amount').touched && acc.get('amount').invalid
+                    ">
+                    <small class="p-error">Invalid Input</small>
+                  </div>
+                </div>
+
+                 <div class="col-3 p-fluid"  *ngIf="acc.get('name').value === 'Other'">
+                   <text formControlName="description" [value] ="description" [placeholder]="'description'">
+                   </text> 
+                    <div *ngIf="acc.get('description').hasError('required')">
+                      <small class="p-error">Description is required</small>
+                    </div>
+                </div>
+                <div class="col-1" *ngIf="i > (defaultLength-1)">
+                  <gen-button [btnIcon]="'fa fa-trash'" [btnType]="'non-bg-btn'"
+                    [disabled]="baseSvc?.accessMode == 'view' || isDisabled()" (onClick)="removeAccessories(i)"
+                    class="mt-2"></gen-button>
+                </div>
+              <!-- </div> -->
+            </div>
+            </ng-container>
+        </div>
+
+        <div class="pt-3 grid justify-content-between">
+           <div class="col-8">
+          <gen-button [btnLabel]="'Add'" [btnType]="'plus-btn'" (onClick)="addOtherAccessories()"
+            [disabled]="baseSvc?.accessMode == 'view' || isDisabled()"></gen-button>
+</div>
+         
+              <div class="subtotalBox col-4">
+            <!-- <label>Sub-Total Accessories: {{ sum |currency }} </label> -->
+              <amount [label]="'Sub-Total Accessories: '" [mode]="'label'" [value] ="sum"></amount>
+              </div>
+
+       
+        </div>
+      </ng-container>
+    </form>
+  </ng-container>
+
+    <ng-container body *ngIf="showError">
+      <div class="alert alert-error" >
+            <!-- <i class="pi pi-exclamation-circle"></i> -->
+            <span class="message-text"> {{'err_NoDataAvailable' | translate}}</span>
+        </div>
+</ng-container>
+</gen-card>

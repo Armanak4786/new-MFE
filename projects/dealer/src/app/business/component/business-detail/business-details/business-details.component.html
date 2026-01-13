@@ -1,0 +1,46 @@
+<!-- <div class="mt-3 pt-3"> -->
+<div class="mt-0 pt-0 pb-3">
+  <form *ngIf="customerRoleForm" [formGroup]="customerRoleForm">
+    <!-- <span class="p-float-label"> -->
+      <span>
+        <label class="ml-2 customer-role">Customer Role<span class="text-red-500">* </span></label>
+      </span>
+      <p-dropdown
+        [options]="customerRoleData"
+        formControlName="role"
+        name="role"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="customerRoleData?.length > 5"
+        (onChange)="getvalue($event.value)"
+      ></p-dropdown>
+    <!-- </span> -->
+    <div *ngIf="customerRoleForm.touched && (customerRoleForm?.invalid || customerRoleForm.get('role').value === 0)">
+      <small
+        class="p-error text-xs"
+        *ngIf="customerRoleForm.get('role').hasError('required') || customerRoleForm.get('role').value === 0"
+        >Customer Role is required</small
+      >
+    </div>
+  </form>
+</div>
+<div class="business_details">
+  <base-form
+    #mainForm
+    [formConfig]="formConfig"
+    [mode]="mode"
+    [id]="id"
+    [data]="data"
+    (valueChanges)="onValueChanges($event)"
+    (formEvent)="onFormEvent($event)"
+    (formButtonEvent)="onButtonClick($event)"
+    (formReady)="onFormReady()"
+    (onInput)="onValueTyped($event)"
+    (onBlur) ="onBlurEvent($event)"
+    (onValueChange)="onValueEvent($event)"
+  >
+  </base-form>
+  </div>
+<div class="mt-3 ">
+  <app-business-contact-deatil></app-business-contact-deatil>
+</div>

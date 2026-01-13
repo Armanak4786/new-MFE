@@ -1,0 +1,70 @@
+<!-- First Row: Textboxes on the left and right -->
+<div class="row">
+  <div class="col-left">
+    <label><text [mode]="'label'" [label]="'lbl_emailAddress'"></text></label>
+    <input
+      type="email"
+      [(ngModel)]="email"
+      (ngModelChange)="validateEmail()"
+      (blur)="onBlur()"
+      pInputText
+      required
+    />
+    <div *ngIf="emailTouched && !emailValid" style="color: red">
+      <div *ngIf="email === ''"><text [mode]="'label'" [label]="'lbl_emailrequired'"></text></div>
+      <div *ngIf="email !== ''"><text [mode]="'label'" [label]="'lbl_validemailaddress'"></text></div>
+    </div>
+  </div>
+
+  <div class="col-right">
+    <label><text [mode]="'label'" [label]="'lbl_fullName'"></text> <span class="text-red-500"> *</span></label>
+    <input
+      type="text"
+      [(ngModel)]="fullName"
+      (blur)="onFullNameBlur()"
+      (ngModelChange)="validateFullName()"
+      class="custom_EmailTextBox"
+      pInputText
+    />
+    <div *ngIf="fullNameTouched && !fullNameValid" style="color: red">
+      <div><text [mode]="'label'" [label]="'lbl_fullNamerequired'"></text></div>
+      <!-- <div >
+        Full Name must be at least 3 characters long.
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div class="row2">
+  <div class="card gray-card" (click)="fileInput.click()">
+    <div class="file-icon-container" id="fileDropArea">
+      <i class="pi pi-upload" style="font-size: 24px"></i>
+      <span> <text [mode]="'label'" [label]="'lbl_fileDrop'"></text></span>
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept=".pdf"
+        class="hidden"
+      />
+    </div>
+  </div>
+</div>
+<div class="row" *ngFor="let file of files; let i = index">
+  <span
+    >{{ files[i].fileDownloadName }}
+    <span (click)="onUploadedPdfDelete(i)" class="hover-button"
+      ><i class="fa-regular fa-trash-can"></i></span
+  ></span>
+</div>
+
+<div class="button-container">
+  <gen-button
+    [btnType]="'border-btn'"
+    [btnLabel]="'CANCEL'"
+    [className]="'mr-3'"
+    (onClick)="closeDialog('cancel')"
+  ></gen-button>
+  <gen-button [btnLabel]="'Submit'" (onClick)="onEmailSubmit()"></gen-button>
+</div>
+<!-- (onClick)="closeDialog('cancel')" -->

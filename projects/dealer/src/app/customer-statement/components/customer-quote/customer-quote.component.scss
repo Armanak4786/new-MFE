@@ -1,0 +1,28 @@
+::ng-deep {
+ 
+  .p-divider.p-divider-horizontal:before {
+    border-color: var(--primary-color) !important;
+  }
+ 
+  .status {
+    height: 35px;
+    padding-top: 3px;
+    background-color: var(--primary-color, #007bff);
+    border-radius: 53px;
+  }
+}
+// Remove left padding from input fields for proper alignment
+::ng-deep .form-control {
+  padding-left: 0 !important;
+}
+::ng-deep .form-field-spacing {
+ margin-right:1rem !important
+}
+::ng-deep .row-form-field{
+  margin-right:1rem !important /* Adjust value as needed */
+}
+ 
+::ng-deep .quote-id-input input {
+  width: 60px !important;
+}
+ 

@@ -1,0 +1,28 @@
+<base-form #mainForm [formConfig]="formConfig" [mode]="mode" [id]="id" [data]="data"
+  (valueChanges)="onValueChanges($event)" (formEvent)="onFormEvent($event)" (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()" (onInput)="onValueTyped($event)" (onBlur)="onBlurEvent($event)"
+  (onValueChange)="onValueEvent($event)">
+</base-form>
+
+<!-- <div class="flex justify-content-end gap-2 mt-3">
+   <button 
+    pButton 
+    type="button" 
+    label="Cancel" 
+    (click)="onCancel()"
+  ></button>
+   <button 
+    pButton 
+    type="submit" 
+    label="Save" 
+    class="p-button-primary w-7rem"
+    (click)="onSave()"
+  ></button> -->
+<!-- </div> -->
+
+<div class="flex justify-content-end gap-2 mt-3">
+  <gen-button [btnLabel]="'CANCEL'" [btnType]="'border-btn'" (onClick)="onCancel()"></gen-button>
+  <gen-button [btnLabel]="'SAVE'" (onClick)="onSave()"></gen-button>
+
+
+</div>

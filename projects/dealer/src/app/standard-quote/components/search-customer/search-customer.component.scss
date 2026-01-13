@@ -1,0 +1,11 @@
+::ng-deep {
+  .disabled-radio {
+    p-radiobutton:nth-child(2) {
+      cursor: none;
+      pointer-events: none;
+      label {
+        color: var(--disable-color) !important;
+      }
+    }
+  }
+}

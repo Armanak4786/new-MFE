@@ -1,0 +1,25 @@
+<div class="standardPaymentOptions">
+  <p-accordion
+    [activeIndex]="baseSvc.standardValueAccordianValue"
+    (activeIndexChange)="activeIndexChange($event)"
+  >
+    <p-accordionTab header="{{ headerText }}">
+      <gen-card [cardType]="'non-border'">
+        <ng-container body>
+          <gen-table
+            [currencyAlignment]="'right'"
+            [columns]="columnDefs"
+            [dataList]="baseFormData?.standardPaymentOptionValue"
+            [loader]="baseSvc?.loadStandardOptions"
+            [tableStyle]="'stripped-rows'"
+        [headingClass]="
+          'text-size-12 text-semi-bold text-color-dark-shade-3 background-color-dark-4'
+        "
+        [bodyClass]="'text-size-12'"
+          >
+          </gen-table>
+        </ng-container>
+      </gen-card>
+    </p-accordionTab>
+  </p-accordion>
+</div>

@@ -1,0 +1,27 @@
+<div class="grid">
+  <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+    <app-trust-profit-declaration></app-trust-profit-declaration>
+    <div class="mt-2">
+      <app-trust-turnover-info></app-trust-turnover-info>
+    </div>
+    <div class="mt-2">
+      <app-trust-balance-info></app-trust-balance-info>
+    </div>
+  </div>
+  <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+    <gen-card [cardType]="'non-border'" [headerText]="'Statement of Position'" [cardBgColor]="'--background-color-secondary'">
+      <ng-container body>
+        <!-- <p class="m-0 p-0">(Trust)</p> -->
+        <p-divider></p-divider>
+        <p class="p-0 font-bold">Assets</p>
+        <app-trust-assets></app-trust-assets>
+        <p-divider type="dashed"></p-divider>
+        <p class="p-0 font-bold">Liabilities</p>
+        <app-trust-liabilities></app-trust-liabilities>
+        <p class="p-0 m-0 pl-3">
+          Including Overdrafts, Credit Cards, Bank Loans, Taxes Due etc.
+        </p>
+      </ng-container>
+    </gen-card>
+  </div>
+</div>

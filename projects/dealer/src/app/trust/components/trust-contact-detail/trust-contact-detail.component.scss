@@ -1,0 +1,57 @@
+
+.field-label {
+  font-size: 0.75rem;
+  color: var(--label-color);
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.reference-details > div {
+  padding: 0.5rem;
+}
+
+.reference-card {
+  margin-bottom: 1rem;
+}
+
+.reference-header {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.full-width-add-button {
+  border: 2px dashed var(--primary-color);
+  padding: 4rem;
+  text-align: center;
+  border-radius: 8px;
+  margin-top: 1rem;
+  margin-bottom:10rem ;
+  display: flex;
+  justify-content: center;
+}
+
+.full-width-btn {
+  width: 100%;
+  max-width: 300px; // Optional: limit max width of button
+}
+
+::ng-deep .card-body {
+    margin: 12px;
+}
+
+ ::ng-deep 
+ {
+  .trust-individual-mobile
+{
+  margin-top: -8px;
+}
+.trust-contact-type
+{
+  margin-top:-0.5rem !important;
+}
+.truncate-text {
+      max-width: 150px; 
+      overflow: hidden;
+    }
+ }
+

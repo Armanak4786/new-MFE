@@ -1,0 +1,64 @@
+<div class="motocheck-tab">
+    <base-form #mainForm [formConfig]="formConfig" [mode]="mode" [id]="id" [data]="data"
+        (valueChanges)="onValueChanges($event)" (formEvent)="onFormEvent($event)"
+        (formButtonEvent)="onButtonClick($event)" (formReady)="onFormReady()" (onInput)="onValueTyped($event)">
+    </base-form>
+</div>
+
+<gen-card style="padding-bottom: 1rem;" *ngIf="showCard">
+    <ng-container body>
+        <div class="alert alert-success"  *ngIf="isMotoCheckSuccess">
+            <i class="pi pi-check-circle"></i><span class="message-text"> {{buttonLabel}}</span>
+        </div>
+
+        <div class="alert alert-error" *ngIf="!isMotoCheckSuccess">
+            <i class="pi pi-exclamation-circle"></i>
+            <span class="message-text"> {{buttonLabel}}</span>
+        </div>
+        <div *ngIf="mappedData">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-left: 41px;">
+                    <!-- ////////////////// -->
+                <text [mode]="'label'" [label]="'lbl_make'" [value]="mappedData?.make" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [mode]="'label'" [label]="'lbl_model'" [value]="mappedData?.model" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [mode]="'label'" [label]="'lbl_variant'" [value]="mappedData?.variant" class="text-sm"
+                    [labelType]="'vertical'"></text>
+
+                    <!-- ////////////////// -->
+                <text [label]="'lbl_year'" [mode]="'label'" [value]="mappedData?.year" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [label]="'lbl_cCRating'" [mode]="'label'" [value]="mappedData?.ccRating ? ('' + +mappedData?.ccRating) : ''" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [label]="'lbl_colour'" [mode]="'label'" [value]="mappedData?.colour" class="text-sm"
+                    [labelType]="'vertical'"></text>
+
+                    <!-- ////////////////// -->
+                <text [label]="'lbl_vIN'" [mode]="'label'" [value]="mappedData?.vin" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [label]="'lbl_odometer'" [mode]="'label'" [value]="mappedData?.odometer + ' km'" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [label]="'lbl_serialChassisNo'" [mode]="'label'" [value]="mappedData?.serialChassisNumber"
+                    class="text-sm" [labelType]="'vertical'"></text>
+
+                     <!-- ////////////////// -->
+                <text [label]="'lbl_motivePower'" [mode]="'label'" [value]="mappedData?.motivePower" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [label]="'lbl_engineNo'" [mode]="'label'" [value]="mappedData?.engineNumber" class="text-sm"
+                    [labelType]="'vertical'"></text>
+                <text [label]="'lbl_countryFirstRegistered'" [mode]="'label'"
+                    [value]="mappedData?.countryFirstRegistered" class="text-sm" [labelType]="'vertical'"></text>
+            </div>
+            <br>
+
+                <div class="button-wrapper">
+                    <gen-button  *ngIf="isMotoCheckSuccess"
+                        [btnLabel]="'lbl_continue'"
+                        (onClick)="addAsset()"
+                    ></gen-button>
+                    </div>   
+      </div>
+
+
+    </ng-container>
+</gen-card>

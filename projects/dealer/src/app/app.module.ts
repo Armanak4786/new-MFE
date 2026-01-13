@@ -5,6 +5,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AuroUiFrameWork, ConfigService, loadConfigAndSetEnv } from "auro-ui";
 import { BrowserModule } from "@angular/platform-browser";
 import { LayoutModule } from './layout/layout.module';
+import { SharedComponentsModule } from './components/shared-components.module';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import {
@@ -39,6 +40,7 @@ export function initializeAppEnv(configService: ConfigService) {
     CurrencyMaskModule,
     TranslateModule.forRoot(),
     LayoutModule,
+    SharedComponentsModule,
 
     JwtModule.forRoot({
       config: {

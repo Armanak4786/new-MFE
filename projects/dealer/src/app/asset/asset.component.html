@@ -1,0 +1,36 @@
+<app-asset-details></app-asset-details>
+<br />
+@if (addType == 'addAsset'){
+<app-insurance-details></app-insurance-details>
+}
+<br />
+<gen-card>
+  <ng-container body>
+    <div class="flex justify-content-between">
+      <gen-button
+        [className]="'text-danger-color'"
+        [btnLabel]="'Cancel'"
+        [btnType]="'non-bg-btn'"
+        (onClick)="redirectToHome()"
+      ></gen-button>
+      <div class="flex gap-2">
+        <gen-button  *ngIf="addType == 'addAsset'"
+          [btnLabel]="'Search For Assets'"
+          (onClick)="openSearchAsset('Search Asset')"
+          [btnType]="'border-btn'"
+          [btnIcon]="'far fa-shield-check text-lg mr-1'"
+          [disabled]= "isDisabled()"
+        ></gen-button>
+          <gen-button  *ngIf="addType == 'addTrade'"
+          [btnLabel]="'Search For Assets'"
+          (onClick)="openSearchAsset('Search Trade in Asset')"
+          [btnType]="'border-btn'"
+          [btnIcon]="'far fa-shield-check text-lg mr-1'"
+          [disabled]= "isDisabled()"
+        ></gen-button>
+        <gen-button [btnLabel]="'Submit'"(onClick)="submitData()"></gen-button>
+      </div>
+    </div>
+  </ng-container>
+</gen-card>
+

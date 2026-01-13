@@ -1,0 +1,35 @@
+<div class="mt-2 pt-0 pb-3">
+  <form >
+    <span >
+      <label class="ml-2 customer-role" >Customer Role<span class="text-red-500">* </span></label>
+    </span>
+      <p-dropdown
+        [options]="customerRoleData"
+        name="role"
+        optionLabel="label"
+        optionValue="value"
+        (onClick)="clearSearchFilter(dropdown)"
+        [appendTo]="'body'"
+        [disabled]="true"
+        #dropdown
+      ></p-dropdown>
+
+  </form>
+</div>
+
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (formReady)="onFormReady()"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)">
+    </base-form>
+
+
+
+
+

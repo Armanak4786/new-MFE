@@ -1,0 +1,88 @@
+<!-- <base-form
+  #mainForm
+  [formConfig]="formConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+></base-form> -->
+<form [formGroup]="emailForm" #mainForm>
+  <ng-container formArrayName="emails">
+    <div *ngFor="let email of emails.controls; let i = index">
+      <div [formGroupName]="i" class="mt-2">
+        <div class="grid">
+          <div class="col-1 pt-3">
+            <label class="text-600 mr-3"
+              >Email<span
+                *ngIf="isRequired(email.controls.value)"
+                class="text-red-500"
+                >*
+              </span></label
+            >
+            <!-- <label class="text-600 mr-3">
+              {{ getEmailLabel(email.get('type').value) }}
+              <span *ngIf="isRequired(email.get('value'))" class="text-red-500">*</span>
+            </label> -->
+          </div>
+          <div class="col-5 pr-5 p-fluid">
+            <input
+              type="text"
+              pInputText
+              formControlName="value"
+              (input)="getvalue()"
+              
+            />
+             <!-- [disabled]="email.get('emailChk').value" -->
+            <!-- regexPattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$" -->
+            <div *ngIf="email.touched && email.invalid">
+              <small
+                class="p-error"
+                *ngIf="email.get('value').hasError('required')"
+                >Email is required</small
+              >
+              <small
+                *ngIf="email.get('value').hasError('pattern')"
+                class="p-error"
+              >
+                 Email is in an incorrect format
+              </small>
+              <small *ngIf="email.get('value').hasError('maxlength')" class="p-error">
+                Email should not exceed 50 characters.
+              </small>
+            </div>
+          </div>
+          <div class="col-2 mt-3" *ngIf="shouldShowCheckbox(i)">
+            <p-checkbox
+              formControlName="emailChk"
+              [binary]="true"
+              [label]="'No Email'"
+              (onChange)="onCheckboxChange($event, i)"
+            ></p-checkbox>
+          </div>
+
+          <div class="col-1" *ngIf="i != 0">
+            <gen-button
+              [btnIcon]="'fa fa-trash'"
+              [btnType]="'non-bg-btn'"
+              (onClick)="removeEmail(i)"
+              class="mt-2"
+            ></gen-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-3">
+      <gen-button
+        *ngIf="emails.length < 3"
+        [btnLabel]="'Add Other Email'"
+        [btnType]="'plus-btn'"
+        (onClick)="addOtherEmail()"
+        [disabled]="emailChk"
+      ></gen-button>
+    </div>
+  </ng-container>
+</form>

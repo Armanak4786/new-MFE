@@ -1,0 +1,22 @@
+@if(baseFormData?.productCode !== "OL" && baseFormData?.productCode !== "FL"){
+<div class="font-bold text-base ml-3 mb-2 mt-4">
+  {{ hidden ? "Loan Details" : "Additional Charges" }}
+</div>  
+}
+<base-form
+  #mainForm
+  [formConfig]="formConfig"
+  [mode]="mode"
+  [id]="id"
+  [data]="data"
+  (valueChanges)="onValueChanges($event)"
+  (formEvent)="onFormEvent($event)"
+  (formButtonEvent)="onButtonClick($event)"
+  (formReady)="onFormReady()"
+  (onInput)="onValueTyped($event)"
+   (onBlur)="onBlurEvent($event)"
+ (onValueChange)="onValueEvent($event)"
+>
+</base-form>
+
+<!-- <p-divider type="dashed"></p-divider> -->

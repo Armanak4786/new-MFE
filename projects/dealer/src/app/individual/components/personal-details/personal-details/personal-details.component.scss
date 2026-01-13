@@ -1,0 +1,28 @@
+::ng-deep .p-input-filled .p-inputtext:enabled:focus {
+  background: transparent;
+}
+
+::ng-deep p.mt-1.max-w-0.text-600 {
+  margin-top: 0rem !important;
+}
+
+.customer-role {
+  font-size: 12px;
+}
+
+::ng-deep p.mt-1.max-w-0.text-600::after {
+  content: "*";
+  color: red;
+  margin-left: 2px;
+}
+// .ng-select {
+//   margin-top: -14px;
+// }
+
+::ng-deep .dependents-age-array {
+  margin-top: 18px;
+  input.p-inputtext {
+    padding: 0.25rem !important;
+    width: 23px;
+  }
+}

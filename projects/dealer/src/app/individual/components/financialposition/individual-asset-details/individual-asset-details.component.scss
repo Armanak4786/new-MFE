@@ -1,0 +1,13 @@
+.assetTypelabel {
+  color: var(--label-color);
+}
+
+.asset-details-form {
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.asset-details-form > div:first-child .label-text {
+ position:sticky;
+ top:0.8rem;
+}

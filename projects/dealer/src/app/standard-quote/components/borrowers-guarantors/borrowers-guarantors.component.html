@@ -1,0 +1,51 @@
+<div class="borrowGaurantors mb-3">
+  <gen-card [headerText]="'Borrowers & Guarantors'">
+    <ng-container body>
+      <ng-container *ngIf="customerStatment != 'Customer Statement'">
+        <gen-table
+          [columns]="
+            dataList?.length === 0
+              ? columnsBlank
+              : baseSvc.activeStep === 2
+              ? columns
+              : columns
+          "
+          [dataList]="dataList.length != 0 ? dataList : blankData"
+          [rowHeight]="12"
+          [headingClass]="'font-medium text-500 px-0'"
+          (onCellClick)="onCellClick($event)"
+          (onCellValueChange)="updateCustRole($event, i)"
+        ></gen-table
+        ><br />
+
+        <ng-container *ngIf="baseSvc.activeStep == 1">
+          <gen-button
+            [btnLabel]="'lbl_addBorrowersGuarantors'"
+            [btnType]="'plus-btn'"
+            (onClick)="showSearchCustomerPopup()"
+            [disabled]="baseSvc?.accessMode == 'view' || disableState"
+          ></gen-button>
+        </ng-container>
+        <ng-container *ngIf="baseSvc.activeStep == 1">
+          <gen-button
+            [disabled]="!insuranceBtnDisable || disableState"
+            class="float-right"
+            [btnType]="'non-bg-btn'"
+            [btnLabel]="'lbl_insuranceDisclosure'"
+            (onClick)="showInsuranceDisclosurePopup()"
+          ></gen-button>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="customerStatment == 'Customer Statement'">
+        <gen-table
+          [columns]="custcolumns"
+          [dataList]="custdataList.length != 0 ? custdataList : blankData"
+          [rowHeight]="12"
+          [headingClass]="'font-medium text-500 px-0'"
+          [bodyClass]="'px-0 '"
+          (onCellClick)="onCellClick($event)"
+        ></gen-table>
+      </ng-container>
+    </ng-container>
+  </gen-card>
+</div>

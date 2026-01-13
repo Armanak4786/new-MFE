@@ -1,0 +1,60 @@
+button[aria-label="Close"] {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  font-family: inherit;
+}
+
+::ng-deep .reversed-button {
+  font-family: inherit !important;
+  font-size: large !important;
+}
+
+::ng-deep .reversed-button .p-button {
+  background-color: #ffffff !important;
+  border: none !important;
+  color: #0095db !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  transition: none !important;
+  outline: 1px solid #0095db !important;
+  outline-offset: 0 !important;
+  padding: 0.75rem 2.5rem !important;
+}
+
+::ng-deep .reversed-button .p-button .p-button-label {
+  color: #0095db !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+}
+
+
+
+.checkmark-icon {
+  font-size: 6rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0.5rem !important;
+}
+
+.secondary-accent {
+  color: var(--secondary-color) !important;
+}
+
+.below-close-button {
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.button-wrapper {
+  padding-bottom: 1rem;
+}
+

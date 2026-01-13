@@ -1,0 +1,125 @@
+<!-- if no data display no data available -->
+
+<div class="col-12 flex justify-content-end mb-2">
+  <div class="flex align-items-center">
+    <label>Preferred Delivery Method</label>
+    <i class="pi pi-info-circle ml-2 cursor-pointer" pTooltip="Preferred way to receive documents."
+      tooltipPosition="top"></i>
+
+    <p-dropdown [options]="preferredDeliveryMethodOptions" (onChange)="OnDropdownChange($event)" [(ngModel)]="preferredDeliveryMethod" styleClass="w-7rem"></p-dropdown>
+  </div>
+</div>
+
+<p-table [value]="signatoriesData" dataKey="customerId" #dt 
+  class="custom-signatories-table">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th style=" white-space: nowrap" data-column="customerName">Customer</th>
+      <th >Role</th>
+      <th style=" white-space: nowrap" data-column="contactName">Contact</th>
+      <th style=" white-space: nowrap" data-column="contactType">Type</th>
+      <th data-column="signingOrder">Signing Order</th>
+      <th data-column="isCustomerSignatory">Signatory</th>
+      <th data-column="idPartyVerification">Identity</th>
+      <th data-column="action">Action</th>
+    </tr>
+  </ng-template>
+
+  <!-- Main Row -->
+  <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+    <tr>
+      <td>
+        <button pButton [label]="dt.isRowExpanded(rowData) ? '⊟' : '⊞'"
+          class="p-button-text p-button-sm p-button-rounded" [pRowToggler]="rowData">
+        </button>
+      </td>
+      <td>{{ rowData?.customerName }}</td>
+      <td>{{ rowData?.roleName == 'CoBorrower' ? 'Co-Borrower' : rowData?.roleName }}</td>
+      <td>{{ '-' }}</td>
+      <td>{{ '-' }}</td>
+      <td>{{ rowData?.esignatoryDetails?.signingOrder }}</td>
+      <td>{{ rowData?.isCustomerSignatory ? 'Yes' : 'No' }}</td>
+      <td #idVerificationCell [class.id-verification-cell]="rowData?.roleName !== 'Dealer'" >
+        <div *ngIf='rowData?.roleName !== "Dealer"' class="id-verification-cell-data cursor-pointer" style="white-space: nowrap;" [class.disabled-div]="workflowViewonlyField(rowData)" (click)="onIdentityCellClick(rowData, i, 'idVerification', $event, idVerificationCell)">
+          {{ rowData?.currentWorkflowStatus }}
+          <i class="pi pi-chevron-down" style="margin-left: 8px; font-size: 10px;"></i>
+        </div>
+      </td>
+      <td>
+        <div class="flex gap-0">
+          <gen-button [btnIcon]="'fa-regular fa-regular fa-eye'" [btnType]="'non-bg-btn'"
+            [className]="'text-primary -ml-2' " (click)="onCustomerView(rowData)"></gen-button>
+          <gen-button [btnIcon]="'fa-regular fa-trash-can '" [btnType]="'non-bg-btn'"
+            [className]="'text-danger-color -ml-2' " (click)="onDelete(rowData)" disabled="true"></gen-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="rowexpansion" let-rowData let-index="rowIndex">
+    <!-- <tr *ngFor="let contact of  getSignatoryContacts(rowData); let contactIndex = index"> -->
+    <tr *ngFor="let contact of  rowData?.contact; let contactIndex = index">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td> {{contact?.customerName}}</td>
+      <td>{{ contact?.contactType }}</td>
+      <td>{{ contact?.esignatoryDetails?.signingOrder }}</td>
+      <td>{{ contact?.isSignatory ? 'Yes' : 'No'}}</td>
+      <td #contactIdVerificationCell [class.id-verification-cell]="shouldShowIdVerification(contact)" >
+        <div *ngIf="shouldShowIdVerification(contact)"  class="id-verification-cell-data cursor-pointer" [class.disabled-div]="workflowViewonlyField(contact)" (click)="onIdentityCellClick(contact, index, 'idVerification', $event, contactIdVerificationCell, rowData, contactIndex)">
+          {{ contact?.currentWorkflowStatus }}
+          <i class="pi pi-chevron-down" style="margin-left: 8px; font-size: 10px;"></i>
+        </div>
+      </td>
+      <td>
+        <div class="flex gap-0">
+          <gen-button [btnIcon]="'fa-regular fa-regular fa-eye'" [btnType]="'non-bg-btn'"
+            [className]="'text-primary -ml-2' " (click)="onContactView(contact,rowData)"></gen-button>
+          <gen-button [btnIcon]="'fa-regular fa-trash-can '" [btnType]="'non-bg-btn'"
+            [className]="'text-danger-color -ml-2' "
+            [disabled]="isDisabled()"
+            (click)="onContactDelete(rowData, contact, index, contactIndex)"></gen-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- Overlay Panel -->
+<p-overlayPanel #op [styleClass]="'custom-overlay-panel'" [dismissable]="true" (onShow)="onOverlayShow()" >
+  <ng-template pTemplate>
+    <app-party-verification 
+        *ngIf="selectedRowData"
+        [SignatoryRowData]="selectedRowData"
+        [SignatoryParentRowData]="selectedParentRowData"
+        (verificationComplete)="onVerificationComplete($event)">
+      </app-party-verification>
+    <!-- <div class="p-3"> -->
+      <!-- <h4 class="mb-3">{{ selectedRowData?.customerName || selectedRowData?.contactName }} - Identity Verification</h4> -->
+      <!-- Load your component here -->
+      <!-- <app-party-verification 
+        *ngIf="selectedRowData"
+        [rowData]="selectedRowData"
+        [parentRowData]="selectedParentRowData"
+        (verificationComplete)="onVerificationComplete($event)">
+      </app-party-verification> -->
+    <!-- </div> -->
+  </ng-template>
+</p-overlayPanel>
+
+<gen-button [btnLabel]="'Add Contact'" [btnType]="'plus-btn'" (onClick)="showAddSignatoryPopUp()" [disabled]="isDisabled()">
+</gen-button>
+
+<ng-template #noContacts>
+  <div class="table-loader-container">
+    <svg width="50" height="50" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="20" stroke="#007bff" stroke-width="4" fill="none" stroke-dasharray="31.4 31.4"
+        stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s"
+          repeatCount="indefinite" />
+      </circle>
+    </svg>
+  </div>
+</ng-template>

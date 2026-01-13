@@ -1,0 +1,116 @@
+<ng-container body>
+  <div class="grid">
+
+    <div class="col-6 mt-2">
+      <div class="upload-section border-1 border-dashed border-primary-500 border-round-xl w-full p-3 mb-3">
+        <div class="text-center">
+          <p class="text-primary text-sm mb-4 mt-1">
+            Drag and Drop Files here or
+          </p>
+          <div class="upload-file-btn-container" [class.disabled-upload]="isUploadDisabled()">
+            <gen-file-upload [files]="files" [acceptedFormat]="acceptedFormat" [maxFileSize]="maxFileSize"
+              [uploadedFiles]="uploadedFiles" (onUploaded)="onUploaded($event)" (beforeUpload)="beforeUpload($event)"
+              [ariaDisabled]="isUploadDisabled()">
+              <ng-container choose>
+                <button [disabled]="isUploadDisabled()" class="browse-files-btn">Browse Files</button>
+              </ng-container>
+            </gen-file-upload>
+          </div>
+          <p class="upload-info text-xs text-600 mt-5 mb-1">
+            Supported documents formats: {{acceptedFormat}}<br />
+            Cannot exceed {{convertFileSize(maxFileSize)}} per upload
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="sm:col-12 md:col-6 lg:col-6 fixed-height-card">
+      <div class="ml-2" style="height: 10%" *ngIf="uiUploadedDocs?.length > 0">
+        <div class="ml-2" style="height: 8%">
+          <div *ngFor="let doc of uiUploadedDocs; let i = index" class="document-tile mb-2 -mt-2 relative">
+            <div class="absolute top-0 right-0 p-1">
+              <div class="flex justify-content-end p-0 m-0" style="height: fit-content">
+                <gen-button class="p-0 m-0 bg-transparent border-none text-black text-xs" (click)="deleteFile(i, doc)"
+                  [btnType]="'non-bg-btn'" [btnIcon]="'fas fa-times'" aria-label="Delete document"
+                  style="line-height: 1"></gen-button>
+              </div>
+            </div>
+
+            <div class="p-1">
+              <div class="flex align-items-center mb-2">
+                <i [ngClass]="getDocumentIcon(doc.type)" class="mr-2 text-lg mb-1" style="min-width: 20px"></i>
+                <text [mode]="'label'" class="text-xs" [value]="doc.name" valueClass="'text-xs'"></text>
+              </div>
+
+              <div class="flex items-center mb-2 ml-4">
+                <span class="text-xs">
+                  {{ formatSize(doc.uploadedSize) }} of {{ formatSize(doc.totalSize) }}
+                </span>
+
+                <div class="flex items-center ml-2">
+                  <ng-container *ngIf="doc.isUploading && doc.uploadedSize < doc.totalSize; else uploadComplete">
+                    <!-- <i class="fas fa-circle-notch fa-spin text-gray-500"></i> -->
+                    <span class="text-xs ml-1 text-gray-600">Uploading...</span>
+                  </ng-container>
+                  <ng-template #uploadComplete>
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <span class="text-xs ml-1 text-green-600">Upload complete</span>
+                  </ng-template>
+                </div>
+              </div>
+
+              <p-progressBar [value]="doc.progress" [showValue]="true" [style]="{ height: '4px' }"></p-progressBar>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+</ng-container>
+@if(documents.length > 0) {
+<div>
+  <div class="table-scroll-wrapper">
+    <!-- [paginatorFlag]="'true'" -->
+
+    <gen-table [columns]="docsColumns" [dataList]="documents" [rowHeight]="12" [sortable]="'true'"
+      [headingClass]="'font-medium text-500 px-0'" [bodyClass]="'px-0 py-2'" (onCellClick)="onCellClick($event)"
+      [isScrollable]="'true'" [defaultRows]="5"></gen-table>
+  </div>
+
+  <div class="full-width-divider"></div>
+  <div class="flex pt-2">
+
+    <gen-button id="preview-button" [btnLabel]="'Preview'" [btnIcon]="'far fa-eye pr-2'" [btnType]="'non-bg-btn'"
+      (onClick)="previewSelectedDocuments()"></gen-button>
+    <p class="text-right mb-0 divider-class mt-2 text-primary">|</p>
+
+
+    <gen-button [btnLabel]="'Download'" [btnIcon]="'pi pi-download pr-2'" [btnType]="'non-bg-btn'"
+      (onClick)="downloadSelectedFiles()"></gen-button>
+    <p class="text-right mb-0 divider-class mt-2 text-primary">|</p>
+
+
+
+    <!-- <gen-button [btnLabel]="'Print'" [btnIcon]="'pi pi-print pr-2'" [btnType]="'non-bg-btn'"
+      (onClick)="printSelectedDocument()"
+      ></gen-button>
+      <p class="text-right mb-0 divider-class mt-2 text-primary">|</p> -->
+
+    <gen-button [btnLabel]="'Delete'" [btnIcon]="'pi pi-trash pr-2'" [btnType]="'non-bg-btn'" (onClick)="deleteFiles()" [disabled]="baseFormData?.AFworkflowStatus == 'Submitted'">
+    </gen-button>
+
+    <!-- @if (accessGranted?.['generated_documents_docusign']){
+      <gen-button [btnLabel]="'Docsign'" [btnIcon]="'fa-regular fa-shield-keyhole pr-2'"
+        [btnType]="'non-bg-btn'"></gen-button>} -->
+  </div>
+  <div *ngIf="displayDoc">
+    <iframe [src]="getSanitizedUrl(displayDoc)" frameborder="0" width="100%" height="500px" id="iframe"></iframe>
+  </div>
+
+</div>
+}

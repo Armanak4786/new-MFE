@@ -1,0 +1,69 @@
+ @if (!userRole?.functions?.includes('average_sale_price')){
+<div class="card mb-3">
+  <p-chart
+    type="line"
+    [data]="data"
+    [options]="options"
+    style="height: 150px"
+  ></p-chart>
+</div>
+ }
+<div class="grid mb-2">
+  @if (!userRole?.functions?.includes('fees_and_commission')){
+  <div class="sm:col-6 md:col-6">
+   
+    <div class="card">
+      <div class="card-body px-3 pb-2">
+        <div class="grid">
+          <div class="sm:col-12 md:col-6 lg:col-5 border-right-1 pt-1">
+            <p class="mb-0 text-sm font-bold mb-2">
+              <text [mode]="'label'" [label]="'lbl_fees'"></text>
+            </p>
+            <!-- <p class="font-bold mt-2">NZ$1,078</p> -->
+            <amount [mode]="'label'" value="1078"></amount>
+          </div>
+          <div class="sm:col-12 md:col-6 lg:col-7">
+            <div class="ml-3">
+              <p class="text-sm font-bold mb-0">
+                <!-- <p class="m-0">
+                  {{ isLast ? (data?.count |currency) : data?.count }}
+                </p> -->
+                <text [mode]="'label'" [label]="'lbl_commission'"></text>
+              </p>
+              <p-dropdown
+                [options]="commions"
+                [(ngModel)]="time"
+                optionLabel="name"
+                placeholder="MTD"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+}
+  @if (!userRole?.functions?.includes('margins_on_loans_paid_out')) {
+  <div class="sm:col-6 md:col-6">
+    <div class="card">
+      <div class="card-body px-3">
+        <div class="flex justify-content-between">
+          <text [mode]="'label'" [label]="'lbl_marginsOut'"></text>
+          <p-dropdown
+            [options]="items"
+            [(ngModel)]="time"
+            optionLabel="name"
+            placeholder="YTD"
+          />
+        </div>
+        <p class="text-xs flex align-items-center">
+          Jan 23 - Nov 23
+          <img src="assets/images/icon/arrow-up.svg" alt="arrow" class="ml-5" />
+          <span class="font-bold ml-1">25.3%</span>
+        </p>
+      </div>
+    </div>
+  </div>
+}
+</div>

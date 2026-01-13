@@ -1,0 +1,16 @@
+.declaration-box {
+  height: 170px; /* Set height according to your design */
+  overflow: auto; /* Add scrollbars if content overflows */
+}
+
+.p-dropdown-filter-container {
+    border-bottom: 1px solid #ced4da;
+    background: #ffffff;
+    color: #000000;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+:host ::ng-deep .form-row {
+  .field-wrapper:nth-child(n+5) {
+    margin-top: 1.5rem; // Adds margin to 5th field onwards
+  }
+}

@@ -1,0 +1,32 @@
+
+<ng-container *ngIf="!next" >
+    <base-form
+    #mainForm
+    [formConfig]="formConfig"
+    [mode]="mode"
+    [id]="id"
+    [data]="data"
+    (valueChanges)="onValueChanges($event)"
+    (formEvent)="onFormEvent($event)"
+    (formButtonEvent)="onButtonClick($event)"
+    (formReady)="onFormReady()"
+    (onInput)="onValueTyped($event)"
+    (onBlur) ="onBlurEvent($event)"
+    (onValueChange)="onValueEvent($event)"
+  >
+  </base-form>
+
+<div class="col-12 grid ">
+  <div class="col-6 text-right">
+    <gen-button [btnLabel]="'Next'" (onClick)="passDataToParent()"   [disabled]="disabled"></gen-button>
+  </div>
+  <div class="col-6 ">
+  <gen-button [btnType]="'border-btn'"[btnLabel]="'Cancel'" (onClick)="close()"></gen-button>
+  </div>
+</div>
+</ng-container>
+<!-- <ng-container *ngIf="next" > -->
+  <!-- <app-settlement-disclosure></app-settlement-disclosure> -->
+
+  <!-- <app-settlement-quote-details></app-settlement-quote-details> -->
+<!-- </ng-container> -->

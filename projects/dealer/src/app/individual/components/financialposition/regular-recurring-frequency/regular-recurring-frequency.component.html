@@ -1,0 +1,180 @@
+<gen-card
+  [cardType]="'non-border'"
+  [headerText]="'Regular Recurring Essential Outgoings'"
+  [cardBgColor]="'--background-color-secondary'"
+>
+  <ng-container body>
+    <div class="grid">
+      <label class="assetTypelabel col-4 text-size-12 pl-3">Outgoing Type</label>
+      <label class="assetTypelabel col-3 text-size-12 text-center">Amount</label>
+      <label class="assetTypelabel col-3 text-size-12 text-center"
+        >Frequency<span class="text-red-500"> * </span></label
+      >
+    </div>
+    <form
+      [formGroup]="regularOutgoingForm"
+      class="regular-recurring-details-form"
+    >
+      <div formArrayName="regularOutgoingDetails">
+        <div
+          *ngFor="
+            let regularOutgoing of regularOutgoingDetails.controls;
+            let i = index
+          "
+          [formGroupName]="i"
+        >
+          <div class="grid">
+            <div class="col-4 align-content-center">
+              <!-- <span class="label-text" *ngIf="i <= 0">{{
+                regularOutgoing.get("recurringDescription").value
+                }}<span class="text-red-500">* </span></span>  -->
+              <span class="label-text" *ngIf="i >= 0"
+                style="color: var(--label-color)">{{
+                recurringDescriptionMapId.get(regularOutgoing.get("recurringDescription").value)
+                }}
+                <!-- <span class="text-red-500">* </span> -->
+              </span>
+            </div>
+            <div class="col-3 p-fluid">
+              <p-inputNumber
+                [inputStyle]="{ 'text-align': 'right' }"
+                inputId="currency-us"
+                mode="currency"
+                currency="USD"
+                locale="en-US"
+                formControlName="amtRecurring"
+                placeholder="Amount"
+                [fractionDigits]="4"
+                [maxFractionDigits]="4"
+                [minFractionDigits]="0"
+                (ngModelChange)="updateRegularOutgoingDetails(i)"
+              />
+              <div
+                class="p-error"
+                *ngIf="
+                  regularOutgoing?.get('amtRecurring')?.invalid &&
+                  (regularOutgoing?.get('amtRecurring')?.touched || regularOutgoing?.get('amtRecurring')?.dirty)
+                "
+              >
+                <small
+                  style="text-wrap: nowrap;"
+                  *ngIf="
+                    regularOutgoing?.get('amtRecurring').errors?.required
+                  "
+                >
+                  Amount is required
+                </small>
+                <small
+                  *ngIf="
+                    regularOutgoing?.get('amtRecurring').errors?.min
+                  "
+                >
+                  Amount should be greater than 0
+                </small>
+                <small *ngIf="regularOutgoing?.get('amtRecurring').errors?.max">Amount cannot exceed (18,4)</small>
+              </div>
+            </div>
+            <div class="col-3 p-fluid">
+              <p-dropdown
+                formControlName="recurringFrequency"
+                [options]="regularOutgoingFrequencyOptions"
+                optionLabel="name"
+                optionValue="code"
+                placeholder="Select Frequency"
+              ></p-dropdown>
+              <div
+                class="p-error"
+                *ngIf="
+                  regularOutgoing?.get('recurringFrequency')
+                    ?.invalid &&
+                  regularOutgoing?.get('recurringFrequency')?.touched
+                "
+              >
+                <small
+                  style="text-wrap: nowrap;"
+                  *ngIf="
+                    regularOutgoing.get('recurringFrequency').errors
+                      ?.required
+                  "
+                  >Frequency is required.</small
+                >
+              </div>
+            </div>
+            <div class="col-2 text-center">
+              <!-- <gen-button [btnType]="'non-bg-btn'" [btnIcon]="'fa-regular fa-trash-can text-lg'" [btnColor]="'danger'"
+                (click)="
+                  regularOutgoing.get('recurringDescription').value ===
+                  'Other'
+                    ? deleteRow(i)
+                    : null
+                " [disabled]="
+                  regularOutgoing.get('recurringDescription').value !==
+                  'Other'
+                ">Delete</gen-button> -->
+              <gen-button
+                [btnType]="'non-bg-btn'"
+                [btnIcon]="'fa-regular fa-trash-can text-lg'"
+                [btnColor]="'danger'"
+                (onClick)="deleteRow(i)"
+                >Delete</gen-button
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="col-4 p-fluid">
+          <p-dropdown
+            formControlName="recurringDescription"
+            [options]="regularOutgoingTypeOptions"
+            optionLabel="name"
+            optionValue="code"
+            placeholder="Other"
+            [appendTo]="'body'"
+          ></p-dropdown>
+        </div>
+        <div class="col-3 p-fluid">
+          <p-inputNumber
+            [inputStyle]="{ 'text-align': 'right' }"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            formControlName="amtRecurring"
+            placeholder="Amount"
+          
+            [maxFractionDigits]="4"
+            [minFractionDigits]="2"
+          />
+          <!-- Add error messages for add row amount field -->
+          <div
+            class="p-error"
+            *ngIf="
+              regularOutgoingForm.get('amtRecurring')?.invalid &&
+              (regularOutgoingForm.get('amtRecurring')?.touched || regularOutgoingForm.get('amtRecurring')?.dirty)
+            "
+          >
+            <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.max">Amount cannot exceed (18,4)</small>
+          </div>
+        </div>
+        <div class="col-3 p-fluid">
+          <p-dropdown
+            formControlName="recurringFrequency"
+            [options]="regularOutgoingFrequencyOptions"
+            optionLabel="name"
+            optionValue="code"
+            placeholder="Select Frequency"
+            [appendTo]="'body'"
+          ></p-dropdown>
+        </div>
+        <div class="col-2 text-center">
+          <gen-button
+            [btnType]="'bg-btn'"
+            [btnIcon]="'pi pi-angle-right text-lg'"
+            (click)="addRow()"
+          ></gen-button>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</gen-card>

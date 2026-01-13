@@ -1,0 +1,84 @@
+.credit-condition-container {
+  width: 100%;
+//   border: 1px solid #e0e0e0;
+//   border-radius: 8px;
+  overflow: hidden;
+}
+
+.header-row {
+  display: flex;
+//   background-color: #f5f5f5;
+  padding: 2px 16px;
+  // font-weight: bold;
+//   border-bottom: 1px solid #e0e0e0;
+  
+  .condition-header {
+    flex: 1;
+    padding-right: 16px;
+    // color: var(--label-color);
+    color: var(--surface-500);
+  }
+  
+  .customer-header {
+    flex: 1;
+    padding-left: 16px;
+    color: var(--surface-500);
+  }
+}
+
+.content-scrollable {
+  max-height: 245px;
+  overflow-y: auto;
+  
+  .data-row {
+    display: flex;
+    padding: 12px 16px;
+    // border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .condition-content {
+      flex: 1;
+      padding-right: 30px;
+    }
+    
+    .customer-content {
+      flex: 1;
+      padding-left: 16px;
+    //   color: #666;
+    }
+  }
+}
+
+/* Custom scrollbar styling */
+.content-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.content-scrollable::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.content-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+::ng-deep {
+  .empty-state-box gen-card .p-card {
+    max-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

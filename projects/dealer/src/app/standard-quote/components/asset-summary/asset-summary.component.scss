@@ -1,0 +1,48 @@
+.primary-light-color {
+  border-radius: 8px;
+}
+
+.invisible {
+  height: 0;
+  button {
+    background-color: transparent;
+    border: none;
+  }
+}
+
+::ng-deep {
+  .asset-summary {
+    .p-divider.p-divider-horizontal:before {
+      border-color: var(--primary-color) !important;
+    }
+  }
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: rgb(126, 124, 124);
+}
+
+.banner {
+  border-bottom: 1px dashed var(--disable-color);
+  width: 103.8%;
+  margin-left: -10px;
+}
+::ng-deep .asset-summary .p-inputgroup .p-inputgroup-addon {
+  border-left: none !important; // removes the vertical line
+}
+
+::ng-deep .asset-summary .p-inputgroup .p-inputtext {
+  border-right: none !important; // extra safety if border is on input side
+}
+
+::ng-deep .asset-summary .p-inputgroup .p-inputgroup-addon .p-button-label {
+    display: none !important;
+}

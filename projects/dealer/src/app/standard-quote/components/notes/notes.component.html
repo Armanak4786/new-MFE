@@ -1,0 +1,103 @@
+<div class="commercial-notes">
+  <gen-card [headerText]="'Notes'" [cardType]="'shadow-non-border'">
+    <ng-container header>
+      
+      <div class="grid search-box">
+        @if(notes.length > 0){
+        <div class="col-4 py-0">
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="searchNotes"
+            placeholder="Search"
+            (input)="filterNotes()"
+          />
+        </div>
+      }
+      </div>
+      
+    </ng-container>
+    <ng-container body>
+      <div class="flex notes-container scroll-wrapper">
+        <div
+          class="col-4"
+          *ngFor="let data of filteredContent | reverseArray; let i = index"
+        >
+        
+          <div #notesCard class="border-1 border-round-md border-primary p-2 notes-card-color">
+            <div class="flex justify-content-between mb-3">
+              <label class="font-semibold text-size-12">{{
+                data?.user?.name || "User Name"
+              }}</label>
+              <!-- <div>
+                <i
+                  class="fa-regular fa-pen-to-square text-primary cursor-pointer"
+                  (click)="editNotes(filteredContent?.length - 1 - i)"
+                ></i>
+                <i
+                  class="fa-regular fa-trash-can text-red-500 cursor-pointer ml-3"
+                  (click)="deleteNotes(filteredContent?.length - 1 - i)"
+                ></i>
+              </div> -->
+            </div>
+            <p class="text-size-12 mb-0">
+              <span style="word-wrap: break-word"
+                >{{ data?.addNote | readMore : 100 }}
+              </span>
+              <span
+                *ngIf="data?.addNote?.length > 100"
+                class="text-primary cursor-pointer"
+                (click)="expandNotes(filteredContent?.length - 1 - i)"
+                >More</span
+              >
+              <!-- (click)="expandNotes(filteredContent?.length - 1 - i)" -->
+            </p>
+            <p class="text-xs mb-0 mt-3 text-500">
+              <!-- //| date : "dd/MM/yyyy | h:mm a"  -->
+              {{ data.dateStamp | date : "dd/MM/yyyy | h:mm a" }}
+              <br />
+            </p>
+          </div>
+          
+        </div>
+      </div>
+      <!-- <div
+        *ngIf="notes.length == 0"
+        class="text-semi-bold text-size-12 w-full text-center ml-3"
+      >
+        <text [mode]="'label'" [label]="'lbl_noRecordFound'"></text>
+      </div> -->
+      <!-- @if (accessGranted?.['add_notes']){ -->
+       @if (notes.length == 0) {
+        <div class="empty-state-box">
+        <gen-card>
+        <ng-container body>
+        <div class="flex justify-content-center align-items-center flex-column">
+        <img
+          src="assets/images/noResultsReturned.png"
+          alt="No Data Found"
+          class="w-7 h-8 "
+        />
+      </div>
+    </ng-container>
+  </gen-card>
+  </div>
+       }
+      <div class="my-2">
+        <gen-button
+          [btnType]="'plus-btn'"
+          [btnLabel]="'Add New Notes'"
+          (onClick)="showAddNotes()"
+          [disabled]="baseSvc?.accessMode == 'view' || isNotesDisabled()"
+        ></gen-button>
+      </div>
+      
+    </ng-container>
+  </gen-card>
+</div>
+<!-- <gen-button (click)="setHeight()"></gen-button> -->
+
+<!-- @for(item of filteredContent; track item.id){
+  {{ item.note }}
+  <br><br>
+} -->

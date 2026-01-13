@@ -1,0 +1,32 @@
+<div class="grid">
+  <div class="col-12" *ngIf="formData?.role === 2 && showSSOP">
+    <gen-card [cardType]="'non-border'">
+      <div body>
+        <div class="flex align-items-center">
+          <label class="mr-3">Is all income and expenses shared between Borrower and Co-borrower?</label>
+          <p-inputSwitch [(ngModel)]="isSharedFinancialPosition" 
+                         [style]="{ width: '2.7rem', height: '1rem' }"
+                        (onChange)="onSharedToggle()"></p-inputSwitch>
+          <span class="ml-2 font-bold">{{isSharedFinancialPosition ? 'Yes' : 'No'}}</span>
+        </div>
+      </div>
+    </gen-card>
+  </div>
+
+
+
+<div class="col-12" *ngIf="shouldShowFinancialPosition()">
+  <div class="grid">
+    <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+      <app-profit-declaration></app-profit-declaration>
+    </div>
+    <div class="col-12 md:col-6 lg:col-6 sm:col-12">
+      <div class="mb-2">
+        <app-turnover-information></app-turnover-information>
+      </div>
+      <div>
+        <app-balance-infomartion></app-balance-infomartion>
+      </div>
+    </div>
+  </div>
+</div>  

@@ -1,0 +1,44 @@
+<!-- <gen-card
+  [cardType]="'non-border'"
+  [headerText]="'Physical Address'"
+  [cardBgColor]="'--background-color-secondary'"
+> -->
+  <ng-container body>
+    <div class="grid">
+      <div class="customerAddress-table col-4 pl-3 py-0">
+        <!-- <label for="street" class="p-float-label">{{ "Search" }}</label> -->
+
+        <!-- [(ngModel)]="physicalSeachValue"
+        [ngModelOptions]="{standalone: true}" -->
+        <!-- <form *ngIf="customerRoleForm" [formGroup]="customerRoleForm">
+        <geoapify-geocoder-autocomplete
+          formControlName="physicalSeachValue"
+          name="physicalSeachValue"
+          [placeholder]="'Search'"
+          [skipIcons]="true"
+          (placeSelect)="placeSelected($event, index)"
+          [postprocessingHook]="postprocessingHook"
+          (suggestionsChange)="suggestionsChanged($event)"
+        ></geoapify-geocoder-autocomplete>
+      </form> -->
+      </div>
+    </div>
+    <div class="business_physical_address">
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      [mode]="mode"
+      [id]="id"
+      [data]="data"
+      (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+      (formReady)="onFormReady()"
+      (onInput)="onValueTyped($event)"
+      (onBlur)="onBlurEvent($event)"
+      (onValueChange)="onValueEvent($event)"
+    >
+    </base-form>
+    </div>
+  </ng-container>
+<!-- </gen-card> -->

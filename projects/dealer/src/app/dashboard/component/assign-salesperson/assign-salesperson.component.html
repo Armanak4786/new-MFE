@@ -1,0 +1,80 @@
+<!-- <div class="px-4"> -->
+  <!-- <ng-container *ngIf="selectedOriginatorName && selectedOriginatorNumber">
+    <div class="grid pt-2">
+      <div class="col-4 px-4">
+        <p class="text-size-13">
+         <text [mode]="'label'" [label]="'lbl_quoteId'"></text> <span class="text-bold">{{ quoteId }}</span>
+        </p>
+      </div>
+      <div class="col-5 px-4">
+        <p class="text-size-13">
+<text [mode]="'label'" [label]="'lbl_customerName'"></text> <span class="text-bold">{{ customerName }}</span>
+        </p>
+      </div>
+    </div>
+  </ng-container> -->
+
+  <!-- <div class="grid py-2">
+    <div class="col-4 px-4">
+      <p-dropdown
+        [options]="listData"
+        [filter]="listData?.length > 5"
+        [(ngModel)]="selectedOriginatorName"
+        optionLabel="name"
+        placeholder="Originator Name"
+        styleClass="w-full"
+      />
+    </div>
+    <div class="col-4 px-4">
+      <p-floatLabel>
+        <input
+          pInputText
+          id="'originatorNumber"
+          [(ngModel)]="selectedOriginatorNumber"
+        />
+<label for="username"><text [mode]="'label'" [label]="'lbl_originatorNumber'"></text> </label>
+      </p-floatLabel>
+    </div>
+    <div class="col-4 px-4">
+      <p-dropdown
+        [options]="listData"
+        [filter]="listData?.length > 5"
+        [(ngModel)]="selectedSalesPerson"
+        optionLabel="name"
+        placeholder="Sales Person"
+        styleClass="w-full"
+      />
+    </div>
+  </div>
+  <ng-container *ngIf="true">
+    <div class="col-12">
+      <p class="text-center text-size-13 text-semi-bold">
+        <text [mode]="'label'" [label]="'lbl_areyousureQuote'"></text>
+      </p>
+    </div>
+  </ng-container> -->
+ 
+   <div *ngIf="true">
+      <base-form #mainForm [formConfig]="formConfig" (formReady)="onFormReady()" (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)" ></base-form>
+  </div>
+ 
+  <div class="col-12 -mt-5">
+    <div class="grid">
+      <div class="col-6 text-right">
+        <gen-button
+          [btnLabel]="'btn_assign'"
+          (onClick)="changeAssignee()"
+        ></gen-button>
+      </div>
+      <div class="col-6">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="' Cancel'"
+          (onClick)="closePopup()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+<!-- </div> -->
+
