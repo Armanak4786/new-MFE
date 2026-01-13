@@ -1,10 +1,17 @@
 <div class="main-layout-topbar" [ngClass]="{ expanded: isSidemenuExpanded }">
     <div class="layout-topbar">
         <div class="flex">
-
+            <!-- <button
+        #menubutton
+        class="p-link layout-menu-button layout-topbar-button"
+        (click)="layoutService.onMenuToggle()"
+      >
+        <i class="pi pi-bars"></i>
+      </button> -->
             <span class="sidebar-control">
                 <i #menubutton (click)="layoutService.onMenuToggle()" class="fa fa-bars"></i></span>
 
+            <!-- (click)="navigate()" -->
             <a class="layout-topbar-logo py-0">
                 <img class="cursor-pointer" src="assets/images/{{
             layoutService.config.colorScheme === 'light'
@@ -12,6 +19,14 @@
               : 'logo-white'
           }}.png" alt="logo" />
             </a>
+        </div>
+        <div class="ml-2 dealer w-4 {{
+        dashboardService.dealerAnimate ? 'vibrate-Field' : ''
+      }}">
+            <p-dropdown *ngIf="showDealerDropdown" (onChange)="onSelect($event)"
+                [options]="dashboardService?.userOptions" [(ngModel)]="dashboardService.userSelectedOption"
+                optionLabel="label" optionValue="value" placeholder="Select Dealer " class="originatorCSS" />
+            <!-- [disabled]="!isDealerDropdownEnabled" -->
         </div>
 
         <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
