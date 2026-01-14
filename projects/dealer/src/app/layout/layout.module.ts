@@ -17,6 +17,7 @@ import { SubSidemenuComponent } from './components/sub-sidemenu/sub-sidemenu.com
 import { ReportDialogComponent } from './components/report-dialog/report-dialog.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { UserProfileOverlayComponent } from './components/user-profile-overlay/user-profile-overlay.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { UserProfileOverlayComponent } from './components/user-profile-overlay/u
         FooterComponent,
         NotificationBellComponent,
         UserProfileOverlayComponent,
-        ReportDialogComponent
+        ReportDialogComponent,
+        SidebarComponent
     ],
     imports: [
         CommonModule,
@@ -48,7 +50,8 @@ import { UserProfileOverlayComponent } from './components/user-profile-overlay/u
         FooterComponent,
         NotificationBellComponent,
         UserProfileOverlayComponent,
-        ReportDialogComponent
+        ReportDialogComponent,
+        SidebarComponent
     ]
 })
 export class LayoutModule { }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { DataService } from 'auro-ui';
 import { LayoutService } from 'shared-lib';
+import { DashboardService } from '../../../projects/dealer/src/app/dashboard/services/dashboard.service';
 
 export interface ModuleCard {
     title: string;
@@ -58,15 +59,19 @@ export class LandingComponent {
     constructor(
         public layoutService: LayoutService,
         private dataSvc: DataService,
-        private router: Router
-    ) { }
-
-    ngOnInit(): void {
+        private router: Router,
+        public dashboardService: DashboardService
+    ) {
         let accessToken = sessionStorage.getItem("accessToken");
         if (accessToken) {
-            // this.dashboardService?.callOriginatorApi();
+            this.dashboardService?.callOriginatorApi();
+            console.log("getRoleBasedPermissions");
             this.getRoleBasedPermissions();
         }
+    }
+
+    ngOnInit(): void {
+
     }
 
     navigateTo(route: string): void {
