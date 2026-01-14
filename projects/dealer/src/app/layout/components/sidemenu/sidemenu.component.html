@@ -12,11 +12,11 @@
             }"></i>
                 </button>
             </li>
-            <li (click)="navigate('/dealer')" class="nav-item">
+            <li (click)="navigate('/dashboard')" class="nav-item">
                 <i class="fa-solid fa-wallet"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Dashboard</span>
             </li>
-            <li (click)="navigate('/dealer/standard-quote')" class="nav-item">
+            <li (click)="navigate('/standard-quote')" class="nav-item">
                 <i class="fas fa-line-chart"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Standard quote</span>
             </li>
@@ -24,7 +24,7 @@
         <i class="fa fa-cog"></i>
         <span class="icon-label" *ngIf="isExpanded || isLocked">Settings</span>
       </li> -->
-            <li (click)="navigate('/dealer/quick-quote')" class="nav-item">
+            <li (click)="navigate('/quick-quote')" class="nav-item">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Quick Quote</span>
             </li>
