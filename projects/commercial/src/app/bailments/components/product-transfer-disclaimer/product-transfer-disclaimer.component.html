@@ -1,0 +1,226 @@
+<div class="ml-2">
+  <div class="pt-4 mb-2">
+    <text
+      mode="label"
+      class="text-gray-800 mt-4 mb-2"
+      [label]="'product_transfer_to_lbl'"
+      [labelClass]="'text-sm'"
+    ></text>
+  </div>
+  <div class="mb-5">
+    <text
+      mode="label"
+      class="text-gray-800 mt-4 mb-1"
+      [value]="productTransferTo"
+      [valueClass]="'text-sm font-semibold'"
+    ></text>
+  </div>
+  <div class="card card-class px-4 py-5 sm:col-12 md:col-8 lg:col-12">
+    <div class="grid text-sm text-gray-600">
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [label]="'id_ref'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [label]="'currentStatus'"
+          [labelClass]="'nowrap-header text-xs'"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [label]="'new_status'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-2">
+        <text
+          [mode]="'label'"
+          [label]="'description'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-2">
+        <text
+          [mode]="'label'"
+          [label]="'regNo'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [label]="'asset_id'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [label]="'lbl_current_balance'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [label]="'gst_upper'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-2">
+        <text
+          [mode]="'label'"
+          [label]="'repayment_amount'"
+          [labelClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text [mode]="'label'" [label]="' '" [labelClass]="'text-xs'"></text>
+      </div>
+    </div>
+    <div
+      class="grid text-sm text-gray-800"
+      *ngFor="let data of productTransferDisclaimerDataList; let i = index"
+    >
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="data?.contractId"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="data?.dealTypeName"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="this.receivedData?.exculdeDealTypeId"
+        ></text>
+      </div>
+      <div class="col-2">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="data?.description"
+        ></text>
+      </div>
+      <div class="col-2" *ngIf="searchedBy && searchedBy != 17">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="data.registrationNumber || data.identifier"
+        ></text>
+      </div>
+      <div class="col-2" *ngIf="!searchedBy || searchedBy == 17">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="data.vehicleIdentificationNumber"
+        ></text>
+      </div>
+      <div class="col-1">
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="data.assetNo"
+        ></text>
+      </div>
+      <div class="col-1">
+        <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs flex'"
+          [value]="data?.currentBalance"
+        >
+        </amount>
+      </div>
+
+      <div class="col-1">
+        <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs flex'"
+          [value]="data?.gst"
+        >
+        </amount>
+      </div>
+      <div class="col-1">
+        <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs flex'"
+          [value]="data?.amountToPay"
+        >
+        </amount>
+      </div>
+      <div class="col-1 -mt-2">
+        <gen-button
+          class="bg-transparent border-none text-black text-xs"
+          (click)="deleteAssets(data, i)"
+          [btnType]="'non-bg-btn'"
+          [btnIcon]="'pi pi-trash'"
+          *ngIf="productTransferDisclaimerDataList.length > 1"
+        >
+        </gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="pt-2 pb-3">
+     <text
+      [mode]="'label'"
+      [label]="customerName +'  ' + ('bailment_agreement_product_transfer' | translate)"
+      [labelClass]="'text-xs text-gray-600'"
+      [valueClass]="'text-xs text-gray-600'"
+    ></text>  
+  </div>
+  <div *ngIf="productTransferTo==='Demonstrator (DEMO)'">
+    <text
+      mode="label"
+      class="text-xs text-gray-600 paragraph-format"
+      [label]="'product_transfer_message_demonstrator'"
+    ></text>
+  </div>
+   <div *ngIf="productTransferTo==='Delayed Payment Privilege (DPP)'">
+    <text
+      mode="label"
+      class="text-xs text-gray-600 paragraph-format"
+      [label]="'product_transfer_message_dpp'"
+    ></text>
+  </div>
+  <div class="flex">
+    <text
+      [mode]="'label'"
+      [label]="('on_behalf_of' | translate) +username +'  ' + ('on_behalf_Of' | translate)+customerName"
+      [labelClass]="'text-xs text-gray-600'"
+      [valueClass]="'text-xs text-gray-600'"
+    ></text>
+  </div>
+  <div class="grid gap-2 flex justify-content-end mt-4">
+    <div class="col-2">
+      <gen-button
+        [btnLabel]="'cancel'"
+        [btnType]="'border-btn'"
+        (onClick)="onCancel()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+    <div class="col-2">
+      <gen-button
+        [btnLabel]="'submit'"
+        [btnType]="'bg-btn'"
+        (click)="onSubmit()"
+        [btnWidth]="'full'"
+        [disabled]="!productTransferDisclaimerDataList.length"
+      ></gen-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,318 @@
+<div class="grid">
+  <div class="sm:col-7 md:col-7 lg:col-6 print-page no-break">
+    <div class="card p-2">
+      <div class="grid mb-3">
+        <div class="col-2">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold mt-2 ml-2'"
+            [label]="'lease_details'"
+          ></text>
+        </div>
+        <div class="col-offset-8 col-2 flex justify-content-end">
+          <a
+            (click)="op.toggle($event)"
+            class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+          >
+            {{ "lease_parties" | translate }}
+          </a>
+        </div>
+      </div>
+      <p-overlayPanel #op>
+        <div class="flex flex-column gap-3 w-25rem">
+          <app-loan-parties
+            [leasePartiesData]="leasePartiesData"
+            [leasePartiesColumnDef]="leasePartiesColumnDef"
+          ></app-loan-parties>
+        </div>
+      </p-overlayPanel>
+      <div class="flex flex-wrap justify-between gap-6 mb-4">
+        <div class="flex-1 min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [className]="'trim_label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mt-2 ml-2 mb-0'"
+            [label]="'product'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="leaseData?.productType"
+            [title]="leaseData?.productType"
+          ></text>
+        </div>
+        <div class="flex-1 min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-2'"
+            [label]="'start_date'"
+            [valueClass]="'text-xs flex ml-2 mt-1'"
+            [value]="leaseData?.startDate | date : 'dd/MM/yyyy'"
+          ></text>
+        </div>
+        <div class="flex-1 min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-2'"
+            [label]="'end_date'"
+            [valueClass]="'text-xs flex ml-2 mt-1'"
+            [value]="leaseData?.endDate | date : 'dd/MM/yyyy'"
+          ></text>
+        </div>
+        <div class="flex-1 min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-2'"
+            [label]="'lease_term'"
+            [valueClass]="'text-xs flex ml-2 mt-1'"
+            [value]="leaseData.leaseTerm + ' months'"
+          ></text>
+        </div>
+        <div class="flex-1 min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-2'"
+            [label]="'Fully Maintained'"
+            [valueClass]="'text-xs ml-2 mt-1'"
+            [value]="leaseData.fullyMaintained ? 'Yes' : 'No'"
+          ></text>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sm:col-6 md:col-6 lg:col-6 p-1 print-page no-break">
+    <div class="card p-2">
+      <div class="flex items-center mb-2">
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold'"
+            [label]="'current_position'"
+          ></text>
+        </div>
+      </div>
+      <div class="flex flex-wrap mb-3">
+        <div class="min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mr-2 mb-0 pb-0'"
+            [label]="'remaining_term'"
+            [valueClass]="'text-xs ml-2 mt-2 mr-2'"
+            [value]="currentPosition?.[0]?.remainingTerm"
+          ></text>
+        </div>
+        <div class="flex-1 min-w-[150px] -mt-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mt-0'"
+            [label]="'overdue_amount_days'"
+          ></text>
+          <div class="flex">
+            <amount
+              [mode]="'label'"
+              [valueClass]="'text-xs'"
+              [value]="currentPosition?.[0]?.overdueAmount"
+            ></amount>
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs'"
+              [label]="' / ' + currentPosition?.[0]?.overduedays + ' days'"
+            ></text>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-row flex-wrap items-start gap-4">
+        <div class="flex flex-col min-w-[150px] mr-6">
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs label-color font-bold'"
+            [label]="'next_rental'"
+          ></text>
+        </div>
+        <div class="flex flex-col min-w-[150px] mr-5">
+          <amount
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'rental_amount'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.rentalAmount"
+          ></amount>
+        </div>
+
+        <div class="flex flex-col min-w-[150px] mr-5">
+          <amount
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex'"
+            [label]="'gst'"
+            [valueClass]="'text-xs flex'"
+            [value]="currentPosition?.[0]?.rentalGST"
+          ></amount>
+        </div>
+
+        <div class="flex flex-col min-w-[150px] mr-5">
+          <amount
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [labelType]="'vertical'"
+            [label]="'total_rental_amount'"
+            [valueClass]="'text-xs'"
+            [value]="
+              currentPosition?.[0]?.rentalAmount + currentPosition?.[0]?.rentalGST
+            "
+          ></amount>
+        </div>
+
+        <div class="flex flex-col min-w-[150px] mr-5">
+          <date
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mb-0'"
+            [label]="'start_date'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.nextInstallment"
+            [mode]="'label'"
+          ></date>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-7">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'RentalSummary' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'payment_summary'"
+          class="text-xs"
+          (onClick)="showRentalSummaryTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'RentalSchedule' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'payment_schedule'"
+          class="text-xs"
+          (onClick)="showRentalScheduleTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'LeaseStatement' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'statement'"
+          class="text-xs"
+          (onClick)="showLeaseStatementTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Assets' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'assets'"
+          class="text-xs"
+          (onClick)="showAssetsTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocumentsTab()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-5">
+    <div class="flex justify-content-end flex-wrap">
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_operating_lease'"
+          (click)="navigateToOperatingLease()"
+          class="text-xs font-bold"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_lease'"
+          class="text-xs"
+          [iconPos]="'right'"
+          (click)="navigateToLoansDashboard()"
+          [btnIcon]="'pi pi-angle-right'"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'RentalSummary'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-rental-summary
+        [rentalSummaryColumnDefs]="rentalSummaryColumnDefs"
+        [rentalSummaryDataList]="rentalSummaryDataList"
+      ></app-rental-summary>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'LeaseStatement'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-transaction-flow
+        [transactionsColumnDef]="transactionsColumnDef"
+        [transactionDataList]="transactionDataList"
+        [paymentColumnDefs]="paymentColumnDefs"
+        [paymentDataList]="paymentDataList"
+        [paymentNotYetAllocated]="paymentNotYetAllocated"
+        #TransactionFlow
+      ></app-transaction-flow>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Assets'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-facility-assets
+        [columnsFacilityAsset]="assetsColumnDef"
+        [facilityType]="facilityType"
+        [facilityAsssetsDatalist]="assetsDatalist"
+      ></app-facility-assets>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-documents
+        [documentsColumnDefs]="documentsColumnDefs"
+        [documentsDataList]="documentsDataList"
+        [facilityType]="'creditline'"
+        (documentEmitter)="onDocumentClick($event)"
+        (docUploadEmitter)="onDocUploadClick($event)"
+      ></app-documents>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'RentalSchedule'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-rental-schedule
+        [rentalScheduleColumnDefs]="rentalScheduleColumnDefs"
+        [rentalScheduleDataList]="rentalScheduleDataList"
+      ></app-rental-schedule>
+    </div>
+  </div>
+</ng-container>

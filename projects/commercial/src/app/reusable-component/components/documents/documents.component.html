@@ -1,0 +1,130 @@
+<div class="grid m-2">
+  <div class="card sm:col-12 md:col-6 lg:col-8">
+    <text
+      [mode]="'label'"
+      [label]="'document_upload'"
+      [labelClass]="'font-semibold pl-4 mt-2'"
+    ></text>
+    <text
+      [mode]="'label'"
+      [label]="'document_upload_hint'"
+      [labelClass]="' text-xs pl-4 mt-3'"
+    ></text>
+    <app-upload-docs
+      (onFilesUploaded)="onFilesUploaded($event)"
+      (onFilesSubmit)="onFilesSubmit($event)"
+    ></app-upload-docs>
+  </div>
+  <!-- <div
+
+    class="sm:col-12 md:col-6 lg:col-4 fixed-height-card"
+
+    *ngIf="uploadedDocuments.length !== 0"
+> -->
+  <div class="sm:col-12 md:col-6 lg:col-4 fixed-height-card">
+    <div
+      class="ml-2"
+      style="height: 10%"
+      *ngIf="uploadedDocuments.length !== 0"
+    >
+      <div class="ml-2" style="height: 8%">
+        <div
+          *ngFor="let doc of uploadedDocuments"
+          class="document-tile mb-2 -mt-2 relative"
+        >
+          <div class="absolute top-0 right-0 p-1">
+            <!-- <div class="col-offset-11 col-1 p-0 flex justify-content-end">
+<gen-button
+
+              class="p-0 bg-transparent border-none text-black text-xs"
+
+              (click)="deleteFile(doc)"
+
+              [btnType]="'non-bg-btn'"
+
+              [btnIcon]="'fas fa-times'"
+
+              aria-label="Delete document"
+>
+</gen-button>
+</div> -->
+            <div
+              class="flex justify-content-end p-0 m-0"
+              style="height: fit-content"
+            >
+              <gen-button
+                class="p-0 m-0 bg-transparent border-none text-black text-xs"
+                (click)="deleteFile(doc)"
+                [btnType]="'non-bg-btn'"
+                [btnIcon]="'fas fa-times'"
+                aria-label="Delete document"
+                style="line-height: 1"
+              ></gen-button>
+            </div>
+          </div>
+          <div class="p-1">
+            <div class="flex align-items-center mb-2">
+              <i
+                [ngClass]="getDocumentIcon(doc.type)"
+                class="mr-2 text-lg mb-1"
+                style="min-width: 20px"
+              ></i>
+              <text
+                [mode]="'label'"
+                class="text-xs"
+                [value]="doc.name"
+                valueClass="'text-xs'"
+              ></text>
+            </div>
+            <div class="flex items-center mb-2 ml-4">
+              <!-- <text [mode]="'label'" [valueClass]="'text-xs'" [value]="'(doc.uploadedSize / 1024).toFixed(2) KB of  (doc.totalSize / 1024).toFixed(2)'"> -->
+              <span class="text-xs"
+                >{{ (doc.uploadedSize / 1024).toFixed(2) }} KB of
+
+                {{ (doc.totalSize / 1024).toFixed(2) }} KB
+              </span>
+              <div class="flex items-center ml-2">
+                <ng-container
+                  *ngIf="
+                    doc.isUploading && doc.uploadedSize < doc.totalSize;
+                    else uploadComplete
+                  "
+                >
+                  <i class="fas fa-circle-notch fa-spin text-gray-500"></i>
+                  <span class="text-xs ml-1 text-gray-600">Uploading...</span>
+                </ng-container>
+                <ng-template #uploadComplete>
+                  <i class="fas fa-check-circle text-green-500"></i>
+                  <span class="text-xs ml-1 text-green-600"
+                    >Upload complete</span
+                  >
+                </ng-template>
+              </div>
+            </div>
+            <p-progressBar
+              [value]="doc.progress"
+              [showValue]="true"
+              [style]="{ height: '4px' }"
+            ></p-progressBar>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid m-2 border-round-sm">
+  <div class="sm:col-12 md:col-6 lg:col-12">
+    <gen-table
+      [columns]="documentsColumnDefs"
+      [tableClass]="'border-round'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [dataList]="documentsDataList"
+      [tableStyle]="'stripped-rows'"
+      [paginatorFlag]="'true'"
+      [sortable]="'true'"
+      (onCellClick)="onCellClick($event)"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+    ></gen-table>
+  </div>
+</div>

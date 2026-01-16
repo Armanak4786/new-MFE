@@ -1,0 +1,27 @@
+<div class="grid">
+  <div class="col-4">
+    <date
+      [labelClass]="'label-xs label-color'"
+      [labelType]="'vertical'"
+      [label]="'from'"
+      (change)="onFromDateChange($event)"
+    ></date>
+  </div>
+  <div class="col-4">
+    <date
+      [labelClass]="'label-xs label-color'"
+      [labelType]="'vertical'"
+      [label]="'to'"
+      (change)="onToDateChange($event)"
+    ></date>
+  </div>
+  <div class="col-4 mt-4">
+    <gen-button
+      [btnType]="'bg-btn'"
+      [btnLabel]="'Generate'"
+      class="text-xs"
+      [btnWidth]="'full'"
+      (click)="generateStatement()"
+    ></gen-button>
+  </div>
+</div>

@@ -1,0 +1,345 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="grid add-drawdown-request p-2 border-round-xl">
+      <div class="sm:col-12 md:col-8 lg:col-8">
+        <app-non-facility-loan-request-card></app-non-facility-loan-request-card>
+      </div>
+    </div>
+    <div class="grid mt-5">
+      <div class="sm:col-6 md:col-6 lg:col-6">
+        <text
+          *ngIf="requestType == 'drawdownRequest'"
+          [mode]="'label'"
+          [label]="'drawdown_details'"
+          [labelClass]="'text-lg font-semibold'"
+        ></text>
+        <text
+          *ngIf="requestType == 'newLoanRequest'"
+          [mode]="'label'"
+          [label]="'new_loan_details'"
+          [labelClass]="'text-lg font-semibold'"
+        ></text>
+        <div class="add-drawdown-request border-round-xl">
+          <app-non-facility-loan-details></app-non-facility-loan-details>
+          <div class="p-2 pb-3">
+            <text
+              [mode]="'label'"
+              [label]="'drawdown_request_warning_message'"
+              [labelClass]="'text-xs text-danger-color'"
+            >
+            </text>
+          </div>
+        </div>
+      </div>
+      <div class="sm:col-6 md:col-6 lg:col-6">
+        <text
+          [mode]="'label'"
+          [label]="'disburstment_details'"
+          [labelClass]="'font-semibold text-lg'"
+        ></text>
+        <form [formGroup]="drawdownDetails">
+          <div class="add-drawdown-request border-round-xl pb-5 pt-4 mt-4">
+            <div class="grid">
+              <div class="col-12 pt-2">
+                <text
+                  [mode]="'label'"
+                  [label]="'disburse_funds_to'"
+                  [labelClass]="'px-3 text-xs text-600'"
+                ></text>
+              </div>
+            </div>
+            <div class="flex flex-row gap-3 p-2 pb-3">
+              <div class="pt-2 flex gap-2 radio_label_class">
+                <input
+                  type="radio"
+                  #Supplier
+                  formControlName="disburseFundsTo"
+                  value="Supplier"
+                />
+                <text
+                  [mode]="'label'"
+                  [label]="'supplier'"
+                  [labelClass]="'text-md drawdown-label radio_label_class'"
+                ></text>
+              </div>
+              <div class="pt-2 flex gap-2 radio_label_class">
+                <input
+                  type="radio"
+                  #nominatedBankAccount
+                  formControlName="disburseFundsTo"
+                  value="nominatedBankAccount"
+                />
+                <text
+                  [mode]="'label'"
+                  [label]="'nominated_bank_account'"
+                  [labelClass]="'text-md drawdown-label radio_label_class'"
+                ></text>
+              </div>
+              <div class="pt-2 flex gap-2 radio_label_class">
+                <input
+                  type="radio"
+                  #Both
+                  formControlName="disburseFundsTo"
+                  value="Both"
+                />
+                <text
+                  [mode]="'label'"
+                  [label]="'both'"
+                  [labelClass]="'text-md drawdown-label radio_label_class'"
+                ></text>
+              </div>
+            </div>
+            <div class="px-3">
+              <div class="disburstment-details add-drawdown-request">
+                <div class="grid">
+                  <div class="col-12 px-4 ml-3 mt-3">
+                    @if(searchType == 'Supplier' || searchType == 'Both'){
+                    <ng-container formArrayName="supplierDetails">
+                      <div class="grid">
+                        <div
+                          *ngFor="
+                            let acc of supplierDetails.controls;
+                            let i = index
+                          "
+                          class="col-12 mt-2"
+                        >
+                          <div [formGroupName]="i" class="">
+                            <div class="grid">
+                              <div class="col-5 p-fluid mt-3">
+                                <corporate-name
+                                  [label]="'supplier_name'"
+                                  [labelType]="'vertical'"
+                                  [mode]="'edit'"
+                                  [labelClass]="
+                                    'disburstment-details-label drawdown-label'
+                                  "
+                                  formControlName="supplierName"
+                                >
+                                </corporate-name>
+                                <div
+                                  *ngIf="
+                                    acc.get('supplierName')?.touched &&
+                                    acc
+                                      .get('supplierName')
+                                      ?.hasError('required')
+                                  "
+                                  class="text-xs text-danger-color"
+                                >
+                                  <text
+                                    [mode]="'label'"
+                                    [label]="'enter_supplier_name'"
+                                    [labelClass]="''"
+                                  ></text>
+                                </div>
+                              </div>
+
+                              <div class="col-5 p-fluid mt-3">
+                                <amount
+                                  [label]="'amount'"
+                                  labelType="vertical"
+                                  mode="edit"
+                                  [labelClass]="
+                                    'disburstment-details-label drawdown-label'
+                                  "
+                                  formControlName="amount"
+                                >
+                                </amount>
+                                <div
+                                  *ngIf="
+                                    acc.get('amount')?.touched &&
+                                    acc.get('amount')?.hasError('required')
+                                  "
+                                  class="text-xs text-danger-color"
+                                >
+                                  <text
+                                    [mode]="'label'"
+                                    [label]="'enter_amount'"
+                                    [labelClass]="''"
+                                  ></text>
+                                </div>
+                              </div>
+                              <div class="col-1 pt-4 mt-5" *ngIf="i != 0">
+                                <gen-button
+                                  [btnIcon]="'fa fa-trash'"
+                                  [btnType]="'non-bg-btn'"
+                                  (onClick)="removeSupplierDetails(i)"
+                                  class=""
+                                ></gen-button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <gen-button
+                          class="text-md"
+                          [btnIcon]="'pi pi-plus'"
+                          [btnLabel]="'Add Supplier'"
+                          [iconPos]="'left'"
+                          (click)="addSuppliers()"
+                          [btnType]="'non-bg-btn'"
+                        ></gen-button>
+                      </div>
+                    </ng-container>
+                    } @if(searchType == 'nominatedBankAccount' || searchType ==
+                    'Both' ){
+                    <ng-container>
+                      <div class="grid">
+                        <div class="col-12 mt-2">
+                          <div class="grid">
+                            <div class="col-5 p-fluid mt-3">
+                              <text
+                                [mode]="'label'"
+                                [label]="'nominated_bank_account'"
+                                [labelClass]="'text-600'"
+                              ></text>
+                            </div>
+                            <div class="col-5 p-fluid">
+                              <amount
+                                [valueClass]="''"
+                                [labelClass]="''"
+                                [value]="IfNominatedBankAccountRadio"
+                                formControlName="nominatedAmount"
+                              ></amount>
+                              <div
+                                *ngIf="
+                                  drawdownDetails.get('nominatedAmount')
+                                    .touched &&
+                                  drawdownDetails.get('nominatedAmount').invalid
+                                "
+                                class="text-xs text-danger-color"
+                              >
+                                <small
+                                  class="error"
+                                  *ngIf="
+                                    drawdownDetails
+                                      .get('nominatedAmount')
+                                      .hasError('required')
+                                  "
+                                >
+                                  <text
+                                    [mode]="'label'"
+                                    [label]="'enter_amount'"
+                                  ></text>
+                                </small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                    } @if(facilityValue!= 'CurrentAccount'){
+                    <ng-container formArrayName="disburstmentDetails">
+                      <div class="grid mt-6">
+                        <div
+                          *ngFor="
+                            let acc of disburstmentDetails.controls;
+                            let i = index
+                          "
+                          class="col-12"
+                        >
+                          <div [formGroupName]="i" class="mt-1">
+                            <div class="grid">
+                              <div class="col-10 p-fluid">
+                                <corporate-name
+                                  [label]="'asset_description'"
+                                  mode="edit"
+                                  labelType="vertical"
+                                  [labelClass]="
+                                    'disburstment-details-label drawdown-label'
+                                  "
+                                  formControlName="assetDescription"
+                                >
+                                </corporate-name>
+                                <div *ngIf="acc.get('stock').value">
+                                  <div
+                                    *ngIf="
+                                      acc.get('assetDescription')?.touched &&
+                                      acc
+                                        .get('assetDescription')
+                                        ?.hasError('required')
+                                    "
+                                    class="text-xs text-danger-color"
+                                  >
+                                    <text
+                                      [mode]="'label'"
+                                      [label]="'enter_asset_description'"
+                                    ></text>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-1 mt-5" *ngIf="i != 0">
+                                <gen-button
+                                  [btnIcon]="'fa fa-trash'"
+                                  [btnType]="'non-bg-btn'"
+                                  (onClick)="removeAccessories(i)"
+                                  class="mt-2"
+                                ></gen-button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="pt-1 flex justify-content-between">
+                        <gen-button
+                          [class]="add_Asset_Button"
+                          [btnIcon]="'pi pi-plus'"
+                          [btnLabel]="'Add Asset'"
+                          [iconPos]="'left'"
+                          (click)="addAssets()"
+                          [btnType]="'non-bg-btn'"
+                        ></gen-button>
+                      </div>
+                    </ng-container>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="flex flex-row">
+        <text
+          [mode]="'label'"
+          [label]="'document_upload'"
+          [labelClass]="'font-semibold m-2'"
+        ></text>
+        <text [mode]="'label'" [label]="'supporting_docs'"></text>
+      </div>
+    </div>
+    <div class="add-drawdown-request mt-2 border-round-md">
+      <app-upload-docs [showActionIcons]="true"></app-upload-docs>
+    </div>
+    <div class="mt-4">
+      <text
+        [mode]="'label'"
+        [label]="'additional_information'"
+        [labelClass]="'font-semibold m-2'"
+      ></text>
+    </div>
+    <div class="mt-3">
+      <app-drawdown-request-additional-info></app-drawdown-request-additional-info>
+    </div>
+    <div class="grid gap-2 flex justify-content-end mt-4">
+      <div class="col-2">
+        <gen-button
+          [btnWidth]="'full'"
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'Cancel'"
+          (onClick)="showDialogCancel()"
+        ></gen-button>
+      </div>
+      <div class="col-2">
+        <gen-button
+          [btnWidth]="'full'"
+          [btnType]="'bg-btn'"
+          [btnLabel]="'Submit'"
+          (onClick)="showDialogSubmitData()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

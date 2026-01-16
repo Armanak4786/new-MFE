@@ -1,0 +1,192 @@
+<div>
+  <div class="card card-class md:col-10">
+    <div class="grid">
+      <div class="col-10 md:col-10">
+        <div class="grid">
+          <div class="col-12 sm:col-3 md:col-3">
+            <text [mode]="'label'" [label]="'assetNo'" [labelClass]="
+                'release-security-text release-security-text-color text-xs text-600'
+              "></text>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3">
+            <text [mode]="'label'" [label]="'description'" [labelClass]="
+                'release-security-text release-security-text-color text-xs text-600'
+              "></text>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3">
+            <text [mode]="'label'" [label]="'registration_number'" [labelClass]="
+                'release-security-text release-security-text-color text-xs text-600'
+              "></text>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3" *ngIf="IfSsv">
+            <text [mode]="'label'" [label]="'ssv'" [labelClass]="
+                'release-security-text release-security-text-color text-xs text-600'
+              "></text>
+          </div>
+        </div>
+        <div class="grid" *ngFor="let data of aasetListToRelease">
+          <div class="col-12 sm:col-3 md:col-3">
+            <text [value]="data.assetNo" labelType="vertical" class="text-xs pt-3" mode="label">
+            </text>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3">
+            <name [value]="data.description" labelType="vertical" class="text-xs pt-3" mode="label">
+            </name>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3">
+            <name [value]="data.identifier" labelType="vertical" class="text-xs pt-3" mode="label">
+            </name>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3" *ngIf="IfSsv">
+            <amount [value]="data.ssv" labelType="vertical" class="text-xs pt-3" mode="label">
+            </amount>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 ml-1 -mt-4 mb-1">
+      <div class="flex-container">
+        <div *ngIf="IfSsv" class="text-xs">
+          <text [mode]="'label'" [label]="'asset_requested_msg'" [labelClass]="'text-xs text-600'"></text>
+        </div>
+        <div *ngIf="IfSsv" class="text-xs text-primary">
+          <text [mode]="'label'" [value]="scaledSecurityValue" [labelClass]="
+              'release-security-text release-security-text-color text-primary text-xs text-600'
+            "></text>
+        </div>
+        <div class="text-xs">
+          <text [mode]="'label'" [label]="'choose_below_options_msg'" [labelClass]="
+              'release-security-text release-security-text-color text-xs text-600'
+            "></text>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Replace base-form with reactive form -->
+  <div class="grid mt-4">
+    <div class="col-12 -mt-4 drawdown-card-bg">
+      <form [formGroup]="releaseForm" class="p-2">
+
+        <!-- Horizontal Layout for all sections -->
+        <div class="grid">
+          <!-- Payment Options Section -->
+          <div class="col-12 md:col-3">
+            <div class="field">
+              <label class="block text-sm font-medium mb-4 required1">Payment Options</label>
+              <div class="flex flex-column gap-4">
+                <div class="field-radiobutton">
+                  <input type="radio" id="debit" value="Debit by nominated bank account" formControlName="payOptions"
+                    class="p-radiobutton paymentoptionsradio">
+                  <label for="debit" class="ml-2 mt-1 text-xs">Debit my nominated bank account</label>
+                </div>
+                <div class="field-radiobutton">
+                  <input type="radio" id="payDirect" value="I would like to pay UDC directly"
+                    formControlName="payOptions" class="p-radiobutton paymentoptionsradio">
+                  <label for="payDirect" class="ml-2 mt-1 text-xs">I would like to pay UDC directly</label>
+                </div>
+                <div class="field-radiobutton">
+                  <input type="radio" id="noPayment" value="I do not wish to make a payment"
+                    formControlName="payOptions" class="p-radiobutton paymentoptionsradio">
+                  <label for="noPayment" class="ml-2 mt-1 text-xs">I do not wish to make a payment</label>
+                </div>
+              </div>
+              <div *ngIf="payOptions?.invalid && payOptions?.touched" class="text-red-500 text-xs mt-1">
+                Please Select a Payment Option
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Payment Amount Section -->
+          <div class="col-12 md:col-2">
+            <div class="field">
+              <label class="block text-sm font-medium required1">Total Payment Amount</label>
+              <amount type="text" formControlName="totalPaymentAmt" class="p-inputtext w-full text-xs"
+                [class.p-invalid]="totalPaymentAmt?.invalid && totalPaymentAmt?.touched">
+              </amount>
+              <div *ngIf="totalPaymentAmt?.invalid && totalPaymentAmt?.touched" class="text-red-500 text-xs mt-1">
+                Please enter Total Payment Amount
+              </div>
+            </div>
+          </div>
+
+          <!-- Reason for Release Section -->
+          <div class="col-12 md:col-2">
+            <div class="field">
+              <label class="block text-sm font-medium mb-5 required1">Reason For Release</label>
+              <div class="flex flex-column gap-4">
+                <div class="field-checkbox">
+                  <input type="checkbox" id="assetSold" formControlName="assetSold" class="p-checkbox">
+                  <label for="assetSold" class="ml-2 text-xs">Asset Sold</label>
+                </div>
+                <div class="field-checkbox">
+                  <input type="checkbox" id="insuranceClaim" formControlName="InsuranceClaim" class="p-checkbox">
+                  <label for="insuranceClaim" class="ml-2 text-xs">Insurance Claim</label>
+                </div>
+                <div class="field-checkbox">
+                  <input type="checkbox" id="other" formControlName="Other" class="p-checkbox">
+                  <label for="other" class="ml-2 text-xs">Other (Complete Below)</label>
+                </div>
+              </div>
+              <div
+                *ngIf="releaseForm.hasError('atLeastOneRequired') && (assetSold?.touched || insuranceClaim?.touched || other?.touched)"
+                class="text-red-500 text-xs mt-1">
+                Please select at least one Reason for release
+              </div>
+            </div>
+          </div>
+
+          <!-- Amount Section -->
+          <div class="col-12 md:col-3">
+            <div class="field">
+              <label class="block text-sm font-medium mb-4">Amount</label>
+              <div class="flex flex-column">
+                <amount type="text" formControlName="Amt1" class="p-inputtext w-full text-xs no-border-bottom"
+                  [class.p-invalid]="amt1?.invalid && amt1?.touched">
+                </amount>
+                <div *ngIf="amt1?.invalid && amt1?.touched" class="text-red-500 text-xs ml-2">
+                  Please enter Amount
+                </div>
+
+                <amount type="text" formControlName="Amt2" class="p-inputtext w-full text-xs no-border-bottom"
+                  [class.p-invalid]="amt2?.invalid && amt2?.touched">
+                </amount>
+                <div *ngIf="amt2?.invalid && amt2?.touched" class="text-red-500 text-xs ml-2">
+                  Please enter Amount
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="grid -mt-4 p-2">
+      <div class="col-12 md:col-12 ml-2">
+        <text [mode]="'label'" [label]="'additional_information'" [labelClass]="
+            'release-security-text release-security-text-color font-bold text-sm ml-2'
+          "></text>
+        <textarea [rows]="4" [cols]="125" class="w-full p-inputtext black-bordered-textarea"
+          (input)="onTextareaInput($event)">
+        </textarea>
+        <text [mode]="'label'" [label]="'additional_info_submission_msg'" [labelClass]="
+            'release-security-text release-security-text-color text-xs pt-1'
+          "></text>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons Section -->
+  <div class="grid gap-2 flex justify-content-end" style="padding-right: 138px;">
+    <div class="col-12 sm:col-4 md:col-2">
+      <gen-button [btnLabel]="'cancel'" (onClick)="showDialogCancel()" [btnWidth]="'full'"></gen-button>
+    </div>
+    <div class="col-12 sm:col-4 md:col-2">
+      <gen-button [btnLabel]="'submit'" (onClick)="submit()" [btnWidth]="'full'"></gen-button>
+    </div>
+  </div>
+</div>

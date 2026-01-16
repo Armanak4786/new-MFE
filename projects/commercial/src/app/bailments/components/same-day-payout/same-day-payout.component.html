@@ -1,0 +1,114 @@
+<div class="grid flex pl-2">
+  <div class="col-12 md:col-2">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text label-color text-sm'"
+      [label]="'facility_type'"
+    ></text>
+  </div>
+
+  <div class="col-12 md:col-4 ml-2">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text label-color text-sm'"
+      [label]="'facility'"
+    ></text>
+  </div>
+
+  <div class="col-12 md:col-3">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text label-color text-sm pr-1'"
+      [label]="'search'"
+    ></text>
+  </div>
+</div>
+
+<div class="grid flex pl-1 pt-1">
+  <div class="col-12 md:col-2">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text request-settle-text-color pr-1'"
+      [value]="facilityType"
+    ></text>
+  </div>
+
+  <div class="col-12 md:col-4 ml-2">
+    <div class="">
+      <p-dropdown
+        [options]="subFailityOptionList"
+        [(ngModel)]="selectedSubFacility"
+        optionLabel="label"
+        optionValue="value"
+        (onChange)="subFacilityChange($event)"
+      >
+        <ng-template let-item pTemplate="item">
+          <div [title]="item.label">{{ item.label }}</div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="col-12 md:col-4">
+    <span class="p-input-icon-left w-full">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        pInputText
+        placeholder="Search by Asset ID, Rego or VIN"
+        [(ngModel)]="assetToSearch"
+        (input)="onSearch()"
+        class="w-full"
+      />
+    </span>
+  </div>
+  <!-- <div class="col-12 md:col-3 col-offset-1 searchAssetClass">
+    <text (onInput)="searchInput($event)" class="searchAssetInputClass"></text>
+    <text [mode]="'label'" [valueClass]="'text-xs'"> </text>
+  </div>
+
+  <div class="col-12 md:col-2">
+    <gen-button
+      [btnLabel]="'Search'"
+      (click)="onSearch()"
+      [btnWidth]="'full'"
+      [disabled]="!selectedSubFacilityID"
+    ></gen-button>
+  </div> -->
+</div>
+<!-- style="max-height: 500px; overflow-y: auto" -->
+<div *ngIf="showAssetList">
+  <div class="lg:col-12 mt-3">
+    <gen-table
+      [columns]="bailmentSameDayPayoutRequestColumnDefs"
+      [headingClass]="'text-xs header-text-color'"
+      [tableClass]="'border-round'"
+      [dataList]="bailmentsDataList"
+      [tableStyle]="'stripped-rows'"
+      [sortFlag]="'true'"
+      (onCellClick)="onCellClick($event)"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+      [paginatorFlag]="true"
+      [defaultRows]="5"
+    ></gen-table>
+    <div class="grid gap-2 flex justify-content-end mt-5">
+      <div class="col-12 sm:col-4 md:col-2">
+        <gen-button
+          [btnLabel]="'cancel'"
+          [btnWidth]="'full'"
+          [btnType]="'border-btn'"
+          (click)="onCancelClick()"
+        ></gen-button>
+      </div>
+      <div class="col-12 sm:col-4 md:col-2">
+        <gen-button
+          [btnLabel]="'btn_lbl_proceed'"
+          [btnWidth]="'full'"
+          [disabled]="disablebProceedButtonFlag"
+          (click)="onProceedClick()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

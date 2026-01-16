@@ -1,0 +1,15 @@
+<text
+  [mode]="'label'"
+  [label]="'allocated_transactions'"
+  [labelClass]="'text-xs font-bold'"
+></text>
+
+<gen-table
+  [columns]="paymentDetailscolumnDefs"
+  [headingClass]="'tableHeader text-xs header-text-color'"
+  [tableClass]="'border-round'"
+  [overlayPanelWidth]="'w-18rem'"
+  [dataList]="paymentAllocatedDetails"
+  [tableStyle]="'stripped-rows'"
+  [bodyClass]="'text-xs'"
+></gen-table>

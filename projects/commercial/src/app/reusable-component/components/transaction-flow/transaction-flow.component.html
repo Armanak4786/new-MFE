@@ -1,0 +1,128 @@
+<div class="m-2">
+  <div class="sm:col-12 md:col-12 lg:col-12">
+    <div class="flex justify-content-end flex-wrap">
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="sm:col-12 md:col-12 lg:col-12">
+    <p-tabView (onChange)="onTabChange($event)">
+      <p-tabPanel header="Payments">
+        <div class="flex justify-content-end">
+          <!-- *ngIf="facilityType == 'AssetLink' || 'EasyLink'" -->
+          <div
+            class="flex paymentNotYetAllocated gap-1 pb-2"
+            *ngIf="paymentNotYetAllocated > 0"
+          >
+            <text
+              [mode]="'label'"
+              [label]="'payments_not_yet_allocated'"
+              [labelClass]="'text-xs'"
+            >
+            </text>
+            <amount
+              [value]="paymentNotYetAllocated"
+              class="text-xs pt-1 font-semibold"
+              [mode]="'label'"
+              [labelClass]="'text-xs font-semibold'"
+              [valueClass]="'text-xs pt-2'"
+            >
+            </amount>
+          </div>
+        </div>
+        <div class="card border-round-md">
+          <gen-table
+            #dt1
+            [columns]="paymentColumnDefs"
+            [dataList]="paymentDataList"
+            [tableClass]="'border-round'"
+            [tableStyle]="'stripped-rows'"
+            [rowHeight]="'12px'"
+            [paginatorFlag]="true"
+            [sortable]="true"
+            [filter]="true"
+            [bodyClass]="'text-xs'"
+            [headingClass]="'tableHeader text-xs header-text-color'"
+            [sortField]="'id'"
+            (onCellClick)="onPaymentCellClick($event)"
+          >
+          </gen-table>
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel header="Transactions">
+        <div class="flex justify-content-end">
+          <!-- *ngIf="facilityType == 'AssetLink' || 'EasyLink'" -->
+          <div class="flex overdue gap-1 pb-2" *ngIf="overDue">
+            <text [mode]="'label'" [label]="'overdue'" [labelClass]="'text-xs'">
+            </text>
+            <amount
+              [value]="overDue"
+              class="text-xs pt-1 font-semibold"
+              [mode]="'label'"
+              [labelClass]="'text-xs font-semibold'"
+              [valueClass]="'text-xs pt-2'"
+            >
+            </amount>
+          </div>
+        </div>
+        <div class="card border-round-md">
+          <gen-table
+            #dt2
+            [columns]="transactionsColumnDef"
+            [dataList]="transactionDataList"
+            [tableStyle]="'stripped-rows'"
+            [tableClass]="'border-round'"
+            [rowHeight]="'12px'"
+            [paginatorFlag]="true"
+            [sortable]="true"
+            [filter]="true"
+            [bodyClass]="'text-xs'"
+            [headingClass]="'tableHeader text-xs header-text-color'"
+            [sortField]="'id'"
+            (onCellClick)="onTransactionCellClick($event)"
+          >
+          </gen-table>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<span
+  #triggerRef
+  style="width: 111px; height: 111px; position: absolute; z-index: 1000"
+></span>
+
+<p-overlayPanel #op [dismissable]="true">
+  <div class="bg-cyan-200">
+    <gen-table
+      [columns]="paymentColumnDefs"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [tableClass]="'border-round'"
+      [dataList]="paymentColumnDefs"
+      [tableStyle]="'stripped-rows'"
+      [bodyClass]="'text-xs'"
+    ></gen-table>
+  </div>
+</p-overlayPanel>

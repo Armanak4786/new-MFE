@@ -1,0 +1,57 @@
+<div>
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12 border-round-md mb-4">
+      <div class="font-bold">
+        <div>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-sm'"
+            [label]="'payment_summary'"
+          ></text>
+        </div>
+        <p-divider></p-divider>
+      </div>
+      <gen-table
+        [columns]="leaseSummaryColumnDefs"
+        [dataList]="leaseSummaryDataList"
+        [tableClass]="'border-round'"
+        [tableStyle]="'stripped-rows'"
+        [bodyClass]="'text-xs'"
+        [sortable]="true"
+        [filter]="true"
+        [paginatorFlag]="true"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+        [strippedOddClass]="'tableOddRow'"
+        [strippedEvenClass]="'tableEvenRow'"
+      ></gen-table>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12 border-round-md">
+      <div class="font-bold">
+        <div>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-sm'"
+            [label]="'residual_value_buyback'"
+          ></text>
+        </div>
+        <p-divider></p-divider>
+      </div>
+      <gen-table
+        [columns]="residualValueColumnDefs"
+        [tableClass]="'border-round'"
+        [headingClass]="'text-xs'"
+        [dataList]="residualValueDataList"
+        [tableStyle]="'stripped-rows'"
+        [bodyClass]="'text-xs'"
+        [sortable]="true"
+        [filter]="true"
+        [paginatorFlag]="true"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+        [strippedOddClass]="'tableOddRow'"
+        [strippedEvenClass]="'tableEvenRow'"
+      ></gen-table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="sm:col-12 md:col-8 lg:col-12 border-round-md">
+  <gen-table
+    [columns]="nonFacilityLoansColumnDefs"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [tableClass]="'border-round'"
+    [dataList]="nonFacilityLoanDataList"
+    [tableClass]="'border-round'"
+    [tableStyle]="'stripped-rows'"
+    [bodyClass]="'text-xs'"
+    (onHeaderClick)="onheaderclick($event)"
+  ></gen-table>
+</div>

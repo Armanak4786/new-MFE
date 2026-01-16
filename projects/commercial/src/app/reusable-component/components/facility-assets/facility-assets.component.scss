@@ -1,0 +1,71 @@
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Remove fixed heights and scrolling */
+  .h-28rem,
+  .overflow-y-auto {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Table wrapper adjustments */
+  .card {
+    border: 1px solid #ccc !important;
+    padding: 1rem !important;
+    background-color: white !important;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure full width & border consistency */
+  .gen-table,
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+  }
+
+  .gen-table th,
+  .gen-table td {
+    border: 1px solid #ccc !important;
+    color: black !important;
+    padding: 10px !important;
+    word-wrap: break-word !important;
+    font-size: 12px !important;
+    text-align: left !important;
+  }
+
+  .tableHeader {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+
+  /* Fix for column shrinking or cutoff */
+  .gen-table th,
+  .gen-table td {
+    min-width: 100px !important;
+  }
+
+  /* Ensure your print button is visible (if needed) */
+  gen-button,
+  .print-btn {
+    display: block !important;
+  }
+
+  /* Optional: page break for large table chunks */
+  .page-break {
+    page-break-before: always;
+  }
+}

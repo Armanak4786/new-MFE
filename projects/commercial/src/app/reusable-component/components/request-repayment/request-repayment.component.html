@@ -1,0 +1,47 @@
+<div class="drawdown-card-bg">
+  <base-form #mainForm [formConfig]="formConfig" (formReady)="onFormReady()" (valueChanges)="onValueChanges($event)"
+    (formEvent)="onFormEvent($event)" (formButtonEvent)="onButtonClick($event)"
+    (onValueChange)="onValueEvent($event)"></base-form>
+</div>
+<div *ngIf="facilityType!='Floating Floorplan'">
+<div class="section-class p-2">
+  <text [mode]="'label'" [label]="'document_upload'" [labelClass]="'request-settle-text font-bold text-sm'"></text>
+  <text [mode]="'label'" [label]="'supporting_documents_e.g._receipts_etc'"
+    [labelClass]="'request-settle-text text-sm'"></text>
+  <div class="add-asset-facility mt-2 border-round-md">
+    <app-upload-docs class="upload_docs" [showActionIcons]="'true'"></app-upload-docs>
+  </div>
+</div>
+</div>
+<div *ngIf="disbursementOfFundsTo === 'I would like to pay UDC directly' || facilityType==='AssetLink' || facilityType==='EasyLink'">
+<div class="mt-2 p-2 w-full">
+  <p class="request-settle-text font-bold text-sm">
+    {{ "lbl_reason" | translate }}
+  </p>
+  <textarea [rows]="4" [cols]="115" class="w-full p-fluid p-inputtextarea-responsive border-round-sm"
+    (input)="onTextareaClick($event)"></textarea>
+</div>
+</div>
+
+<p class="request-settle-text">
+  <span
+    *ngIf="repaymentObject?.externalData?.repaymentRequest?.repaymentDetails?.paymentOptions === 'I would like to pay UDC directly'">
+    {{ 'repayment_nominated_account' | translate }}
+  </span>
+
+  <span
+    *ngIf="repaymentObject?.externalData?.repaymentRequest?.repaymentDetails?.paymentOptions === 'Debit my nominated bank account'">
+    {{'repayment_pay_udc_directly' |translate}}
+    {{ repaymentObject?.externalData?.repaymentRequest?.repaymentDetails?.requestDate | date:'dd/MM/yyyy' }}
+    {{ 'reason_msg_2' | translate }}
+  </span>
+</p>
+
+<div class="grid gap-2 flex justify-content-end mt-4">
+  <div class="col-12 sm:col-4 md:col-2">
+    <gen-button [btnLabel]="'cancel'" (onClick)="showDialogCancel()" [btnWidth]="'full'"></gen-button>
+  </div>
+  <div class="col-12 sm:col-4 md:col-2">
+    <gen-button [btnLabel]="'submit'" (click)="submitData()" [btnWidth]="'full'"></gen-button>
+  </div>
+</div>

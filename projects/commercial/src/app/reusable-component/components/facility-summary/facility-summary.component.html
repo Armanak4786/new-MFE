@@ -1,0 +1,51 @@
+<div class="grid">
+  <div class="col-12 md:col-6 lg:col-6">
+    <div class="card p-3">
+      <text
+        [mode]="'label'"
+        [label]="'todays_activity'"
+        [labelClass]="'flex font-semibold text-xs'"
+      ></text>
+      <div class="pt-3">
+        <gen-table
+          #dt1
+          [columns]="todaysActivityColDef"
+          [dataList]="facilitySummaryDatalist?.todaysActivity"
+          [tableClass]="'border-round'"
+          [tableStyle]="'stripped-rows'"
+          [bodyClass]="'text-xs'"
+          [headingClass]="'tableHeader text-xs header-text-color'"
+          [filter]="true"
+          [strippedOddClass]="'tableOddRow'"
+          [strippedEvenClass]="'tableEvenRow'"
+        ></gen-table>
+      </div>
+    </div>
+  </div>
+  <div
+    class="col-12 md:col-6 lg:col-6"
+    *ngIf="facilityType !== 'Floating Floorplan'"
+  >
+    <div class="card p-3">
+      <text
+        [mode]="'label'"
+        [label]="'asset_summary'"
+        [labelClass]="'flex font-semibold text-xs'"
+      ></text>
+      <div class="pt-3">
+        <gen-table
+          #dt2
+          [columns]="assetSummaryColDef"
+          [dataList]="facilitySummaryDatalist?.assetSummary"
+          [tableClass]="'border-round'"
+          [tableStyle]="'stripped-rows'"
+          [bodyClass]="'text-xs'"
+          [headingClass]="'tableHeader text-xs header-text-color'"
+          [filter]="true"
+          [strippedOddClass]="'tableOddRow'"
+          [strippedEvenClass]="'tableEvenRow'"
+        ></gen-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<div>
+  <text
+    [mode]="'label'"
+    [label]="'confirm_msg'"
+    [labelClass]="'mt-5 flex justify-content-center font-bold text-primary'"
+  ></text>
+  <div class="mt-5 mx-4 mb-2">
+    <text
+      [mode]="'label'"
+      [label]="'facility_agreement'"
+      [labelClass]="'text-sm text-center flex justify-content-center'"
+    ></text>
+  </div>
+  <div class="mt-4">
+    <text
+      [mode]="'label'"
+      [label]="'we_acknowledge_msg'"
+      [labelClass]="'flex justify-content-center text-sm'"
+    ></text>
+  </div>
+  <div class="mt-4">
+    <text
+      [mode]="'label'"
+      [label]="'submitted_by_msg'"
+      [labelClass]="'flex justify-content-center text-sm'"
+    ></text>
+  </div>
+  <div class="mt-4 grid gap-2 flex justify-content-center mb-6">
+    <div class="col-2">
+      <gen-button
+        [btnWidth]="'full'"
+        [btnType]="'non-bg-btn'"
+        (onClick)="cancel()"
+        [btnLabel]="'back'"
+      ></gen-button>
+    </div>
+    <div class="col-2">
+      <gen-button
+        [btnWidth]="'full'"
+        [btnLabel]="'lbl_confirm'"
+        (onClick)="showDialogSubmitDataConfirmation(); confirm()"
+      ></gen-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,431 @@
+<div class="grid">
+  <!-- Asset Summary -->
+  <div class="sm:col-12 md:col-6 lg:col-7">
+    <div class="card mb-3">
+      <div class="card p-2">
+        <div class="font-bold">
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="'asset_summary'"
+          ></text>
+          <br />
+        </div>
+        <div class="grid">
+          <div class="sm:col-6 md:col-4 lg:col-2">
+            <text
+              [mode]="'label'"
+              [label]="'lbl_program'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [className]="'trim_label'"
+              [labelType]="'vertical'"
+              [title]="assetDetailsSummaryList?.program"
+              [value]="assetDetailsSummaryList?.program"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></text>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-2">
+            <number
+              [mode]="'label'"
+              [label]="'asset_id'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [labelType]="'vertical'"
+              [value]="assetDetailsSummaryList?.assetNo"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></number>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-2">
+            <text
+              [mode]="'label'"
+              [label]="'curtailmentPlan'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs mr-auto font-normal'"
+              [value]="assetDetailsSummaryList?.curtailmentPlan"
+            ></text>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-3">
+            <text
+              [mode]="'label'"
+              [label]="'daysSinceStartDate'"
+              [labelClass]="'text-xs text-600 mr-auto'"
+              [className]="'flex flex-column'"
+              [labelType]="'horizontal'"
+              [value]="assetDetailsSummaryList?.daysSinceStartDate"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></text>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-3">
+            <text
+              [mode]="'label'"
+              [label]="'daysOnDealerFinance'"
+              [labelClass]="'text-xs text-600 mr-auto'"
+              [className]="'flex flex-column'"
+              [value]="assetDetailsSummaryList?.dealerFinanceDays"
+              [labelType]="'horizontal'"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></text>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-2">
+            <date
+              [mode]="'label'"
+              [label]="'start_date'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [className]="'flex flex-column'"
+              [value]="assetDetailsSummaryList?.startDate"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></date>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-2">
+            <date
+              [mode]="'label'"
+              [label]="'lbl_expiry_date'"
+              [labelClass]="'text-xs text-600 mr-auto'"
+              [className]="'flex flex-column'"
+              [labelType]="'vertical'"
+              [value]="assetDetailsSummaryList?.endDate"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></date>
+          </div>
+          <div class="sm:col-6 md:col-4 lg:col-2">
+            <text
+              [mode]="'label'"
+              [label]="'lbl_status'"
+              [labelClass]="'text-xs text-600 mr-auto'"
+              [className]="'flex flex-column'"
+              [labelType]="'vertical'"
+              [value]="assetDetailsSummaryList?.status"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Financial Details -->
+  <div class="sm:col-4 md:col-6 lg:col-5">
+    <div class="card mb-3">
+      <div class="card p-2">
+        <div class="font-bold">
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="'financial_details'"
+          ></text>
+          <br />
+        </div>
+        <div class="grid">
+          <div class="sm:col-4 md:col-4 lg:col-4">
+            <amount
+              [mode]="'label'"
+              [label]="'current_balance'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [value]="
+                assetDetailsSummaryList?.financialDetailSummary?.currentBalance
+              "
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></amount>
+          </div>
+          <div class="sm:col-4 md:col-4 lg:col-4">
+            <amount
+              [mode]="'label'"
+              [label]="'invoice_amount'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [labelType]="'vertical'"
+              [value]="
+                assetDetailsSummaryList?.financialDetailSummary
+                  ?.invoiceAmountExcludeGst
+              "
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></amount>
+          </div>
+          <div class="sm:col-4 md:col-4 lg:col-4">
+            <amount
+              [mode]="'label'"
+              [label]="'invoice_gst'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [labelType]="'vertical'"
+              [value]="
+                assetDetailsSummaryList?.financialDetailSummary?.invoiceGst
+              "
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></amount>
+          </div>
+          <div class="sm:col-4 md:col-4 lg:col-4">
+            <amount
+              [mode]="'label'"
+              [label]="'financed_amount'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [labelType]="'vertical'"
+              [value]="
+                assetDetailsSummaryList?.financialDetailSummary?.financedAmount
+              "
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></amount>
+          </div>
+          <div class="sm:col-4 md:col-4 lg:col-4">
+            <amount
+              [mode]="'label'"
+              [label]="'total_interest'"
+              [labelClass]="'text-xs text-600 mr-auto mb-0'"
+              [value]="
+                assetDetailsSummaryList?.financialDetailSummary
+                  ?.totalPaidInterest
+              "
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs mr-auto font-normal'"
+            ></amount>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="col-10 sm:col-10 md:col-10">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'AssetDetails' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'assetDetails'"
+          class="text-xs"
+          [btnColor]="'red'"
+          (onClick)="showAssetDetails()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'CurtailmentDetails' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'curtailment_details'"
+          class="text-xs"
+          (onClick)="showCurtailmentDetails()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'TransactionHistory' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'transaction_history'"
+          class="text-xs"
+          (onClick)="showTransactionHistory()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocuments()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Notes' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'notes'"
+          class="text-xs"
+          (onClick)="showNotes()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Action Button -->
+  <div class="quick-action-btn sm:col-2 md:col-2 lg:col-2 text-right">
+    <gen-button
+      class="text-xs"
+      [btnType]="'non-bg-btn'"
+      [btnColor]="'danger'"
+      [btnLabel]="'View ' + currentModule"
+      [iconPos]="'right'"
+      [btnIcon]="'pi pi-angle-right'"
+      (onClick)="showDialogViewModule()"
+    ></gen-button>
+  </div>
+
+  <ng-container *ngIf="currentComponent === 'AssetDetails'">
+    <!-- Asset Details -->
+    <div class="sm:col-12 md:col-6 lg:col-7">
+      <div class="card mb-3">
+        <div class="card p-2">
+          <div class="font-bold">
+            <div class="grid">
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'assetType'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.type"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'registrationNumber'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.registrationNumber"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'vinNumber'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.vehicleIdentificationNumber"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'chassisNumber'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.chassisNumber"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <number
+                  [mode]="'label'"
+                  [label]="'serialNumber'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.serialNumber"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </number>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'product_type'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.dealType"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'make'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.make"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'model'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.model"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <number
+                  [mode]="'label'"
+                  [label]="'year'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.manufacturingYear"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </number>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'colour'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.color"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+              <div class="sm:col-6 md:col-3 lg:col-3">
+                <text
+                  [mode]="'label'"
+                  [label]="'variant'"
+                  [labelClass]="'text-xs text-600 mr-auto'"
+                  [className]="'flex flex-column'"
+                  [labelType]="'horizontal'"
+                  [value]="assetDetailsSummaryList?.variant"
+                  [valueClass]="'text-xs mr-auto font-normal mt-1'"
+                >
+                </text>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="currentComponent === 'CurtailmentDetails'">
+  <app-bailment-curtailment-details
+    [curtailmentPlanName]="curtailmentPlanName"
+    [subventionColumnDefs]="subventionColumnDefs"
+    [subventionData]="subventionData"
+    [curtailmentPlanColumnDefs]="curtailmentPlanColumnDefs"
+    [curtailmentDetailsData]="curtailmentDetailsData"
+  ></app-bailment-curtailment-details>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'TransactionHistory'">
+  <app-bailment-transaction-history
+    [transactionDetailsColumnDefs]="transactionDetailsColumnDefs"
+    [transactionDetailsData]="transactionDetailsData"
+  ></app-bailment-transaction-history>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <app-documents
+    [documentsColumnDefs]="documentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Notes'">
+  <app-bailment-notes
+    [bailmentNotesColumnDefs]="bailmentNotesColumnDefs"
+    [notesDataList]="notesDataList"
+  ></app-bailment-notes>
+</ng-container>

@@ -1,0 +1,74 @@
+<div class="grid card m-1">
+  <div class="sm:col-6 md:col-6 lg:col-3 border-round-md">
+    <div class="asset-link-bg border-round-md">
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="onFrequencyChange($event)"
+      ></dropdown>
+      <div class="flex justify-between gap-7">
+        <div
+          class="chart-container flex align-items-center justify-content-center p-3 pt-3 ml-4"
+        >
+          <p-chart
+            type="doughnut"
+            [data]="data"
+            [options]="options"
+            class="w-full"
+          ></p-chart>
+        </div>
+        <div class="color-box-container flex flex-column mt-5">
+          <div
+            *ngFor="let label of data?.labels; let i = index"
+            class="flex align-items-center"
+          >
+            <div class="color-box" [style.background-color]="colors[i]"></div>
+            <text
+              [mode]="'label'"
+              [label]="label"
+              [labelClass]="'label-xs'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sm:col-6 md:col-6 lg:col-9 border-round-md">
+    <gen-table
+      [columns]="easylinkFacilityColumnDefs"
+      [dataList]="easylinkDataList"
+      [tableClass]="'border-round'"
+      [isScrollable]="'true'"
+      [tableStyle]="'stripped-rows'"
+      (onCellClick)="onCellClick($event)"
+      [bodyClass]="'text-xs'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [bodyClass]="'text-xs row-class-easylink'"
+    ></gen-table>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="currentFacility == 'viewEasylink'"
+  >
+    <app-view-easylink></app-view-easylink>
+  </div>
+
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="currentFacility == 'easylinkFacility'"
+  >
+    <app-easylink-sub-facility></app-easylink-sub-facility>
+  </div>
+
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="currentFacility == 'currentAccount'"
+  >
+    <app-easylink-current-account></app-easylink-current-account>
+  </div>
+</div>

@@ -1,0 +1,548 @@
+<div class="m-3" *ngIf="!assetDetailsSummaryList">
+  <!-- <div class="flex">
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="
+        seletedRecoredData?.externalData?.assetDrawdownRequest?.facilityType +
+        ' |'
+      "
+    ></text>
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="
+        seletedRecoredData?.externalData?.assetDrawdownRequest
+          ?.wholesaleAccount + ' |'
+      "
+    ></text>
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [labelType]="'horizontal'"
+      [className]="''"
+      [valueClass]="'font-bold'"
+      [value]="seletedRecoredData?.subject"
+    ></text>
+  </div> -->
+  <div class="mt-2">
+    <div class="request-details request-info-card">
+      <div class="request-line">
+        <text
+          [mode]="'label'"
+          [label]="'request_number'"
+          [labelClass]="'text-xs font-bold label-color'"
+          [valueClass]="'text-xs font-bold  ml-2'"
+          [value]="
+            seletedRecoredData?.taskId + ' - ' + seletedRecoredData?.status
+          "
+        >
+        </text>
+      </div>
+
+      <div class="request-line">
+        <text
+          [mode]="'label'"
+          [label]="'requested_by'"
+          [labelClass]="'text-xs font-bold label-color'"
+          [valueClass]="'text-xs font-bold  ml-2'"
+          [value]="seletedRecoredData?.customerName"
+        >
+        </text>
+        <text
+          [mode]="'label'"
+          [label]="'Requested on'"
+          [labelClass]="'text-xs font-bold label-color'"
+        >
+        </text>
+        <date
+          [mode]="'label'"
+          [valueClass]="'text-xs font-bold'"
+          [value]="seletedRecoredData?.startDate"
+        >
+        </date>
+      </div>
+    </div>
+    <!-- *ngIf="facilityType !== 'Fixed Floorplan'" -->
+    <div class="request-line mt-2 grid">
+      <div class="ml-2 col-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [label]="'lbl_invoice_amount'"
+        ></text>
+        <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="
+            seletedRecoredData?.externalData?.assetDrawdownRequest
+              ?.drawdownDetails?.invoiceAmount
+          "
+        >
+        </amount>
+      </div>
+      <div class="ml-2 col-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [label]="'Incl/Excl. GST '"
+        ></text>
+        <!-- [labelClass]="'loan-dash-text loan-dash-text-color flex'" -->
+        <text
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="
+            seletedRecoredData?.externalData?.assetDrawdownRequest
+              ?.drawdownDetails?.gst
+          "
+        >
+        </text>
+      </div>
+
+      <div class="col-3">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [label]="'pay_drawdown_out_on'"
+        ></text>
+        <date
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="
+            seletedRecoredData?.externalData?.assetDrawdownRequest
+              ?.drawdownDetails?.payDrawdownOutOnDate
+          "
+        >
+        </date>
+      </div>
+      <div class="col-3">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [label]="'amount_requested'"
+        ></text>
+        <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="
+            seletedRecoredData?.externalData?.assetDrawdownRequest
+              ?.drawdownDetails?.advanceAmount
+          "
+        >
+        </amount>
+      </div>
+      <!-- </div> -->
+    </div>
+
+    <div class="asset-details-section mt-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'font-bold'"
+        [className]="'flex mr-2 ml-2 mb-2'"
+        [label]="'assetDetails'"
+      ></text>
+      <!-- Asset Table -->
+      <div class="asset-table">
+        <!-- Table Header -->
+        <div class="table-header">
+          <div *ngIf="hasSingleAssets" class="col-stock-no">
+            <span class="header-text text-xs label-color">{{
+              "asset_id" | translate
+            }}</span>
+          </div>
+          <div *ngIf="hasMultipleAssets" class="col-stock-no">
+            <span class="header-text text-xs label-color">{{
+              "stock_no" | translate
+            }}</span>
+          </div>
+          <div class="col-description">
+            <span class="header-text text-xs label-color">{{
+              "description" | translate
+            }}</span>
+          </div>
+        </div>
+        <!-- Table Rows -->
+        <ng-container *ngIf="hasMultipleAssets">
+          <div
+            class="table-row"
+            *ngFor="
+              let asset of originalRecord?.externalData?.assetDrawdownRequest
+                ?.assetDetails?.multipleAsset
+            "
+          >
+            <div class="col-stock-no">
+              <text
+                [mode]="'label'"
+                [valueClass]="'text-xs'"
+                [value]="asset?.stockNumber"
+              >
+              </text>
+            </div>
+            <div class="col-description">
+              <text
+                [mode]="'label'"
+                [valueClass]="'text-xs'"
+                [value]="asset?.assetDescription"
+              >
+              </text>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="hasSingleAssets">
+          <div
+            class="table-row"
+            *ngFor="
+              let asset of originalRecord?.externalData?.assetDrawdownRequest
+                ?.assetDetails?.singleAsset
+            "
+          >
+            <div class="col-stock-no">
+              <text
+                [mode]="'label'"
+                [valueClass]="'text-xs'"
+                [value]="asset?.assetId"
+              >
+              </text>
+            </div>
+            <div class="col-description">
+              <text
+                [mode]="'label'"
+                [valueClass]="'text-xs'"
+                [value]="valueOfSingleAsset"
+              >
+              </text>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="asset-details-section">
+      <text
+        [mode]="'label'"
+        [labelClass]="'font-bold'"
+        [className]="'flex mr-2 ml-2 mb-2'"
+        [label]="'Disbursement Details'"
+      ></text>
+      <!-- SUPPLIERS TABLE -->
+      <div class="p-3 disburseClass mb-4">
+        <div
+          *ngIf="toType === 'Supplier' || toType === 'Both'"
+        >
+          <div class="table-header-disburse">
+            <div class="col-stock-no">
+              <span class="header-text text-xs label-color">{{
+                "supplier_name" | translate
+              }}</span>
+            </div>
+            <div class="col-description">
+              <span class="header-text text-xs label-color">{{
+                "amount" | translate
+              }}</span>
+            </div>
+          </div>
+
+          <div
+            class="table-row"
+            *ngFor="
+              let supplier of seletedRecoredData?.externalData
+                ?.assetDrawdownRequest?.disbursementDetails?.suppliers
+            "
+          >
+            <div class="col-stock-no">
+              <text
+                mode="label"
+                valueClass="text-xs"
+                [value]="supplier?.supplierName"
+              ></text>
+            </div>
+            <div class="col-description">
+              <amount
+                mode="label"
+                valueClass="text-xs"
+                [value]="supplier?.amountToSupplier"
+              ></amount>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOMINATED BANK ACCOUNT SECTION -->
+        <div
+          class="mb-4"
+          *ngIf="toType === 'nominatedBankAccount' || toType === 'Both'"
+        >
+          <div class="flex items-center gap-1 text-xs mt-2 font-medium">
+            <text
+              [label]="'debit_my_nominated_bank_account_for'"
+              [labelClass]="'text-xs label-color'"
+              [mode]="'label'"
+            ></text>
+            <amount
+              mode="label"
+              valueClass="text-xs font-bold"
+              [value]="nominatedAmount"
+            ></amount>
+          </div>
+        </div>
+      </div>
+      <text
+        [label]="'additional_information'"
+        [labelClass]="'text-sm font-bold mt-2 ml-2'"
+        [mode]="'label'"
+      ></text>
+
+      <!-- Additional Information Section -->
+      <div class="additional-info-section">
+        <div class="info-content mt-2">
+          <text
+            [mode]="'label'"
+            [valueClass]="'info-text block whitespace-pre-line'"
+            [value]="
+              seletedRecoredData?.externalData?.addAssetsRequest?.remarks
+            "
+          >
+          </text>
+        </div>
+      </div>
+    </div>
+    <div class="m-3" *ngIf="assetDetailsSummaryList">
+      <div class="flex">
+        <text
+          [mode]="'label'"
+          [labelClass]="'font-bold'"
+          [className]="'flex mr-2'"
+          [label]="facilityType + ' |'"
+        ></text>
+        <text
+          [mode]="'label'"
+          [labelClass]="'font-bold'"
+          [className]="'flex mr-2'"
+          [label]="
+            seletedRecoredData?.externalData?.assetDrawdownRequest
+              ?.floorplanName
+              ? seletedRecoredData?.externalData?.assetDrawdownRequest
+                  ?.floorplanName + ' |'
+              : ' '
+          "
+        ></text>
+        <text
+          [mode]="'label'"
+          [labelClass]="'font-bold pr-2'"
+          [labelType]="'horizontal'"
+          [className]="'flex mr-2'"
+          [valueClass]="'font-bold'"
+          [value]="seletedRecoredData?.subject + ' |'"
+        ></text>
+        <text
+          [mode]="'label'"
+          [labelClass]="'font-bold pr-2'"
+          [label]="'id_ref'"
+          [labelType]="'horizontal'"
+          [className]="'flex mr-2'"
+          [valueClass]="'font-bold'"
+          [value]="' - ' + seletedRecoredData?.contractId"
+        ></text>
+      </div>
+      <div class="request-info-card mt-2">
+        <div class="request-details">
+          <div class="request-line">
+            <text
+              [mode]="'label'"
+              [label]="'request_number'"
+              [labelClass]="'text-xs'"
+              [valueClass]="'text-xs font-bold  ml-2'"
+              [value]="this.seletedRecoredData['Contract No.']"
+            >
+            </text>
+            <text
+              [mode]="'label'"
+              [label]="'status'"
+              [labelClass]="'text-xs'"
+              [valueClass]="'text-xs font-bold  ml-2'"
+              [value]="this.seletedRecoredData['Fixed Floorplan (WF)']"
+            >
+            </text>
+          </div>
+        </div>
+        <div class="mt-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs font-bold'"
+            [className]="'flex mb-4'"
+            [label]="'asset_details'"
+          ></text>
+        </div>
+        <div class="grid">
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'id_ref'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'asset_id'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'debt_amount'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'invoice_amount'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'invoice_amount'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'start_date'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="col-2">
+            <a
+              class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+              (click)="op.toggle($event)"
+            >
+              {{ this.seletedRecoredData["Contract No."] }}
+            </a>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [labelType]="'vertical'"
+              [value]="assetDetailsSummaryList?.assetNo"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [labelType]="'vertical'"
+              [value]="assetDetailsSummaryList?.assetNo"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [labelType]="'vertical'"
+              [value]="this.seletedRecoredData['Cost']"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [labelType]="'vertical'"
+              [value]="this.seletedRecoredData['Cost']"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="col-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [labelType]="'vertical'"
+              [value]="this.seletedRecoredData['Start Date']"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p-overlayPanel #op>
+      <div class="flex flex-column gap-3 w-25rem">
+        <div>
+          <div class="mb-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'asset_type'"
+              [value]="assetDetailsSummaryList?.manufacturingYear"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'make'"
+              [value]="assetDetailsSummaryList?.make"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'model'"
+              [value]="assetDetailsSummaryList?.model"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'product_type'"
+              [value]="assetDetailsSummaryList?.variant"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+
+          <div class="mb-2">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'registrationNumber'"
+              [value]="
+                assetDetailsSummaryList?.registrationNumber ||
+                assetDetailsSummaryList?.vehicleIdentificationNumber ||
+                assetDetailsSummaryList?.serialNumber ||
+                assetDetailsSummaryList?.chassisNumber
+              "
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </p-overlayPanel>
+  </div>
+</div>

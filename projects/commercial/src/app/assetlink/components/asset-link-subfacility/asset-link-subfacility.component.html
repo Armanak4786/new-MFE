@@ -1,0 +1,111 @@
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'drawdown_request'"
+          class="text-xs"
+          (onClick)="showDialogDrawdownRequest()"
+        >
+        </gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'add_asset/s'"
+          class="text-xs"
+          (onClick)="showDialogAddAsset()"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'release_security'"
+          class="text-xs"
+          (onClick)="showDialogReleaseSecurity()"
+        >
+        </gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'request_history'"
+          (click)="requestHistory()"
+          class="text-xs"
+        >
+        </gen-button>
+      </div>
+      <div class="p-1 addbtn">
+        <gen-button
+          [btnType]="'plus-btn'"
+          [btnLabel]="'add'"
+          class="text-xs"
+          [disabled]="true"
+        >
+        </gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'minus-btn'"
+          [btnLabel]="'remove'"
+          class="text-xs"
+          [disabled]="true"
+        >
+        </gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Loans' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'loans'"
+          class="text-xs"
+          (onClick)="showLoans()"
+        >
+        </gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilityAssets' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'facility_assets'"
+          class="text-xs"
+          (onClick)="showFacilityAssets()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'Loans'">
+  <app-loans
+    [loansColumnDefs]="loansColumnDefs"
+    [loansDataList]="loansDataList"
+    [facilityType]="facilityType"
+    [selectedSubFacility]="selectedSubFacility"
+  ></app-loans>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'FacilityAssets'">
+  <app-facility-assets
+    [columnsFacilityAsset]="columnsFacilityAsset"
+    [facilityType]="facilityType"
+    [facilityAsssetsDatalist]="facilityAsssetsDatalist"
+    [selectedSubFacility]="selectedSubFacility"
+  ></app-facility-assets>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'requestHistory'">
+  <app-request-history
+    [requestHistoryDataList]="requestHistoryDataList"
+    [requestHistoryColumnDefs]="requestHistoryColumnDefs"
+    [originalRequestHistoryDatalist]="originalRequestHistoryDatalist"
+    [facilityType]="facilityType"
+  ></app-request-history>
+</ng-container>

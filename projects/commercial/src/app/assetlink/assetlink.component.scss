@@ -1,0 +1,57 @@
+.asset-link-bg {
+  background-color: #f7fafc;
+}
+
+.chart-container {
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    width: 100%;
+    height: auto;
+  }
+}
+@media (max-width: 425px) {
+  .chart-container {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.color-box-container {
+  flex-direction: column; /* Change to row for horizontal layout */
+  gap: 2px;
+}
+
+.color-box {
+  width: 8px; /* Square box with fixed size */
+  height: 8px;
+  margin-right: 4px;
+  margin-top: 5px;
+}
+
+.color-label {
+  font-size: 8px;
+  font-weight: 500;
+}
+
+::ng-deep .quick-action-btn .p-button {
+  padding: 0.6rem 0rem;
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-assetlink {
+    font-weight: 700;
+  }
+}
+
+// .scrollable-table-wrapper {
+//   max-height: 136px;
+//   overflow-y: auto;
+//   overflow-x: hidden;
+// }

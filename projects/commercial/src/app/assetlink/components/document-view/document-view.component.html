@@ -1,0 +1,9 @@
+<p>Document view</p>
+
+<div *ngIf="displayDoc" class="document-container">
+  <iframe [src]="displayDoc | safeUrl" class="document-iframe"></iframe>
+</div>
+
+<p *ngIf="!displayDocType" class="preview-message">
+  Preview not available. Please download to view.
+</p>

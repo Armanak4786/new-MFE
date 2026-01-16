@@ -1,0 +1,190 @@
+<div class="ml-2">
+  <!-- Swap Page Header -->
+  <div *ngIf="pageFrom === 'swap'">
+    <div class="grid">
+      <div class="col-12 md:col-2 ml-4">
+        <text [mode]="'label'" [label]="'lbl_transfer_to'" [labelClass]="'text-xs'"></text>
+      </div>
+      <div class="col-12 md:col-2 ml-4">
+        <text [mode]="'label'" [label]="'request_date_of_transfer'" [labelClass]="'text-xs'"></text>
+      </div>
+    </div>
+
+    <div class="grid flex pl-1 pt-1">
+      <div class="col-12 md:col-2 ml-4">
+        <p-dropdown [options]="programpartieslist" optionLabel="name" optionValue="id" [(ngModel)]="receiverPartyNo"
+          (onChange)="transferToChange($event)" placeholder="Select Party"></p-dropdown>
+      </div>
+      <div class="col-12 md:col-2 ml-4">
+        <date [labelClass]="'label-xs label-color'" [value]="effectiveDate" [min]="currentDate"
+          (change)="onEffectiveDateChange($event)"></date>
+      </div>
+    </div>
+  </div>
+
+  <!-- Other Pages Header -->
+  <div *ngIf="pageFrom !== 'swap' && pageFrom !== 'same-day-payout'">
+    <div>
+      <text [mode]="'label'" [label]="'annual_review_Date'" [labelClass]="'text-xs flex justify-content-end'"
+        [value]=""></text>
+    </div>
+    <div class="mb-5">
+      <text mode="label" class="text-gray-800 mt-4 mb-1" [value]="productTransferTo"
+        [valueClass]="'text-sm font-semibold'"></text>
+    </div>
+  </div>
+
+  <!-- Asset Table -->
+  <div class="card card-class px-2 py-2 mb-2 sm:col-12 md:col-8 lg:col-12">
+    <!-- Header Row -->
+    <div class="grid text-sm text-gray-600">
+      <div class="col-1">
+        <text mode="label" labelClass="text-xs" label="id_ref"></text>
+      </div>
+      <div class="col-2">
+        <text mode="label" labelClass="text-xs" label="description"></text>
+      </div>
+      <div class="col-2 -ml-2">
+        <text mode="label" labelClass="text-xs" label="regNo"></text>
+      </div>
+      <div class="col-1">
+        <text mode="label" labelClass="text-xs" label="asset_id"></text>
+      </div>
+      <div *ngIf="pageFrom == 'purchase-asset'" class="col-1">
+        <text mode="label" labelClass="text-xs" label="balance"></text>
+      </div>
+      <div  *ngIf="pageFrom == 'swap' || pageFrom == 'same-day-payout'" class="col-1">
+        <text mode="label" labelClass="text-xs" label="lbl_current_balance"></text>
+      </div>
+      <div class="col-1 -ml-2">
+        <text mode="label" labelClass="text-xs" label="gst_upper"></text>
+      </div>
+      <div *ngIf="pageFrom == 'same-day-payout' || pageFrom =='swap'" class="col-2">
+        <text mode="label" labelClass="text-xs" label="repayment_amount"></text>
+      </div>
+      <div *ngIf="pageFrom == 'purchase-asset'" class="col-2">
+        <text mode="label" labelClass="text-xs" label="amount_to_pay"></text>
+      </div>
+      <div *ngIf="pageFrom == 'purchase-asset'" class="col-1">
+        <text mode="label" labelClass="text-xs" label="lbl_expiry_date"></text>
+      </div>
+      <div class="col-1">
+        <text mode="label" labelClass="text-xs" label=" "></text>
+      </div>
+    </div>
+
+    <!-- Row Data -->
+    <div class="flex text-sm text-gray-800"
+     *ngFor="let data of (pageFrom === 'purchase-asset' ? (dataList?.filteredAssetsDataList?.length ? dataList.filteredAssetsDataList : dataList) 
+        : dataList);let i = index">
+      <div class="col-1">
+        <text mode="label" valueClass="text-xs" [value]="data?.contractId"></text>
+      </div>
+      <div class="col-2 -ml-2">
+        <text mode="label" valueClass="text-xs" [value]="data?.description"></text>
+      </div>
+
+      <!-- Conditional registration number or VIN -->
+      <div class="col-2" *ngIf="searchedBy && searchedBy != 17">
+        <text mode="label" valueClass="text-xs" [value]="data?.registrationNumber || data.identifier"></text>
+      </div>
+      <div class="col-2" *ngIf="!searchedBy || searchedBy == 17">
+        <text mode="label" valueClass="text-xs" [value]="data?.vehicleIdentificationNumber"></text>
+      </div>
+
+      <div class="col-1">
+        <text mode="label" valueClass="text-xs" [value]="data?.assetNo"></text>
+      </div>
+      <div class="col-1">
+        <amount mode="label" valueClass="text-xs flex" [value]="data?.currentBalance"></amount>
+      </div>
+      <div class="col-1">
+        <amount mode="label" valueClass="text-xs flex" [value]="data?.gst"></amount>
+      </div>
+      <div class="col-2">
+        <amount mode="label" valueClass="text-xs flex" [value]="data?.amountToPay"></amount>
+      </div>
+
+      <!-- Expiry Date Column -->
+      <div class="col-1" *ngIf="pageFrom == 'purchase-asset'">
+        <date [value]="data.expiryDate" mode="label" valueClass="text-xs flex"></date>
+      </div>
+
+      <!-- Delete Button -->
+      <div class="col-1 -mt-2">
+        <gen-button class="bg-transparent border-none text-black text-xs" (click)="deleteAssets(data, i)"
+          [btnType]="'non-bg-btn'" [btnIcon]="'pi pi-trash'" *ngIf="
+            (pageFrom === 'purchase-asset'
+              ? dataList?.filteredAssetsDataList?.length
+              : dataList?.length) > 1
+          "></gen-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Section -->
+  <div *ngIf="pageFrom!='swap'">
+  <div class="pt-2 pb-3 text-xs text-gray-600">
+    <!-- {{customerName}} {{"bailment_agreement"|translate}} -->
+    <text
+      [mode]="'label'"
+      [label]="customerName +' '+('bailment_agreement' | translate)"
+      [labelClass]="'text-xs text-gray-600'"
+      [valueClass]="'text-xs text-gray-600'"
+    ></text>
+  </div>
+  </div>
+  <div *ngIf="pageFrom=='swap'">
+  <div class="pt-2 pb-3 text-xs text-gray-600">
+    <text
+      [mode]="'label'"
+      [label]="customerName +' '+('bailment_agreement_swap' | translate)"
+      [labelClass]="'text-xs text-gray-600'"
+      [valueClass]="'text-xs text-gray-600'"
+    ></text>
+  </div>
+  </div>
+  <div *ngIf="pageFrom=='swap'">
+    <text mode="label" class="text-xs text-gray-600" [label]="'notice_acknowledgment'"></text>
+  </div>
+   <div *ngIf="pageFrom=='swap'" class="flex text-xs text-gray-600">
+    <!-- {{"this_request_is_to_transfer_the_inventory_listed_above" |translate}}{{customerName}}{{"to"}}{{receiverPartyName}} -->
+    <text
+      [mode]="'label'"
+      [label]="('this_request_is_to_transfer_the_inventory_listed_above' | translate)+' ' +customerName+(' to' | translate)+' '+receiverPartyName + '.'"
+      [labelClass]="'text-xs text-gray-600'"
+      [valueClass]="'text-xs text-gray-600'"
+    ></text>
+  </div>
+  <div *ngIf="pageFrom == 'purchase-asset'" class="flex">
+    <text [label]="'purchase_asset_legal_message_pre_submission'" mode="label" class="text-xs text-gray-600 paragraph-format"></text>
+  </div>
+  <!-- <div  *ngIf="pageFrom == 'purchase-asset'" >
+    <text mode="label" class="text-xs text-gray-600" [label]="'we_acknowledge_that_if_this_request_is_sent_after'"></text>
+  </div> -->
+  <div *ngIf="pageFrom=='swap'">
+    <text mode="label" class="text-xs text-gray-600" [label]="'request_binding'"></text>
+  </div>
+  <div  *ngIf="pageFrom == 'same-day-payout'">
+      <text mode="label" class="text-xs text-gray-600 paragraph-format" [label]="'same_day_payout_message'"></text>
+  </div>
+  <div class="flex">
+    <text
+      [mode]="'label'"
+      [label]="('submitted_by' | translate)+' '+username+' '+('for_and_on_behalf_of' | translate)+' '+customerName + '.'"
+      [labelClass]="'text-xs text-gray-600'"
+      [valueClass]="'text-xs text-gray-600'"
+    ></text>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="grid gap-2 flex justify-content-end mt-4">
+    <div class="col-2">
+      <gen-button [btnLabel]="'cancel'" [btnType]="'border-btn'" (onClick)="onCancel()"
+        [btnWidth]="'full'"></gen-button>
+    </div>
+    <div class="col-2">
+      <gen-button [btnLabel]="'submit'" [btnType]="'bg-btn'" (click)="onSubmit()" [btnWidth]="'full'"></gen-button>
+    </div>
+  </div>
+</div>

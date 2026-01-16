@@ -1,0 +1,11 @@
+<div class="mt-4 ml-1 pt-4 drawdown-card-bg">
+  <base-form
+    #mainForm
+    [formConfig]="formConfig"
+    (valueChanges)="onValueChanges($event)"
+    (formEvent)="onFormEvent($event)"
+    (formReady)="onFormReady()"
+    (onInput)="onValueTyped($event)"
+  >
+  </base-form>
+</div>

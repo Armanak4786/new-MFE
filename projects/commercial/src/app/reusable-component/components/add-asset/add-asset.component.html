@@ -1,0 +1,122 @@
+<div>
+  <form [formGroup]="formGroup">
+    <div class="add-asset-facility p-3 -mt-3 border-round-md">
+      <div class="grid">
+        <div class="sm:col-12 md:col-6 lg:col-3">
+          <text [labelType]="'vertical'" [label]="'facilityType'" [mode]="'label'" [labelClass]="'mb-5'"
+            required="true"></text>
+          <dropdown [options]="optionData" [labelType]="'vertical'" [mode]="shouldLockDropdown() ? 'view' : ''"
+            [value]="formGroup.get('facilityType')?.value" formControlName="facilityType"
+            (change)="onFacilityTypeChange($event)" placeholder="Select Facility Type">
+          </dropdown>
+          <div
+            *ngIf="formGroup.get('facilityType')?.invalid && formGroup.get('facilityType')?.touched && formGroup.get('facilityType')?.errors?.['required']"
+            class="p-error mt-1 text-red-500">
+            Facility Type is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-asset-facility mt-2 p-2 mb-1 border-round-md">
+      <div class="grid mb-2">
+        <div class="col-3">
+          <text for="name" class="text-xs add-asset-facility-text" [label]="'stock_no'" [mode]="'label'"
+            [required]="true"></text>
+        </div>
+        <div class="col-3">
+          <text for="name" class="text-xs add-asset-facility-text" [label]="'asset_desc'" [mode]="'label'"
+            [required]="true">
+          </text>
+        </div>
+        <div class="col-3">
+          <text for="name" class="text-xs add-asset-facility-text" [label]="'purchase_price_exclude'" [mode]="'label'"
+            [required]="true"></text>
+        </div>
+      </div>
+      <!-- <form [formGroup]="formGroup"> -->
+      <div formArrayName="arr">
+        <ng-container *ngFor="let row of f?.['arr']['controls']; let i = index">
+          <div [formGroupName]="i" class="grid">
+            <div class="col-3">
+              <input [valueClass]="'add-asset-facility'" pInputText [labelClass]="'add-asset-facility'" type="string"
+                formControlName="stockNumber" />
+              <text [mode]="'label'" *ngIf="
+                  row?.controls?.stockNumber?.touched &&
+                  row?.controls?.stockNumber?.errors?.pattern
+                " [label]="'The supplied value is not a valid number.'" [labelClass]="'text-xs text-red-500'">
+              </text>
+              <text [mode]="'label'" *ngIf="
+                  row?.controls?.stockNumber?.touched &&
+                  !row?.controls?.stockNumber?.value &&
+                  (row?.controls?.assetDescription?.value ||
+                    row?.controls?.purchasePrice?.value)
+                " [label]="'Please Enter Stock Number'" [labelClass]="'text-xs text-red-500'">
+              </text>
+              <div *ngIf="showAssetRequiredError">
+                <text [mode]="'label'" [label]="'At least one Asset must be added'"
+                  [labelClass]="'text-xs text-red-500'">
+                </text>
+              </div>
+            </div>
+
+            <div class="col-3">
+              <text [valueClass]="'add-asset-facility'" formControlName="assetDescription"></text>
+              <text [mode]="'label'" *ngIf="
+                  row?.controls?.assetDescription?.touched &&
+                  row?.controls?.assetDescription?.errors?.required
+                " [label]="'Description must be entered'" [labelClass]="'text-xs text-red-500'"></text>
+            </div>
+
+            <div class="col-3">
+              <amount mode="edit" [labelClass]="'add-asset-facility'" formControlName="purchasePrice">
+              </amount>
+              <text [mode]="'label'" *ngIf="
+                  row?.controls?.purchasePrice?.touched &&
+                  row?.controls?.purchasePrice?.errors?.pattern
+                " [label]="'The supplied value is not a valid number.'" [labelClass]="'text-xs text-red-500'">
+              </text>
+              <text [mode]="'label'" *ngIf="
+                  row?.controls?.purchasePrice?.touched &&
+                  row?.controls?.purchasePrice?.errors?.required
+                " [label]="'Purchase price must be entered'" [labelClass]="'text-xs text-red-500'"></text>
+            </div>
+            <div class="col-1">
+              <gen-button [btnIcon]="'pi pi-trash'" *ngIf="i !== 0" (click)="removeItem(i)"
+                [btnType]="'non-bg-btn'"></gen-button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <br />
+      <gen-button [btnIcon]="'pi pi-plus'" [btnLabel]="'Add Asset'" [iconPos]="'left'" label="Add Asset"
+        (click)="addItem()" [btnType]="'non-bg-btn'"></gen-button>
+    </div>
+  </form>
+
+  <div class="mt-2 flex">
+    <text [mode]="'label'" [label]="'document_upload'" [labelClass]="'font-semibold pl-2'"></text>
+    <br />
+    <text [mode]="'label'" [label]="'document_upload_hint'" [labelClass]="' text-xs pl-2'"></text>
+  </div>
+  <div class="add-asset-facility mt-2 border-round-md">
+    <app-upload-docs class="upload_docs" [showActionIcons]="'true'"></app-upload-docs>
+  </div>
+  <div class="mt-2">
+    <text [mode]="'label'" [label]="'Additional Information'" [labelClass]="'font-semibold pl-2'"></text>
+  </div>
+  <div class="mt-1">
+    <app-additional-info (inputChanged)="handleChildInput($event)" [columns]="'110'"></app-additional-info>
+  </div>
+  <div class="form-sticky-footer">
+    <div class="grid gap-2 flex justify-content-end">
+      <div class="col-2">
+        <gen-button [btnLabel]="'Cancel'" [btnType]="'non-bg-btn'" (onClick)="showDialogCancel()"
+          [btnWidth]="'full'"></gen-button>
+      </div>
+      <div class="col-2">
+        <gen-button [btnLabel]="'Submit'" [btnType]="'bg-btn'" (click)="submitData()" [btnWidth]="'full'"></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

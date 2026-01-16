@@ -1,0 +1,63 @@
+<div class="card p-2">
+  <div class="grid">
+    <div class="text-xs font-bold col-3">
+      {{ "payment_forcast" | translate }}
+    </div>
+    <div class="col-3">
+      <dropdown
+        [options]="frequencyOptionData"
+        [value]="frequency"
+        [labelType]="'vertical'"
+        [labelClass]="'label-xs label-color pb-2'"
+        [label]="'frequency'"
+        (change)="onFrequencyChange($event)"
+      ></dropdown>
+    </div>
+    <div class="col-3">
+      <text
+        [mode]="'label'"
+        [label]="'from'"
+        [labelClass]="'label-xs label-color pl-2 pt-2'"
+      ></text>
+      <date
+        [labelClass]="'label-xs label-color'"
+        [value]="fromDate"
+        [min]="currentDate"
+        [mode]="disableDate ? 'view' : 'edit'"
+        (change)="onFromDateChange($event)"
+      ></date>
+    </div>
+    <div class="col-3">
+      <text
+        [mode]="'label'"
+        [label]="'to'"
+        [labelClass]="'label-xs label-color pl-2 pt-2'"
+      ></text>
+      <date
+        [labelClass]="'label-xs label-color pt-2'"
+        [value]="toDate"
+        [min]="fromDate"
+        [max]="maxDate"
+        [valueClass]="'pt-4'"
+        [mode]="disableDate ? 'view' : 'edit'"
+        (blur)="onToDateChange($event)"
+      ></date>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <gen-table
+      #dt2
+      [columns]="paymentForcastColumnDefs"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [dataList]="paymentForcastDataList"
+      [tableClass]="'border-round'"
+      [tableStyle]="'stripped-rows'"
+      [bodyClass]="'text-xs'"
+      [sortable]="true"
+      [filter]="true"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+    ></gen-table>
+  </div>
+</div>

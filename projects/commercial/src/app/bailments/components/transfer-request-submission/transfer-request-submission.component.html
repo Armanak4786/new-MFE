@@ -1,0 +1,200 @@
+<div
+  class="flex flex-column justify-center items-center text-center px-4 overflow: hidden !important;"
+>
+  <!-- Thank You Image -->
+  <div class="mb-4">
+    <img src="assets/images/icon/success-Tick.svg" alt="Thank You" />
+  </div>
+
+  <!-- Thank You Label -->
+  <div class="mb-2">
+    <text [mode]="'label'" [label]="'thank_you'" [labelClass]="'font-bold text-lg text-green-600'"></text>
+  </div>
+</div>
+<div class="grid">
+  <div class="col-12">
+    <div *ngIf="pageFrom === 'purchase-asset'">
+      <text
+        [mode]="'label'"
+        [label]="'purchase_asset_request'"
+        [labelClass]="'text-lg font-bold ml-2'"
+      ></text>
+    </div>
+    <div
+      *ngIf="
+        pageFrom != 'swap' &&
+        pageFrom != 'purchase-asset' &&
+        pageFrom != 'same-day-payout'
+      "
+    >
+      <text
+        [mode]="'label'"
+        [label]="'product_transfer_request'"
+        [labelClass]="'ml-2 text-sm font-bold'"
+      ></text>
+    </div>
+    <div *ngIf="pageFrom == 'swap'">
+      <text
+        [mode]="'label'"
+        [label]="'inventory_transfer_request'"
+        [labelClass]="'text-lg font-bold ml-2'"
+      ></text>
+      <div *ngIf="pageFrom == 'purchase-asset'">
+        <text
+          [mode]="'label'"
+          [label]="'purchase_asset_transfer_request_msg'"
+          [labelClass]="'text-lg font-bold'"
+        ></text>
+        <div *ngIf="pageFrom == 'same-day-payout'">
+          <text
+            [mode]="'label'"
+            [label]="'same_day_payment_request_msg'"
+            [labelClass]="'text-lg font-bold'"
+          ></text>
+        </div>
+      </div>
+    </div>
+    <div class="p-2 mt-2">
+      <text
+        [mode]="'label'"
+        [label]="'request_no_msg'"
+        [labelClass]="'text-md font-semibold'"
+        [value]="requestNumber"
+        [valueClass]="'p-1 font-semibold'"
+      ></text>
+    </div>
+    <div *ngIf="pageFrom == 'purchase-asset'" class="ml-2">
+      <text
+        [mode]="'label'"
+        [label]="'purchase_asset_request_inventory_msg'"
+        [labelClass]="'text-md'"
+      ></text>
+    </div>
+    <div class="p-2 mb-2">
+      <div class="flex flex-row">
+        <div *ngIf="pageFrom == 'swap'">
+          <text
+            [mode]="'label'"
+            [label]="
+              receiverParty + ' ' + ('swap_request_receiver_msg' | translate)
+            "
+            [labelClass]="'text-sm'"
+          ></text>
+        </div>
+        <!-- <div *ngIf="pageFrom == 'purchase-asset'">
+          <text
+            [mode]="'label'"
+            [label]="'purchase_Asset_confirmation_lbl'"
+            [labelClass]="'text-sm'"
+          ></text>
+        </div> -->
+        <div *ngIf="pageFrom == 'same-day-payout'">
+          <text
+            [mode]="'label'"
+            [label]="'same_day_payment_request_receiver_mgs'"
+            [labelClass]="'text-sm'"
+          ></text>
+        </div>
+        <div *ngIf="productTransferTo == 'DEMO'">
+          <text
+            [mode]="'label'"
+            [label]="'product_transfer_post_submission_demo_msg'"
+            [labelClass]="'text-sm'"
+          ></text>
+        </div>
+        <div *ngIf="productTransferTo == 'DPP'">
+          <text
+            [mode]="'label'"
+            [label]="'product_transfer_post_submission_dpp_msg'"
+            [labelClass]="'text-sm'"
+          ></text>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-12">
+      <gen-table
+        [columns]="productTransferSubmissionColumnDefs"
+        [headingClass]="'text-xs header-text-color'"
+        [tableClass]="'border-round'"
+        [dataList]="productTransferSubmissionList"
+        [tableStyle]="'stripped-rows'"
+        (onCellClick)="onCellClick($event)"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+      ></gen-table>
+      <div *ngIf="pageFrom == 'swap'">
+        <div class="mt-4">
+          <text
+            [mode]="'label'"
+            [label]="'Status: '"
+            [labelClass]="'text-md font-semibold'"
+            [value]="'Pending Transfer'"
+          ></text>
+        </div>
+        <text
+          [mode]="'label'"
+          [label]="'you_can_view_the_request_status'"
+          [labelClass]="'text-md'"
+        ></text>
+      </div>
+      <div *ngIf="pageFrom == 'product-transfer'">
+        <div class="mt-2">
+          <text
+            [mode]="'label'"
+            [label]="'new_status'"
+            [labelClass]="'text-md font-semibold'"
+            [value]="productTransferTo"
+            [valueClass]="'p-1 font-semibold'"
+          ></text>
+        </div>
+        <text
+          [mode]="'label'"
+          [label]="'the_request_has_been_recieved_by_udc_finance'"
+          [labelClass]="'text-md'"
+          [valueClass]="'p-1 font-semibold'"
+        ></text>
+        <text
+          [mode]="'label'"
+          [label]="'Status: '"
+          [labelClass]="'text-md font-semibold'"
+          [value]="'Submitted for Processing'"
+          [valueClass]="'text-md font-semibold'"
+        ></text>
+        <text
+          [mode]="'label'"
+          [label]="'you_can_view_the_request_status'"
+          [labelClass]="'text-md font-semibold'"
+        ></text>
+      </div>
+      <div *ngIf="pageFrom === 'purchase-asset'" class="mt-2">
+        <text
+          [mode]="'label'"
+          [label]="'purchase_asset_request_inventory_request_history_msg'"
+          [labelClass]="'text-sm'"
+        ></text>
+      </div>
+      <div *ngIf="additionalMsg" class="flex mt-3">
+        <text
+          [mode]="'label'"
+          [label]="
+            ('the_request_has_been_recieved_by_udc_finance' | translate) +
+            '  ' +
+            ('submit_for_processing' | translate) +
+            '  ' +
+            ('you_can_view_the_request_status' | translate)
+          "
+          [labelClass]="'text-sm'"
+          [value]="submit_for_processing"
+        ></text>
+      </div>
+      <div class="grid flex justify-content-center mt-4">
+        <div class="col-12 sm:col-4 md:col-3">
+          <gen-button
+            [btnType]="'border-btn'"
+            [btnLabel]="'return_to_home'"
+            (onClick)="backToDashboard()"
+          ></gen-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

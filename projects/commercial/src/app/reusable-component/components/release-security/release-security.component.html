@@ -1,0 +1,52 @@
+<div>
+  <div class="grid mb-2">
+    <div class="col-12">
+      <span class="p-input-icon-left full-width-input">
+        <i class="pi pi-search"></i>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search by Asset No., Reg/VIN/Serial/Chassis and Loan ID"
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+          class="p-inputtext p-component"
+        />
+      </span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12 border-round-md">
+      <gen-table
+        [columns]="assetsColumnDefs"
+        [tableClass]="'border-round'"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+        [dataList]="filteredAssetsDataList"
+        [tableStyle]="'stripped-rows'"
+        [paginatorFlag]="'true'"
+        [sortFlag]="'true'"
+        (onCellClick)="onCellClick($event)"
+      ></gen-table>
+    </div>
+  </div>
+  <div class="grid gap-2 flex justify-content-end mt-4">
+    <div class="col-3">
+      <gen-button
+        [btnLabel]="'Close'"
+        (click)="onCancelClick()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+    <div
+      class="col-3"
+      *ngIf="facilityType === 'AssetLink' || facilityType === 'EasyLink'"
+    >
+      <gen-button
+        [disabled]="disablebReleaseButtonFlag"
+        [btnLabel]="'release_security'"
+        [btnWidth]="'full'"
+        (click)="releaseRequest()"
+      ></gen-button>
+    </div>
+  </div>
+</div>

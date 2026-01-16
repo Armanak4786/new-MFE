@@ -1,0 +1,15 @@
+<div
+  class="sm:col-12 md:col-8 lg:col-12 border-round-md"
+  *ngIf="hasAccess('financial_&_facility_introducer_transaction_summary')"
+>
+  <gen-table
+    [columns]="columnDefs"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [tableClass]="'border-round'"
+    [dataList]="orinatorDataList"
+    [tableClass]="'border-round'"
+    [tableStyle]="'stripped-rows'"
+    [bodyClass]="'text-xs'"
+    (onHeaderClick)="onHeaderClick($event)"
+  ></gen-table>
+</div>

@@ -1,0 +1,334 @@
+<div class="m-3">
+  <!-- <div class="flex">
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="swapDetails?.productName + ' |'"
+    ></text>
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="swapDetails?.subFacility ? swapDetails.subFacility + ' |' : ' '"
+    ></text>
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="swapDetails?.typeName"
+    ></text>
+  </div> -->
+  <div class="request-info-card mt-2">
+    <div class="request-details">
+      <div class="request-line">
+        <text
+          [mode]="'label'"
+          [label]="'request_number'"
+          [labelClass]="'text-xs'"
+          [valueClass]="'text-xs font-bold  ml-2'"
+          [value]="
+            seletedRecoredData['Request No.'] +
+            ' - ' +
+            seletedRecoredData['Status']
+          "
+        >
+        </text>
+      </div>
+
+      <div class="request-line">
+        <date
+          [mode]="'label'"
+          [label]="'requested_on'"
+          [labelClass]="'text-xs'"
+          [valueClass]="'text-xs font-bold ml-2'"
+          [value]="'- ' + seletedRecoredData['Request Date']"
+        >
+        </date>
+      </div>
+    </div>
+  </div>
+  <div class="grid mt-3 mb-4 ml-2">
+    <div class="col-3">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold'"
+        [className]="'mr-2'"
+        [labelType]="'vertical'"
+        [label]="'sending_dealer'"
+        [value]="seletedRecoredData['Sending Dealer']"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+    <div class="col-3">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold'"
+        [className]="'mr-2'"
+        [label]="'receiving_dealer'"
+        [labelType]="'vertical'"
+        [value]="seletedRecoredData['Receiving Dealer']"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+  </div>
+  <div>
+    <text
+      [mode]="'label'"
+      [labelClass]="'text-xs font-bold ml-3'"
+      [label]="'asset_details'"
+    ></text>
+  </div>
+  <div class="grid ml-2 mt-2">
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [label]="'id_ref'"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [label]="'asset_no'"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [label]="'program'"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+  </div>
+  <div class="grid ml-2">
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [value]="swapDetails?.contractId"
+        [valueClass]="'text-xs'"
+      ></text>
+      <!-- <a
+        class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+        (click)="op.toggle($event)"
+      >
+        {{ swapDetails?.contractId }}
+      </a> -->
+    </div>
+
+     <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [valueClass]="'text-xs'"
+      ></text>
+      <a
+        class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+        (click)="op.toggle($event)"
+      >
+        {{ swapDetails?.assetTypeId }}
+      </a>
+    </div>
+
+    <!-- <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [value]="swapDetails?.assetTypeId"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div> -->
+
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs label-color'"
+        [labelType]="'vertical'"
+        [value]="swapDetails?.programName"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+  </div>
+</div>
+
+<p-overlayPanel #op>
+  <div class="grid">
+    <div class="col-5">
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'asset_type'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'registration'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'vin'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'chassis_number'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'serial_number'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'make'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'model'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'product_type'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold  label-color mr-4'"
+          [label]="'year'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'colour'"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+    </div>
+    <div class="col-7">
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.description"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.registrationNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.vehicleIdentificationNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.chassisNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.serialNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.make"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.model"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.dealTypeName"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold  label-color mr-4'"
+          [value]=""
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [value]="facilityAssset?.color"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+    </div>
+  </div>
+</p-overlayPanel>

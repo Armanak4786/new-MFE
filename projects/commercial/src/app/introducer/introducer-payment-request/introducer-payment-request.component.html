@@ -1,0 +1,112 @@
+<div class="">
+  <div class="col-12">
+    <form [formGroup]="introducerDetailsForm" class="p-fluid">
+      <!-- Current Balance & Next Cycle Date -->
+      <div class="grid drawdown-form">
+        <div class="col-6">
+          <amount
+            class="align-left"
+            [label]="'lbl_current_balance'"
+            labelType="vertical"
+            mode="label"
+            [value]="currentBalance"
+            formControlName="curentBalance"
+          >
+          </amount>
+        </div>
+        <div class="col-6">
+          <date
+            [label]="'next_cycle_date'"
+            labelType="vertical"
+            [labelClass]="'text-sm mb-3'"
+            formControlName="nextCycleDate"
+          >
+          </date>
+        </div>
+      </div>
+      <!--Payment Details -->
+      <div class="mt-3">
+        <text
+          [mode]="'label'"
+          [label]="'lbl_payment_details'"
+          [labelClass]="'font-bold text-sm'"
+        ></text>
+
+        <div class="mt-1">
+          <text
+            [mode]="'label'"
+            [label]="'pay_to'"
+            [labelClass]="'text-sm'"
+            [value]="useCreditKey ? username : 'UDC Finance'"
+          ></text>
+        </div>
+      </div>
+      <div class="col-12 text-xs -ml-2">
+        <text
+          [mode]="'label'"
+          [label]="
+            useCreditKey
+              ? 'introducer_request_credit'
+              : 'introducer_request_debit'
+          "
+          [labelClass]="'text-sm'"
+        ></text>
+      </div>
+      <!-- Net Amount & Payment Date -->
+      <div class="grid mt-3 drawdown-form">
+        <div class="col-6">
+          <amount
+            class="align-left"
+            [label]="'net_amount'"
+            labelType="vertical"
+            mode="label"
+            [value]="currentBalance"
+            formControlName="netAmount"
+          >
+          </amount>
+        </div>
+
+        <div class="col-6">
+          <date
+            [label]="'lbl_payment_date'"
+            labelType="vertical"
+            [labelClass]="'text-sm mb-3'"
+            formControlName="paymentDate"
+          >
+          </date>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div>
+  <text
+    [mode]="'label'"
+    [label]="
+      useCreditKey
+        ? 'introducer_additional_info_payment'
+        : 'introducer_additional_info_receipt'
+    "
+    [labelClass]="'text-sm'"
+  ></text>
+</div>
+<div class="form-sticky-footer">
+  <div class="grid gap-2 flex justify-content-center">
+    <div class="col-5">
+      <gen-button
+        [btnLabel]="'Cancel'"
+        [btnType]="'non-bg-btn'"
+        (onClick)="showDialogCancel()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+    <div class="col-5">
+      <gen-button
+        [btnLabel]="'Submit'"
+        [btnType]="'bg-btn'"
+        (click)="submitData()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+  </div>
+</div>

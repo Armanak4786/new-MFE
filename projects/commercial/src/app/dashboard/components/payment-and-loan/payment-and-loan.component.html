@@ -1,0 +1,100 @@
+<div>
+  <div class="mb-3">
+    <div class="card p-2">
+      <div class="font-bold">
+        <div>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="'payments_and_drawdown_due_today'"
+          ></text>
+        </div>
+        <p-divider></p-divider>
+      </div>
+      <div class="grid mb-1">
+        <div class="col-6">
+          <amount
+            [value]="total?.totalRepaymentsDueToday || 0"
+            [label]="'total_repayment_label'"
+            [labelClass]="'text-xs mr-1'"
+            [valueClass]="'text-xs font-semibold'"
+            [mode]="'label'"
+          ></amount>
+        </div>
+        <p-divider layout="vertical" />
+        <div class="col-5">
+          <div>
+            <amount
+              [value]="total?.totalNewLoanDueToday || 0"
+              [label]="'new_loans_label'"
+              [labelClass]="'mr-1 text-xs'"
+              [valueClass]="'text-xs font-semibold'"
+              [mode]="'label'"
+            ></amount>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="card p-3">
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [label]="'repayment_forcast_period'"
+            [labelClass]="'text-xs font-bold flex pt-2 justify-center'"
+          ></text>
+        </div>
+
+        <div class="col-3 col-offset-4">
+          <dropdown
+            [options]="frequencyOptionData"
+            [value]="frequency"
+            [labelType]="'vertical'"
+            [labelClass]="'label-xs label-color'"
+            (change)="onFrequencyChange($event)"
+          ></dropdown>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="col-3">
+          <date
+            [labelClass]="'label-xs label-color pt-2'"
+            [labelType]="'vertical'"
+            [label]="'select_period'"
+            [value]="fromDate"
+            [min]="currentDate"
+            [mode]="disableDate ? 'view' : 'edit'"
+            (change)="onFromDateChange($event)"
+          ></date>
+        </div>
+        <div class="col-offset-6 col-3">
+          <date
+            [labelClass]="'label-xs label-color pt-4'"
+            [labelType]="'vertical'"
+            [value]="toDate"
+            [min]="fromDate"
+            [max]="maxDate"
+            [mode]="disableDate ? 'view' : 'edit'"
+            (change)="onToDateChange($event)"
+          ></date>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <gen-table
+          [columns]="paymentForcastColumnDefs"
+          [dataList]="paymentForcastDataList"
+          [tableClass]="'border-round'"
+          [tableStyle]="'stripped-rows'"
+          [headingClass]="'tableHeader text-xs header-text-color'"
+          [strippedOddClass]="'tableOddRow'"
+          [strippedEvenClass]="'tableEvenRow'"
+          [scrollHeight]="'400px'"
+          [bodyClass]="'text-xs amountColumnCenter'"
+        ></gen-table>
+      </div>
+    </div>
+  </div>
+</div>

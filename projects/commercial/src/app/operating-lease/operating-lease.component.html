@@ -1,0 +1,159 @@
+<div class="grid card m-2">
+  <div class="sm:col-6 md:col-6 lg:col-3 border-round-md p-2">
+    <div class="asset-link-bg border rounded-md p-2">
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="onFacilityChange($event)"
+      ></dropdown>
+    </div>
+  </div>
+
+  <div class="sm:col-6 md:col-6 lg:col-9 border-round-md">
+    <gen-table
+      [columns]="operatingLeasecolumnDefs"
+      [dataList]="operatingLeaseFacilityDataList"
+      [isScrollable]="'true'"
+      [tableClass]="'border-round'"
+      [tableStyle]="'stripped-rows'"
+      [bodyClass]="'text-xs'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+    ></gen-table>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-2">
+        <gen-button
+          [btnType]="
+            currentComponent === 'RentalForcast' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'Rental Forecast'"
+          class="text-xs"
+          (onClick)="showRentalForcastTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Leases' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'leases'"
+          class="text-xs"
+          (onClick)="showLeasesTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Assets' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'assets'"
+          class="text-xs"
+          (onClick)="showAssetsTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocuments()"
+        ></gen-button>
+      </div>
+    </div>
+    <div class="col-12 sm:col-12 md:col-4">
+      <div
+        class="flex justify-content-end flex-wrap"
+        *ngIf="currentComponent == 'PaymentForecast'"
+      >
+        <div>
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [btnWidth]="'full'"
+            [btnLabel]="'export'"
+            class="text-xs"
+            [iconPos]="'left'"
+            [btnIcon]="'pi pi-cloud-upload'"
+            (click)="export()"
+          ></gen-button>
+        </div>
+        <div>
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [btnWidth]="'full'"
+            [btnLabel]="'print'"
+            class="text-xs"
+            [iconPos]="'left'"
+            [btnIcon]="'pi pi-print'"
+            (click)="onPrint()"
+          ></gen-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-4">
+    <div
+      class="flex justify-content-end flex-wrap"
+      *ngIf="currentComponent == 'RentalForcast'"
+    >
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'Leases'">
+  <app-loans
+    [facilityType]="facilityType"
+    [loansColumnDefs]="leaseColumnDefs"
+    [loansDataList]="leaseDataList"
+  ></app-loans>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'Assets'">
+  <app-facility-assets
+    [columnsFacilityAsset]="columnsFacilityAsset"
+    [facilityType]="facilityType"
+    [facilityAsssetsDatalist]="facilityAsssetsDatalist"
+  ></app-facility-assets>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <app-documents
+    [documentsColumnDefs]="documentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'RentalForcast'">
+  <div class="grid">
+    <div class="col-8">
+      <app-rental-forcast
+        #rentalForcast
+        [facilityType]="facilityType"
+      ></app-rental-forcast>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'requestSecurity'"> </ng-container>

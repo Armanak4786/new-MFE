@@ -1,0 +1,112 @@
+<div class="grid">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'drawdown_request'"
+          class="text-xs"
+          (onClick)="showNonFacilityLoansDrawdownRequestDialog()"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'repayment_request'"
+          (click)="showDialogRepaymentRequest()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'request_history'"
+          (click)="requestHistory()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-2">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'payment_forcast'"
+          class="text-xs"
+          (onClick)="showPaymentForcast()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'transaction_flow'"
+          class="text-xs"
+          (onClick)="showTransactionFlow()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-4">
+    <div
+      class="flex justify-content-end flex-wrap"
+      *ngIf="currentComponent === 'paymentForcast'"
+    >
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'paymentForcast'">
+  <app-payment-forcast
+    [paymentForecastColumnDefs]="paymentForecastColumnDefs"
+    [paymentForcastDataList]="paymentForcastDataList"
+    (paramsEmit)="onParamsChange($event)"
+    [facilityType]="facilityType"
+    #paymentForcast
+  ></app-payment-forcast>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'TransactionFlow'">
+  <app-transaction-flow
+    [transactionsColumnDef]="transactionsColumnDef"
+    [transactionDataList]="transactionsDataList"
+    [paymentColumnDefs]="paymentColumnDefs"
+    [paymentDataList]="paymentDataList"
+    [paymentNotYetAllocated]="paymentNotYetAllocated"
+    [overDue]="overDue"
+    [facilityType]="facilityType"
+    #TransactionFlow
+  ></app-transaction-flow>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'requestHistory'">
+  <app-request-history
+    [requestHistoryDataList]="requestHistoryDataList"
+    [requestHistoryColumnDefs]="requestHistoryColumnDefs"
+    [originalRequestHistoryDatalist]="originalRequestHistoryDatalist"
+    [facilityType]="facilityType"
+  ></app-request-history>
+</ng-container>

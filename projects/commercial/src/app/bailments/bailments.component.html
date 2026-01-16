@@ -1,0 +1,242 @@
+<div
+  class="grid card collapse-box m-1 mb-0"
+  [ngClass]="{ collapsed: isCollapsed }"
+>
+  <div class="col-3 border-round-md">
+    <div class="asset-link-bg pb-5">
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="onFrequencyChange($event)"
+      ></dropdown>
+      <br />
+
+      <div class="flex mr-2 mt-2">
+        <div
+          class="chart-container flex align-items-center justify-content-center p-3 pt-0 ml-2 mr-2"
+        >
+          <p-chart
+            type="doughnut"
+            [data]="data"
+            [options]="options"
+            class="w-full"
+          ></p-chart>
+        </div>
+        <div class="color-box-container flex flex-column mt-3">
+          <div
+            *ngFor="let label of data?.labels; let i = index"
+            class="flex align-items-center"
+          >
+            <div class="color-box" [style.background-color]="colors[i]"></div>
+            <text
+              [mode]="'label'"
+              [label]="label"
+              [labelClass]="'label-xs'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-9 border-round-md">
+    <gen-table
+      [columns]="bailmentFacilityTypeColumnDefs"
+      [tableClass]="'border-round'"
+      [dataList]="visibleBailmentDataList"
+      [isScrollable]="'true'"
+      [tableStyle]="'stripped-rows'"
+      (onCellClick)="onCellClick($event)"
+      [bodyClass]="'text-xs row-class-assetlink'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+    >
+    </gen-table>
+
+    <!-- Enhanced Toggle Button (Positioned within the table container) -->
+    <div
+      class="collapse-toggle-wrapper"
+      *ngIf="dataListRemainingCount > 0 || !isCollapsed"
+    >
+      <div
+        class="collapse-toggle-button"
+        (click)="toggleCollapse()"
+        [class.collapsed]="isCollapsed"
+        [class.expanded]="!isCollapsed"
+      >
+        <span class="text-center label-xs toggle-text">
+          {{ getToggleButtonText() | translate }}
+        </span>
+        <i class="pi text-center ml-1" [ngClass]="getToggleButtonIcon()"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="selectedSubFacility?.facilityName?.trim()">
+  <div class="col-12 grid sub-facility">
+    <div class="col-3"></div>
+    <div class="col-9 -mt-7 facilityOverlapFix border-round-md">
+      <gen-table
+        [columns]="bailmentSubFacilityTypeColumnDefs"
+        [dataList]="bailmentSubFacilityDataList"
+        (onCellClick)="onCellClick($event)"
+        [bodyClass]="'text-xs row-class-assetlink'"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+      >
+      </gen-table>
+    </div>
+  </div>
+</div>
+
+<!-- Action Buttons Section -->
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'product_transfer_request'"
+          class="text-xs"
+          (onClick)="productTransferRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'purchase_asset_request'"
+          class="text-xs"
+          (onClick)="purchaseAssetRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'swap_request'"
+          class="text-xs"
+          (onClick)="swapRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'same_day_payout'"
+          class="text-xs"
+          (onClick)="sameDayPayoutRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'request_history'"
+          (click)="requestHistory()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab Navigation -->
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilitySummary' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'facility_summary'"
+          class="text-xs"
+          [btnColor]="'red'"
+          (onClick)="showFacilitySummary()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilityAssets' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'assets'"
+          class="text-xs"
+          (onClick)="showFacilityAssets()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocuments()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="currentComponent == 'FacilitySummary'"
+    class="sm:col-4 md:col-4 lg:col-4"
+  >
+    <div class="flex justify-content-end">
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamic Content Components -->
+<ng-container *ngIf="currentComponent == 'FacilitySummary'">
+  <app-facility-summary
+    #FacilitySummaryDt
+    [todaysActivityColDef]="todaysActivityColDef"
+    [assetSummaryColDef]="assetSummaryColDef"
+    [columnsFacilityAsset]="columnsFacilityAsset"
+    [facilityType]="facilityType"
+    [facilitySummaryDatalist]="facilitySummaryDatalist"
+  ></app-facility-summary>
+</ng-container>
+
+<ng-container *ngIf="currentComponent == 'FacilityAssets'">
+  <app-facility-assets
+    [columnsFacilityAsset]="facilityAssetsColDef"
+    [facilityType]="facilityType"
+    [searchLabel]="'asset_id'"
+    [facilityAsssetsDatalist]="facilityAsssetsDatalist"
+  ></app-facility-assets>
+</ng-container>
+
+<ng-container *ngIf="currentComponent == 'Documents'">
+  <app-documents
+    [documentsColumnDefs]="documentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>
+
+<ng-container *ngIf="currentComponent == 'RequestHistory'">
+  <app-wholesale-request-history
+    [swapRequestList]="swapRequestList"
+    [facilityType]="facilityType"
+  ></app-wholesale-request-history>
+</ng-container>

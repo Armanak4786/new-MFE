@@ -1,0 +1,15 @@
+<div class="sm:col-12 md:col-8 lg:col-12 border-round-md">
+  <gen-table
+    [columns]="leaseScheduleColumnDefs"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [dataList]="leaseScheduleDataList?.schedules"
+    [tableStyle]="'stripped-rows'"
+    [tableClass]="'border-round'"
+    [bodyClass]="'text-xs'"
+    [sortable]="true"
+    [filter]="true"
+    [paginatorFlag]="true"
+    [strippedOddClass]="'tableOddRow'"
+    [strippedEvenClass]="'tableEvenRow'"
+  ></gen-table>
+</div>

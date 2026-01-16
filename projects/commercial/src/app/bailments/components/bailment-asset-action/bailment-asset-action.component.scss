@@ -1,0 +1,14 @@
+.action-item {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.item-bg {
+  background-color: #f7fafc;
+}
+
+.action-item:hover {
+  background-color: var(
+    --primary-color
+  ); /* Change to your desired background color */
+  color: white; /* Change to your desired text color */
+}

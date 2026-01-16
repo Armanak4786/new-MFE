@@ -1,0 +1,52 @@
+<label class="font-medium ml-2">Search By</label>
+<div class="flex gap-4 mb-3 mt-2">
+    <div class="mt-2">
+        <label>
+            <input type="radio" name="searchType" value="rego" [(ngModel)]="searchType" />Rego No.
+        </label>
+        <label>
+            <input type="radio" name="searchType" value="vin" [(ngModel)]="searchType" />VIN
+        </label>
+    </div>
+    <input type="text" [(ngModel)]="searchValue" class="border p-2 p-inputtext p-component" />
+    <gen-button [btnWidth]="'full'" [btnType]="'bg-btn'" [btnLabel]="'search'" (onClick)="search()"></gen-button>
+    <gen-button [btnWidth]="'full'" [btnType]="'non-bg-btn'" [btnLabel]="'reset'" (onClick)="reset()"></gen-button>
+</div>
+
+
+<div *ngIf="searchError" class="text-red-500 text-sm mb-2">
+    {{ searchError }}
+</div>
+<div *ngIf="assetDetails?.responseMessage?.jsoNpayload" class="mt-4 asset-details-background">
+
+    <div class="grid-container">
+        <text [label]="'regoNo'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.registrationPlate"></text>
+        <text [label]="'lbl_vin'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.vin"></text>
+        <text [label]="'chassis_number'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.chassisNumber"></text>
+    </div>
+
+    <div class="grid-container">
+        <text [label]="'lbl_colour'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.colour"></text>
+        <text [label]="'lbl_make'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.make"></text>
+        <text [label]="'lbl_model'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.model"></text>
+    </div>
+
+    <div class="grid-container">
+        <text [label]="'yearly'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleDescription?.yearOfManufacture"></text>
+        <text [label]="'registration_date'" mode="label" labelType="vertical"
+            [value]="assetDetails?.responseMessage?.jsoNpayload?.vehicleLicensingDetails?.registrationDate"></text>
+    </div>
+    <div class="flex justify-content-center align-items-center gap-2 mt-4">
+        <gen-button [btnWidth]="'full'" [btnType]="'non-bg-btn'" [btnLabel]="'cancel'"
+            (onClick)="showDialogCancel()"></gen-button>
+        <gen-button [btnWidth]="'full'" [btnType]="'bg-btn'" [btnLabel]="'add'" (onClick)="addMotoDetails()"
+            [disabled]="!assetDetails"></gen-button>
+    </div>
+</div>

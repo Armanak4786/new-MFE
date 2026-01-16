@@ -1,0 +1,157 @@
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex flex-row flex-nowrap items-center gap-x-2">
+      <div *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'m-0 p-0'"
+          [btnLabel]="'drawdown_request'"
+          class="text-xs"
+          (onClick)="showDialogDrawdownRequest()"
+        ></gen-button>
+      </div>
+      <div *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'add_asset/s'"
+          class="text-xs"
+          (onClick)="showDialogAddAsset()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          *ngIf="hasAccess('perform_requests')"
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'release_security'"
+          class="text-xs"
+          (onClick)="showDialogReleaseSecurity()"
+        ></gen-button>
+      </div>
+      <div *ngIf="hasAccess('request_history')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'request_history'"
+          (click)="requestHistory()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'PaymentForecast' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'payment_and_account_forcast'"
+          class="text-xs"
+          (onClick)="showPaymentAndForecast()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Loans' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'loans'"
+          class="text-xs"
+          (onClick)="showLoans()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilityAssets' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'facility_assets'"
+          class="text-xs"
+          (onClick)="showFacilityAssets()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocuments()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-4">
+    <div
+      class="flex justify-content-end flex-wrap"
+      *ngIf="currentComponent == 'PaymentForecast'"
+    >
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'Loans'">
+  <app-loans
+    [loansColumnDefs]="loansColumnDefs"
+    [loansDataList]="loansDataList"
+    [facilityType]="facilityType"
+    [selectedSubFacility]="selectedSubFacility"
+  ></app-loans>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'FacilityAssets'">
+  <app-facility-assets
+    [columnsFacilityAsset]="columnsFacilityAsset"
+    [facilityType]="facilityType"
+    [facilityAsssetsDatalist]="facilityAsssetsDatalist"
+  ></app-facility-assets>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <app-documents
+    [facilityType]="facilityType"
+    [documentsColumnDefs]="documentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'PaymentForecast'">
+  <app-payment-summary-account-forcast
+    [paymentForcastDataList]="paymentForcastDataList"
+    [accountForcastDataList]="accountForcastDataList"
+    [principalForcastDataList]="principalForcastDataList"
+    [paymentForcastColumnDefs]="paymentForecastColumnDefs"
+    [accountForcastColumnDefs]="accountForcastColumnDefs"
+    (paramsEmit)="onParamsChange($event)"
+    [disableDate]="disableDate"
+    #PaymentSummaryAccountForcast
+  ></app-payment-summary-account-forcast>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'requestHistory'">
+  <app-request-history
+    [requestHistoryDataList]="requestHistoryDataList"
+    [requestHistoryColumnDefs]="requestHistoryColumnDefs"
+    [originalRequestHistoryDatalist]="originalRequestHistoryDatalist"
+    [facilityType]="facilityType"
+  ></app-request-history>
+</ng-container>

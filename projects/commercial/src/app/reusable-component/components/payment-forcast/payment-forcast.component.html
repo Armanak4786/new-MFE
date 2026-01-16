@@ -1,0 +1,62 @@
+<div class="grid m-0">
+  <div class="col-8">
+    <div class="card p-3">
+      <div class="grid">
+        <div class="col-3">
+          <p class="label-xs label-color pb-0 mb-0">
+            {{ "frequency" | translate }}
+          </p>
+          <p-dropdown
+            [options]="frequencyOptionData"
+            [(ngModel)]="frequency"
+            (onChange)="onFrequencyChange($event)"
+          ></p-dropdown>
+        </div>
+        <div class="col-2 col-offset-5">
+          <date
+            [value]="fromDate"
+            [labelType]="'horizontal'"
+            [labelClass]="'label-xs label-color pt-2'"
+            [className]="'m-1'"
+            [label]="'from'"
+            [min]="currentDate"
+            [mode]="disableDate ? 'view' : 'edit'"
+            (change)="onFromDateChange($event)"
+          ></date>
+        </div>
+        <div class="col-2">
+          <date
+            [label]="'to'"
+            [labelClass]="'label-xs label-color pl-2 pt-2'"
+            [labelType]="'horizontal'"
+            [min]="fromDate"
+            [className]="'m-1'"
+            [max]="maxDate"
+            [value]="toDate"
+            [mode]="disableDate ? 'view' : 'edit'"
+            (change)="onToDateChange($event)"
+          ></date>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <gen-table
+          #dt2
+          [columns]="paymentForecastColumnDefs"
+          [headingClass]="'tableHeader text-xs header-text-color'"
+          [dataList]="paymentForcastDataList?.paymentForecasts"
+          [tableClass]="'border-round'"
+          [tableStyle]="'stripped-rows'"
+          [bodyClass]="'text-xs'"
+          [sortable]="true"
+          [filter]="true"
+        ></gen-table>
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs pt-5 text-600'"
+          [label]="'note_payment_forcast'"
+        ></text>
+      </div>
+    </div>
+  </div>
+</div>

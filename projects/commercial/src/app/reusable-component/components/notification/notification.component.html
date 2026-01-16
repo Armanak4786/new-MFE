@@ -1,0 +1,86 @@
+<div class="notifications-container p-3" style="height: 100%;">
+  <div
+    class="flex justify-content-between align-items-center border-bottom-1 surface-border pb-3 mb-3"
+  >
+    <h4 class="m-0 text-lg font-semibold text-color">
+      <i class="pi pi-bell mr-2"></i>
+      {{'notifications'|translate}}
+      <span class="p-tag p-tag-danger ml-2">{{ notificationCount }}</span>
+    </h4>
+    <button
+      pButton
+      type="button"
+      label="Hide all"
+      class="p-button-text p-button-sm text-primary"
+      (click)="clearAllNotifications()"
+    ></button>
+  </div>
+  <div *ngIf="showNotifications; else hiddenNotifications">
+    <ng-container *ngFor="let section of notificationSections">
+      <!-- <h5 class="text-sm font-semibold text-500 my-2">{{ section.label + ' :' }}</h5> -->
+
+      <div
+        *ngFor="let notif of section.notifications"
+        class="notification-item py-2 border-bottom-1 surface-border"
+      >
+        <div class="flex justify-content-between align-items-start">
+          <div class="flex-grow-1 mr-3">
+            <text
+              [mode]="'label'"
+              [value]="'Request No: ' + notif.id"
+              class="font-medium text-sm m-0 block colour"
+            ></text>
+
+            <text
+              [mode]="'label'"
+              [value]="
+                section.label === 'Pending'
+                  ? ('new_inventory_transfer_request'|translate)
+                  : section.label === 'Declined'
+                  ? ('inventory_transfer_request_rejected'|translate)
+                  : section.label === 'Completed'
+                  ? ('inventory_transfer_request_accepted'|translate)
+                  : ''
+              "
+              valueClass="font-medium text-sm font-bold m-0 block"
+            ></text>
+
+            <text
+              [mode]="'label'"
+              [value]="
+                section.label === 'Pending'
+                  ? ('you_have_request_to_receive_transferred_inventory_from'|translate)+' ' + getValue(notif,'OriginalPartyExtName') + ('review_and_accept_or_reject_request'|translate)
+                  : section.label === 'Declined'
+                  ? 'The transfer request has been rejected by ' + getValue(notif,'NewPartyExtName')
+                  : section.label === 'Completed'
+                  ?  ('transfer_request_has_been_accepted_by'|translate)+ getValue(notif,'NewPartyExtName') + ('view_the_request_and_track_its_progress'|translate)
+                  : ''
+              "
+              valueClass="text-xs text-600 my-1 block"
+            ></text>
+
+            <text
+              [mode]="'label'"
+              [value]= "getValue(notif,'InputDt')"
+              valueClass="text-xs text-500 m-0 block"
+            ></text>
+          </div>
+
+          <button
+          *ngIf="section.label === 'Pending'"
+            pButton
+            type="button"
+            label="View"
+            class="p-button-sm p-button-secondary p-button-outlined"
+            (click)="viewNotification(notif)"
+          ></button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <ng-template #hiddenNotifications>
+    <div class="text-center py-5 text-600 margin-bottom: 290px">
+    </div>
+  </ng-template>
+</div>

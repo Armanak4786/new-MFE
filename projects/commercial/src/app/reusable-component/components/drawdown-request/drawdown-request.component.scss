@@ -1,0 +1,96 @@
+.disburstmentdetails-label {
+  position: relative;
+  margin-bottom: 1.3rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #212121;
+  padding-left: 5px;
+  z-index: 100;
+  display: block;
+  font-family: Verdana;
+}
+.drawdown-label {
+  position: relative;
+  margin-bottom: 0.5rem;
+  margin-top: -3.5rem !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #212121;
+  padding-left: 5px;
+  z-index: 100;
+  display: block;
+  font-family: Verdana;
+}
+
+.p-dialog-content {
+  display: flex;
+  flex-direction: row; /* Align child elements side by side */
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-right: 1rem;
+  max-height: 80vh; /* Adjust for content height */
+  overflow-y: auto; /* Scroll the entire dialog content if needed */
+}
+
+/* Disbursement Block (Right Side of Drawdown Form) */
+.margintopdisbursement-details {
+  // top: 11.5rem;
+  // left: 40rem;
+  // position: fixed;
+  right: 2rem;
+  width: 37vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 10;
+  padding-top: 1rem;
+  margin-top: -31.5rem;
+}
+
+/* Scrollable content inside the disbursement block */
+.scroll-container {
+  max-height: 250px; /* Limit height for scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .p-dialog-content {
+    flex-direction: column; /* Stack elements vertically */
+  }
+
+  .margintopdisbursement-details {
+    width: 100%; /* Full width on smaller screens */
+    margin-left: 0; /* Remove margin */
+  }
+
+  .scroll-container {
+    max-height: 150px; /* Adjust for smaller screens */
+  }
+}
+.add-drawdown-request {
+  background-color: #f7fafc;
+
+  &-text {
+    color: #6f6f6f;
+  }
+  /* In your-component.component.css */
+}
+
+:host ::ng-deep .p-inputtext {
+  background-color: #f7fafc !important; // Replace 'red' with your desired color
+}
+:host ::ng-deep {
+  .drawdown_details_field {
+    .p-inputtext {
+      width: 18rem !important;
+    }
+
+    #amount {
+      width: 70% !important;
+    }
+  }
+}

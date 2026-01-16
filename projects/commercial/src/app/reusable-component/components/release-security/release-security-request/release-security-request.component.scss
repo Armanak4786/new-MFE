@@ -1,0 +1,56 @@
+.card-class {
+  background-color: #f7fafc;
+
+  &-text {
+    color: #6f6f6f;
+  }
+}
+
+.release-security-text-color {
+  color: #6f6f6f;
+}
+.release-security-text {
+  font-size: 10px;
+}
+
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.flex-item {
+  flex: 1 1 calc(33% - 20px);
+  max-width: calc(33% - 20px);
+  min-width: 250px;
+}
+
+.card {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-top: 10px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+::ng-deep label.required1::after {
+  content: "*";
+  color: red;
+  margin-left: 2px;
+}
+
+.no-border-bottom {
+  border-bottom: none !important;
+}
+
+.paymentoptionsradio {
+  transform: scale(-0.8);
+  cursor: pointer;
+}
+.black-bordered-textarea {
+  border: 1px solid #c9c9c9 !important;
+  border-radius: 2px;
+}

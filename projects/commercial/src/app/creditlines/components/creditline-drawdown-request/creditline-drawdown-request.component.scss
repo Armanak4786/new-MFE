@@ -1,0 +1,160 @@
+::ng-deep .radioButton .field-radiobutton > label {
+  margin-left: 0rem;
+  line-height: 1.2;
+}
+
+.add-drawdown-request {
+  background-color: #f7fafc;
+
+  &-text {
+    color: #6f6f6f;
+  }
+}
+
+.drawdown-details {
+  background-color: #f7fafc;
+
+  &-text {
+    color: #6f6f6f;
+  }
+
+  border: 0.5px solid #dfdfdf;
+  border-radius: 8px;
+}
+.required {
+  color: var(--danger-color);
+ }
+
+.dropdown-class {
+  background-color: #f7fafc;
+}
+
+input[type="radio" i] {
+  background-color: initial;
+  cursor: default;
+  appearance: auto;
+  box-sizing: border-box;
+  border: initial;
+}
+
+.disburstment-details {
+  border: 0.5px solid #dfdfdf;
+  border-radius: 8px;
+}
+
+.dropdown {
+  &::ng-deep {
+    .p-dropdown {
+      background-color: #f7fafc;
+    }
+  }
+}
+
+.lab {
+  margin-bottom: 20px;
+  margin-top: 30px;
+  padding-bottom: 30px;
+}
+
+.add_Asset_Button {
+  padding-left: 6px;
+  margin-left: 15px;
+}
+
+.margintopdisbursement-details {
+  top: 10rem;
+  left: 40rem;
+  right: 2rem;
+  width: 37vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 10;
+  padding-top: 1rem;
+  margin-top: -31rem;
+}
+
+:host ::ng-deep .label-disburstment {
+  margin-top: -1.75rem;
+  margin-left: -0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+:host ::ng-deep .text-danger-color {
+  color: var(--danger-color);
+ }
+
+.scroll-container {
+  max-height: 250px; /* Limit vertical height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.danger-color {
+  color: var(--danger-color);
+ }
+
+.disburstmentdetails-label {
+  position: relative;
+  margin-bottom: 1.3rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #212121;
+  padding-left: 5px;
+  z-index: 100;
+  display: block;
+  font-family: Verdana;
+}
+.drawdown-label {
+  position: relative;
+  margin-bottom: 0.5rem;
+  margin-top: -3.5rem !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #212121;
+  padding-left: 5px;
+  z-index: 100;
+  display: block;
+  font-family: Verdana;
+}
+
+:host ::ng-deep .p-dropdown {
+  background-color: #f7fafc;
+  background: #f7fafc;
+}
+:host ::ng-deep .p-inputtext {
+  background-color: #f7fafc !important;
+}
+
+.credit-line-warning {
+  visibility: hidden;
+}
+.credit-line-warning.visible {
+  visibility: visible;
+}
+.hide-text {
+  visibility: hidden;
+}
+
+.hide-text.visible {
+  visibility: visible;
+}
+:host ::ng-deep {
+  .drawdown_details_field {
+    .p-inputtext {
+      width: 18rem !important;
+    }
+
+    #amount {
+      width: 70% !important;
+    }
+  }
+}
+::ng-deep .required::after {
+  content: "*";
+  color: var(--danger-color);
+  margin-left: 2px;
+}

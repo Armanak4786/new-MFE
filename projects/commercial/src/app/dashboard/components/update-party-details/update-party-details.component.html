@@ -1,0 +1,78 @@
+<div class="profile-details mb-3 mt-5 web">
+  <p-accordion [activeIndex]="accordianValue">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <text mode="label" [value]="name" class="header-text"></text>
+      </ng-template>
+
+      <!-- Custom Grid -->
+      <div class="row d-flex flex-wrap w-100">
+        <!-- Loop through fields once -->
+        <div class="col-3 field-container" *ngFor="let field of topFields">
+          <text mode="label" [label]="field.label" class="field-label"></text>
+          <br />
+          <text mode="label" [label]="field.value"></text>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+
+<!-- Contact Section -->
+<div class="profile-details mb-3">
+  <p-accordion [activeIndex]="accordianValue2">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="accordion-header-content">
+          <text mode="label" [value]="contact" class="header-text"></text>
+          <gen-button
+            class="text-xs update-action update-text"
+            [btnType]="'non-bg-btn'"
+            [btnColor]="'danger'"
+            [btnLabel]="'Update'"
+            (onClick)="onUpdateClick($event, 'contact')"
+          ></gen-button>
+        </div>
+      </ng-template>
+
+      <div class="row d-flex flex-wrap w-100">
+        <div class="col-4" *ngFor="let field of bottomFields">
+          <text mode="label" [label]="field.label" class="field-label"></text>
+          <br />
+          <text mode="label" [label]="field.value" class="mt-2"></text>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+
+<!-- Address Section -->
+<div class="profile-details">
+  <p-accordion [activeIndex]="accordianValue2">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="accordion-header-content">
+          <text mode="label" [value]="address" class="header-text"></text>
+          <gen-button
+            class="text-xs update-action update-text"
+            [btnType]="'non-bg-btn'"
+            [btnColor]="'danger'"
+            [btnLabel]="'Update'"
+            (onClick)="onUpdateClick($event, 'address')"
+          ></gen-button>
+        </div>
+      </ng-template>
+      <div class="row d-flex flex-wrap w-100">
+        <div class="col-4" *ngFor="let field of addressFields">
+          <text
+            mode="label"
+            [label]="field.label"
+            class="field-label mb-2"
+          ></text>
+          <br />
+          <text mode="label" [label]="field.value"></text>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>

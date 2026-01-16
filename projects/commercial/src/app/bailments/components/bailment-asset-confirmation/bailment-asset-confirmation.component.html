@@ -1,0 +1,39 @@
+<div class="pt-4 mb-2" style="padding-bottom: 10px">
+  <text
+    mode="label"
+    class="text-gray-800 mt-4 mb-2"
+    [label]="'purchase_Asset_confirmation_lbl'"
+    [labelClass]="'text-sm'"
+  ></text>
+</div>
+<div>
+  <gen-table
+    [columns]="bailmentpurchaseAssetConfirmationColumnDefs"
+    [headingClass]="'text-xs header-text-color'"
+    [tableClass]="'border-round'"
+    [dataList]="bailmentsDataList"
+    [tableStyle]="'stripped-rows'"
+    [sortable]="true"
+    [filter]="true"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [strippedOddClass]="'tableOddRow'"
+    [strippedEvenClass]="'tableEvenRow'"
+  ></gen-table>
+</div>
+<div class="grid gap-2 flex justify-content-end mt-5">
+  <div class="col-12 sm:col-4 md:col-2">
+    <gen-button
+      [btnLabel]="'cancel'"
+      [btnWidth]="'full'"
+      [btnType]="'border-btn'"
+      (click)="onCancelClick()"
+    ></gen-button>
+  </div>
+  <div class="col-12 sm:col-4 md:col-2">
+    <gen-button
+      [btnLabel]="'btn_lbl_continue'"
+      [btnWidth]="'full'"
+      (click)="onProceedClick()"
+    ></gen-button>
+  </div>
+</div>

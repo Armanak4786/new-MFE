@@ -1,0 +1,61 @@
+// .request-settlement-bg {
+//   background-color: #f7fafc;
+// }
+
+// .request-settle-text {
+//   font-size: 10px;
+// }
+
+// .request-settle-text-color {
+//   color: #6f6f6f;
+// }
+
+// .dropdown {
+//   &::ng-deep {
+//     .p-dropdown {
+//       background-color: #050d13;
+//     }
+//   }
+// }
+
+// .calendar {
+//   &::ng-deep {
+//     .p-calendar {
+//       background-color: #f7fafc;
+//     }
+//   }
+// }
+
+:host ::ng-deep .p-dropdown {
+  background-color: #f7fafc;
+}
+:host ::ng-deep .p-inputtext {
+  background-color: #f7fafc;
+}
+// :host ::ng-deep .label-color {
+//   background-color: #f7fafc;
+// }
+:host ::ng-deep .p-dropdown1 {
+  background-color: #f7fafc;
+  background: #f7fafc;
+}
+
+:host ::ng-deep .p-datepicker-header1 {
+  background-color: #f7fafc;
+  background: #f7fafc;
+}
+//Workaround for dropdown values
+::ng-deep .p-dropdown-panel {
+  top: auto !important;
+  bottom: unset !important;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+}
+
+// Allow text inside options to wrap 
+::ng-deep .my-custom-dropdown .p-dropdown-item {
+  white-space: normal !important; 
+  word-break: break-word;          
+  line-height: 1.2rem;
+  padding: 0.5rem;
+}

@@ -1,0 +1,15 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+.asset-details-background {
+  background-color: #f7fafc;
+  padding: 13px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+:host ::ng-deep .p-inputtext {
+  background-color: #f7fafc !important;
+}

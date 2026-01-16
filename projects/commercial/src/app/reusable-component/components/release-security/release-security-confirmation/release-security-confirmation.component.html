@@ -1,0 +1,112 @@
+<div class="m-2">
+  <div class="">
+    <div class="flex flex-wrap grid p-2">
+      <div class="md:col-12">
+        <text [mode]="'label'" [label]="'requesting_security_release'"
+          [labelClass]="'text-md font-semibold text-primary'"></text>
+        <div class="grid pt-4">
+          <div class="col-12 sm:col-2 md:col-2">
+            <text [mode]="'label'" [label]="'assetNo'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+          <div class="col-12 sm:col-4 md:col-4">
+            <text [mode]="'label'" [label]="'description'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+          <div class="col-12 sm:col-4 md:col-4">
+            <text [mode]="'label'" [label]="'registration_number'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+          <div class="col-12 sm:col-2 md:col-2" *ngIf="IfSsv">
+            <text [mode]="'label'" [label]="'ssv'" [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+        </div>
+        <div class="grid" *ngFor="
+            let data of modifyconfirmedAssetsToReleaseArray;
+            let i = index
+          ">
+          <div class="col-12 sm:col-2 md:col-2">
+            <text [value]="data.assetNo" labelType="vertical" class="text-xs pt-3" mode="label">
+            </text>
+          </div>
+          <div class="col-12 sm:col-4 md:col-4">
+            <name [value]="data.description" labelType="vertical" class="text-xs pt-3" mode="label">
+            </name>
+          </div>
+          <div class="col-12 sm:col-3 md:col-3">
+            <name [value]="data.identifier" labelType="vertical" class="text-xs pt-3" mode="label">
+            </name>
+          </div>
+          <div class="col-12 sm:col-2 md:col-2 ml-7" *ngIf="IfSsv">
+            <amount [value]="data.ssv" labelType="vertical" class="text-xs pt-3" mode="label">
+            </amount>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid p-2 pt-3">
+    <div class="col-12 md:col-12">
+      <div class="grid">
+        <div class="col-12 sm:col-12 md:col-12">
+          <div class="flex-container-for-approval">
+            <div *ngIf="IfSsv" class="text-xs">
+              <text [mode]="'label'" [label]="'upon_approval_msg'"
+                [labelClass]="'release-security-text-color text-xs text-600'"></text>
+            </div>
+            <span>&nbsp;</span>
+            <div *ngIf="IfSsv" class="text-primary text-xs">
+              <text [mode]="'label'" [value]="scaledSecurityValue"
+                [labelClass]="'text-primary text-xs text-600'"></text>
+            </div>
+          </div>
+
+          <div class="text-xs pt-3 flex-container-for-approval"
+            *ngIf="paymentOptions == 'Debit by nominated bank account'">
+            <text [mode]="'label'" [label]="'paymentOptions_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+            <span>&nbsp;</span>
+            <text class="text-primary text-xs" [mode]="'label'" [value]="formattedtotalPaymentAmount"
+              [labelClass]="'text-primary text-xs text-600'"></text>
+            <span>&nbsp;</span>
+            <text [mode]="'label'" [label]="'nominated_bank_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+
+          <div class="text-xs pt-3 flex-container-for-approval"
+            *ngIf="paymentOptions == 'I would like to pay UDC directly'">
+            <text [mode]="'label'" [label]="'paymentOptions_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+            <span>&nbsp;</span>
+            <text class="text-primary text-xs" [mode]="'label'" [value]="formattedtotalPaymentAmount"
+              [labelClass]="'text-primary text-xs text-600'"></text>
+            <span>&nbsp;</span>
+            <text [mode]="'label'" [label]="'chosen_to_pay_directly_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+          <div class="text-xs pt-3" *ngIf="paymentOptions == 'I do not wish to make a payment'">
+            <text [mode]="'label'" [label]="'chosen_Not_to_pay_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+          <div class="text-xs pt-3">
+            <text [mode]="'label'" [label]="'upon_submission_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+          <div class="pt-3">
+            <text [mode]="'label'" [label]="'proceed_with_msg'"
+              [labelClass]="'release-security-text-color text-xs text-600'"></text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-divider />
+  <div class="grid gap-2 flex justify-content-end mt-4">
+    <div class="col-12 sm:col-4 md:col-2">
+      <gen-button [btnLabel]="'cancel'" (click)="showDialogCancel()" [btnWidth]="'full'"></gen-button>
+    </div>
+    <div class="col-12 sm:col-4 md:col-2">
+      <gen-button [btnLabel]="'submit'" (click)="submit(); confirm()" [btnWidth]="'full'"></gen-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+.add-asset-facility {
+  background-color: #f7fafc;
+
+  &-text {
+    color: #6f6f6f;
+    padding-bottom: 4px;
+  }
+}
+
+.required {
+  color: red;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+// /* For Firefox */
+// input[type="number"] {
+//   -moz-appearance: textfield;
+// }
+
+.form-sticky-footer {
+  position: sticky;
+  bottom: -30px;
+  background-color: var(--primary-text-color);
+  padding: 1rem;
+  margin: 0;
+  z-index: 100;
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1);
+}
+/* For Firefox */
+// input[type="number"] {
+//   -moz-appearance: textfield;
+// }
+
+:host ::ng-deep .p-inputtext {
+  background-color: #f7fafc !important; // Replace 'red' with your desired color
+}
+:host ::ng-deep .p-dropdown {
+  background-color: #f7fafc;
+  background: #f7fafc;
+}

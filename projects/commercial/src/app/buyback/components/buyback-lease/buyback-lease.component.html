@@ -1,0 +1,424 @@
+<div class="grid">
+  <div class="sm:col-7 md:col-7 lg:col-7">
+    <div class="card p-2">
+      <div class="grid">
+        <div class="col-2">
+          <text
+            [mode]="'label'"
+            class="loan-dash-text font-bold"
+            [label]="'lease_details'"
+          ></text>
+        </div>
+        <div class="col-offset-8 col-2 flex justify-content-end">
+          <a
+            (click)="op.toggle($event)"
+            class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+          >
+            {{ "lease_parties" | translate }}
+          </a>
+        </div>
+      </div>
+      <p-overlayPanel #op>
+        <div class="flex flex-column gap-3 w-25rem">
+          <app-loan-parties
+            [leasePartiesData]="leasePartiesData"
+            [leasePartiesColumnDef]="leasePartiesColumnDef"
+          ></app-loan-parties>
+        </div>
+      </p-overlayPanel>
+      <div class="grid mb-2">
+        <div class="col-3">
+          <div class="flex-1">
+            <!-- <text
+              [mode]="'label'"
+              [labelClass]="'loan-dash-text loan-dash-text-color mb-0 pb-0'"
+              [label]="'product'"
+            ></text> -->
+            <text
+              [mode]="'label'"
+              [labelType]="'vertical'"
+              [labelClass]="'loan-dash-text loan-dash-text-color mb-0 pb-0'"
+              [label]="'product'"
+              [valueClass]="'text-xs'"
+              [className]="'trim_label'"
+              [value]="leaseData?.productType"
+              [title]="leaseData?.productType"
+            ></text>
+          </div>
+        </div>
+        <div class="col-3">
+          <date
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0 mt-1'"
+            [label]="'start_date'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.startDate"
+            [mode]="'label'"
+          ></date>
+        </div>
+        <div class="col-2">
+          <date
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0 mt-1'"
+            [label]="'end_date'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.endDate"
+            [mode]="'label'"
+          ></date>
+        </div>
+        <div class="col-2">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'term'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.leaseTerm + ' months'"
+          ></text>
+        </div>
+        <div class="col-2">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'fully_maintained'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.fullyMaintained"
+          ></text>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color font-bold'"
+            [label]="'buyback_details'"
+          ></text>
+        </div>
+        <div class="col-3">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'residual_value_exc'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.residualValue"
+          ></text> -->
+          <amount
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'residual_value_exc'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.residualValue"
+          >
+          </amount>
+        </div>
+        <div class="col-2">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'gst'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.gst"
+          ></text> -->
+          <amount
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'gst'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.gst"
+          >
+          </amount>
+        </div>
+        <div class="col-3">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'residual_value_inc'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.residualValue + leaseData?.gst"
+          ></text> -->
+          <amount
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'residual_value_inc'"
+            [valueClass]="'text-xs'"
+            [value]="leaseData?.residualValue + leaseData?.gst"
+          >
+          </amount>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sm:col-6 md:col-6 lg:col-5 p-1">
+    <div class="card p-2">
+      <div class="flex items-center mb-1">
+        <div class="flex-shrink-0 w-1/4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold'"
+            [label]="'current_position'"
+          ></text>
+        </div>
+      </div>
+      <div class="flex justify-between mb-2">
+        <div class="flex flex-wrap justify-start gap-5">
+          <div class="flex-1">
+            <text
+              [mode]="'label'"
+              [labelClass]="'loan-dash-text loan-dash-text-color'"
+              [label]="'remaining_term'"
+            ></text>
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs'"
+              [label]="currentPosition?.[0]?.remainingTerm"
+            ></text>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-start gap-2 mb-2">
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="
+              'loan-dash-text loan-dash-text-color font-bold text-600'
+            "
+            [label]="'next_payment'"
+          ></text>
+        </div>
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'payment'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.rentalAmount"
+          ></text>
+        </div>
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'gst'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.rentalGST"
+          ></text>
+        </div>
+        <div class="flex-1">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'total_payment'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.totalRentalAmount"
+          ></text> -->
+          <amount
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'total_payment'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.rentalInclGST"
+          >
+          </amount>
+        </div>
+
+        <div class="flex-1">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'date'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.date"
+          ></text> -->
+          <date
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'date'"
+            [valueClass]="'text-xs ml-2 mt-1 w-full'"
+            [value]="currentPosition?.[0]?.date"
+          ></date>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-7">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'lease_summary'"
+          class="text-xs"
+          (onClick)="showLeaseSummaryTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'lease_schedule'"
+          class="text-xs"
+          (onClick)="showLeaseScheduleTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'assets'"
+          class="text-xs"
+          (onClick)="showAssetsTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocumentsTab()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-5">
+    <div class="flex justify-content-end flex-wrap">
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_buyback'"
+          class="text-xs"
+          (click)="navigateToBuyback()"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_loans'"
+          class="text-xs"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (click)="navigateToLoansDashboard()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  [ngClass]="
+    currentComponent === 'TransactionFlow'
+      ? 'button-wrapper'
+      : 'flex justify-content-end flex-wrap'
+  "
+  *ngIf="currentComponent !== 'Assets'"
+  ||
+  currentComponent
+  !="Documents"
+>
+  <div>
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [btnWidth]="'full'"
+      [btnLabel]="'export'"
+      class="text-xs"
+      [iconPos]="'left'"
+      [btnIcon]="'pi pi-cloud-upload'"
+      (click)="export()"
+    ></gen-button>
+  </div>
+  <div>
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [btnWidth]="'full'"
+      [btnLabel]="'Print'"
+      class="text-xs"
+      [iconPos]="'left'"
+      [btnIcon]="'pi pi-print'"
+    ></gen-button>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'LeaseSummary'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-buyback-rental-summary
+        #LeaseSummaryDt
+        [leaseData]="leaseData"
+        [leaseSummaryDataList]="leaseSummaryDataList"
+        [leaseSummaryColumnDefs]="buybackRentalSummaryColumnDefs"
+      ></app-buyback-rental-summary>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Assets'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-facility-assets
+        [columnsFacilityAsset]="associatedAsetscolumnDefs"
+        [facilityType]="facilityType"
+        [facilityAsssetsDatalist]="assetsDatalist"
+      ></app-facility-assets>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-documents
+        [documentsColumnDefs]="documentsColumnDefs"
+        [documentsDataList]="documentsDataList"
+        [facilityType]="facilityType"
+        (documentEmitter)="onDocumentClick($event)"
+        (docUploadEmitter)="onDocUploadClick($event)"
+      ></app-documents>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'LeaseSchedule'">
+  <div class="grid">
+    <div class="sm:col-7 md:col-7 lg:col-7">
+      <app-lease-schedule
+        #LeaseScheduleDt
+        [leaseScheduleColumnDefs]="buybackLeaseScheduleColumnDefs"
+        [leaseScheduleDataList]="leaseScheduleDataList"
+        [facilityType]="this.facilityType"
+      ></app-lease-schedule>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,89 @@
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-6 lg:col-6">
+    <div class="card p-3">
+      <text
+        [mode]="'label'"
+        [label]="'account_forcast'"
+        [labelClass]="'flex font-semibold text-xs'"
+      ></text>
+      <div class="pt-4">
+        <gen-table
+          #dt1
+          [columns]="accountForcastColumnDefs"
+          [dataList]="accountForcastDataList?.accountForecasts"
+          [tableStyle]="'stripped-rows'"
+          [bodyClass]="'text-xs'"
+          [sortable]="true"
+          [filter]="true"
+          [headingClass]="'tableHeader text-xs  header-text-color'"
+          [strippedOddClass]="'tableOddRow'"
+          [strippedEvenClass]="'tableEvenRow'"
+        ></gen-table>
+      </div>
+      <text
+        [mode]="'label'"
+        [label]="'note_summary'"
+        [labelClass]="'text-xs pt-5 text-600'"
+      ></text>
+    </div>
+  </div>
+
+  <div class="col-12 sm:col-12 md:col-6 lg:col-6">
+    <div class="card p-3">
+      <div class="grid">
+        <div class="text-xs font-bold col-3">
+          {{ "payment_forcast" | translate }}
+        </div>
+        <div class="col-3">
+          <dropdown
+            [options]="optionData"
+            [value]="optionData[0].value"
+            [labelType]="'vertical'"
+            [labelClass]="'label-xs label-color pb-1'"
+            [label]="'frequency'"
+            (change)="onFrequencyChange($event)"
+          ></dropdown>
+        </div>
+        <div class="col-3">
+          <date
+            [labelClass]="'label-xs label-color'"
+            [labelType]="'vertical'"
+            [label]="'from'"
+            [value]="fromDate"
+            [(ngModel)]="fromDate"
+            (change)="onFromDateChange($event)"
+          ></date>
+        </div>
+        <div class="col-3">
+          <date
+            [labelClass]="'label-xs label-color'"
+            [labelType]="'vertical'"
+            [label]="'to'"
+            [value]="date"
+            [(ngModel)]="date"
+            (change)="onToDateChange($event)"
+          ></date>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <gen-table
+          #dt2
+          [columns]="paymentForcastColumnDefs"
+          [headingClass]="'text-xs'"
+          [dataList]="paymentForcastDataList?.paymentForecasts"
+          [tableStyle]="'stripped-rows'"
+          [bodyClass]="'text-xs'"
+          [sortable]="true"
+          [filter]="true"
+          [paginatorFlag]="true"
+        ></gen-table>
+      </div>
+      <text
+        [mode]="'label'"
+        [label]="'note_payment_summary'"
+        [labelClass]="'text-xs pt-5 text-600'"
+      ></text>
+    </div>
+  </div>
+</div>

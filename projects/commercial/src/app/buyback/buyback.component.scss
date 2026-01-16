@@ -1,0 +1,12 @@
+::ng-deep .addbtn .p-button {
+  padding: 0.5rem;
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-assetlink {
+    font-weight: 700;
+  }
+}

@@ -3,7 +3,6 @@ import { CommonService, AuthenticationService, ToasterService } from 'auro-ui';
 import { Router } from '@angular/router';
 import { LayoutService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
-import { DashboardService } from '../../../dashboard/services/dashboard.service';
 
 @Component({
     selector: 'app-sidemenu',
@@ -19,7 +18,6 @@ export class SidemenuComponent {
         public authSvc: AuthenticationService,
         private router: Router,
         private sidemenuService: SidemenuService,
-        private dashboardSvc: DashboardService,
         private toasterSvc: ToasterService
     ) { }
 
@@ -88,21 +86,6 @@ export class SidemenuComponent {
     navigate(path: string) {
         this.showConfirmationDialog(path, () => {
             this.isSubmenuOpen = false;
-            const isExternalUser = sessionStorage.getItem("externalUserType");
-            if (isExternalUser?.includes("External")) {
-                if (!this.dashboardSvc.userSelectedOption) {
-                    this.dashboardSvc.dealerAnimate = true;
-                    setTimeout(() => {
-                        this.dashboardSvc.dealerAnimate = false;
-                    }, 5000);
-
-                    this.toasterSvc.showToaster({
-                        detail: "Please select a dealer.",
-                    });
-                    return;
-                }
-            }
-
             //Function to redirect from menu.
             sessionStorage.removeItem("productCode");
             this.router.navigateByUrl(path);

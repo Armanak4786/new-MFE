@@ -1,0 +1,12 @@
+// ::ng-deep .addbtn .p-button {
+//     padding: 0.5rem;
+// }
+
+//Workaround for pagination dropdown values
+::ng-deep .p-dropdown-panel {
+  bottom: 100% ;
+  top: auto ;
+  position: absolute ;
+  z-index: 9999 ;
+  transform: translateY(-5px);
+}

@@ -1,0 +1,102 @@
+<div class="grid flex pl-2">
+  <div class="col-12 md:col-2">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text label-color text-sm'"
+      [label]="'facility_type'"
+    ></text>
+  </div>
+
+  <div class="col-12 md:col-4 ml-2">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text label-color text-sm'"
+      [label]="'facility'"
+    ></text>
+  </div>
+  <div class="col-12 md:col-3">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text label-color text-sm pr-1'"
+      [label]="'search'"
+    ></text>
+  </div>
+</div>
+
+<div class="grid flex pl-1 pt-1">
+  <div class="col-12 md:col-2">
+    <text
+      [mode]="'label'"
+      [labelClass]="'request-settle-text request-settle-text-color pr-1'"
+      [value]="facilityType"
+    ></text>
+  </div>
+
+  <div class="col-12 md:col-4 ml-2">
+    <div class="">
+      <p-dropdown
+        [options]="subFacilityOptionList"
+        [(ngModel)]="selectedSubFacility"
+        optionLabel="label"
+        optionValue="value"
+        (onChange)="onSubFacilityChange($event)"
+      >
+        <ng-template let-item pTemplate="item">
+          <div [title]="item.label">{{ item.label }}</div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="col-12 md:col-4">
+    <span class="p-input-icon-left w-full">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        pInputText
+        placeholder="Search by Asset ID, Rego or VIN"
+        [(ngModel)]="assetToSearch"
+        (input)="onSearch()"
+        class="w-full"
+      />
+    </span>
+  </div>
+</div>
+<div>
+  <div *ngIf="showTable">
+    <div class="lg:col-12 mt-3">
+      <gen-table
+        [columns]="bailmentPurchaseAssetRequestColumnDefs"
+        [tableClass]="'border-round'"
+        [headingClass]="'text-xs header-text-color'"
+        [dataList]="bailmentsDataList?.assetDetails"
+        [tableStyle]="'stripped-rows'"
+        [sortFlag]="'true'"
+        (onCellClick)="onCellClick($event)"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+        [strippedOddClass]="'tableOddRow'"
+        [strippedEvenClass]="'tableEvenRow'"
+        [paginatorFlag]="true"
+        [defaultRows]="5"
+      ></gen-table>
+    </div>
+  </div>
+</div>
+
+<div class="grid gap-2 flex justify-content-end mt-4" *ngIf="showTable">
+  <div class="col-12 sm:col-4 md:col-2">
+    <gen-button
+      [btnLabel]="'cancel'"
+      [btnWidth]="'full'"
+      [btnType]="'border-btn'"
+      (click)="onCancelClick()"
+    ></gen-button>
+  </div>
+  <div class="col-12 sm:col-4 md:col-2">
+    <gen-button
+      [btnLabel]="'btn_lbl_proceed'"
+      [btnWidth]="'full'"
+      [disabled]="disablebReleaseButtonFlag"
+      (click)="onProceedClick()"
+    ></gen-button>
+  </div>
+</div>

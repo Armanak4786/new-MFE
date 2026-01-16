@@ -1,0 +1,59 @@
+::ng-deep .radioButton  .field-radiobutton > label {
+    margin-left: 0.0rem;
+    line-height: 1.2; 
+}
+
+.add-drawdown-request{
+   background-color: #F7FAFC;
+
+   &-text{
+       color: #6F6F6F
+   }
+}
+
+.required {
+   color: red;
+ }
+ 
+.dropdown-class{
+ background-color: #F7FAFC
+}
+
+.custom-dropdown {
+ background-color: lightblue;
+ border-radius: 8px;
+}
+ 
+.another-class {
+ font-size: 16px;
+ color: darkblue;
+}
+
+input[type="radio" i] {
+ background-color: initial;
+ cursor: default;
+ appearance: auto;
+ box-sizing: border-box;
+ border: initial;
+}
+
+.disburstment-details{
+ border: 0.5px solid #DFDFDF;
+ border-radius: 8px;
+}
+.drawdown-details{
+ border: 0.1px solid #DFDFDF;
+}
+.dropdown {
+ &::ng-deep {
+   .p-dropdown {
+   background-color: #F7FAFC;
+   }
+ }
+}
+
+.lab{
+ margin-bottom: 20px;
+ margin-top: 30px;
+ padding-bottom: 30px;
+}

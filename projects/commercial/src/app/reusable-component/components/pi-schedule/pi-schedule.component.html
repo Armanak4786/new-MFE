@@ -1,0 +1,41 @@
+<div class="sm:col-12 md:col-12 lg:col-12">
+  <div class="flex justify-content-end">
+    <div>
+      <gen-button
+        [btnType]="'non-bg-btn'"
+        [btnWidth]="'full'"
+        [btnLabel]="'export'"
+        class="text-xs"
+        [iconPos]="'left'"
+        [btnIcon]="'pi pi-cloud-upload'"
+        (click)="export()"
+      ></gen-button>
+    </div>
+    <div>
+      <gen-button
+        [btnType]="'non-bg-btn'"
+        [btnWidth]="'full'"
+        [btnLabel]="'print'"
+        class="text-xs"
+        [iconPos]="'left'"
+        [btnIcon]="'pi pi-print'"
+        (click)="onPrint()"
+      ></gen-button>
+    </div>
+  </div>
+</div>
+
+<div class="sm:col-12 md:col-12 lg:col-12 border-round-md">
+  <gen-table
+    #piScheduleDt
+    [columns]="piScheduleColumnDefs"
+    [headingClass]="'tableHeader text-xs headingClass header-text-color'"
+    [dataList]="piScheduleDataList"
+    [tableClass]="'border-round'"
+    [tableStyle]="'stripped-rows'"
+    [bodyClass]="'text-xs'"
+    [sortable]="true"
+    [filter]="true"
+    [paginatorFlag]="true"
+  ></gen-table>
+</div>

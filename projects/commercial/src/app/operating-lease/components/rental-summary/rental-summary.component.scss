@@ -1,0 +1,74 @@
+@media print {
+  @page {
+    size: A4 portrait;              
+    margin: 14mm 12mm 14mm 18mm;    
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+
+  :host ::ng-deep .grid,
+  :host ::ng-deep .card,
+  :host ::ng-deep .border-round,
+  :host ::ng-deep .border-round-md {
+    overflow: visible !important;
+  }
+
+  :host ::ng-deep .printable-rental-table,
+  :host ::ng-deep .printable-rental-table table {
+    table-layout: fixed !important;
+    width: 96% !important;           
+    max-width: 96% !important;
+    margin: 0 auto !important;      
+    box-sizing: border-box !important;
+    border-collapse: collapse !important;
+  }
+
+  :host ::ng-deep .printable-rental-table thead {
+    display: table-header-group !important;
+  }
+
+  :host ::ng-deep .printable-rental-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  :host ::ng-deep .printable-rental-table th,
+  :host ::ng-deep .printable-rental-table td {
+    color: black !important;
+    padding: 6px !important;
+    font-size: 10px !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+
+  :host ::ng-deep .printable-rental-table td {
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+
+  :host ::ng-deep .printable-rental-table thead th {
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+  }
+
+  :host ::ng-deep .printable-rental-table thead th:nth-child(1),
+  :host ::ng-deep .printable-rental-table tbody td:nth-child(1) {
+    width: 130px !important;
+    min-width: 130px !important;
+    max-width: 130px !important;
+    padding-left: 10px !important;    
+  }
+
+  :host ::ng-deep .printable-rental-table thead th:last-child,
+  :host ::ng-deep .printable-rental-table tbody td:last-child {
+    width: 180px !important;
+    min-width: 180px !important;
+    max-width: 180px !important;
+  }
+}

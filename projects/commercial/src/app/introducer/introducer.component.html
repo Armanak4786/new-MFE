@@ -1,0 +1,159 @@
+<div class="grid card m-2">
+  <div class="sm:col-6 md:col-6 lg:col-3 border-round-md p-2">
+    <div class="asset-link-bg border rounded-md p-2">
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="onFacilityChange($event)"
+      ></dropdown>
+    </div>
+  </div>
+
+  <div class="sm:col-6 md:col-6 lg:col-9 border-round-md">
+    <gen-table
+      [columns]="introducerColumnDefs"
+      [dataList]="introducerFacilityDataList"
+      [isScrollable]="'true'"
+      [tableClass]="'border-round'"
+      [tableStyle]="'stripped-rows'"
+      [bodyClass]="'text-xs'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+    ></gen-table>
+  </div>
+</div>
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex flex-row flex-nowrap items-center gap-x-2">
+      <div *ngIf="hasAccess('perform_introducer_transaction_request')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'m-0 p-0'"
+          [btnLabel]="'payment_request'"
+          class="text-xs"
+          (onClick)="showPaymentRequest()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'request_history'"
+          (click)="requestHistory()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-2">
+        <gen-button
+          [btnType]="
+            currentComponent === 'TransactionSummary' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'transaction_summary'"
+          class="text-xs"
+          (onClick)="showTransactionSummaryTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocumentsTab()"
+        ></gen-button>
+      </div>
+    </div>
+    <!-- <div class="col-12 sm:col-12 md:col-4">
+      <div
+        class="flex justify-content-end flex-wrap"
+        *ngIf="currentComponent == 'TransactionSummary'"
+      >
+        <div>
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [btnWidth]="'full'"
+            [btnLabel]="'export'"
+            class="text-xs"
+            [iconPos]="'left'"
+            [btnIcon]="'pi pi-cloud-upload'"
+            (click)="export()"
+          ></gen-button>
+        </div>
+        <div>
+          <gen-button
+            [btnType]="'non-bg-btn'"
+            [btnWidth]="'full'"
+            [btnLabel]="'print'"
+            class="text-xs"
+            [iconPos]="'left'"
+            [btnIcon]="'pi pi-print'"
+            (click)="onPrint()"
+          ></gen-button>
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div class="col-12 sm:col-12 md:col-4">
+    <div
+      class="flex justify-content-end flex-wrap"
+      *ngIf="currentComponent == 'Documents'"
+    >
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'TransactionSummary'">
+  <app-transaction-flow
+    [transactionsColumnDef]="transactionsColumnDef"
+    [transactionDataList]="transactionsDataList"
+    [paymentColumnDefs]="paymentColumnDefs"
+    [paymentDataList]="paymentDataList"
+    [paymentNotYetAllocated]="paymentNotYetAllocated"
+    [overDue]="overDue"
+    #TransactionFlow
+  ></app-transaction-flow>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <app-documents
+    [documentsColumnDefs]="documentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'requestHistory'">
+  <app-wholesale-request-history
+    [swapRequestList]="swapRequestList"
+    [facilityType]="facilityType"
+  ></app-wholesale-request-history>
+</ng-container>

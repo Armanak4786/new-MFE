@@ -1,0 +1,16 @@
+<div class="sm:col-12 md:col-8 lg:col-12">
+  <div>
+    <gen-table
+      [columns]="assetlinkColumnDefs"
+      [tableClass]="'border-round'"
+      [headingClass]="'text-xs'"
+      [dataList]="assetlinkDataList"
+      [tableStyle]="'stripped-rows'"
+      (onHeaderClick)="onHeaderClick($event)"
+      [bodyClass]="'text-xs row-class-assetlink'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+    ></gen-table>
+  </div>
+</div>

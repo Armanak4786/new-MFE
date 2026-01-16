@@ -1,0 +1,47 @@
+<p-tabView (onChange)="onTabChange($event)">
+  <!-- VIEW REQUEST TAB -->
+  <p-tabPanel header="View Request">
+    <div class="card border-round-md">
+      <!-- <gen-table
+        [columns]="requestColumnDefs"
+        [dataList]="requestDataList"
+        [tableStyle]="'stripped-rows'"
+        [rowHeight]="'12px'"
+        [paginatorFlag]="true"
+        [sortFlag]="true"
+        [bodyClass]="'text-xs'"
+        [headingClass]="'tableHeader text-xs header-text-color'"
+        [sortField]="'requestNo'"
+        (onCellClick)="onRequestCellClick($event)"
+      >
+      </gen-table> -->
+      <app-view-request-description
+        [selectedRequest]="selectedRequest"
+      ></app-view-request-description>
+    </div>
+  </p-tabPanel>
+
+  <!-- NOTES TAB -->
+  <p-tabPanel header="Notes">
+    <div class="card border-round-md">
+      <app-notes
+        [notesColumnDefs]="notesColumnDefs"
+        [notesDataList]="notesDataList"
+      >
+      </app-notes>
+    </div>
+  </p-tabPanel>
+
+  <!-- DOCUMENTS TAB -->
+  <p-tabPanel header="Documents">
+    <div class="card border-round-md">
+      <app-documents
+        [documentsColumnDefs]="documentsColumnDefs"
+        [documentsDataList]="documentsDataList"
+        [facilityType]="'ViewRequest'"
+        (documentEmitter)="onDocumentClick($event)"
+        (docUploadEmitter)="onDocUploadClick($event)"
+      ></app-documents>
+    </div>
+  </p-tabPanel>
+</p-tabView>

@@ -1,0 +1,77 @@
+<div class="grid card m-1">
+  <div class="sm:col-6 md:col-6 lg:col-3 border-round-md">
+    <div class="border rounded-md asset-link-bg">
+      <!-- <p-dropdown class="chartDropdown p-2" [options]="optionData" [(ngModel)]="optionData[0].value"
+        (onChange)="onFacilityChange($event)"></p-dropdown> -->
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="onFacilityChange($event)"
+      ></dropdown>
+      <div class="flex justify-between gap-7 pt-3">
+        <div
+          class="chart-container flex align-items-center justify-content-center p-3 pt-3 ml-4"
+        >
+          <p-chart
+            type="doughnut"
+            [data]="data"
+            [options]="options"
+            class="w-full"
+          ></p-chart>
+        </div>
+        <div class="color-box-container flex flex-column mt-5">
+          <div
+            *ngFor="let label of data?.labels; let i = index"
+            class="flex align-items-center"
+          >
+            <div class="color-box" [style.background-color]="colors[i]"></div>
+            <text
+              [mode]="'label'"
+              [label]="label"
+              [labelClass]="'label-xs'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sm:col-6 md:col-6 lg:col-9 border-round-md">
+    <div>
+      <gen-table
+        [columns]="assetlinkFacilityTypeColumnDefs"
+        [tableClass]="'border-round'"
+        [dataList]="assetlinkDataList"
+        [isScrollable]="'true'"
+        [tableStyle]="'stripped-rows'"
+        (onCellClick)="onCellClick($event)"
+        [bodyClass]="'text-xs row-class-assetlink'"
+        [headingClass]="'tableHeader text-xs  header-text-color'"
+      ></gen-table>
+    </div>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="currentSubFacility == 'viewAssetLink'"
+  >
+    <app-view-assetlink-facility></app-view-assetlink-facility>
+  </div>
+
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="currentSubFacility == 'assetLinkSubfacility'"
+  >
+    <app-asset-link-subfacility></app-asset-link-subfacility>
+  </div>
+
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="currentSubFacility == 'currentAccount'"
+  >
+    <app-current-account> </app-current-account>
+  </div>
+</div>

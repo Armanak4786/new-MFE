@@ -1,0 +1,19 @@
+<div *ngIf="notesDataList?.length">
+  <gen-table
+    [columns]="notesColumnDefs"
+    [dataList]="notesDataList"
+    [tableStyle]="'stripped-rows'"
+    [paginatorFlag]="true"
+    [sortable]="true"
+    [filter]="true"
+    [bodyClass]="'text-xs'"
+    [tableClass]="'border-round'"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    (onCellClick)="onNotesActionClicked($event)"
+  >
+  </gen-table>
+  <!-- (onRowSelection)="onRowSelection($event)" -->
+</div>
+<div class="content-box" *ngIf="notesDataList?.length">
+  <textarea [value]="comments" [disabled]="true" cols="110"></textarea>
+</div>

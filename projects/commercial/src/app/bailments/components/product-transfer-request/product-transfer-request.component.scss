@@ -1,0 +1,42 @@
+.product-transfer-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.product-transfer-group label {
+  margin-right: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  align-items: end;
+}
+.no-wrap {
+  white-space: nowrap;
+}
+.p-input-icon-left {
+  width: 110%; /* Ensure the icon container is full width */
+}
+
+::ng-deep  .p-dropdown-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  width: 15rem;
+}
+ 
+::ng-deep .p-dropdown-panel {
+  top: auto !important;
+  bottom: unset !important;
+}
+// Allow text inside options to wrap 
+::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  white-space: normal !important;
+  word-break: break-word !important;
+  line-height: 1.2rem !important;
+  padding: 0.5rem !important;
+}

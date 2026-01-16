@@ -1,0 +1,391 @@
+<div class="grid">
+  <div class="sm:col-7 md:col-7 lg:col-7">
+    <div class="card p-2 pb-1">
+      <div class="grid">
+        <div class="col-2">
+          <text
+            [mode]="'label'"
+            class="loan-dash-text font-bold"
+            [label]="'loan_details'"
+          ></text>
+        </div>
+        <div class="col-offset-8 col-2 flex justify-content-end">
+          <a
+            class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+            (click)="op.toggle($event)"
+          >
+            {{ "loan_parties" | translate }}
+          </a>
+        </div>
+      </div>
+      <p-overlayPanel #op>
+        <div class="flex flex-column gap-3 w-25rem">
+          <app-loan-parties
+            [leasePartiesData]="loanPartiesData"
+            [leasePartiesColumnDef]="loanPartiesColumnDef"
+          ></app-loan-parties>
+        </div>
+      </p-overlayPanel>
+      <div class="flex flex-wrap justify-between gap-6 mb-2">
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'product'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [className]="'trim_label'"
+            [value]="loanData?.productType"
+            [title]="loanData?.productType"
+          ></text>
+        </div>
+        <div class="flex-1">
+          <amount
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mb-1'"
+            [label]="'amount_financed'"
+            [valueClass]="'text-xs flex'"
+            [value]="loanData?.initialLoanAmount"
+          >
+          </amount>
+        </div>
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'interest_rate'"
+          ></text>
+          <a
+            (click)="interestRate.toggle($event)"
+            class="loan-dash-text text-blue-600 cursor-pointer"
+          >
+            {{ loanData?.interestRate + "%" }}
+          </a>
+        </div>
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'interest_charge'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.interestCharge"
+          ></text>
+        </div>
+      </div>
+
+      <p-overlayPanel #interestRate>
+        <div class="flex flex-column gap-3 w-25rem">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'interest_rate'"
+          ></text>
+          <gen-table
+            [columns]="interestRateColumnDefs"
+            [tableClass]="'border-round'"
+            [dataList]="interesRateData"
+            [isScrollable]="'true'"
+            [tableStyle]="'stripped-rows'"
+            [bodyClass]="'text-xs'"
+            [headingClass]="'tableHeader text-xs  header-text-color'"
+            [strippedOddClass]="'tableOddRow'"
+            [strippedEvenClass]="'tableEvenRow'"
+          ></gen-table>
+        </div>
+      </p-overlayPanel>
+
+      <div class="flex flex-wrap justify-between gap-6">
+        <div class="flex-1">
+          <date
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'start_date'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.startDate"
+            [mode]="'label'"
+          ></date>
+        </div>
+        <div class="flex-1">
+          <date
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'lbl_maturity_date'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.maturityDate"
+            [mode]="'label'"
+          ></date>
+        </div>
+        <div class="flex-1">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-1 -mt-1'"
+            [label]="'term'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.loanTerm"
+          ></text>
+        </div>
+        <div class="flex-1">
+          <date
+            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [label]="'next_reprice_date'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.nextRepriceDate"
+            [mode]="'label'"
+          ></date>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sm:col-6 md:col-6 lg:col-5 p-2">
+    <div class="card p-2">
+      <div class="flex items-center">
+        <div class="flex">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold'"
+            [label]="'current_position'"
+          ></text>
+          <span>
+            <i
+              class="pi pi-info-circle text-sm text-primary cursor-pointer m-1 pt-0"
+              pTooltip="Balances include accrued interest and overdue interest (if any)"
+              tooltipPosition="right"
+            ></i>
+          </span>
+        </div>
+      </div>
+      <div class="flex justify-between mb-2">
+        <div class="flex flex-wrap justify-start gap-5 flex-grow">
+          <div class="min-w-[250px]">
+            <text
+              [mode]="'label'"
+              [labelClass]="'loan-dash-text loan-dash-text-color flex mt-1'"
+              [label]="
+                ('gross_balance' | translate) +
+                ' ' +
+                (toDate | date : 'dd/MM/yyyy')
+              "
+            ></text>
+            <amount
+              [mode]="'label'"
+              [valueClass]="'text-xs'"
+              [value]="currentPosition?.[0]?.grossBalanceAsOfToday"
+            ></amount>
+          </div>
+        </div>
+        <div class="flex-1 flex justify-center">
+          <div class="min-w-[250px] mx-auto">
+            <text
+              [mode]="'label'"
+              [labelClass]="
+                'loan-dash-text loan-dash-text-color mb-0 pb-0 mt-1'
+              "
+              [labelType]="'vertical'"
+              [label]="'outstanding_balance'"
+              [valueClass]="'text-xs'"
+              [value]="currentPosition?.[0]?.overdueAmount"
+            ></text>
+          </div>
+        </div>
+        <div class="min-w-[100px] ml-auto">
+          <amount
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mt-1 mb-0 pb-0'"
+            [label]="'remaining_interest'"
+            [value]="currentPosition?.[0]?.remainingInterest"
+            [valueClass]="'text-xs'"
+          ></amount>
+          <!-- <text
+            [mode]="'label'"
+            class="text-xs"
+            [label]="currentPosition?.[0]?.overdueAmount"
+          ></text> -->
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-between gap-6">
+        <div class="min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'overdue_amount_days'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="
+              currentPosition?.[0]?.overdueAmount +
+              '/' +
+              currentPosition?.[0]?.overduedays +
+              ' days'
+            "
+          ></text>
+        </div>
+        <div class="min-w-[150px]">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'remaining_term'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.remainingTerm"
+          ></text>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-7">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'PaymentSummary' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'payment_summary'"
+          class="text-xs"
+          (onClick)="showPaymentSummaryTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'TransactionFlow' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'statement'"
+          class="text-xs"
+          (onClick)="showLoanStatementTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'AssociatedAssets' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'associated_assets'"
+          class="text-xs"
+          (onClick)="showAssociatedAssetsTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'PiSchedule' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'pi_schedule'"
+          class="text-xs"
+          (onClick)="showPiScheduleTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocumentsTab()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-5">
+    <div class="flex justify-content-end flex-wrap">
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_creditline'"
+          [class]="'text-xs'"
+          [iconPos]="'right'"
+          (click)="navigateToCreditline()"
+          [btnIcon]="'pi pi-angle-right'"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_loans'"
+          class="text-xs"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (click)="navigateToLoansDashboard()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'PaymentSummary'">
+  <div class="grid">
+    <div class="sm:col-7 md:col-7 lg:col-7">
+      <app-payment-summary
+        [paymentSummaryDataList]="paymentSummaryDataList"
+        [paymentSummaryColumnDefs]="paymentSummaryColumnDefs"
+      ></app-payment-summary>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'PiSchedule'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-pi-schedule
+        [piScheduleColumnDefs]="piScheduleColumnDefs"
+        [piScheduleDataList]="piScheduleDataList"
+      ></app-pi-schedule>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'TransactionFlow'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-transaction-flow
+        [transactionsColumnDef]="transactionsColumnDef"
+        [transactionDataList]="transactionDataList"
+        [paymentColumnDefs]="paymentColumnDefs"
+        [paymentDataList]="paymentDataList"
+        [paymentNotYetAllocated]="paymentNotYetAllocated"
+        [overDue]="overDue"
+        #TransactionFlow
+      ></app-transaction-flow>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'AssociatedAssets'">
+  <div class="grid">
+    <div class="sm:col-7 md:col-7 lg:col-7">
+      <app-facility-assets
+        [columnsFacilityAsset]="assetsColumnDef"
+        [facilityType]="facilityType"
+        [facilityAsssetsDatalist]="assetsDatalist"
+      ></app-facility-assets>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-documents
+        [documentsColumnDefs]="documentsColumnDefs"
+        [documentsDataList]="documentsDataList"
+        [facilityType]="'creditline'"
+        (documentEmitter)="onDocumentClick($event)"
+        (docUploadEmitter)="onDocUploadClick($event)"
+      ></app-documents>
+    </div>
+  </div>
+</ng-container>

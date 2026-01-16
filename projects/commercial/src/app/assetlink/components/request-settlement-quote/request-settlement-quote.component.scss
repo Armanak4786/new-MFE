@@ -1,0 +1,34 @@
+.request-settle-quote-bg {
+  background-color: #f7fafc;
+}
+
+.request-settle-text {
+  font-size: 10px;
+}
+
+.request-settle-text-color {
+  color: #6f6f6f;
+}
+
+:host ::ng-deep .custom-dropdown {
+  font-size: 12px; /* Adjust the size as needed */
+}
+
+:host ::ng-deep .custom-dropdown .p-dropdown-panel .p-dropdown-item {
+  font-size: 12px; /* Adjust the size for dropdown items as needed */
+}
+
+.custom-dropdown .p-dropdown-trigger {
+  font-size: 12px; /* Make the dropdown trigger text smaller */
+}
+
+// :host ::ng-deep .black-bordered-textarea {
+//   border: 1px solid gray;
+//   border-radius: 0.125rem; // Optional: same as rounded-sm
+//   outline: none;
+
+//   &:focus {
+//     border-color: gray;
+//     box-shadow: none;
+//   }
+// }

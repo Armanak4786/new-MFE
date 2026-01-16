@@ -6,7 +6,7 @@ import { MenuItem, ConfirmationService } from 'primeng/api';
 import { Subscription, Subject, timer, takeUntil, filter } from 'rxjs';
 import { LayoutService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
-import { DashboardService } from '../../../dashboard/services/dashboard.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
     selector: 'app-topbar',
@@ -30,20 +30,19 @@ export class TopbarComponent {
     swingIcon = false;
     notificationValue = 0;
     private destroy$ = new Subject<void>();
-    options: string[] = ["Dealer ", "Commercial"];
+    options: string[] = ["Commercial"];
     selectedOption: string = "";
     isDropdownOpen: boolean = false;
     selectedValue: any;
     currentRoute: any;
-    enabledRoutes: string[] = ["/dealer", "/dealer/quick-quote"];
+    enabledRoutes: string[] = ["/commercial"];
     isDealerDropdownEnabled = false;
-    showDealerDropdown: boolean = true;
+    showDealerDropdown: boolean = false;
 
     constructor(
         public layoutService: LayoutService,
         public authSvc: AuthenticationService,
         private sidemenuService: SidemenuService,
-        public dashboardService: DashboardService,
         private validationSvc: ValidationService,
         public currencyService: CurrencyService,
         private dataService: DataService,
@@ -54,18 +53,26 @@ export class TopbarComponent {
 
     isSidemenuExpanded: boolean = false;
 
+    decodeToken(token: string): any {
+        try {
+            return jwtDecode(token);
+        } catch (error) {
+            return null;
+        }
+    }
+
     async ngOnInit() {
-        // sessionStorage.removeItem('currency_data');
         let accessToken = sessionStorage.getItem("accessToken");
         if (accessToken) {
             this.currencyService.initializeCurrency();
         }
-        let decodedToken = this.dashboardService.decodeToken(accessToken);
-        this.userName = decodedToken?.sub.replace(".", " ");
-        this.dataService.setNotificationInfo(
-            `${this.userName
-            } logged-in at ${this.layoutService.getCurrentTimeString()}`
-        );
+        let decodedToken = this.decodeToken(accessToken);
+        this.userName = decodedToken?.sub?.replace(".", " ");
+        if (this.userName) {
+            this.dataService.setNotificationInfo(
+                `${this.userName} logged-in at ${this.layoutService.getCurrentTimeString()}`
+            );
+        }
 
         this.updateServerTime();
 
@@ -87,10 +94,7 @@ export class TopbarComponent {
                 this.swingIcon = false;
             }, 4000);
         });
-        this.dashboardService.quoteRoute.next(false);
-        if (this.userName) {
-            this.dashboardService.callOriginatorApi();
-        }
+
         await this.validationSvc.getValidations().subscribe(async (data) => { });
         this.checkRoute(this.router.url);
 
@@ -103,7 +107,7 @@ export class TopbarComponent {
             this.checkRoute(this.router.url);
         });
 
-        this.showDealerDropdown = (sessionStorage.getItem("externalUserType") == "Internal") ? false : true;
+        this.showDealerDropdown = false; // Hide dealer dropdown for commercial
     }
 
     showNotification(event: Event) {
@@ -154,48 +158,7 @@ export class TopbarComponent {
 
     async onSelect(event: any) {
         this.selectedValue = event.value;
-
         this.currentRoute = this.router.url;
-        let message = "dealerChangeWarningMsg";
-        if (this.currentRoute === "/dealer") {
-            this.dashboardService.setDealerToLocalStorage(event.value);
-            this.dashboardService.quoteRoute.next(false);
-            return;
-        }
-        if (this.currentRoute == "/dealer/quick-quote") {
-            this.dashboardService.quoteRoute.next(true);
-            this.confirmBox(event, message);
-        } else {
-            this.confirmBox(event, message);
-            this.dashboardService.quoteRoute.next(false);
-        }
-    }
-
-    confirmBox(event, message) {
-        this.confirmationService.confirm({
-            message: this.translateSvc.instant(message),
-            icon: "", // or '' to remove
-            acceptLabel: "Yes",
-            rejectLabel: "No",
-            acceptButtonStyleClass: "p-button-primary",
-            rejectButtonStyleClass: "p-button-outlined",
-            accept: () => {
-                this.dashboardService?.quoteRoute.next(false);
-                this.dashboardService.setDealerToLocalStorage(event.value);
-            },
-            reject: () => {
-                const dealerValue = sessionStorage.getItem("dealerPartyNumber");
-                const dealerName = sessionStorage.getItem("dealerPartyName");
-                this.dashboardService.userSelectedOption = {
-                    name: dealerName,
-                    num: Number(dealerValue),
-                };
-            },
-        });
-        setTimeout(() => {
-            const dialog = document.querySelector(".p-confirm-dialog");
-            dialog?.classList.add("topbar-confirm-dialog");
-        });
     }
 
     @HostListener("document:click", ["$event"])
@@ -211,16 +174,6 @@ export class TopbarComponent {
             this.isDealerDropdownEnabled = true;
             return;
         }
-
-        if (
-            url.startsWith("/dealer/standard-quote/edit") ||
-            url == "/dealer/standard-quote"
-        ) {
-            const activeTab = this.layoutService.getActiveTab();
-            this.isDealerDropdownEnabled = activeTab === "asset_details";
-            return;
-        }
-
         this.isDealerDropdownEnabled = false;
     }
 }

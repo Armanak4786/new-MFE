@@ -1,0 +1,356 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="drawdown-card-bg">
+      <base-form #mainForm [formConfig]="formConfig" (formReady)="onFormReady()" (valueChanges)="onValueChanges($event)"
+        (formEvent)="onFormEvent($event)" (formButtonEvent)="onButtonClick($event)"></base-form>
+    </div>
+  </div>
+</div>
+
+<div class="grid mt-4" style="display: flex">
+  <div class="col-6">
+    <form [formGroup]="drawdownDetailsForm">
+      <div class="section-class p-3 border-round-xl pb-5">
+        <p class="pb-4 -ml-2 drawdown-label">
+          {{ "Drawdown Details" | translate }}
+        </p>
+        <div class="grid">
+          <div class="col-7 drawdown_details_field pb-4">
+            <amount class="align-left" [label]="'purchase_price'" labelType="vertical" mode="edit"
+              [labelClass]="'disburstment-details-label drawdown-label'" formControlName="purchasePrice">
+            </amount>
+            <!-- Error Message Section -->
+            <div *ngIf="
+                drawdownDetailsForm.get('purchasePrice')?.touched &&
+                drawdownDetailsForm.get('purchasePrice')?.errors
+              " class="text-xs text-danger-color mt-1">
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm.get('purchasePrice')?.hasError('required')
+                ">
+                {{ "enter_purchase_price" | translate }}
+              </p>
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm.get('purchasePrice')?.hasError('pattern')
+                ">
+                {{ "invalid_number_format" | translate }}
+              </p>
+            </div>
+          </div>
+          <div class="col-5 drawdown_details_field pb-4">
+            <amount [label]="'less_deposite'" labelType="vertical" mode="edit"
+              [labelClass]="'disburstment-details-label drawdown-label'" formControlName="lessDeposit">
+            </amount>
+
+            <!-- Error Message -->
+            <div *ngIf="
+                drawdownDetailsForm.get('lessDeposit')?.touched &&
+                drawdownDetailsForm.get('lessDeposit')?.errors
+              " class="text-xs text-danger-color mt-1">
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm
+                    .get('lessDeposit')
+                    ?.hasError('depositTooHigh')
+                ">
+                {{ "deposit_trade_in_compare" | translate }}
+              </p>
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm.get('lessDeposit')?.hasError('pattern')
+                ">
+                {{ "invalid_number_format" | translate }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Working Capital -->
+          <div class="col-7 drawdown_details_field pb-4">
+            <amount [label]="'working_capital'" labelType="vertical" [mode]="selectedFacility === 'AssetLink' ? 'edit' : 'view'"
+              [labelClass]="'disburstment-details-label drawdown-label'" formControlName="workingCapital">
+            </amount>
+
+            <!-- Error Message -->
+            <div *ngIf="
+                drawdownDetailsForm.get('workingCapital')?.touched &&
+                drawdownDetailsForm.get('workingCapital')?.errors
+              " class="text-xs text-danger-color mt-1">
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm.get('workingCapital')?.hasError('pattern')
+                ">
+                {{ "invalid_number_format" | translate }}
+              </p>
+            </div>
+          </div>
+          <div class="col-5 mt-1 pb-4">
+            <date id="reqDate" [label]="'request_date'" labelType="vertical"
+              [labelClass]="'drawdown-label text-sm mb-2'" formControlName="reqDate" [required]="true">
+            </date>
+
+            <!-- Error -->
+            <div *ngIf="
+                drawdownDetailsForm.get('reqDate')?.touched &&
+                drawdownDetailsForm.get('reqDate')?.hasError('required')
+              " class="text-xs text-danger-color mt-1">
+              <p class="p-error danger-color">
+                {{ "Please enter Request Date" | translate }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Pay Drawdown Out on -->
+          <div class="col-7 pb-4">
+            <date [min]="minDate" id="payDrawdownDate" [label]="'pay_drawdown_out_on'" labelType="vertical"
+              [labelClass]="'drawdown-label text-sm mb-3'" formControlName="payDrawdownDate" [required]="true">
+            </date>
+
+            <!-- Errors -->
+            <div *ngIf="
+                drawdownDetailsForm.get('payDrawdownDate')?.touched &&
+                drawdownDetailsForm.get('payDrawdownDate')?.errors
+              " class="text-xs text-danger-color mt-1">
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm
+                    .get('payDrawdownDate')
+                    ?.hasError('required')
+                ">
+                {{ "enter_drawdown_date" | translate }}
+              </p>
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm
+                    .get('payDrawdownDate')
+                    ?.hasError('dateInPast')
+                ">
+                {{ "payment_date_not_in_the_past" | translate }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-5 drawdown_details_field pb-4">
+            <amount [label]="'total_drawdown_amount'" labelType="vertical" mode="edit"
+              [labelClass]="'disburstment-details-label drawdown-label'" formControlName="totalDrawdownAmt">
+            </amount>
+            <div *ngIf="
+                drawdownDetailsForm.get('totalDrawdownAmt')?.touched &&
+                drawdownDetailsForm.get('totalDrawdownAmt')?.errors
+              " class="text-xs text-danger-color mt-1">
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm
+                    .get('totalDrawdownAmt')
+                    ?.hasError('required')
+                ">
+                {{ "enter_total_drawdown_amount" | translate }}
+              </p>
+              <p class="p-error danger-color" *ngIf="
+                  drawdownDetailsForm
+                    .get('totalDrawdownAmt')
+                    ?.hasError('pattern')
+                ">
+                {{ "invalid_number_format" | translate }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 text-xs text-danger-color">
+            <text mode="label" [label]="
+                selectedFacility === 'EasyLink'
+                  ? 'easylink_warning_msg'
+                  : 'assetlink_warning_msg'
+              "></text>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-6 -mt-6">
+    <p class="disburstmentdetails-label mt-2">
+      {{ "disbusment_details" | translate }}
+    </p>
+    <form [formGroup]="drawdownDetails">
+      <div class="add-drawdown-request border-round-xl pb-4">
+        <div class="grid">
+          <div class="col-12 pt-2">
+            <text [mode]="'label'" [label]="'disburse_funds_to'" [labelClass]="'px-3 text-sm text-600'"></text>
+          </div>
+        </div>
+        <div class="flex flex-row gap-3 p-2 pb-3">
+          <div class="pt-2 flex gap-2 radio_label_class">
+            <input type="radio" #Supplier formControlName="disburseFundsTo" value="Supplier" />
+            <text [mode]="'label'" [label]="'supplier'"
+              [labelClass]="'text-md drawdown-label radio_label_class'"></text>
+          </div>
+          <div class="pt-2 flex gap-2 radio_label_class">
+            <input type="radio" #nominatedBankAccount formControlName="disburseFundsTo" value="nominatedBankAccount" />
+            <text [mode]="'label'" [label]="'nominated_bank_account'"
+              [labelClass]="'text-md drawdown-label radio_label_class'"></text>
+          </div>
+          <div class="pt-2 flex gap-2 radio_label_class">
+            <input type="radio" #Both formControlName="disburseFundsTo" value="Both" />
+            <text [mode]="'label'" [label]="'both'" [labelClass]="'text-md drawdown-label radio_label_class'"></text>
+          </div>
+        </div>
+        <div class="px-3">
+          <div class="disburstment-details add-drawdown-request scroll-container">
+            <div class="grid">
+              <div class="col-12 px-4 ml-3 mt-3">
+                @if(searchType == 'Supplier' || searchType == 'Both'){
+                <ng-container formArrayName="supplierDetails">
+                  <div class="grid">
+                    <div *ngFor="
+                        let acc of supplierDetails.controls;
+                        let i = index
+                      " class="col-12 mt-2">
+                      <div [formGroupName]="i">
+                        <div class="grid">
+                          <div class="col-5 p-fluid mt-3">
+                            <text [label]="'supplier_name'" [labelType]="'vertical'" [mode]="'edit'" [labelClass]="
+                                'disburstment-details-label drawdown-label'
+                              " formControlName="supplierName">
+                            </text>
+                            <div *ngIf="
+                                acc.get('supplierName')?.touched &&
+                                acc.get('supplierName')?.hasError('required')
+                              " class="text-xs text-danger-color">
+                              <p class="p-error danger-color">
+                                {{ "enter_supplier_name" | translate }}
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-5 p-fluid mt-3 ml-2">
+                            <amount [label]="'amount'" labelType="vertical" mode="edit" [labelClass]="
+                                'disburstment-details-label drawdown-label'
+                              " formControlName="amount">
+                            </amount>
+                            <div *ngIf="
+                                acc.get('amount')?.touched &&
+                                acc.get('amount')?.hasError('required')
+                              " class="text-xs text-danger-color">
+                              <p class="p-error danger-color">
+                                {{ "enter_amount" | translate }}
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-1 pt-4 mt-4" *ngIf="i != 0">
+                            <gen-button [btnIcon]="'fa fa-trash'" [btnType]="'non-bg-btn'"
+                              (onClick)="removeSupplierDetails(i)" class=""></gen-button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pb-2">
+                    <gen-button class="text-md" [btnIcon]="'pi pi-plus'" [btnLabel]="'add_supplier'" [iconPos]="'left'"
+                      (click)="addSuppliers()" [btnType]="'non-bg-btn'"></gen-button>
+                  </div>
+                </ng-container>
+                } @if(searchType == 'nominatedBankAccount' || searchType ==
+                'Both' ){
+                <ng-container>
+                  <div class="grid">
+                    <div class="col-12 mt-2">
+                      <div class="grid mb-2">
+                        <div class="col-6 p-fluid mt-3">
+                          <text [mode]="'label'" [label]="'to_nominated_bank_account'" [labelClass]="'text-600'"></text>
+                        </div>
+                        <div class="col-5 mt-3 p-fluid">
+                          <amount [mode]="searchType === 'Both' ? 'edit' : 'label'" [value]="getNominatedAmount()"
+                            formControlName="nominatedAmount"></amount>
+                          <div *ngIf="
+                              drawdownDetails.get('nominatedAmount').touched &&
+                              drawdownDetails.get('nominatedAmount').invalid
+                            " class="text-xs text-danger-color">
+                            <small class="error" *ngIf="
+                                drawdownDetails
+                                  .get('nominatedAmount')
+                                  ?.hasError('required')
+                              ">
+                              <text [mode]="'label'" [labelClass]="'text-xs text-danger-color'"
+                                [label]="'enter_amount'"></text>
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                } @if(facilityValue!= 'CurrentAccount'){
+                <ng-container formArrayName="disburstmentDetails">
+                  <div class="grid">
+                    <div *ngFor="
+                        let acc of disburstmentDetails.controls;
+                        let i = index
+                      " class="col-12">
+                      <div [formGroupName]="i" class="mt-2">
+                        <div class="grid">
+                          <div class="col-5 p-fluid">
+                            <corporate-name [label]="'stock_no'" mode="edit" labelType="vertical" [labelClass]="
+                                'disburstment-details-label drawdown-label'
+                              " formControlName="stock"></corporate-name>
+                          </div>
+                          <div class="col-5 ml-2 p-fluid">
+                            <text [label]="'asset_description'" mode="edit" labelType="vertical" [labelClass]="
+                                'disburstment-details-label drawdown-label ml-2'
+                              " formControlName="assetDescription"></text>
+                            <div *ngIf="acc.get('stock').value">
+                              <div *ngIf="
+                                  acc.get('assetDescription')?.touched &&
+                                  acc
+                                    .get('assetDescription')
+                                    ?.hasError('required')
+                                " class="text-xs text-danger-color">
+                                <p class="p-error danger-color">
+                                  {{ "enter_asset_description" | translate }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-1 mt-4" *ngIf="i != 0">
+                            <gen-button [btnIcon]="'fa fa-trash'" [btnType]="'non-bg-btn'"
+                              (onClick)="removeAccessories(i)" class="mt-2"></gen-button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-1 flex justify-content-start">
+                    <gen-button [class]="'text-md'" [btnIcon]="'pi pi-plus'" [btnLabel]="'add_assets'"
+                      [iconPos]="'left'" (click)="addAssets()" [btnType]="'non-bg-btn'"></gen-button>
+                  </div>
+                </ng-container>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="section-class p-2">
+  <text [mode]="'label'" [label]="'document_upload'" [labelClass]="'request-settle-text font-bold text-sm'"></text>
+  <text [mode]="'label'" [label]="'supporting_documents_e.g._receipts_etc'"
+    [labelClass]="'request-settle-text text-sm'"></text>
+  <div class="add-asset-facility mt-2 border-round-md">
+    <app-upload-docs class="upload_docs" [showActionIcons]="'true'"></app-upload-docs>
+  </div>
+</div>
+<div class="mt-2 p-2 w-full">
+  <p class="request-settle-text font-bold text-sm">
+    {{ "additional_information" | translate }}
+  </p>
+  <textarea [rows]="4" [cols]="115" class="w-full p-fluid p-inputtext area-responsive border-round-sm"
+    (input)="onTextareaClick($event)"></textarea>
+  <text mode="label" [label]="
+                selectedFacility === 'EasyLink'
+                  ? 'drawdown_additional_information_message_easylink'
+                  : 'drawdown_additional_information_message_assetlink'
+              "></text>
+</div>
+<div class="grid gap-2 flex justify-content-end mt-4">
+  <div class="col-2">
+    <gen-button [btnWidth]="'full'" [btnType]="'non-bg-btn'" [btnLabel]="'cancel'"
+      (onClick)="showDialogCancel()"></gen-button>
+  </div>
+  <div class="col-2">
+    <gen-button [btnWidth]="'full'" [btnType]="'bg-btn'" [btnLabel]="'submit'"
+      (onClick)="submitDrawdownData()"></gen-button>
+  </div>
+</div>

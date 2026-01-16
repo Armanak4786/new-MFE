@@ -20,13 +20,8 @@
           }}.png" alt="logo" />
             </a>
         </div>
-        <div class="ml-2 dealer w-4 {{
-        dashboardService.dealerAnimate ? 'vibrate-Field' : ''
-      }}">
-            <p-dropdown *ngIf="showDealerDropdown" (onChange)="onSelect($event)"
-                [options]="dashboardService?.userOptions" [(ngModel)]="dashboardService.userSelectedOption"
-                optionLabel="label" optionValue="value" placeholder="Select Dealer " class="originatorCSS" />
-            <!-- [disabled]="!isDealerDropdownEnabled" -->
+        <div class="ml-2 dealer w-4">
+            <!-- Dealer dropdown removed for commercial -->
         </div>
 
         <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"

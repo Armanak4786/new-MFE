@@ -1,0 +1,20 @@
+.card-class {
+  width: 700.33px;
+}
+.table-class {
+  color: black;
+  background-color: blue;
+}
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-bailment {
+    font-weight: 700;
+  }
+}
+
+.scrollable-100 {
+  max-height: 150px;
+  overflow-y: auto;
+}

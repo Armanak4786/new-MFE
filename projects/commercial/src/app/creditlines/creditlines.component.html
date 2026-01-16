@@ -1,0 +1,74 @@
+<div class="grid card m-2">
+  <div class="sm:col-6 md:col-6 lg:col-3 border-round-md p-2">
+    <div class="asset-link-bg p-2 border-round-md">
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="facilityChange($event)"
+      ></dropdown>
+      <div class="flex gap-7">
+        <div
+          class="chart-container flex align-items-center justify-content-center m-2 mt-3"
+        >
+          <p-chart
+            type="doughnut"
+            [data]="data"
+            [options]="options"
+            class="w-full"
+          ></p-chart>
+        </div>
+        <div class="color-box-container flex flex-column">
+          <div class="color-box-container flex flex-column mt-5">
+            <div
+              *ngFor="let label of data?.labels; let i = index"
+              class="flex align-items-center"
+            >
+              <div class="color-box" [style.background-color]="colors[i]"></div>
+              <text
+                [mode]="'label'"
+                [label]="label"
+                [labelClass]="'label-xs'"
+              ></text>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sm:col-6 md:col-6 lg:col-9 border-round-md">
+    <gen-table
+      [columns]="creditlineFacilityColumnDefs"
+      [headingClass]="'text-xs'"
+      [tableClass]="'border-round'"
+      [dataList]="creditlineFacilityDataList"
+      [isScrollable]="'true'"
+      [tableStyle]="'stripped-rows'"
+      (onCellClick)="onCellClick($event)"
+      [bodyClass]="'text-xs row-class-assetlink'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+    ></gen-table>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="accountType == 'viewCreditline'"
+  >
+    <app-view-creditline></app-view-creditline>
+  </div>
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="accountType == 'creditlineFacility'"
+  >
+    <app-creditline-facility></app-creditline-facility>
+  </div>
+  <div
+    class="sm:col-12 md:col-12 lg:col-12"
+    *ngIf="accountType == 'currentAccount'"
+  >
+    <app-creditline-current-account></app-creditline-current-account>
+  </div>
+</div>

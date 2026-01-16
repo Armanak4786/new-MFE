@@ -1,0 +1,16 @@
+.p-input-icon-left {
+    width: 100%; /* Ensure the icon container is full width */
+}
+
+.p-inputtext {
+    width: 100%; /* Ensure the input is full width */
+    box-sizing: border-box; /* Include padding and borders in width */
+}
+
+.full-width-input {
+    // width: 100%; /* Make the input full width */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Optional: add rounded corners */
+    padding: 0.5em; /* Optional: add some padding */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}

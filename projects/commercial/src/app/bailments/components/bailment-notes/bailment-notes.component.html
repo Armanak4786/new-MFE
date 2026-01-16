@@ -1,0 +1,24 @@
+<div class="grid-container adjust-box-size">
+  <div class="col-md-6 col-12 mb-3">
+    <gen-table
+      [columns]="bailmentNotesColumnDefs"
+      [filter]="true"
+      [dataList]="notesDataList"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+      [tableStyle]="'stripped-rows'"
+      [paginatorFlag]="true"
+      (onCellClick)="onNotesActionClicked($event)"
+    ></gen-table>
+  </div>
+
+  <div class="col-md-6 col-12">
+    <textarea
+      [value]="textAreaValue"
+      Rows="8"
+      [cols]="61"
+      [disabled]="true"
+    ></textarea>
+  </div>
+</div>

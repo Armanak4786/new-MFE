@@ -1,41 +1,40 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { jwtDecode } from "jwt-decode";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
-    providedIn: "root",
+  providedIn: 'root',
 })
 export class DashboardService {
-    userName: String;
-    userSelectedOption: any;
-    userSelectedPartyNo: any;
-    userOptions: any;
-    userCodeName: any;
-    dealerAnimate: boolean = false;
+  public transformFinancialSummary = new Subject<string>();
+  financial = this.transformFinancialSummary.asObservable();
+  public financialSummary: any;
+  public userInfo: any;
+  public facilityType;
 
-    public quoteRoute = new BehaviorSubject<any>(false);
+  setFinancialSummaryData(data: any) {
+    this.financialSummary = data;
+  }
 
-    constructor() { }
+  getFinancialSummaryData() {
+    return this.financialSummary;
+  }
 
-    decodeToken(token: string): any {
-        try {
-            return jwtDecode(token);
-        } catch (error) {
-            return null;
-        }
-    }
+  setUserInfoData(data: any) {
+    this.userInfo = data;
+  }
 
-    setDealerToLocalStorage(value: any) {
-        if (value?.num) {
-            sessionStorage.setItem("dealerPartyNumber", value.num);
-        }
-        if (value?.name) {
-            sessionStorage.setItem("dealerPartyName", value.name);
-        }
-        this.userSelectedOption = value;
-    }
+  getUserInfoData() {
+    return this.userInfo;
+  }
 
-    callOriginatorApi() {
-        // Placeholder for commercial - can be implemented if needed
-    }
+  setFacilityTpe(data: any) {
+    this.facilityType = data;
+  }
+
+  getFacilityTpe() {
+    return this.facilityType;
+  }
+  setTransformFinancialSummary(data) {
+    this.transformFinancialSummary.next(data);
+  }
 }

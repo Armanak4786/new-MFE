@@ -1,0 +1,16 @@
+.form-sticky-footer {
+  margin-top: 2rem;
+  background-color: var(--primary-text-color);
+  z-index: 100;
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .p-inputtext {
+  background-color: #f7fafc;
+}
+.drawdown-form {
+  background-color: #f7fafc;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

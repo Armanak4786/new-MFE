@@ -1,0 +1,22 @@
+<div class="flex flex-column justify-content-center align-items-center text-center px-4 py-5 overflow-hidden">
+    
+    <div class="mb-4">
+        <i class="fa-solid fa-circle-exclamation warning-icon"></i> 
+        </div>
+
+    <div class="max-w-xl mb-4">
+        <p class="text-md font-semibold text-gray-800 leading-normal mb-3">
+            {{ 'msg_address_not_found' | translate }}
+        </p>
+    </div>
+
+    <div class="mt-4">
+        <button
+            pButton
+            type="button"
+            label="Home"
+            (click)="onBackToHomeClick()"
+            class="p-button-secondary p-button-outlined"
+        ></button>
+    </div>
+</div>

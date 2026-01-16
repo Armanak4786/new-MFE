@@ -1,0 +1,228 @@
+<div class="m-3">
+  <div class="request-info-card mt-2">
+    <div class="request-line">
+      <text
+        [mode]="'label'"
+        [label]="'request_number'"
+        [labelClass]="'text-xs font-bold label-color p-2'"
+        [valueClass]="'text-xs font-bold  ml-2'"
+        [value]="
+          seletedRecoredData['Request No.'] +
+          ' - ' +
+          seletedRecoredData['Status']
+        "
+      >
+      </text>
+    </div>
+
+    <div class="request-details mt-2">
+      <div>
+        <date
+          [mode]="'label'"
+          [label]="'requested_on'"
+          [labelClass]="'text-xs font-bold label-color p-2'"
+          [valueClass]="'text-xs font-bold ml-2'"
+          [value]="seletedRecoredData['Expected Date']"
+        >
+        </date>
+        <!-- <div class="mt-2">
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold'"
+            [label]="'total_payment_amount'"
+            [labelClass]="'mr-2 text-xs'"
+            [value]="seletedRecoredData['Amount']"
+          ></amount>
+        </div> -->
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 ml-4">
+    <amount
+      [mode]="'label'"
+      [valueClass]="'text-xs font-bold ml-2'"
+      [label]="'total_payment_amount'"
+      [labelClass]="'text-xs font-bold label-color p-2 flex'"
+      [value]="seletedRecoredData['Amount']"
+    ></amount>
+  </div>
+  <div class="mt-4 ml-5">
+    <text
+      [mode]="'label'"
+      [labelClass]="'text-xs font-bold'"
+      [className]="'flex mb-4'"
+      [label]="'details'"
+    ></text>
+  </div>
+
+  <table class="w-full table-auto border-collapse ml-4">
+    <thead>
+      <tr class="border-b">
+        <th class="text-xs label-color p-2">{{ "id_ref" | translate }}</th>
+        <th class="text-xs label-color p-2">{{ "date" | translate }}</th>
+        <th class="text-xs label-color p-2">{{ "amount" | translate }}</th>
+        <th class="text-xs label-color p-2">{{ "product" | translate }}</th>
+        <th class="text-xs label-color p-2">{{ "program" | translate }}</th>
+        <th class="text-xs label-color p-2">{{ "asset_id" | translate }}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let detail of purchaseDetails" class="border-b">
+        <!-- ID REF + clickable contract -->
+        <td class="p-2">
+          <text [mode]="'label'" [valueClass]="'text-xs'"></text>
+
+          <a
+            class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+            (click)="onContractClick(op, detail?.contractId, $event)"
+          >
+            {{ detail?.contractId }}
+          </a>
+        </td>
+
+        <!-- Date -->
+        <td class="p-2">
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="detail?.date"
+          ></date>
+        </td>
+
+        <!-- Amount -->
+        <td class="p-2">
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="detail?.amtPaymentRequest"
+          ></amount>
+        </td>
+
+        <!-- Asset No -->
+        <td class="p-2">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="detail?.productName"
+          ></text>
+        </td>
+
+        <!-- Program -->
+        <td class="p-2">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="detail?.programName"
+          ></text>
+        </td>
+
+        <!-- Asset ID -->
+        <td class="p-2">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="detail?.dealerStockNo || detail?.manufacturerStockNo"
+          ></text>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p-overlayPanel #op>
+  <div class="flex flex-column gap-3 w-25rem">
+    <div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'asset_type'"
+          [value]="purchaseDetails?.description"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'registration'"
+          [value]="purchaseDetails?.registrationNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'vin'"
+          [value]="facilityAssset?.vehicleIdentificationNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'chassis_number'"
+          [value]="facilityAssset?.chassisNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'serial_number'"
+          [value]="facilityAssset?.serialNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'make'"
+          [value]="facilityAssset?.make"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'model'"
+          [value]="purchaseDetails?.model"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'product_type'"
+          [value]="facilityAssset?.dealTypeName"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold  label-color mr-4'"
+          [label]="'year'"
+          [value]="facilityAssset?.manufacturingYear"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'colour'"
+          [value]="facilityAssset?.color"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+    </div>
+  </div>
+</p-overlayPanel>

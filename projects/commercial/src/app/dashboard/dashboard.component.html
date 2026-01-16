@@ -1,0 +1,67 @@
+<div class="grid">
+  <div class="sm:col-12 md:col-6 lg:col-7">
+    <div class="card mb-3">
+      <app-quick-actions></app-quick-actions>
+    </div>
+    <div class="card mb-3">
+      <app-funds [financialSummaryData]="financialSummaryData"></app-funds>
+    </div>
+    <div>
+      <div class="card mt-1 p-2">
+        <div *ngIf="financialSummaryData?.assetLinkDetails?.length">
+          <app-asset-link
+            [financialSummaryData]="financialSummaryData"
+          ></app-asset-link>
+        </div>
+        <div *ngIf="financialSummaryData?.easyLinkDetails?.length">
+          <app-easy-link
+            [financialSummaryData]="financialSummaryData"
+          ></app-easy-link>
+        </div>
+        <div *ngIf="financialSummaryData?.creditlineDetails?.length">
+          <app-credit-lines
+            [financialSummaryData]="financialSummaryData"
+          ></app-credit-lines>
+        </div>
+        <div *ngIf="financialSummaryData?.bailmentDetails?.length">
+          <app-bailments
+            [financialSummaryData]="financialSummaryData"
+          ></app-bailments>
+        </div>
+        <div *ngIf="financialSummaryData?.fixedFloorplanDetails?.length">
+          <app-fixed-floorplan
+            [financialSummaryData]="financialSummaryData"
+          ></app-fixed-floorplan>
+        </div>
+        <div *ngIf="financialSummaryData?.floatingFloorplanDetails?.length">
+          <app-floating-floorplan
+            [financialSummaryData]="financialSummaryData"
+          ></app-floating-floorplan>
+        </div>
+        <div *ngIf="financialSummaryData?.buybackDetails?.length">
+          <app-buyback-facility
+            [financialSummaryData]="financialSummaryData"
+          ></app-buyback-facility>
+        </div>
+        <div *ngIf="financialSummaryData?.operatingLeaseDetails?.length">
+          <app-operating-lease
+            [financialSummaryData]="financialSummaryData"
+          ></app-operating-lease>
+        </div>
+        <div *ngIf="financialSummaryData?.nonFacilityLoansDetails?.length">
+          <app-non-facility-loan
+            [financialSummaryData]="financialSummaryData"
+          ></app-non-facility-loan>
+        </div>
+        <div *ngIf="financialSummaryData?.introducerTransactionDetails?.length">
+          <app-originator-account
+            [financialSummaryData]="financialSummaryData"
+          ></app-originator-account>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sm:col-12 md:col-6 lg:col-5">
+    <app-payment-and-loan [total]="total"></app-payment-and-loan>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="flex flex-column justify-content-center align-items-center text-center px-4 overflow-hidden">
+    
+    <div class="mb-4">
+        <i class="fa-light fa-circle-check" style="font-size: 3rem; color: var(--primary-color);"></i>
+    </div>
+
+    <div class="max-w-xl mb-4" *ngIf="!isContactUDC">
+        <p class="text-md font-semibold text-blue-800 leading-normal mb-1">
+            {{ 'msg_update_details_submitted' | translate }}
+        </p>
+        
+        <p class="text-md font-semibold text-blue-800 leading-normal mb-3">{{requestId}}</p>
+
+        <p class="text-sm text-gray-700 leading-relaxed">
+            {{ 'msg_view_request_history' | translate }}
+        </p>
+    </div>
+    <div *ngIf="isContactUDC" class="max-w-xl mb-4">
+        <p class="text-md font-semibold text-blue-800 leading-normal mb-1">
+            {{ 'msg_contact_udc_submitted' | translate }}
+        </p>  
+        <p class="text-md font-semibold text-blue-800 leading-normal mb-1">
+            {{ 'request_no_msg' | translate }}{{requestId}}
+        </p>
+        <p class="text-sm text-gray-700 leading-relaxed">
+            {{ 'msg_view_request_history' | translate }}
+        </p>
+    </div>
+
+    <div class="mt-4">
+        <button
+            pButton
+            type="button"
+            label="OK"
+            class="p-button-primary"
+            (click)="onOkClick()"
+            ></button>
+        </div>
+    </div>

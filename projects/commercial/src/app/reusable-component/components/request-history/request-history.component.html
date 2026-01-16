@@ -1,0 +1,129 @@
+<div class="mt-3">
+  <div class="flex flex-wrap items-center gap-1 w-full">
+    <!-- Facility -->
+    <div
+      class="flex items-center flex-1 align-items-center"
+      *ngIf="!facilityType"
+    >
+      <label class="text-xs whitespace-nowrap text-center">
+        {{ "facility" | translate }}:
+      </label>
+      <p-dropdown
+        [options]="facilityTypeOptions"
+        [(ngModel)]="facility"
+        placeholder="Select an option"
+        (onChange)="onFacilityChange($event)"
+      ></p-dropdown>
+    </div>
+
+    <!-- Facility Type -->
+    <div class="flex items-center flex-1 align-items-center">
+      <!-- <label class="text-xs text-center flex-1">
+        {{ "facility_type" | translate }}:
+      </label> -->
+      <label class="text-xs text-center inline-block mr-2">
+        {{ "facility_type" | translate }}:
+      </label>
+      <p-dropdown
+        [options]="subFacilityOptions"
+        [(ngModel)]="subFacility"
+        placeholder="Select an option"
+        (onChange)="onSubFacilityChange($event)"
+      ></p-dropdown>
+    </div>
+
+    <!-- Request Type -->
+    <div class="flex items-center flex-1 align-items-center">
+      <label class="text-xs whitespace-nowrap inline-block w-auto text-center">
+        {{ "request_type" | translate }}:
+      </label>
+      <p-dropdown
+        [options]="requestTypeOptions"
+        placeholder="Select an option"
+        [(ngModel)]="requestType"
+        class="w-full"
+        (onChange)="onRequestTypeChange($event)"
+      ></p-dropdown>
+    </div>
+
+    <!-- From Date -->
+    <div class="flex items-center flex-1 min-w-[180px] align-items-center">
+      <label class="text-xs whitespace-nowrap inline-block w-auto text-center"
+        >{{ "from" | translate }}:</label
+      >
+      <date
+        [valueClass]="'text-xs'"
+        [value]="fromDate"
+        (change)="onFromDateChange($event)"
+      ></date>
+    </div>
+
+    <!-- To Date -->
+    <div class="flex items-center flex-1 min-w-[180px] align-items-center">
+      <label class="text-xs whitespace-nowrap inline-block w-auto text-center"
+        >{{ "to" | translate }}:</label
+      >
+      <date
+        [valueClass]="'text-xs'"
+        class="w-full"
+        [value]="toDate"
+        (change)="onToDateChange($event)"
+      ></date>
+    </div>
+
+    <!-- View Button -->
+    <div class="min-w-[100px]">
+      <gen-button [btnLabel]="'view'" (onClick)="search()"></gen-button>
+    </div>
+
+    <!-- Reset Button -->
+    <div class="min-w-[100px]">
+      <gen-button
+        [btnLabel]="'reset'"
+        [btnType]="'border-btn'"
+        (onClick)="reset()"
+        class="reset-btn-color"
+      ></gen-button>
+    </div>
+
+    <!-- Export & Print on far right -->
+    <div class="flex gap-1">
+      <gen-button
+        [btnType]="'non-bg-btn'"
+        [btnLabel]="'export'"
+        class="text-xs"
+        [btnIcon]="'pi pi-cloud-upload'"
+        [iconPos]="'left'"
+        (click)="export()"
+      ></gen-button>
+      <gen-button
+        [btnType]="'non-bg-btn'"
+        [btnLabel]="'print'"
+        class="text-xs"
+        [btnIcon]="'pi pi-print'"
+        [iconPos]="'left'"
+        (click)="onPrint()"
+      ></gen-button>
+    </div>
+  </div>
+</div>
+<div class="lg:col-12 h-50rem">
+  <div class="card">
+    <gen-table
+      #dt
+      [columns]="requestHistoryColumnDefs"
+      [dataList]="requestHistoryDataList"
+      [tableClass]="'border-round'"
+      [tableStyle]="'stripped-rows'"
+      [paginatorFlag]="true"
+      [sortable]="true"
+      [filter]="true"
+      [bodyClass]="'text-xs'"
+      [headingClass]="'tableHeader text-xs  header-text-color'"
+      [selection]="selectionMode"
+      [sortField]="'id'"
+      (onCellClick)="onCellClick($event)"
+    >
+    </gen-table>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+/* app-notifications-sidebar.component.scss */
+
+// Styling the notification items for padding and margin
+.notification-item {
+    cursor: pointer;
+    &:hover {
+        background-color: var(--surface-hover); // PrimeNG hover color
+    }
+}
+
+// Ensure the p-tag for the count is small and stands out
+.p-tag-danger {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    line-height: 1;
+}
+
+// Adjust button size for a compact look
+.p-button-sm {
+    height: 1.75rem;
+    font-size: 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.notification-badge {
+  
+  border-radius: 50%;
+}
+.colour{
+    color: var(--primary-color);
+}

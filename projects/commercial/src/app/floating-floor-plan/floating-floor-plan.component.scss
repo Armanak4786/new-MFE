@@ -1,0 +1,217 @@
+.asset-link-bg {
+  background-color: #f7fafc;
+}
+
+.chart-container {
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    width: 100%;
+    height: auto;
+  }
+}
+@media (max-width: 425px) {
+  .chart-container {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.color-box-container {
+  flex-direction: column; /* Change to row for horizontal layout */
+  gap: 2px;
+}
+
+.color-box {
+  width: 8px; /* Square box with fixed size */
+  height: 8px;
+  margin-right: 4px;
+  margin-top: 4px;
+}
+
+.color-label {
+  font-size: 8px;
+  font-weight: 500;
+}
+
+::ng-deep .quick-action-btn .p-button {
+  padding: 0.6rem 0rem;
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-assetlink {
+    font-weight: 700;
+  }
+}
+
+.collapse-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #f4f4f4;
+  // padding: 10px;
+  // border-radius: 5px;
+  // margin-bottom: 10px;
+}
+
+.collapse-box {
+  height: auto;
+  // overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.collapse-box.collapsed {
+  height: 225px;
+}
+
+.collapse-toggle-button {
+  width: 68px;
+  height: 28px;
+  background-color: var(--primary-text-color);
+  border: 0.5px solid #ccc;
+  border-radius: 8px 8px 0px 0px;
+  box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.1),
+    /* Top-left shadow */ 2px -2px 6px rgba(0, 0, 0, 0.1),
+    /* Top-right shadow */ -2px 0px 6px rgba(0, 0, 0, 0.1),
+    /* Left shadow */ 2px 0px 6px rgba(0, 0, 0, 0.1); /* Right shadow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: -28px auto 0;
+  color: var(--primary-color);
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+/* Enhanced styles for the collapsible toggle button */
+
+.collapse-toggle-wrapper {
+  display: flex;
+  justify-content: center;
+  // margin-top: 8px;
+  // margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+  background-color: white;
+  // padding: 4px 0;
+}
+
+.collapse-toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-width: 80px;
+  position: relative;
+  z-index: 11;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 18px;
+
+  &:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    z-index: 12;
+  }
+
+  &.collapsed {
+    background-color: #fff;
+    border-color: #0095c3;
+    color: #0095c3;
+
+    &:hover {
+      background-color: #f0f9ff;
+      border-color: #0073a1;
+      color: #0073a1;
+    }
+  }
+
+  &.expanded {
+    background-color: #0095c3;
+    border-color: #0095c3;
+    color: white;
+
+    &:hover {
+      background-color: #0073a1;
+      border-color: #0073a1;
+    }
+  }
+}
+
+.toggle-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Animation for smooth expand/collapse */
+.collapse-box {
+  transition: all 0.3s ease-in-out;
+}
+
+// .collapse-box.collapsed {
+//   /* Add any specific styling for collapsed state */
+// }
+
+/* Icon styling */
+.collapse-toggle-button i {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.collapse-toggle-button.collapsed i {
+  transform: rotate(0deg);
+}
+
+.collapse-toggle-button.expanded i {
+  transform: rotate(180deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .collapse-toggle-button {
+    padding: 4px 8px;
+    min-width: 60px;
+  }
+
+  .toggle-text {
+    font-size: 0.7rem;
+  }
+}
+
+/* Additional styles to ensure proper layering */
+.grid.card.collapse-box {
+  position: relative;
+  z-index: 1;
+}
+
+gen-table {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure the table doesn't overflow and hide the button */
+.border-round-md {
+  overflow: visible !important;
+}
+
+//Workaround for pagination dropdown values
+::ng-deep .p-dropdown-panel {
+  bottom: 100%;
+  top: auto;
+  position: absolute;
+  z-index: 9999;
+  transform: translateY(-5px);
+}

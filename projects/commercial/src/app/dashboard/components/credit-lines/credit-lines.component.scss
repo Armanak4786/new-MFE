@@ -1,0 +1,8 @@
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-creditline {
+    font-weight: 700;
+  }
+}

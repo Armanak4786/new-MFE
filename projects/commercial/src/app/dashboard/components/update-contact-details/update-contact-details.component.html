@@ -1,0 +1,70 @@
+
+<div class="mb-3 row">
+  <div class="col-12 mr-1 ml-1 card p-3">
+    <!-- Header -->
+    <div class="ml-3">
+      <text
+        mode="label"
+        [label]="'lbl_current_contact_details' | translate"
+        class="ml-4 font-bold col-12 sm:col-6 md:col-2 lg:col-2 text-sm header-text"
+      ></text>
+    </div>
+
+    <!-- Contact Fields dynamically -->
+    <div class="row mt-2 ml-2 mb-2 d-flex flex-wrap w-100">
+      <div class="col-4 col-md-4" *ngFor="let field of bottomFields">
+        <text
+          mode="label"
+          [label]="field.label | translate"
+          class="field-label text-sm"
+        ></text>
+        <br />
+        <text mode="label" [label]="field.value" class="text-sm"></text>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mr-1 ml-1">
+  <gen-card>
+    <ng-container body>
+      <base-form
+        #mainForm
+        [formConfig]="formConfig"
+        [mode]="mode"
+        [id]="id"
+        [data]=""
+        (valueChanges)="onValueChanges($event)"
+        (formEvent)="onFormEvent($event)"
+        (onInput)="onValueTyped($event)"
+        (formReady)="onFormReady()"
+      >
+      </base-form>
+    </ng-container>
+  </gen-card>
+</div>
+
+<div class="mt-3 mb-7">
+  <div class="card">
+    <div
+      class="align-items-center card-body d-flex justify-content-between p-3"
+    >
+      <gen-button
+        (click)="onCancel()"
+        [btnType]="'border-btn'"
+        [btnLabel]="'Cancel'"
+        [btnWidth]="'reset-button-label'"
+        class="btn"
+      ></gen-button>
+
+      <gen-button
+        (onClick)="updateContactDetails()"
+        [btnType]="'bg-btn'"
+        [btnLabel]="'Submit'"
+        [btnWidth]="'reset-button-label'"
+        class="bg-Btn"
+      ></gen-button>
+    </div>
+  </div>
+</div>
+a

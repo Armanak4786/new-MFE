@@ -1,0 +1,72 @@
+<div class="grid">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1" *ngIf="hasAccess('perform_requests')">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'new_loan_request'"
+          class="text-xs"
+          (onClick)="showNewLoanRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'request_history'"
+          (click)="requestHistory()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Loans' ? 'bg-btn' : 'border-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'loans'"
+          class="text-xs"
+          (click)="showLoansTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilityAssets' ? 'bg-btn' : 'border-btn'
+          "
+          [btnWidth]="'full'"
+          [btnLabel]="'assets'"
+          (click)="showAssetsTab()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'Loans'">
+  <app-loans
+    [loansColumnDefs]="loansColumnDefs"
+    [loansDataList]="loansDataList"
+    [facilityType]="facilityType"
+  ></app-loans>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'FacilityAssets'">
+  <app-facility-assets
+    [columnsFacilityAsset]="columnsFacilityAsset"
+    [facilityType]="facilityType"
+    [facilityAsssetsDatalist]="facilityAsssetsDatalist"
+  ></app-facility-assets>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'requestHistory'">
+  <app-request-history
+    [requestHistoryDataList]="requestHistoryDataList"
+    [requestHistoryColumnDefs]="requestHistoryColumnDefs"
+    [originalRequestHistoryDatalist]="originalRequestHistoryDatalist"
+    [facilityType]="facilityType"
+  ></app-request-history>
+</ng-container>

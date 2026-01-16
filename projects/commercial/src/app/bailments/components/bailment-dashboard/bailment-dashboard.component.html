@@ -1,0 +1,111 @@
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-12">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'product_transfer_request'"
+          class="text-xs"
+          (onClick)="productTransferRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'purchase_asset_request'"
+          class="text-xs"
+          (onClick)="purchaseAssetRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'swap_request'"
+          class="text-xs"
+          (onClick)="swapRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'same_day_payout'"
+          class="text-xs"
+          (onClick)="sameDayPayoutRequest()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnColor]="'danger'"
+          [btnLabel]="'request_history'"
+          (click)="requestSecurity()"
+          class="text-xs"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilitySummary' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'facility_summary'"
+          class="text-xs"
+          [btnColor]="'red'"
+          (onClick)="showFacilitySummary()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="
+            currentComponent === 'FacilityAssets' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'assets'"
+          class="text-xs"
+          (onClick)="showFacilityAssets()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocuments()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="currentComponent == 'FacilitySummary'">
+  <app-facility-summary
+    [todaysActivityColDef]="todaysActivityColDef"
+    [assetSummaryColDef]="assetSummaryColDef"
+    [columnsFacilityAsset]="columnsFacilityAsset"
+    [facilityType]="facilityType"
+    [facilitySummaryDatalist]="facilitySummaryDatalist"
+  ></app-facility-summary>
+</ng-container>
+<ng-container *ngIf="currentComponent == 'FacilityAssets'">
+  <app-facility-assets
+    [columnsFacilityAsset]="facilityAssetsColDef"
+    [facilityType]="facilityType"
+    [facilityAsssetsDatalist]="facilityAsssetsDatalist"
+  ></app-facility-assets>
+</ng-container>
+<ng-container *ngIf="currentComponent == 'Documents'">
+  <app-documents
+    [documentsColumnDefs]="documentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>

@@ -1,0 +1,16 @@
+.card-class {
+  width: 700.33px;
+}
+.table-class {
+  color: black;
+  background-color: blue;
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-operatingLease {
+    font-weight: 700;
+  }
+}

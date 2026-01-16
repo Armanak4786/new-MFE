@@ -1,0 +1,239 @@
+<div [formGroup]="repaymentForm">
+  <div class="grid request-settlement-bg">
+    <div class="col-2 md:col-2 request-settlement-bg">
+      <dropdown
+        [options]="facilityTypeData"
+        [labelType]="'vertical'"
+        [label]="'facilityType'"
+        [value]="repaymentForm.get('facilityType').value.value"
+        [labelClass]="'request-settle-text request-settle-text-color pb-2'"
+        (change)="onFacilityTypeChange($event)"
+      ></dropdown>
+    </div>
+    <div class="col-2 md:col-2 col-offset-1">
+      <dropdown
+        [options]="facilityData"
+        [labelType]="'vertical'"
+        [label]="'facility'"
+        [value]="repaymentForm.get('facility').value"
+        [labelClass]="'request-settle-text request-settle-text-color pb-2'"
+      ></dropdown>
+    </div>
+    <div class="col-2 md:col-2 col-offset-1">
+      <dropdown
+        [options]="loansData"
+        [labelType]="'vertical'"
+        [label]="'loan'"
+        formControlName="contractId"
+        [value]="repaymentForm.get('contractId').value"
+        [labelClass]="'request-settle-text request-settle-text-color pb-2'"
+      ></dropdown>
+      <text
+        *ngIf="
+          repaymentForm.get('contractId').touched &&
+          repaymentForm.get('contractId').errors['required']
+        "
+        [mode]="'label'"
+        [label]="'Please select a Loan'"
+        [labelClass]="'text-xs text-danger-color'"
+      ></text>
+    </div>
+  </div>
+  <div class="flex justify-between mt-3 mb-2">
+    <div class="flex-1">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold'"
+        [label]="'repayment_details'"
+      ></text>
+    </div>
+    <div class="flex-1 ml-4">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold'"
+        [label]="'payment_options'"
+      ></text>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-6 request-settlement-bg mt-2">
+      <div class="grid pt-4">
+        <div class="col-12 sm:col-6 md:col-6">
+          <text
+            [mode]="'label'"
+            [labelClass]="
+              'font-bold request-settle-text request-settle-text-color'
+            "
+            [label]="'payment_amount'"
+          ></text>
+          <text
+            [labelClass]="'request-settlement-bg'"
+            formControlName="paymentAmount"
+            (blur)="onPaymentAmountChange($event)"
+          ></text>
+          <text
+            *ngIf="
+              repaymentForm.get('paymentAmount').touched &&
+              repaymentForm.get('paymentAmount').errors['min']
+            "
+            [mode]="'label'"
+            [label]="'Payment Amount must be greater than 0'"
+            [labelClass]="'text-xs text-danger-color'"
+          ></text>
+        </div>
+        <div class="col-12 sm:col-6 md:col-4 request-settlement-bg">
+          <date
+            [labelClass]="
+              'font-bold request-settle-text request-settle-text-color'
+            "
+            [labelType]="'vertical'"
+            [label]="'request_settlement_date'"
+            [value]="repaymentForm.get('requestDate').value"
+            (blur)="onRequestSettlementDateChange($event)"
+          ></date>
+          <text
+            *ngIf="
+              repaymentForm.get('requestDate').touched &&
+              repaymentForm.get('requestDate').errors['required']
+            "
+            [mode]="'label'"
+            [label]="'Please enter the Request Date'"
+            [labelClass]="'text-xs text-danger-color'"
+          ></text>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 md:col-6">
+      <div class="request-settlement-bg p-4">
+        <text
+          [mode]="'label'"
+          [labelClass]="'request-settle-text request-settle-text-color'"
+          [labelType]="'vertical'"
+          [label]="'payment_options'"
+        ></text>
+        <div class="flex align-items-center">
+          <input
+            type="radio"
+            class="mr-1"
+            [value]="repaymentForm.get('nominatedBankAccount').value"
+            formControlName="nominatedBankAccount"
+            (change)="onPaymentOptionChange('nominatedBankAccount')"
+          /><label class="request-settle-text request-settle-text-color">
+            Debit by nominated bank account</label
+          >
+        </div>
+        <div class="mt-4">
+          <text
+            [labelType]="'vertical'"
+            [labelClass]="'request-settlement-bg m-0 p-0'"
+            [label]="'nominated_bank_account'"
+          ></text>
+        </div>
+
+        <div class="flex align-items-center mt-3">
+          <input
+            type="radio"
+            class="mr-1"
+            [value]="repaymentForm.get('fiBankAccount').value"
+            formControlName="nominatedBankAccount"
+            (change)="onPaymentOptionChange('fiBankAccount')"
+          /><label class="request-settle-text request-settle-text-color">
+            I would like to pay UDC directly</label
+          >
+        </div>
+        <div class="grid mt-3">
+          <div class="col-12 sm:col-6 md:col-5 ml-1">
+            <text
+              [mode]="'label'"
+              [labelType]="'vertical'"
+              [labelClass]="'request-settle-text request-settle-text-color'"
+              [label]="'udc_bank_account_details'"
+            ></text>
+            <text
+              [mode]="'label'"
+              [labelType]="'vertical'"
+              [labelClass]="'request-settle-text'"
+              [value]="'1345'"
+            ></text>
+          </div>
+          <div class="col-12 sm:col-6 md:col-5">
+            <text
+              [mode]="'label'"
+              [labelType]="'vertical'"
+              [labelClass]="'request-settle-text request-settle-text-color'"
+              [label]="'payment_referrence_number'"
+            ></text>
+            <text
+              [mode]="'label'"
+              [labelType]="'vertical'"
+              [labelClass]="'request-settle-text'"
+              [value]="'1233455'"
+            ></text>
+          </div>
+        </div>
+      </div>
+      <text
+        *ngIf="
+          repaymentForm.get('nominatedBankAccount').touched &&
+          repaymentForm.get('nominatedBankAccount').errors['required']
+        "
+        [mode]="'label'"
+        [label]="'Please select a payment option'"
+        [labelClass]="'text-xs text-danger-color'"
+      ></text>
+    </div>
+  </div>
+  <div class="request-settlement-bg">
+    <div class="mt-4">
+      <text
+        [mode]="'label'"
+        [label]="'document_upload'"
+        [labelClass]="'font-semibold pl-2'"
+      ></text>
+
+      <text
+        [mode]="'label'"
+        [label]="'Document_upload_hint'"
+        [labelClass]="' text-xs pl-2'"
+      ></text>
+    </div>
+    <div class="mt-2 border-round-md">
+      <app-upload-docs
+        [showActionIcons]="'true'"
+        (onFilesUploaded)="onFilesUploaded($event)"
+      ></app-upload-docs>
+    </div>
+  </div>
+
+  <div class="mt-2 p-2">
+    <p class="request-settle-text font-bold">Reason</p>
+    <textarea
+      [rows]="4"
+      [cols]="125"
+      formControlName="remarks"
+      class="p-fluid p-inputtextarea-responsive border-round-sm"
+    ></textarea>
+    <p class="request-settle-text">
+      Thankyou for your payment request. Your repayment will be debited from
+      your nominted bank account on 23-01-2024 or as possible.
+    </p>
+  </div>
+
+  <div class="grid gap-2 flex justify-content-end mt-4">
+    <div class="col-12 sm:col-4 md:col-2">
+      <gen-button
+        [btnLabel]="'Cancel'"
+        (onClick)="showDialogCancel()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+    <div class="col-12 sm:col-4 md:col-2">
+      <gen-button
+        [btnLabel]="'Submit'"
+        (click)="submitData()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+  </div>
+</div>

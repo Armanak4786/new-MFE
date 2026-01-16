@@ -1,0 +1,49 @@
+<div class="mb-1">
+  <text
+    [mode]="'label'"
+    [labelClass]="'font-bold text-xs ml-2'"
+    [label]="'payment_summary'"
+  ></text>
+</div>
+<div class="flex justify-content-end flex-wrap">
+  <div>
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [btnWidth]="'full'"
+      [btnLabel]="'export'"
+      class="text-xs"
+      [iconPos]="'left'"
+      [btnIcon]="'pi pi-cloud-upload'"
+      (click)="export()"
+    ></gen-button>
+  </div>
+  <div>
+    <gen-button
+      [btnType]="'non-bg-btn'"
+      [btnWidth]="'full'"
+      [btnLabel]="'print'"
+      class="text-xs"
+      [iconPos]="'left'"
+      [btnIcon]="'pi pi-print'"
+      (click)="onPrint()"
+    ></gen-button>
+  </div>
+</div>
+<div class="grid">
+  <div class="sm:col-12 md:col-12 lg:col-12 border-round-md">
+    <gen-table
+      #rentalSummary
+      [tableClass]="'border-round'"
+      [columns]="rentalSummaryColumnDefs"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [dataList]="rentalSummaryDataList"
+      [tableStyle]="'stripped-rows'"
+      [bodyClass]="'text-xs'"
+      [sortable]="true"
+      [filter]="true"
+      [paginatorFlag]="true"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+    ></gen-table>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="grid">
+  <text
+    [mode]="'label'"
+    [labelClass]="'loan-dash-text loan-dash-text-color'"
+    [label]="'loan_parties'"
+  ></text>
+  <div class="sm:col-12 md:col-12 lg:col-12">
+    <gen-table
+      [columns]="leasePartiesColumnDef"
+      [headingClass]="'tableHeader text-xs  header-text-color'"
+      [tableClass]="'border-round'"
+      [dataList]="leasePartiesData"
+      [tableStyle]="'stripped-rows'"
+    ></gen-table>
+  </div>
+</div>

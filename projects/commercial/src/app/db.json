@@ -1,0 +1,1123 @@
+{
+  "account_forecast": {
+    "data": {
+      "lastMonthPrincipal": 123.0,
+      "lastMonthInterest": 234.0,
+      "accountForecasts": [
+        {
+          "month": "2025-01-01",
+          "securityValue": 1233.0,
+          "accountBalance": 23456.0,
+          "availableFunds": 45669.8
+        },
+        {
+          "month": "Feb 24",
+          "securityValue": 1233.0,
+          "accountBalance": 23456.0,
+          "availableFunds": 45669.8
+        },
+        {
+          "month": "Mar 24",
+          "securityValue": 1233.0,
+          "accountBalance": 23456.0,
+          "availableFunds": 45669.8
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "abc", "messageArguments": [] }
+      ]
+    }
+  },
+  "repayment_forecast": {
+    "data": {
+      "paymentForecasts": [
+        {
+          "month": "2025-03",
+          "principal": 123.0,
+          "interest": 2345.0,
+          "amount": 4566.8
+        },
+        {
+          "month": "2025-04",
+          "principal": 1235.0,
+          "interest": 23455.0,
+          "amount": 4766.8
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "xyz", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+  "documents": {
+    "data": {
+      "documentDetails": [
+        {
+          "id": 1,
+          "name": "Doc1",
+          "description": "Desc",
+          "category": "category 1",
+          "type": "type 1",
+          "partyId": 1,
+          "partyName": "",
+          "facilityType": "",
+          "contactId": 1,
+          "loadedOn": "11-03-2025",
+          "loadedBy": "11-03-2025",
+          "source": "source 1",
+          "status": "status 1",
+          "isDocumentDeleted": false,
+          "documentProvider": "",
+          "securityClassification": "",
+          "reference": "",
+          "generatedDocs": [
+            {
+              "generatedDocId": 1,
+              "docStatus": "",
+              "fileDetails": "",
+              "fileContents": "blob:http://localhost:4200/d69bfcca-e90e-4e35-8907-876b5842d206",
+              "contentType": "",
+              "fileDownloadName": ""
+            }
+          ],
+          "warnings": [
+            { "messageId": "12", "message": "", "messageArguments": [] }
+          ],
+          "values": "",
+          "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+        },
+        {
+          "id": 2,
+          "name": "Doc2",
+          "category": "",
+          "type": "",
+          "description": "Desc 2",
+          "partyId": 2,
+          "partyName": "",
+          "facilityType": "",
+          "contactId": 2,
+          "loadedOn": "11-03-2025",
+          "loadedBy": "11-03-2025",
+          "source": "",
+          "status": "",
+          "isDocumentDeleted": false,
+          "documentProvider": "",
+          "securityClassification": "",
+          "reference": "",
+          "generatedDocs": [
+            {
+              "generatedDocId": 1,
+              "docStatus": "",
+              "fileDetails": "",
+              "fileContents": "",
+              "contentType": "",
+              "fileDownloadName": ""
+            }
+          ],
+          "warnings": [
+            { "messageId": "12", "message": "", "messageArguments": [] }
+          ],
+          "values": "",
+          "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "xyz", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "document": {
+    "data": {
+      "file": "blob:http://localhost:4200/d69bfcca-e90e-4e35-8907-876b5842d206",
+      "fileName": "",
+      "extension": "",
+      "mimeType": "",
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "linked_assets": {
+    "data": {
+      "linkedAssetDetails": [
+        {
+          "contractId": 123,
+          "assetNo": 234,
+          "description": "dummy description",
+          "serialNumber": "1",
+          "registrationNumber": "11",
+          "vehicleIdentificationNumber": "",
+          "chassisNumber": "",
+          "lastValuedDate": null,
+          "valuation": null,
+          "ssv": null,
+          "costPrice": 123.55,
+          "program": null,
+          "invoiceDate": null,
+          "make": null,
+          "model": null,
+          "expirydate": null,
+          "currentBalance": null,
+          "assetStatus": null,
+          "usageType": null,
+          "usagePerAnnum": null,
+          "excessUsageAllowance": null,
+          "excessUsageCharge": null
+        },
+        {
+          "contractId": 122,
+          "assetNo": 224,
+          "description": "dummy description 2",
+          "serialNumber": "",
+          "registrationNumber": "",
+          "vehicleIdentificationNumber": "34",
+          "chassisNumber": "",
+          "lastValuedDate": null,
+          "valuation": null,
+          "ssv": null,
+          "costPrice": 123.55,
+          "program": null,
+          "invoiceDate": null,
+          "make": null,
+          "model": null,
+          "expirydate": null,
+          "currentBalance": null,
+          "assetStatus": null,
+          "usageType": null,
+          "usagePerAnnum": null,
+          "excessUsageAllowance": null,
+          "excessUsageCharge": null
+        },
+        {
+          "contractId": 122,
+          "assetNo": 224,
+          "description": "dummy description 2",
+          "serialNumber": "",
+          "registrationNumber": "",
+          "vehicleIdentificationNumber": "",
+          "chassisNumber": "45",
+          "lastValuedDate": null,
+          "valuation": null,
+          "ssv": null,
+          "costPrice": 123.55,
+          "program": null,
+          "invoiceDate": null,
+          "make": null,
+          "model": null,
+          "expirydate": null,
+          "currentBalance": null,
+          "assetStatus": null,
+          "usageType": null,
+          "usagePerAnnum": null,
+          "excessUsageAllowance": null,
+          "excessUsageCharge": null
+        },
+        {
+          "contractId": 122,
+          "assetNo": 224,
+          "description": "dummy description 2",
+          "serialNumber": "4",
+          "registrationNumber": "",
+          "vehicleIdentificationNumber": "34",
+          "chassisNumber": "12",
+          "lastValuedDate": null,
+          "valuation": null,
+          "ssv": null,
+          "costPrice": 123.55,
+          "program": null,
+          "invoiceDate": null,
+          "make": null,
+          "model": null,
+          "expirydate": null,
+          "currentBalance": null,
+          "assetStatus": null,
+          "usageType": null,
+          "usagePerAnnum": null,
+          "excessUsageAllowance": null,
+          "excessUsageCharge": null
+        },
+        {
+          "contractId": 122,
+          "assetNo": 224,
+          "description": "dummy description 2",
+          "serialNumber": "",
+          "registrationNumber": "",
+          "vehicleIdentificationNumber": "34",
+          "chassisNumber": "",
+          "lastValuedDate": null,
+          "valuation": null,
+          "ssv": null,
+          "costPrice": 123.55,
+          "program": null,
+          "invoiceDate": null,
+          "make": null,
+          "model": null,
+          "expirydate": null,
+          "currentBalance": null,
+          "assetStatus": null,
+          "usageType": null,
+          "usagePerAnnum": null,
+          "excessUsageAllowance": null,
+          "excessUsageCharge": null
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "repayment_schedule": {
+    "data": {
+      "repaymentSchedule": [
+        {
+          "date": "2025-02-01",
+          "principal": 234.88,
+          "interest": 123.99,
+          "amount": 123.99,
+          "principalBalance": 234.88,
+          "remainingInterest": 567.09
+        },
+        {
+          "date": "2025-03-03",
+          "principal": 2345.88,
+          "interest": 1253.99,
+          "amount": 1523.99,
+          "principalBalance": 2314.88,
+          "remainingInterest": 5367.09
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "user_info": {
+    "data": {
+      "partyDetail": [
+        {
+          "id": 1,
+          "name": "2025-02-11",
+          "logo": null,
+          "lastLoginDateTime": "2025-03-19",
+          "isDefault": true
+        },
+        {
+          "id": 1,
+          "name": "2025-02-11",
+          "logo": null,
+          "lastLoginDateTime": "2025-03-19",
+          "isDefault": false
+        }
+      ],
+      "userDetails": {
+        "type": "",
+        "email": "nisha.goswami@aurionpro.com",
+        "contactNumber": "9854326577",
+        "customerNumber": 1101,
+        "nominatedBankAccount": 1234567890
+      },
+      "items": null,
+      "error": null,
+      "lookups": null,
+      "warnings": null,
+      "apiError": null
+    }
+  },
+
+  "contract_details": {
+    "data": {
+      "contractDetails": [
+        {
+          "contractId": 1,
+          "productType": "FL",
+          "maturityDate": "2025-08-01",
+          "nextRepriceDate": "2025-02-01",
+          "initialLoanAmount": 123.99,
+          "interestRate": 12.9,
+          "costPrice": 234.88,
+          "principalInterest": 567.09,
+          "principalBalance": 2367.88,
+          "nextPaymentAmount": 3457.9,
+          "nextPaymentDate": "2025-02-01",
+          "startDate": "2025-02-01",
+          "loanDate": "2025-02-01",
+          "loanTerm": 22,
+          "interestCharge": 2345.87,
+          "goodsDescription": "",
+          "assuredResidualValue": 4567.23,
+          "futureValueAmount": 356.99,
+          "futureValueDate": "2025-02-01",
+          "maximumPermitted": 6789,
+          "customerDecision": "",
+          "gstExclude": 3452.11,
+          "gst": 2133.33,
+          "gstInclude": 1222.44
+        },
+        {
+          "contractId": 2,
+          "productType": "CSA",
+          "maturityDate": "2025-02-06",
+          "nextRepriceDate": "2025-02-01",
+          "initialLoanAmount": 1273.99,
+          "interestRate": 1253.99,
+          "costPrice": 2324.88,
+          "principalInterest": 577.09,
+          "principalBalance": 3675.88,
+          "nextPaymentAmount": 3457.9,
+          "nextPaymentDate": "2025-02-01",
+          "startDate": "2025-02-01",
+          "loanDate": "2025-02-01",
+          "loanTerm": 22,
+          "interestCharge": 5235.87,
+          "goodsDescription": "",
+          "assuredResidualValue": 1867.23,
+          "futureValueAmount": 3156.99,
+          "futureValueDate": "2025-02-01",
+          "maximumPermitted": 6789,
+          "customerDecision": "",
+          "gstExclude": 3452.11,
+          "gst": 2133.33,
+          "gstInclude": 1222.44
+        },
+        {
+          "contractId": 3,
+          "productType": "AFV",
+          "maturityDate": "2025-02-06",
+          "nextRepriceDate": "2025-02-01",
+          "initialLoanAmount": 1273.99,
+          "interestRate": 1253.99,
+          "costPrice": 2324.88,
+          "principalInterest": 577.09,
+          "principalBalance": 3675.88,
+          "nextPaymentAmount": 3457.9,
+          "nextPaymentDate": "2025-02-01",
+          "startDate": "2025-02-01",
+          "loanDate": "2025-02-01",
+          "loanTerm": 22,
+          "interestCharge": 5235.87,
+          "goodsDescription": "",
+          "assuredResidualValue": 1867.23,
+          "futureValueAmount": 3156.99,
+          "futureValueDate": "2025-02-01",
+          "maximumPermitted": 6789,
+          "customerDecision": "Confirm",
+          "gstExclude": 3452.11,
+          "gst": 2133.33,
+          "gstInclude": 1222.44
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "current_position": {
+    "data": {
+      "currentPosition": {
+        "grossBalanceAsOfToday": 11.99,
+        "principalBalance": 123.0,
+        "remainingInterest": 954.89,
+        "overdueAmount": 567.2,
+        "overduedays": 127,
+        "remainingTerm": 12,
+        "rentalAmount": 234.88,
+        "gst": 567.09,
+        "outStandingBalance": 243111,
+        "totalRentalAmount": 124551,
+        "date": ""
+      },
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "parties": {
+    "data": {
+      "partyDetails": [
+        {
+          "id": 1,
+          "name": "lease 1",
+          "role": "",
+          "type": ""
+        },
+        {
+          "id": 2,
+          "name": "lease 2",
+          "role": "",
+          "type": ""
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "interest_rate_revisions": {
+    "data": {
+      "revisions": [
+        {
+          "interestRate": 12,
+          "interestDate": "2025-01-18"
+        },
+        {
+          "interestRate": 15,
+          "interestDate": "2025-05-04"
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+  "rental_summary": {
+    "data": {
+      "rentalSummary": [
+        {
+          "leaseId": 1,
+          "number": 23,
+          "frequency": "",
+          "amount": 187,
+          "gst": 124.23,
+          "totalAmount": 987.22,
+          "date": "2025-02-11"
+        },
+        {
+          "leaseId": 2,
+          "number": 344,
+          "frequency": "",
+          "amount": 187,
+          "gst": 984.23,
+          "totalAmount": 817.22,
+          "date": "2025-02-11"
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "repayment_history": {
+    "data": {
+      "repayments": [
+        {
+          "contractId": 1,
+          "date": "2025-02-11",
+          "number": 23,
+          "frequency": "",
+          "amount": 187
+        },
+        {
+          "contractId": 1,
+          "date": "2025-02-11",
+          "number": 344,
+          "frequency": "",
+          "amount": 187
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+  "payment_statements": {
+    "data": {
+      "payments": [
+        {
+          "id": 1,
+          "date": "2025-02-11",
+          "method": "",
+          "amountReceived": 187,
+          "reason": "dummy",
+          "allocatedAmount": "100",
+          "isRejected": true
+        },
+        {
+          "id": 2,
+          "date": "2025-02-11",
+          "method": "",
+          "amountReceived": 187,
+          "reason": "dummy",
+          "allocatedAmount": "100",
+          "isRejected": false
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "transaction_payment_details": {
+    "data": {
+      "paymentDetails": [
+        {
+          "id": 1,
+          "date": "2025-02-11",
+          "amount": 187,
+          "method": ""
+        },
+        {
+          "id": 2,
+          "date": "2025-02-11",
+          "amount": 187,
+          "method": ""
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "transaction_statement": {
+    "data": {
+      "transactions": [
+        {
+          "id": 1,
+          "date": "2025-02-11",
+          "type": "",
+          "status": "",
+          "netAmount": 123.33,
+          "outstandingAmount": 231.22,
+          "gst": 276.55,
+          "grossAmount": 9821.22,
+          "partyName": ""
+        },
+        {
+          "id": 2,
+          "date": "2025-02-11",
+          "type": "",
+          "status": "",
+          "netAmount": 123.33,
+          "outstandingAmount": 231.22,
+          "gst": 276.55,
+          "grossAmount": 9821.22,
+          "partyName": ""
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "allocated_transactions": {
+    "data": {
+      "allocatedTransactions": [
+        {
+          "id": 1,
+          "date": "2025-02-11",
+          "description": "",
+          "allocatedAmount": 235.11
+        },
+        {
+          "id": 2,
+          "date": "2025-02-11",
+          "description": "",
+          "allocatedAmount": 235.11
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "rental_schedule": {
+    "data": {
+      "schedules": [
+        {
+          "leaseId": 1,
+          "date": "2025-02-11",
+          "totalAmount ": 532.21,
+          "amount": 1245.87,
+          "installmentInterest": 431.65,
+          "principalBalance": 32145,
+          "gst": 12.22
+        },
+        {
+          "leaseId": 2,
+          "date": "2025-02-11",
+          "totalAmount ": 532.21,
+          "amount": 1245.87,
+          "installmentInterest": 431.65,
+          "principalBalance": 32145,
+          "gst": 12.22
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "user-info": [
+    { "id": 1, "name": "user-info-1" },
+    { "id": 2, "name": "Item 2" }
+  ],
+
+  "contractDetailsObj": {
+    "data": {
+      "contractDetails": [
+        {
+          "contractId": 123,
+          "productType": "productType",
+          "maturityDate": "24-03-2025",
+          "nextRepriceDate": "25-03-2025",
+          "initialLoanAmount": 123.0,
+          "interestRate": 122.0,
+          "principalInterest": 101.0,
+          "principalBalance": 232.0
+        }
+      ]
+    }
+  },
+
+  "financial_summary": {
+    "data": {
+      "financialSummaryList": {
+        "annualReviewDueDate": "2025-02-22",
+        "creditlineDetails": [
+          {
+            "id": 3,
+            "contractId": 1,
+            "facilityName": "View creditline",
+            "limit": 1500000.0,
+            "currentBalance": 3145000.0,
+            "availableFunds": 2355000.0,
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          },
+          {
+            "id": 2,
+            "contractId": 2,
+            "facilityName": "Creditline Facility : 123 >",
+            "limit": 1500000.0,
+            "currentBalance": 3145000.0,
+            "availableFunds": 2355000.0,
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          },
+          {
+            "id": 3,
+            "contractId": 3,
+            "facilityName": "Current Account : 123 >",
+            "limit": 1500000.0,
+            "currentBalance": 3145000.0,
+            "availableFunds": 2355000.0,
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          }
+        ],
+        "operatingLeaseDetails": [
+          {
+            "id": 1,
+            "noOfLeases": "5500000.0",
+            "totalMonthlyPayment": "5500000.0",
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          }
+        ],
+        "nonFacilityLoansDetails": [
+          {
+            "id": 1,
+            "facilityName": "Reducing loans",
+            "noOfLoans": "500000",
+            "limit": "500000",
+            "currentBalance": "3150000",
+            "remainingLimit": "2345000",
+            "contractId": 1,
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          },
+          {
+            "id": 2,
+            "facilityName": "Current Account",
+            "noOfLoans": "500000.00",
+            "limit": "500000.00",
+            "currentBalance": "3150000.00",
+            "remainingLimit": "0.0",
+            "contractId": 1,
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          }
+        ],
+        "buybackDetails": [
+          {
+            "id": 1,
+            "noOfLeases": 2,
+            "limit": 7654.22,
+            "currentBalance": 65342.3,
+            "availableFunds": 23112.1,
+            "repaymentsAmountDueToday": "21222.2",
+            "newLoanAmountDueToday": "24331.0"
+          }
+        ],
+        "assetLinkDetails": [
+          {
+            "id": 1,
+            "contractId": 1,
+            "facilityName": "View Assetlink",
+            "securityValue": "500000.0",
+            "limit": "5500000.00",
+            "currentBalance": "3145000.00",
+            "availableFunds": "2355000.00",
+            "repaymentsAmountDueToday": "500000.00",
+            "newLoanAmountDueToday": "500000.00"
+          },
+          {
+            "id": 2,
+            "contractId": 2,
+            "facilityName": "Assetlink Facility: 123 >",
+            "securityValue": "500000.0",
+            "limit": "5500000.00",
+            "currentBalance": "3145000.00",
+            "availableFunds": "2355000.00",
+            "repaymentsAmountDueToday": "500000.00",
+            "newLoanAmountDueToday": "500000.00"
+          },
+          {
+            "id": 3,
+            "contractId": 3,
+            "facilityName": "Current Account : 123 >",
+            "securityValue": "500000.0",
+            "limit": "5500000.00",
+            "currentBalance": "3145000.00",
+            "availableFunds": "2355000.00",
+            "repaymentsAmountDueToday": "500000.00",
+            "newLoanAmountDueToday": "500000.00"
+          }
+        ],
+        "easyLinkDetails": [
+          {
+            "id": 1,
+            "contractId": 1,
+            "facilityName": "View Easylink",
+            "limit": "1500000.00",
+            "currentBalance": "3145000.00",
+            "availableFunds": "2355000.00",
+            "repaymentsAmountDueToday": "5500000.00",
+            "newLoanAmountDueToday": "2355000.00"
+          },
+          {
+            "id": 2,
+            "contractId": 2,
+            "facilityName": "Easylink Facility: 123>",
+            "limit": "1500000.00",
+            "currentBalance": "3145000.00",
+            "availableFunds": "2355000.00",
+            "repaymentsAmountDueToday": "5500000.00",
+            "newLoanAmountDueToday": "2355000.00"
+          },
+          {
+            "id": 3,
+            "contractId": 3,
+            "facilityName": "Current Account: 123>",
+            "limit": "1500000.00",
+            "currentBalance": "3145000.00",
+            "availableFunds": "2355000.00",
+            "repaymentsAmountDueToday": "5500000.00",
+            "newLoanAmountDueToday": "2355000.00"
+          }
+        ],
+        "warnings": [
+          { "messageId": "12", "message": "xyz", "messageArguments": [] }
+        ],
+        "values": "",
+        "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+      }
+    }
+  },
+
+  "paymentTransactionsFlowObj": {
+    "data": {
+      "payments": [
+        {
+          "id": 1,
+          "paymentDate": "04-04-2024",
+          "paymentMethod": "Direct Debit",
+          "paymentAmountReceived": 2355000.0,
+          "reason": "Insufficient Fund",
+          "isRejected": "false"
+        },
+        {
+          "id": 2,
+          "paymentDate": "04-04-2024",
+          "paymentMethod": "Direct Debit",
+          "paymentAmountReceived": 2355000.0,
+          "reason": "Insufficient Fund",
+          "isRejected": "false"
+        },
+        {
+          "id": 3,
+          "paymentDate": "04-04-2024",
+          "paymentMethod": "Direct Debit",
+          "paymentAmountReceived": 2355000.0,
+          "reason": "Insufficient Fund",
+          "isRejected": "false"
+        },
+        {
+          "id": 4,
+          "paymentDate": "04-04-2024",
+          "paymentMethod": "Direct Debit",
+          "paymentAmountReceived": 2355000.0,
+          "reason": "Insufficient Fund",
+          "isRejected": "false"
+        },
+        {
+          "id": 5,
+          "paymentDate": "04-04-2024",
+          "paymentMethod": "Direct Debit",
+          "paymentAmountReceived": 2355000.0,
+          "reason": "Insufficient Fund",
+          "isRejected": "false"
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "xyz", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "transactionsObj": {
+    "data": {
+      "transactions": [
+        {
+          "id": 1,
+          "transactionDate": "04-04-2024",
+          "transactionType": "Installment",
+          "status": "Unallocated",
+          "transactionAmount": 2355000.0,
+          "overdueAmount": "0.00",
+          "paymentDetails": "View"
+        },
+        {
+          "id": 2,
+          "transactionDate": "04-04-2024",
+          "transactionType": "Reverse Dishonour Fee",
+          "status": "Waived",
+          "transactionAmount": 2355000.0,
+          "overdueAmount": "0.00",
+          "paymentDetails": "View"
+        },
+        {
+          "id": 3,
+          "transactionDate": "04-04-2024",
+          "transactionType": "Installment",
+          "status": "Unallocated",
+          "transactionAmount": 2355000.0,
+          "overdueAmount": "0.00",
+          "paymentDetails": "View"
+        },
+        {
+          "id": 4,
+          "transactionDate": "04-04-2024",
+          "transactionType": "Dishonour Fee",
+          "status": "Processed",
+          "transactionAmount": 2355000.0,
+          "overdueAmount": "0.00",
+          "paymentDetails": "View"
+        },
+        {
+          "id": 5,
+          "transactionDate": "04-04-2024",
+          "transactionType": "Installment",
+          "status": "Unallocated",
+          "transactionAmount": 2355000.0,
+          "overdueAmount": "0.00",
+          "paymentDetails": "View"
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "xyz", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "paymentForcastObj": {
+    "data": {
+      "paymentForecasts": [
+        {
+          "month": "Jan 25",
+          "principal": "5550000.00",
+          "interest": "11000000.00",
+          "amount": "2355000.00"
+        },
+        {
+          "month": "Feb 25",
+          "principal": "5550000.00",
+          "interest": "11000000.00",
+          "amount": "2355000.00"
+        },
+        {
+          "month": "Mar 25",
+          "principal": "5550000.00",
+          "interest": "11000000.00",
+          "amount": "2355000.00"
+        }
+      ]
+    }
+  },
+
+  "allocatedTransactionsObj": {
+    "data": {
+      "allocatedTransactions": [
+        {
+          "id": 1,
+          "date": "22-11-2024",
+          "description": "Installment",
+          "allocated": "5126.28"
+        },
+        {
+          "id": 2,
+          "date": "22-11-2024",
+          "description": "Discount Fee",
+          "allocated": "5126.28"
+        },
+        {
+          "id": 3,
+          "date": "22-11-2024",
+          "description": "Installment",
+          "allocated": "5126.28"
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "xyz", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "transactionAllocationObj": {
+    "data": {
+      "paymentDetails": [
+        {
+          "id": 1,
+          "date": "22-11-2024",
+          "amount": "5126.28",
+          "method": "Direct Debit"
+        },
+        {
+          "id": 2,
+          "date": "22-11-2024",
+          "amount": "5126.28",
+          "method": "Direct Debit"
+        },
+        {
+          "id": 3,
+          "date": "22-11-2024",
+          "amount": "5126.28",
+          "method": "Direct Debit"
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "xyz", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  },
+
+  "leases": {
+    "data": {
+      "leaseDetails": [
+        {
+          "leaseId": 1,
+          "productType": "FL",
+          "descriptionOfAsset ": "descc",
+          "serialNumber": "",
+          "registrationNumber": "",
+          "vehicleIdentificationNumber": "",
+          "chassisNumber": "22",
+          "usagePerAnnum": "",
+          "totalRentalAmount": "",
+          "startDate": "01-01-2025",
+          "endDate": "11-01-2025",
+          "leaseTerm": 2,
+          "assetNumber": 33,
+          "fullyMaintained": true,
+          "residualValue": 21.33,
+          "gst": 12.22,
+          "butBackAmount": 532.21,
+          "butBackAmountWithGst": 234.11,
+          "originator": "",
+          "totalUnitUsage": "",
+          "allocatedAmount": 235.11
+        },
+        {
+          "leaseId": 2,
+          "productType": "2025-02-11",
+          "descriptionOfAsset ": "",
+          "serialNumber": "",
+          "registrationNumber": "",
+          "vehicleIdentificationNumber": "",
+          "chassisNumber": "",
+          "usagePerAnnum": "",
+          "totalRentalAmount": "",
+          "startDate": "",
+          "endDate ": "",
+          "leaseTerm": 2,
+          "assetNumber": 33,
+          "fullyMaintained": true,
+          "residualValue": 21.33,
+          "gst": 12.22,
+          "butBackAmount": 532.21,
+          "butBackAmountWithGst": 234.11,
+          "originator": "",
+          "totalUnitUsage": "",
+          "allocatedAmount": 235.11
+        }
+      ],
+      "warnings": [
+        { "messageId": "12", "message": "", "messageArguments": [] }
+      ],
+      "values": "",
+      "info": [{ "messageId": "12", "message": "", "messageArguments": [] }]
+    }
+  }
+}

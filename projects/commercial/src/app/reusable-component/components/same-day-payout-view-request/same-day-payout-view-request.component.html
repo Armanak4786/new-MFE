@@ -1,0 +1,234 @@
+<div class="m-3">
+  <!-- <div class="flex"> -->
+    <!-- <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="seletedRecoredData?.externalData?.assetServiceSameDayPayoutRequest?.facilityType + ' |'"
+    ></text>
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="
+         seletedRecoredData?.externalData?.assetServiceSameDayPayoutRequest?.subFacility
+        ? seletedRecoredData.externalData.assetServiceSameDayPayoutRequest.subFacility
+        : ''
+      "
+    ></text> -->
+    <!-- <text
+      [mode]="'label'"
+      [labelClass]="'font-bold pr-2'"
+      [label]="'id_ref'"
+      [labelType]="'horizontal'"
+      [className]="'flex mr-2'"
+      [valueClass]="'font-bold'"
+      [value]="' - ' + seletedRecoredData?.idRef"
+    ></text> -->
+  <!-- </div> -->
+  <div class="request-info-card mt-2">
+    <div class="request-details">
+      <div class="request-line">
+        <text
+          [mode]="'label'"
+          [label]="'request_number'"
+          [labelClass]="'text-xs font-bold label-color'"
+          [valueClass]="'text-xs font-bold  ml-2'"
+          [value]="
+            seletedRecoredData?.taskId + ' - ' + seletedRecoredData?.status
+          "
+        >
+        </text>
+      </div>
+
+      <div class="request-line">
+        <date
+          [mode]="'label'"
+          [label]="'requested_on'"
+          [labelClass]="'text-xs font-bold label-color'"
+          [valueClass]="'text-xs font-bold ml-2'"
+          [value]="' - ' + seletedRecoredData?.startDate"
+        >
+        </date>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <text
+      [mode]="'label'"
+      [labelClass]="'text-xs font-bold flex mb-4 ml-4'"
+      [label]="'asset_details'"
+    ></text>
+  </div>
+
+  <div
+    class="grid ml-3"
+    *ngFor="
+      let asset of originalRecord?.externalData
+        ?.assetServiceSameDayPayoutRequest?.assetDetails
+    "
+  >
+    <!-- <p-overlayPanel #op>
+      <div class="flex flex-column gap-3 w-25rem">
+        <div>
+          <div class="mb-2" *ngIf="asset?.assetDescription">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'asset_type'"
+              [value]="asset.assetDescription"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset['Reg/VIN/Serial/Chassis']">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'registration'"
+              [value]="asset['Reg/VIN/Serial/Chassis']"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.amountToPay">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'vin'"
+              [value]="asset.amountToPay"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.chassisNumber">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'chassis_number'"
+              [value]="asset.chassisNumber"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.serialNumber">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'serial_number'"
+              [value]="asset.serialNumber"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.make">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'make'"
+              [value]="asset.make"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.model">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'model'"
+              [value]="asset.model"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.dealTypeName">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'product_type'"
+              [value]="asset.dealTypeName"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.year">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'year'"
+              [value]="asset.year"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+          <div class="mb-2" *ngIf="asset?.color">
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs font-bold label-color mr-4'"
+              [label]="'colour'"
+              [value]="asset.color"
+              [valueClass]="'text-xs'"
+            ></text>
+          </div>
+        </div>
+      </div>
+    </p-overlayPanel> -->
+    <div class="col-1">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold label-color mr-4'"
+        [label]="'id_ref'"
+        [labelType]="'vertical'"
+        [value]="asset?.idRef"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold label-color mr-4'"
+        [label]="'description'"
+        [labelType]="'vertical'"
+        [value]="asset?.assetDescription"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+    <div class="col-3">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold label-color mr-4'"
+        [label]="'registration_number'"
+        [labelType]="'vertical'"
+        [value]="asset['Reg/VIN/Serial/Chassis']"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+    <div class="col-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold label-color mr-4'"
+        [label]="'assetId'"
+        [labelType]="'vertical'"
+        [value]="asset?.assetId"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+    <div class="col-2">
+  <text
+    mode="label"
+    labelClass="text-xs font-bold label-color"
+    [label]="'amount_to_pay'"
+    [labelType]="'vertical'"
+  ></text>
+
+  <amount
+    mode="label"
+    valueClass="text-xs mt-2"
+    [value]="asset?.amountToPay"
+  >
+  </amount>
+</div>
+    <div class="col-2">
+      <date
+        [labelClass]="'text-xs font-bold label-color'"
+        [label]="'expiry_date'"
+        [labelType]="'vertical'"
+        [valueClass]="'text-xs'"
+        [value]="asset?.expirydate"
+        [mode]="'label'"
+      ></date>
+    </div>
+  </div>
+</div>

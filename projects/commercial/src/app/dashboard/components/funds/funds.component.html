@@ -1,0 +1,36 @@
+<div class="grid m-2">
+  <div class="col-6 col-offset-6">
+    <div class="grid">
+      <div class="sm:col-12 md:col-4 lg:col-4">
+        <amount
+          [label]="'total_limit'"
+          [value]="totalLimit"
+          [className]="'flex flex-column'"
+          [valueClass]="'text-xs font-semibold'"
+          [labelClass]="'text-xs label-color ml-auto mb-2'"
+          [mode]="'label'"
+        ></amount>
+      </div>
+      <div class="sm:col-12 md:col-4 lg:col-4">
+        <amount
+          [label]="'current_balance'"
+          [value]="totalCurrentBalance"
+          [className]="'flex flex-column'"
+          [valueClass]="'text-xs font-semibold'"
+          [labelClass]="'text-xs label-color ml-auto mb-2'"
+          [mode]="'label'"
+        ></amount>
+      </div>
+      <div class="sm:col-12 md:col-4 lg:col-4">
+        <amount
+          [label]="'available_funds'"
+          [value]="availableFunds"
+          [className]="'flex flex-column'"
+          [valueClass]="'text-xs font-semibold'"
+          [labelClass]="'text-xs label-color ml-auto mb-2'"
+          [mode]="'label'"
+        ></amount>
+      </div>
+    </div>
+  </div>
+</div>

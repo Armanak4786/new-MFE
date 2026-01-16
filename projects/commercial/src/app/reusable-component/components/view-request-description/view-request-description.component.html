@@ -1,0 +1,1316 @@
+<div *ngIf="selectedRequest?.subject !== 'Contact UDC Request Details'">
+  <div class="flex ml-4 mt-2" >
+    <text
+      *ngIf="selectedRequest?.subject !== 'Service Request' || 'Contact UDC Request Details'"
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="getRequestData()?.facilityType + ' |'"
+    ></text>
+    <text
+      *ngIf="
+        selectedRequest?.subject !== 'Add Assets Request' &&
+        selectedRequest?.subject !== 'New Loan Request' &&
+        selectedRequest?.subject !== 'Service Request'
+      "
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="getRequestData()?.subFacility + ' |'"
+    ></text>
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="selectedRequest?.subject + ' |'"
+    ></text>
+    <text
+      *ngIf="
+        selectedRequest?.subject !== 'Add Assets Request' &&
+        selectedRequest?.subject !== 'Service Request'
+      "
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [valueClass]="'font-bold'"
+      [className]="'flex mr-2'"
+      [label]="'loan_no'"
+      [value]="getRequestData()?.loan"
+    ></text>
+  </div>
+</div>
+
+<!-- Display block only if subject is "Add Assets Request" -->
+<div
+  class="asset-request-container"
+  *ngIf="selectedRequest?.subject === 'Add Assets Request'"
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card">
+      <div class="request-details">
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Request No.'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.taskId"
+          >
+          </text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold ml-2'"
+            [value]="'- ' + selectedRequest?.status"
+          >
+          </text>
+        </div>
+
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested By'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.customerName + ' , on'"
+          >
+          </text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="selectedRequest?.startDate"
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+
+    <!-- Asset Details Section -->
+    <div class="asset-details-section">
+      <text
+        [mode]="'label'"
+        [labelClass]="'font-bold'"
+        [className]="'flex mr-2 ml-2 mb-2 mt-2'"
+        [label]="'Asset Details'"
+      ></text>
+      <!-- Asset Table -->
+      <div class="asset-table">
+        <!-- Table Header -->
+        <div class="table-header">
+          <div class="col-stock-no">
+            <span class="header-text">Stock No</span>
+          </div>
+          <div class="col-description">
+            <span class="header-text">Asset Description</span>
+          </div>
+          <div class="col-price">
+            <span class="header-text">Purchase Price (GST excl.)</span>
+          </div>
+        </div>
+        <!-- Table Rows -->
+        <div
+          class="table-row"
+          *ngFor="
+            let asset of selectedRequest?.externalData?.addAssetsRequest?.assets
+          "
+        >
+          <div class="col-stock-no">
+            <text
+              [mode]="'label'"
+              [valueClass]="'text-xs'"
+              [value]="asset?.stockNumber"
+            >
+            </text>
+          </div>
+          <div class="col-description">
+            <text
+              [mode]="'label'"
+              [valueClass]="'text-xs'"
+              [value]="asset?.assetDescription"
+            >
+            </text>
+          </div>
+          <div class="col-price">
+            <amount
+              [mode]="'label'"
+              [valueClass]="'text-xs'"
+              [value]="asset?.purchasePrice"
+            >
+            </amount>
+          </div>
+        </div>
+      </div>
+    </div>
+    <text
+      [label]="'Additional Information'"
+      [labelClass]="'text-sm font-bold block ml-2 mb-2'"
+      [mode]="'label'"
+    ></text>
+
+    <!-- Additional Information Section -->
+    <div class="additional-info-section">
+      <div class="info-content">
+        <text
+          [mode]="'label'"
+          [valueClass]="'info-text block whitespace-pre-line'"
+          [value]="selectedRequest?.externalData?.addAssetsRequest?.remarks"
+        >
+        </text>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Display block only if subject is "Draw Down Request" -->
+<div
+  class="loan-drawdown-container"
+  *ngIf="
+    selectedRequest?.subject === 'Draw Down Request' ||
+    selectedRequest?.subject === 'Drawdown Request'
+  "
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card">
+      <div class="request-details">
+        <div class="request-line">
+          <!-- <text [mode]="'label'" [label]="'Request No.'"
+            [labelClass]="'loan-dash-text text-sm loan-dash-text-color flex mt-2'"
+            [valueClass]="'text-xs flex ml-2 mt-1'" [value]="selectedRequest?.taskId">
+          </text> -->
+          <text
+            [mode]="'label'"
+            [label]="'Request No.'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.taskId"
+          >
+          </text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold ml-2'"
+            [value]="'- ' + selectedRequest?.status"
+          >
+          </text>
+        </div>
+
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested By'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.customerName + ' , on'"
+          >
+          </text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="selectedRequest?.startDate"
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawdown Details Section -->
+  <div>
+    <text
+      [mode]="'label'"
+      [labelClass]="
+        'loan-dash-text loan-dash-text-color text-sm font-semibold ml-2'
+      "
+      [label]="'Drawdown Details'"
+    ></text>
+    <div class="sm:col-5 md:col-5 lg:col-12">
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2'"
+            [label]="'Purchase Price of Asset/s (GST Incl.)'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.drawdownRequest?.drawdownInfo
+                ?.purchasePriceOfAssets
+            "
+          >
+          </amount>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Less Deposit/Trade-in'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.drawdownRequest?.drawdownInfo
+                ?.lessDepositTradeIn
+            "
+          >
+          </amount>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Total Drawdown Amount'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.drawdownRequest?.drawdownInfo
+                ?.totalDrawdownAmount
+            "
+          >
+          </amount>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Pay Drawdown Out On'"
+          ></text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.drawdownRequest?.drawdownInfo
+                ?.drawdownOutOn
+            "
+          >
+          </date>
+        </div>
+
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Request Date'"
+          ></text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.drawdownRequest?.drawdownInfo
+                ?.requestDate
+            "
+          >
+          </date>
+        </div>
+
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Working Capital'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.drawdownRequest?.drawdownInfo?.workingCapital
+            "
+          >
+          </amount>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disbursement Details Section -->
+  <div class="asset-details-section">
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2 ml-2 mb-2'"
+      [label]="'Disbursement Details'"
+    ></text>
+    <!-- Suppliers Table -->
+    <div class="asset-table">
+      <!-- Table Header -->
+      <div class="table-header">
+        <div class="col-stock-no">
+          <span class="header-text">Supplier Name</span>
+        </div>
+        <div class="col-description">
+          <span class="header-text">Amount</span>
+        </div>
+      </div>
+      <!-- Table Rows -->
+      <div
+        class="table-row"
+        *ngFor="
+          let supplier of selectedRequest?.externalData?.drawdownRequest
+            ?.disbursementInfo?.suppliers
+        "
+      >
+        <div class="col-stock-no">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="supplier?.supplierName"
+          >
+          </text>
+        </div>
+        <div class="col-description">
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="supplier?.amountToSupplier"
+          >
+          </amount>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asset Details in Drawdown -->
+  <div
+    class="asset-details-section"
+    *ngIf="
+      selectedRequest?.externalData?.drawdownRequest?.disbursementInfo
+        ?.assetDetails?.length > 0
+    "
+  >
+    <div class="asset-table">
+      <!-- Table Header -->
+      <div class="table-header">
+        <div class="col-stock-no">
+          <span class="header-text">Stock No</span>
+        </div>
+        <div class="col-description">
+          <span class="header-text">Asset Description</span>
+        </div>
+      </div>
+      <!-- Table Rows -->
+      <div
+        class="table-row"
+        *ngFor="
+          let asset of selectedRequest?.externalData?.drawdownRequest
+            ?.disbursementInfo?.assetDetails
+        "
+      >
+        <div class="col-stock-no">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.stockNumber"
+          >
+          </text>
+        </div>
+        <div class="col-description">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.assetDescription"
+          >
+          </text>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <text
+    [label]="'Additional Information'"
+    [labelClass]="'text-sm font-bold block ml-2 mb-2'"
+    [mode]="'label'"
+  ></text>
+
+  <!-- Additional Information Section -->
+  <div class="additional-info-section">
+    <div class="info-content">
+      <text
+        [mode]="'label'"
+        [valueClass]="'info-text block whitespace-pre-line'"
+        [value]="selectedRequest?.externalData?.drawdownRequest?.remarks"
+      >
+      </text>
+    </div>
+  </div>
+</div>
+<!-- Display block only if subject is "New Loan Request" -->
+<div
+  class="loan-drawdown-container"
+  *ngIf="selectedRequest?.subject === 'New Loan Request'"
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card request-details">
+      <div class="request-details">
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested No.'"
+            [labelClass]="'text-xs font-bold label-color'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.taskId"
+          >
+          </text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold ml-2'"
+            [value]="'- ' + selectedRequest?.status"
+          >
+          </text>
+        </div>
+
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested By'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.customerName + ' , on'"
+          >
+          </text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="selectedRequest?.startDate"
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawdown Details Section -->
+  <div>
+    <text
+      [mode]="'label'"
+      [labelClass]="
+        'loan-dash-text loan-dash-text-color text-sm font-semibold ml-2'
+      "
+      [label]="'New Loan Details'"
+    ></text>
+    <div class="sm:col-5 md:col-5 lg:col-12">
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2'"
+            [label]="'Purchase Price'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.newLoanRequest?.newLoanInfo
+                ?.purchasePriceOfAssets
+            "
+          >
+          </amount>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Less Deposit'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.newLoanRequest?.newLoanInfo
+                ?.lessDepositTradeIn
+            "
+          >
+          </amount>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Total Drawdown Amount'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.newLoanRequest?.newLoanInfo
+                ?.totalNewLoanAmount
+            "
+          >
+          </amount>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Drawdown Out On'"
+          ></text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.newLoanRequest?.newLoanInfo
+                ?.newLoanOutOn
+            "
+          >
+          </date>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'Request Date'"
+          ></text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.newLoanRequest?.newLoanInfo
+                ?.requestDate
+            "
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disbursement Details Section -->
+  <div class="asset-details-section">
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2 ml-2 mb-2'"
+      [label]="'Disbursement Details'"
+    ></text>
+    <!-- Suppliers Table -->
+    <div class="asset-table">
+      <!-- Table Header -->
+      <div class="table-header">
+        <div class="col-stock-no">
+          <span class="header-text">Supplier Name</span>
+        </div>
+        <div class="col-description">
+          <span class="header-text">Amount</span>
+        </div>
+      </div>
+      <!-- Table Rows -->
+      <div
+        class="table-row"
+        *ngFor="
+          let supplier of selectedRequest?.externalData?.newLoanRequest
+            ?.disbursementInfo?.suppliers
+        "
+      >
+        <div class="col-stock-no">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="supplier?.supplierName"
+          >
+          </text>
+        </div>
+        <div class="col-description">
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="supplier?.amountToSupplier"
+          >
+          </amount>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asset Details in Drawdown -->
+  <div
+    class="asset-details-section"
+    *ngIf="
+      selectedRequest?.externalData?.newLoanRequest?.disbursementInfo
+        ?.assetDetails?.length > 0
+    "
+  >
+    <div class="asset-table">
+      <!-- Table Header -->
+      <div class="table-header">
+        <div class="col-stock-no">
+          <span class="header-text">Stock No</span>
+        </div>
+        <div class="col-description">
+          <span class="header-text">Asset Description</span>
+        </div>
+      </div>
+      <!-- Table Rows -->
+      <div
+        class="table-row"
+        *ngFor="
+          let asset of selectedRequest?.externalData?.newLoanRequest
+            ?.disbursementInfo?.assetDetails
+        "
+      >
+        <div class="col-stock-no">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.stockNumber"
+          >
+          </text>
+        </div>
+        <div class="col-description">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.assetDescription"
+          >
+          </text>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <text
+    [label]="'Additional Information'"
+    [labelClass]="'text-sm font-bold block ml-2 mb-2'"
+    [mode]="'label'"
+  ></text>
+
+  <!-- Additional Information Section -->
+  <div class="additional-info-section">
+    <div class="info-content">
+      <text
+        [mode]="'label'"
+        [valueClass]="'info-text block whitespace-pre-line'"
+        [value]="selectedRequest?.externalData?.newLoanRequest?.remarks"
+      >
+      </text>
+    </div>
+  </div>
+</div>
+
+<!-- Display block only if subject is "Repayment Request" -->
+<div
+  class="loan-drawdown-container"
+  *ngIf="selectedRequest?.subject === 'Repayment Request'"
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card">
+      <div class="request-details">
+        <div class="request-line">
+          <!-- <text [mode]="'label'" [label]="'Request No.'"
+            [labelClass]="'loan-dash-text text-sm loan-dash-text-color flex mt-2'"
+            [valueClass]="'text-xs flex ml-2 mt-1'" [value]="selectedRequest?.taskId">
+          </text> -->
+          <text
+            [mode]="'label'"
+            [label]="'Requested No.'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.taskId"
+          >
+          </text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold ml-2'"
+            [value]="'- ' + selectedRequest?.status"
+          >
+          </text>
+        </div>
+
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested By'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.customerName + ' , on'"
+          >
+          </text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="selectedRequest?.startDate"
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repayment Details Section -->
+  <div>
+    <text
+      [mode]="'label'"
+      [labelClass]="
+        'loan-dash-text loan-dash-text-color text-sm font-semibold ml-2'
+      "
+      [label]="'Repayment Details'"
+    ></text>
+    <div class="sm:col-5 md:col-5 lg:col-12">
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="
+              'loan-dash-text loan-dash-text-color text-xs flex mt-2'
+            "
+            [label]="'Payment Amount'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.repaymentRequest?.repaymentDetails
+                ?.paymentAmount
+            "
+          >
+          </amount>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Request Date'"
+          ></text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.repaymentRequest?.repaymentDetails
+                ?.requestDate
+            "
+          >
+          </date>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Payment Options'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequest?.externalData?.repaymentRequest?.repaymentDetails
+                ?.paymentOptions
+            "
+          >
+          </text>
+        </div>
+      </div>
+    </div>
+  </div>
+  <text
+    [label]="'Additional Information'"
+    [labelClass]="'text-sm font-bold block ml-2 mb-2'"
+    [mode]="'label'"
+  ></text>
+
+  <!-- Additional Information Section -->
+  <div class="additional-info-section">
+    <div class="info-content">
+      <text
+        [mode]="'label'"
+        [valueClass]="'info-text block whitespace-pre-line'"
+        [value]="selectedRequest?.externalData?.repaymentRequest?.remarks"
+      >
+      </text>
+    </div>
+  </div>
+</div>
+
+<!-- Display block only if subject is "Release Security Request" -->
+<div
+  class="loan-drawdown-container"
+  *ngIf="selectedRequest?.subject === 'Release Security Request'"
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card">
+      <div class="request-details">
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Request No.'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.taskId"
+          >
+          </text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold ml-2'"
+            [value]="'- ' + selectedRequest?.status"
+          >
+          </text>
+        </div>
+
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested By'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.customerName + ' , on'"
+          >
+          </text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="selectedRequest?.startDate"
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asset Details Section -->
+  <div class="asset-details-section">
+    <text
+      [mode]="'label'"
+      [labelClass]="'font-bold'"
+      [className]="'flex mr-2 ml-2 mb-2'"
+      [label]="'Asset Details'"
+    ></text>
+    <!-- Asset Table -->
+    <div class="asset-table">
+      <!-- Table Header -->
+      <div class="table-header">
+        <div class="col-stock-no">
+          <span class="header-text">Asset No</span>
+        </div>
+        <div class="col-description">
+          <span class="header-text">Asset Description</span>
+        </div>
+        <div class="col-price">
+          <span class="header-text">Reg/VIN/Chassis/Serial No.</span>
+        </div>
+        <div class="col-price">
+          <span class="header-text">SSV</span>
+        </div>
+        <div class="col-price">
+          <span class="header-text">Loan No.</span>
+        </div>
+      </div>
+      <!-- Table Rows -->
+      <div
+        class="table-row"
+        *ngFor="
+          let asset of selectedRequest?.externalData?.releaseSecurityRequest
+            ?.assetDetails
+        "
+      >
+        <div class="col-stock-no">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.assetId"
+          >
+          </text>
+        </div>
+        <div class="col-description">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.assetDescription"
+          >
+          </text>
+        </div>
+        <div class="col-price">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.registrationOrSerialOrChassis"
+          >
+          </text>
+        </div>
+        <div class="col-price">
+          <text [mode]="'label'" [valueClass]="'text-xs'" [value]="asset?.ssv">
+          </text>
+        </div>
+        <div class="col-price">
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="asset?.loanId"
+          >
+          </text>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Options and Reason -->
+  <div>
+    <div>
+      <text
+        [label]="'Payment Options'"
+        [labelClass]="'text-sm font-bold block'"
+        [mode]="'label'"
+        [valueClass]="'mb-4 info-text block whitespace-pre-line'"
+        [value]="
+          selectedRequest?.externalData?.releaseSecurityRequest?.paymentOption
+        "
+      ></text>
+    </div>
+  </div>
+   <div>
+      <label class="text-sm font-bold block">Reason for Release</label>
+      <div class="mb-4 info-text block whitespace-pre-line">
+        <ng-container
+          *ngFor="
+            let reasonObj of selectedRequest?.externalData
+              ?.releaseSecurityRequest?.releaseReason
+          "
+        >
+          {{ reasonObj.reason }}
+          <br />
+        </ng-container>
+      </div>
+    </div>
+
+  <!-- Additional Information Section -->
+  <text
+    [label]="'Additional Information'"
+    [labelClass]="'text-sm font-bold block ml-2 mb-2'"
+    [mode]="'label'"
+  ></text>
+
+  <!-- Additional Information Section -->
+  <div class="additional-info-section">
+    <div class="info-content">
+      <text
+        [mode]="'label'"
+        [valueClass]="'info-text block whitespace-pre-line'"
+        [value]="selectedRequest?.externalData?.releaseSecurityRequest?.remarks"
+      >
+      </text>
+    </div>
+  </div>
+</div>
+
+<!-- Display block only if subject is "Service Request" -->
+<div
+  class="loan-drawdown-container"
+  *ngIf="selectedRequest?.subject === 'Service Request'"
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card">
+      <div class="request-details">
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested No.'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.taskId"
+          >
+          </text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs font-bold ml-2'"
+            [value]="'- ' + selectedRequest?.status"
+          >
+          </text>
+        </div>
+
+        <div class="request-line">
+          <text
+            [mode]="'label'"
+            [label]="'Requested By'"
+            [valueClass]="'text-xs font-bold  ml-2'"
+            [value]="selectedRequest?.customerName + ' , on'"
+          >
+          </text>
+          <date
+            [mode]="'label'"
+            [valueClass]="'text-xs ml-2'"
+            [value]="selectedRequest?.startDate"
+          >
+          </date>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address Details Section -->
+  <div *ngIf="selectedRequestData?.category?.updateAddressDetails != null">
+    <text
+      [mode]="'label'"
+      [labelClass]="
+        'loan-dash-text loan-dash-text-color text-sm font-semibold ml-2'
+      "
+      [label]="'Current Address Details'"
+    ></text>
+    <div class="sm:col-5 md:col-5 lg:col-12">
+      <div class="grid">
+        <div class="col-6">
+          <text
+            [mode]="'label'"
+            [labelClass]="
+              'loan-dash-text loan-dash-text-color text-xs flex mt-2'
+            "
+            [label]="'Current Address'"
+            [value]="
+              selectedRequestData?.category?.updateAddressDetails
+                ?.currentAddress
+            "
+          ></text>
+        </div>
+
+        <div class="col-6">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Physical Address'"
+            [value]="
+              selectedRequestData?.category?.updateAddressDetails
+                ?.physicalAddress
+            "
+          ></text>
+        </div>
+
+        <div class="col-6">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Postal Address'"
+            [value]="
+              selectedRequestData?.category?.updateAddressDetails?.postalAddress
+            "
+          ></text>
+        </div>
+
+        <div class="col-6">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Registered Address'"
+            [value]="
+              selectedRequestData?.category?.updateAddressDetails
+                ?.registeredAddress
+            "
+          ></text>
+        </div>
+      </div>
+    </div>
+
+    <text
+      [mode]="'label'"
+      [labelClass]="
+        'loan-dash-text loan-dash-text-color text-sm font-semibold ml-2'
+      "
+      [label]="'New Address Details'"
+    ></text>
+    <div class="sm:col-5 md:col-5 lg:col-12">
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="
+              'loan-dash-text loan-dash-text-color text-xs flex mt-2'
+            "
+            [value]="
+              selectedRequestData?.category?.updateAddressDetails
+                ?.updatedAddress
+            "
+          ></text>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Contact Details Section -->
+  <div *ngIf="selectedRequestData?.category?.updateContactDetails != null">
+    <text
+      [mode]="'label'"
+      [labelClass]="
+        'loan-dash-text loan-dash-text-color text-sm font-semibold ml-2'
+      "
+      [label]="'Contact Details'"
+    ></text>
+    <div class="sm:col-5 md:col-5 lg:col-12">
+      <div class="grid">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="
+              'loan-dash-text loan-dash-text-color text-xs flex mt-2'
+            "
+            [label]="'Current Email'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequestData?.category?.updateContactDetails?.currentEmail
+            "
+          >
+          </text>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Current Mobile Number'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequestData?.category?.updateContactDetails
+                ?.currentMobileNumber
+            "
+          >
+          </text>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Current Phone'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequestData?.category?.updateContactDetails?.currentPhone
+            "
+          >
+          </text>
+        </div>
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Updated Email'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequestData?.category?.updateContactDetails?.updatedEmail
+            "
+          >
+          </text>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Updated Mobile Number'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequestData?.category?.updateContactDetails
+                ?.updatedMobileNumber
+            "
+          >
+          </text>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-xs'"
+            [label]="'Updated Phone'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="
+              selectedRequestData?.category?.updateContactDetails?.updatedPhone
+            "
+          >
+          </text>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- For contact UDC -->
+ <div
+  class="mt-2 loan-drawdown-container"
+  *ngIf="
+    selectedRequest?.subject === 'Contact UDC Request Details'
+  "
+>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="request-info-card request-details">
+        <div class="request-line">
+          <text
+          [mode]="'label'"
+          [label]="'request_number'"
+          [labelClass]="'text-xs font-bold label-color'"
+          [valueClass]="'text-xs font-bold  ml-2'"
+          [value]="
+            selectedRequest?.taskId + ' - ' + selectedRequest?.status
+          "
+        >
+        </text>
+        </div>
+
+       <div class="request-line">
+        <text
+          [mode]="'label'"
+          [label]="'requested_by'"
+          [labelClass]="'text-xs font-bold label-color'"
+          [valueClass]="'text-xs font-bold  ml-2'"
+          [value]="selectedRequest?.customerName"
+        >
+        </text>
+        <text
+          [mode]="'label'"
+          [label]="'Requested on'"
+          [labelClass]="'text-xs font-bold label-color'"
+        >
+        </text>
+        <date
+          [mode]="'label'"
+          [valueClass]="'text-xs font-bold'"
+          [value]="selectedRequest?.startDate"
+        >
+        </date>
+      </div>
+    </div>
+  </div>
+
+  <div class="ml-2 flex">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [labelType]="vertical"
+          [label]="'Subject : '"
+          [mode]="'label'"
+          [valueClass]="'text-xs'"
+          [value]="selectedRequestData?.subject"
+        >
+        </text>
+  </div>
+   <div class="ml-2 flex mt-4">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [label]="'ReplyTo : '"
+          [labelType]="vertical"
+          [valueClass]="'text-xs'"
+          [value]="selectedRequestData?.replyTo"
+        >
+        </text>
+  </div>
+   <div class="ml-2 flex mt-4">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color flex'"
+          [label]="'Message'"
+          [valueClass]="'text-xs'"
+          [value]="selectedRequestData?.message"
+        >
+        </text>
+  </div>
+</div>
+
+
+

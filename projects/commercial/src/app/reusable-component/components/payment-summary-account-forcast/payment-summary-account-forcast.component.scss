@@ -1,0 +1,39 @@
+// .payment-summary-account-forcast{
+// 	background-color: #F7FAFC;
+
+// 	&-text{
+// 		color: #6F6F6F
+// 	}
+// }
+
+.frequency-dropdown {
+  height: 8px;
+  font-size: 12px;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+::ng-deep .frequency-dropdown .p-dropdown-label {
+  font-size: 11px;
+}
+
+.payment-label {
+  margin-top: -8px;
+}
+
+.card p-2 {
+  height: 500px;
+}
+
+//Workaround for pagination dropdown values
+::ng-deep .p-dropdown-panel {
+  bottom: 100% ;
+  top: auto ;
+  position: absolute ;
+  z-index: 9999 ;
+  transform: translateY(-5px);
+}
+
+::ng-deep date.custom-width input {
+  width: 115px;
+}

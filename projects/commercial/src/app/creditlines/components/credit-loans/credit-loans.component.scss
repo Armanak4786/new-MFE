@@ -1,0 +1,10 @@
+.button-wrapper {
+  display: flex;
+  flex-direction: row; /* Stack buttons horizontally (not vertically) */
+  align-items: flex-end; /* Align to the right */
+  position: absolute; /* Position them at the top right */
+  bottom: 43%; /* Adjust as needed */
+  right: 0; /* Adjust as needed */
+  margin: 10px; /* Add some spacing */
+  z-index: 1000;
+}

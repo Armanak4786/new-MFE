@@ -1,0 +1,87 @@
+<gen-card
+  [headerText]="''"
+  [cardBgColor]="'--primaryLighterColor'"
+  [cardType]="'non-border'"
+>
+  <!-- <ng-container body> -->
+  <div class="grid" body>
+    <div [ngClass]="showActionIcons ? 'col-7' : 'col-12'">
+      <div
+        class="upload-section border-1 border-dashed border-primary-500 border-round-xl w-full p-3 mb-3"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop($event)"
+        [ngClass]="{ dragging: isDragging }"
+      >
+        <div class="flex justify-content-center pt-2">
+          <i class="pi pi-upload"></i>
+        </div>
+        <div class="text-center">
+          <p class="font-semibold text-sm mb-4 mt-1">
+            Drag and Drop Files here
+          </p>
+
+          <p class="upload-info text-xs text-600 mt-1 mb-1">
+            Supported documents formats: .pdf, .jpg, .png, .doc, .docx, .gif,
+            html, .jpg, .jpeg, Cannot exceed 2MB per upload
+          </p>
+        </div>
+
+        <div class="text-center">
+          <gen-file-upload
+            [files]="files"
+            [isMultiple]="false"
+            [acceptedFormat]="
+              '.pdf, .jpg, .png, .doc, .docx, .html, .jpg, .jpeg, .msg, .gif'
+            "
+            [uploadedFiles]="uploadedFiles"
+            (onUploaded)="onUploaded($event)"
+          >
+            <ng-container choose>
+              <div
+                class="flex align-items-center justify-content-center text-xs p-0 m-0"
+              >
+                <span class="font-semibold">Or</span>
+                <button
+                  pButton
+                  type="button"
+                  label="browse file"
+                  class="p-button-link m-0 p-1 font-semibold text-xs"
+                ></button>
+                <span class="font-semibold text-xs"> from device</span>
+              </div>
+            </ng-container>
+          </gen-file-upload>
+        </div>
+      </div>
+      <div class="grid gap-2 flex justify-content-center">
+        <div class="col-3">
+          <gen-button
+            (onClick)="onUpload()"
+            [btnColor]="'var(--backgroundColorSecondaryDark)'"
+            [btnLabel]="'Upload'"
+            [btnWidth]="'full'"
+          />
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="showActionIcons">
+      <div class="col-5" *ngIf="showActionIcons">
+        <!-- <p class="mt-2 mb-2 text-xs">Document Type</p> -->
+        <div class="h-10rem overflow-auto">
+          <gen-table
+            [tableClass]="'border-round'"
+            [columns]="columns"
+            [dataList]="documents"
+            [rowHeight]="12"
+            [headingClass]="'font-medium text-500 px-0 hidden'"
+            (onCellClick)="onCellClick($event)"
+            [bodyClass]="'px-0 py-1'"
+          ></gen-table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- </ng-container> -->
+</gen-card>

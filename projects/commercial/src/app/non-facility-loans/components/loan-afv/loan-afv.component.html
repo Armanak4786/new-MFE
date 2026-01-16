@@ -1,0 +1,448 @@
+<div class="grid">
+  <div class="sm:col-6 md:col-6 lg:col-6">
+    <div class="card p-2">
+      <div class="grid">
+        <div class="col-2">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold'"
+            [label]="'loan_details'"
+          ></text>
+        </div>
+        <div class="col-offset-8 col-2 flex justify-content-end">
+          <a
+            class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+            (click)="op.toggle($event)"
+          >
+            {{ "loan_parties" | translate }}
+          </a>
+        </div>
+      </div>
+      <p-overlayPanel #op>
+        <div class="flex flex-column gap-3 w-25rem">
+          <app-loan-parties
+            [leasePartiesData]="loanPartiesData"
+            [leasePartiesColumnDef]="loanPartiesColumnDef"
+          ></app-loan-parties>
+        </div>
+      </p-overlayPanel>
+      <div class="grid mb-2">
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'product'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [className]="'trim_label'"
+            [value]="loanData?.productType"
+            [title]="loanData?.productType"
+          ></text>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'loan_amount'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.initialLoanAmount"
+          ></text>
+        </div>
+        <div class="col-3">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'loan_date'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.loanDate"
+          ></text> -->
+          <date
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mt-1 mb-0'"
+            [label]="'loan_date'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.loanDate"
+          ></date>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'term'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.loanTerm + ' months'"
+          ></text>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'interest_rate'"
+          ></text>
+          <a
+            (click)="interestRate.toggle($event)"
+            class="loan-dash-text text-blue-600 cursor-pointer"
+          >
+            {{ loanData?.interestRate + "%" }}
+          </a>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'interest_charge'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.interestCharge"
+          ></amount>
+        </div>
+        <div class="col-3">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'maturity_date'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.maturityDate"
+          ></text> -->
+          <date
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mt-1 mb-0'"
+            [label]="'maturity_date'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.maturityDate"
+          ></date>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold'"
+            [label]="'assured_future_value'"
+          ></text>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'future_value_amount'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.futureValueAmount"
+          ></amount>
+        </div>
+        <div class="col-3">
+          <!-- <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'future_value_date'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.futureValueDate"
+          ></text> -->
+          <date
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color mt-1 mb-0'"
+            [label]="'future_value_date'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.futureValueDate"
+          ></date>
+        </div>
+        <div class="col-3">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'maximum_permitted_km'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="loanData?.maximumPermitted + 'km'"
+          ></text>
+        </div>
+      </div>
+      <div class="flex">
+        <text
+          [mode]="'label'"
+          [labelClass]="'loan-dash-text loan-dash-text-color mr-2'"
+          [label]="'customer_decision'"
+        ></text>
+        <text
+          [mode]="'label'"
+          [valueClass]="'loan-dash-text'"
+          [value]="loanData?.customerDecision"
+        ></text>
+      </div>
+    </div>
+  </div>
+
+  <p-overlayPanel #interestRate>
+    <div class="flex flex-column gap-3 w-25rem">
+      <text
+        [mode]="'label'"
+        [labelClass]="'loan-dash-text loan-dash-text-color'"
+        [label]="'interest_rate'"
+      ></text>
+      <gen-table
+        [columns]="interestRateColumnDefs"
+        [dataList]="interesRateData"
+        [isScrollable]="'true'"
+        [tableClass]="'border-round'"
+        [tableStyle]="'stripped-rows'"
+        [bodyClass]="'text-xs'"
+        [headingClass]="'tableHeader text-xs text-color'"
+        [strippedOddClass]="'tableOddRow'"
+        [strippedEvenClass]="'tableEvenRow'"
+      ></gen-table>
+    </div>
+  </p-overlayPanel>
+  <div class="sm:col-6 md:col-6 lg:col-6 p-2 pb-2">
+    <div class="card p-2 pb-8">
+      <div class="flex items-center mb-2">
+        <div class="flex-shrink-0 w-1/4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text font-bold'"
+            [label]="'current_position'"
+          ></text>
+        </div>
+      </div>
+      <div class="grid mb-2">
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'gross_balance' + toDate"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.grossBalanceAsOfToday"
+          ></text>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'outstanding_balance'"
+          ></text>
+          <amount
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.outStandingBalance"
+          ></amount>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'remaining_interest'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.remainingInterest"
+          ></text>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'overdue_amount'"
+          ></text>
+          <div class="flex">
+            <amount
+              [mode]="'label'"
+              [valueClass]="'text-xs'"
+              [value]="currentPosition?.[0]?.overdueAmount"
+            ></amount>
+            <text
+              [mode]="'label'"
+              [labelClass]="'text-xs'"
+              [label]="' / ' + currentPosition?.[0]?.overduedays + ' days'"
+            ></text>
+          </div>
+        </div>
+        <div class="col-4">
+          <text
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [label]="'remaining_term'"
+          ></text>
+          <text
+            [mode]="'label'"
+            [labelClass]="'text-xs'"
+            [label]="currentPosition?.[0]?.remainingTerm"
+          ></text>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid mt-2">
+  <div class="col-12 sm:col-12 md:col-7">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'Payment Summary'"
+          class="text-xs"
+          (onClick)="showPaymentSummaryTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'statement'"
+          class="text-xs"
+          (onClick)="showLoanStatementTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'Assets'"
+          class="text-xs"
+          (onClick)="showAssociatedAssetsTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'pi_schedule'"
+          class="text-xs"
+          (onClick)="showPiScheduleTab()"
+        ></gen-button>
+      </div>
+      <div class="p-1">
+        <gen-button
+          [btnType]="'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocumentsTab()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-5">
+    <div class="flex justify-content-end flex-wrap">
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_non_facility_loan'"
+          class="text-xs"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (click)="navigateToNonFacility()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'view_loans'"
+          class="text-xs"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (click)="navigateToLoansDashboard()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'PaymentSummary'">
+  <div class="grid">
+    <div class="sm:col-7 md:col-7 lg:col-7">
+      <app-payment-summary
+        [paymentSummaryDataList]="paymentSummaryDataList"
+        [paymentSummaryColumnDefs]="paymentSummaryColumnDefs"
+      ></app-payment-summary>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'PiSchedule'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-pi-schedule
+        [piScheduleColumnDefs]="piScheduleColumnDefs"
+        [piScheduleDataList]="piScheduleDataList"
+      ></app-pi-schedule>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'TransactionFlow'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-transaction-flow
+        [transactionsColumnDef]="transactionsColumnDef"
+        [transactionDataList]="transactionDataList"
+        [paymentColumnDefs]="paymentColumnDefs"
+        [paymentDataList]="paymentDataList"
+        #TransactionFlow
+        [paymentNotYetAllocated]="paymentNotYetAllocated"
+        [overDue]="overDue"
+      ></app-transaction-flow>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'AssociatedAssets'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <!-- <app-associated-assets
+		  [associatedAsetscolumnDefs]="associatedAsetscolumnDefs"
+		  [associatedAssetsDataList]="associatedAssetsDataList"
+		></app-associated-assets> -->
+      <app-facility-assets
+        [columnsFacilityAsset]="associatedAsetscolumnDefs"
+        [facilityType]="facilityType"
+        [facilityAsssetsDatalist]="associatedAssetsDataList"
+      ></app-facility-assets>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <div class="grid">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <app-documents
+        [documentsColumnDefs]="documentsColumnDefs"
+        [documentsDataList]="documentsDataList"
+        [facilityType]="facilityType"
+        (documentEmitter)="onDocumentClick($event)"
+        (docUploadEmitter)="onDocUploadClick($event)"
+      ></app-documents>
+    </div>
+  </div>
+</ng-container>

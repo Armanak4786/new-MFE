@@ -1,0 +1,1101 @@
+<!-- <div class="col-12">
+  <div class="drawdown-card-bg">
+    <base-form
+      #mainForm
+      [formConfig]="formConfig"
+      (formReady)="onFormReady()"
+      (valueChanges)="onValueChanges($event)"
+      (formEvent)="onFormEvent($event)"
+      (formButtonEvent)="onButtonClick($event)"
+    ></base-form>
+  </div>
+</div> -->
+<div class="col-12">
+  <div class="ml-2 border-round-xl">
+    <form [formGroup]="form" class="grid form-body drawdown-form">
+      <!-- Facility Type -->
+      <div class="col-12 md:col-4">
+        <label class="mb-2 text-sm block required">{{'facility_type'|translate}}</label>
+        <p-dropdown
+          formControlName="facilityType"
+          [options]="facilityTypeOptions"
+          [optionLabel]="'label'"
+          placeholder="Select Facility Type"
+          [appendTo]="'body'"
+          class="customDropdown wrap-options"
+          (onChange)="
+            onFormEvent({ name: 'facilityType', value: $event.value })
+          "
+        >
+          <ng-template let-item pTemplate="item">
+            <div [title]="item.label">{{ item.label }}</div>
+          </ng-template>
+        </p-dropdown>
+        <p
+          class="p-error danger-color"
+          *ngIf="form.get('facilityType')?.invalid && submitted"
+        >
+          {{ "please_select_a_loan" | translate }}
+        </p>
+      </div>
+
+      <!-- Facility -->
+      <div class="col-12 md:col-4">
+        <label class="mb-2 text-sm block required">{{'facility'|translate}}</label>
+        <p-dropdown
+          formControlName="floorplanname"
+          [options]="subFacilityOptions"
+          optionLabel="label"
+          placeholder="Select Facility"
+          class="w-full customDropdown wrap-options"
+          [appendTo]="'body'"
+          (onChange)="
+            onFormEvent({ name: 'floorplanname', value: $event.value })
+          "
+        >
+          <ng-template let-item pTemplate="item">
+            <div [title]="item.label">{{ item.label }}</div>
+          </ng-template>
+          </p-dropdown>
+           <p
+          class="p-error danger-color"
+          *ngIf="form.get('floorplanname')?.invalid && submitted"
+        >
+          {{ "pls_select_floorplaneName" | translate }}
+        </p>
+      </div>
+
+      <!-- Program -->
+      <div class="col-12 md:col-4">
+        <label class="mb-2 text-sm block">{{'program'|translate}}</label>
+        <p-dropdown
+          formControlName="programname"
+          [options]="programOptions"
+          optionLabel="label"
+          placeholder="Select Program"
+          class="w-full customDropdown wrap-options"
+          appendTo="body"
+          (onChange)="onFormEvent({ name: 'programname', value: $event.value })"
+        >
+          <ng-template let-item pTemplate="item">
+            <div [title]="item.label">{{ item.label }}</div>
+          </ng-template></p-dropdown
+        >
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="col-6">
+    <div class="drawdown-container">
+      <p class="text-base font-bold">{{ "drawdown_details" | translate }}</p>
+      <form [formGroup]="drawdownForm" class="drawdown-form">
+        <div class="grid col-12">
+          <div class="col-6">
+            <amount
+              [label]="'lbl_invoice_amount'"
+              [required]="true"
+              mode="edit"
+              labelType="vertical"
+              [labelClass]="'text-xs'"
+              formControlName="invoiceAmount"
+              id="invoiceAmount"
+            ></amount>
+            <div
+              *ngIf="
+                drawdownForm.get('invoiceAmount').touched &&
+                drawdownForm.get('invoiceAmount').invalid
+              "
+              class="text-xs text-danger-color"
+            >
+              <small
+                class="error"
+                *ngIf="drawdownForm.get('invoiceAmount').hasError('required')"
+              >
+                <p class="p-error danger-color">
+                  {{ "enter_amount" | translate }}
+                </p>
+                <p
+                  class="p-error danger-color"
+                  *ngIf="drawdownForm.get('invoiceAmount')?.hasError('pattern')"
+                >
+                  {{ "invalid_number_format" | translate }}
+                </p>
+              </small>
+              <small
+                class="error"
+                *ngIf="drawdownForm.get('invoiceAmount')?.hasError('min')"
+              >
+                <p class="p-error danger-color">
+                  {{ "invoice_amount_must_be_greater_than_zero" | translate }}
+                </p>
+              </small>
+              <small
+                class="error"
+                *ngIf="
+                  drawdownForm
+                    .get('invoiceAmount')
+                    .hasError('advanceExceedsProgram')
+                "
+              >
+                <p class="p-error danger-color">
+                  {{
+                    "advance_amount_exceeds_maximum_allowed_limit" | translate
+                  }}
+                </p>
+              </small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="radio-group">
+              <div class="radio-option">
+                <input
+                  type="radio"
+                  id="inclGst"
+                  value="Incl GST"
+                  (change)="taxRateValidation($event)"
+                  formControlName="gstType"
+                  class="radio-input"
+                />
+                <label for="inclGst" class="radio-label">Incl GST</label>
+              </div>
+              <div class="radio-option">
+                <input
+                  type="radio"
+                  id="exclGst"
+                  value="Excl GST"
+                  (change)="taxRateValidation($event)"
+                  formControlName="gstType"
+                  class="radio-input"
+                />
+                <label for="exclGst" class="radio-label">Excl GST</label>
+              </div>
+            </div>
+            <div
+              *ngIf="
+                drawdownForm.get('gstType')?.touched &&
+                drawdownForm.get('gstType')?.invalid
+              "
+              class="text-xs text-danger-color mt-1"
+            >
+              <small
+                class="error"
+                *ngIf="drawdownForm.get('gstType')?.hasError('required')"
+              >
+                <p class="p-error danger-color">
+                  {{ "please_select_gst_type" | translate }}
+                </p>
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid col-12 drawdownform-row mb-2">
+          <div class="col-6">
+            <amount
+              [label]="'advance_requested'"
+              [required]="true"
+              mode="edit"
+              labelType="vertical"
+              [labelClass]="'text-xs'"
+              formControlName="advanceRequested"
+              id="advanceRequested"
+            ></amount>
+            <div
+              *ngIf="
+                drawdownForm.get('advanceRequested')?.touched &&
+                drawdownForm.get('advanceRequested')?.invalid
+              "
+              class="text-xs text-danger-color"
+            >
+              <small
+                class="error"
+                *ngIf="
+                  drawdownForm.get('advanceRequested')?.hasError('required')
+                "
+              >
+                <p class="p-error danger-color">
+                  {{ "enter_advance_amount" | translate }}
+                </p>
+                <p
+                  class="p-error danger-color"
+                  *ngIf="
+                    drawdownForm.get('advanceRequested')?.hasError('pattern')
+                  "
+                >
+                  {{ "invalid_number_format" | translate }}
+                </p>
+              </small>
+              <small
+                class="error"
+                *ngIf="drawdownForm.get('advanceRequested')?.hasError('min')"
+              >
+                <p class="p-error danger-color">
+                  {{ "advance_amount_must_be_greater_than_zero" | translate }}
+                </p>
+              </small>
+            </div>
+          </div>
+
+          <div class="col-6 form-group">
+            <date
+              [label]="'pay_drawdown_out_on'"
+              [required]="true"
+              mode="edit"
+              labelType="vertical"
+              [labelClass]="'text-xs'"
+              formControlName="payDrawdownOutOn"
+              id="payDrawdownOutOn"
+            ></date>
+            <div
+              *ngIf="
+                drawdownForm.get('payDrawdownOutOn')?.touched &&
+                drawdownForm.get('payDrawdownOutOn')?.invalid
+              "
+              class="text-xs text-danger-color"
+            >
+              <small
+                class="error"
+                *ngIf="
+                  drawdownForm.get('payDrawdownOutOn')?.hasError('required')
+                "
+              >
+                <p class="p-error danger-color">
+                  {{ "please_select_drawdown_date" | translate }}
+                </p>
+              </small>
+              <p
+                class="p-error danger-color"
+                *ngIf="
+                  drawdownForm.get('payDrawdownOutOn')?.hasError('dateInPast')
+                "
+              >
+                {{ "payment_date_not_in_the_past" | translate }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-6">
+    <p class="text-base mt-2 font-bold">{{ "assetDetails" | translate }}</p>
+    <div class="scrollable-container">
+      <form [formGroup]="assetForm" class="p-2 border rounded shadow-sm">
+        <!-- Asset Type -->
+        <!-- Asset Type Radio Buttons -->
+        <div class="mt-3">
+          <label>
+            <input type="radio" value="single" formControlName="assetType" />
+            Single Asset
+          </label>
+          <label class="ml-3">
+            <input type="radio" value="multiple" formControlName="assetType" />
+            Multiple Asset
+          </label>
+        </div>
+
+        <!-- Single Asset Section -->
+        <div
+          *ngIf="assetForm.get('assetType')?.value === 'single'"
+          class="mt-3"
+        >
+          <!-- Motor Vehicle Fields (with Motocheck button) -->
+          <div
+            *ngIf="isMotorVehicle"
+            [formGroup]="vehicleDetails"
+            class="vehicle-grid-container mt-4"
+          >
+            <div class="rego-no">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'regoNo'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="regoNo"
+                ></text>
+                <div
+                  *ngIf="
+                    vehicleDetails.get('regoNo')?.touched &&
+                    vehicleDetails.get('regoNo')?.invalid
+                  "
+                  class="text-xs text-danger-color"
+                >
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('regoNo')?.hasError('minlength') ||
+                      vehicleDetails.get('regoNo')?.hasError('maxlength')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "invalid_rego_no" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="vin">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'lbl_vin'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="vin"
+                  [required]="true"
+                ></text>
+                <div
+                  *ngIf="
+                    vehicleDetails.get('vin')?.touched &&
+                    vehicleDetails.get('vin')?.invalid
+                  "
+                  class="text-xs text-danger-color"
+                >
+                  <small
+                    class="error"
+                    *ngIf="vehicleDetails.get('vin')?.hasError('required')"
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('vin')?.hasError('minlength') ||
+                      vehicleDetails.get('vin')?.hasError('maxlength')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "invalid_vin" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="motocheck">
+              <div class="motocheck-button-wrapper">
+                <!-- <gen-button class="text-md motocheck-bordered-button" [btnLabel]="'Motocheck'"
+                                    [iconPos]="'left'" [btnType]="'non-bg-btn'">
+                                </gen-button> -->
+                <gen-button
+                  class="text-md motocheck-bordered-button"
+                  [btnLabel]="'Motochek'"
+                  [iconPos]="'left'"
+                  [btnType]="'non-bg-btn'"
+                  (click)="openMotocheck()"
+                >
+                </gen-button>
+              </div>
+            </div>
+
+            <!-- Second row items -->
+            <div class="chassis-no">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'chassis_number'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="chassisNo"
+                ></text>
+              </div>
+            </div>
+
+            <div class="colour">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'lbl_colour'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="colour"
+                ></text>
+              </div>
+            </div>
+
+            <div class="make">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'make'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  [required]="true"
+                  formControlName="make"
+                ></text>
+                <div
+                  *ngIf="
+                    vehicleDetails.get('make')?.touched &&
+                    vehicleDetails.get('make')?.invalid
+                  "
+                  class="text-xs text-danger-color"
+                >
+                  <small
+                    class="error"
+                    *ngIf="vehicleDetails.get('make')?.hasError('required')"
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="model">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'model'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  [required]="true"
+                  formControlName="model"
+                ></text>
+                <div class="error-message-container">
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('model')?.touched &&
+                      vehicleDetails.get('model')?.invalid &&
+                      vehicleDetails.get('model')?.hasError('required')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="year">
+              <label for="year" class="required-label mb-1">
+                {{ "year" | translate }}
+              </label>
+              <p-calendar
+                formControlName="year"
+                view="year"
+                dateFormat="yy"
+                [yearNavigator]="true"
+                [minDate]="minYear"
+                [maxDate]="maxYear"
+                [yearRange]="yearRange"
+                [showIcon]="true"
+                class="year-calendar"
+                [appendTo]="'body'"
+              >
+              </p-calendar>
+              <div class="error-message-container">
+                <small
+                  class="error"
+                  *ngIf="
+                    vehicleDetails.get('year')?.touched &&
+                    vehicleDetails.get('year')?.invalid &&
+                    vehicleDetails.get('year')?.hasError('required')
+                  "
+                >
+                  <p class="p-error danger-color">
+                    {{ "required" | translate }}
+                  </p>
+                </small>
+              </div>
+            </div>
+
+            <div class="registration-date">
+              <div class="col-10 p-fluid">
+                <date
+                  [label]="'registration_date'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="registrationDate"
+                  [required]="true"
+                ></date>
+                <div class="error-message-container">
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('registrationDate')?.touched &&
+                      vehicleDetails.get('registrationDate')?.invalid &&
+                      vehicleDetails
+                        .get('registrationDate')
+                        ?.hasError('required')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="asset-id">
+              <div class="col-4 p-fluid">
+                <text
+                  [label]="'asset_id'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="assetId"
+                ></text>
+              </div>
+            </div>
+          </div>
+
+          <!-- Non-Motor Vehicle Fields (without Motocheck button) -->
+          <div
+            *ngIf="!isMotorVehicle"
+            [formGroup]="vehicleDetails"
+            class="form-grid-container"
+          >
+            <div class="chassis-no mt-4">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'chassis_number'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="chassisNo"
+                  [required]="true"
+                ></text>
+                <div
+                  *ngIf="
+                    vehicleDetails.get('chassisNo')?.touched &&
+                    vehicleDetails.get('chassisNo')?.invalid
+                  "
+                  class="text-xs text-danger-color"
+                >
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('chassisNo')?.hasError('required')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="colour mt-4">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'lbl_colour'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="colour"
+                ></text>
+              </div>
+            </div>
+
+            <div class="make mt-4">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'make'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  [required]="true"
+                  formControlName="make"
+                ></text>
+                <div
+                  *ngIf="
+                    vehicleDetails.get('make')?.touched &&
+                    vehicleDetails.get('make')?.invalid
+                  "
+                  class="text-xs text-danger-color"
+                >
+                  <small
+                    class="error"
+                    *ngIf="vehicleDetails.get('make')?.hasError('required')"
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="model">
+              <div class="col-10 p-fluid">
+                <text
+                  [label]="'model'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  [required]="true"
+                  formControlName="model"
+                ></text>
+                <div class="error-message-container">
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('model')?.touched &&
+                      vehicleDetails.get('model')?.invalid &&
+                      vehicleDetails.get('model')?.hasError('required')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="year">
+              <label for="year" class="required-label mb-1">
+                {{ "year" | translate }}
+              </label>
+              <p-calendar
+                formControlName="year"
+                view="year"
+                dateFormat="yy"
+                [yearNavigator]="true"
+                [minDate]="minYear"
+                [maxDate]="maxYear"
+                [yearRange]="yearRange"
+                [showIcon]="true"
+                class="year-calendar"
+                [appendTo]="'body'"
+              >
+              </p-calendar>
+              <div class="error-message-container">
+                <small
+                  class="error"
+                  *ngIf="
+                    vehicleDetails.get('year')?.touched &&
+                    vehicleDetails.get('year')?.invalid &&
+                    vehicleDetails.get('year')?.hasError('required')
+                  "
+                >
+                  <p class="p-error danger-color">
+                    {{ "required" | translate }}
+                  </p>
+                </small>
+              </div>
+            </div>
+
+            <div class="registration-date">
+              <div class="col-10 p-fluid">
+                <date
+                  [label]="'registration_date'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="registrationDate"
+                  [required]="true"
+                ></date>
+                <div class="error-message-container">
+                  <small
+                    class="error"
+                    *ngIf="
+                      vehicleDetails.get('registrationDate')?.touched &&
+                      vehicleDetails.get('registrationDate')?.invalid &&
+                      vehicleDetails
+                        .get('registrationDate')
+                        ?.hasError('required')
+                    "
+                  >
+                    <p class="p-error danger-color">
+                      {{ "required" | translate }}
+                    </p>
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="asset-id">
+              <div class="col-4 p-fluid">
+                <text
+                  [label]="'asset_id'"
+                  mode="edit"
+                  labelType="vertical"
+                  [labelClass]="''"
+                  formControlName="assetId"
+                ></text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiple Asset Section -->
+        <div
+          *ngIf="assetForm.get('assetType')?.value === 'multiple'"
+          class="mt-3"
+        >
+          <div formArrayName="multipleAssets">
+            <div
+              *ngFor="let asset of multipleAssets.controls; let i = index"
+              [formGroupName]="i"
+              class="mb-3 border p-2"
+            >
+              <div class="grid">
+                <div class="col-5 p-fluid">
+                  <corporate-name
+                    [label]="'stock_no'"
+                    mode="edit"
+                    labelType="vertical"
+                    [labelClass]="'disburstment-details-label drawdown-label'"
+                    formControlName="stockNo"
+                  ></corporate-name>
+                </div>
+                <div class="col-5 ml-2 p-fluid">
+                  <text
+                    [label]="'description'"
+                    mode="edit"
+                    labelType="vertical"
+                    [labelClass]="
+                      'disburstment-details-label drawdown-label ml-2'
+                    "
+                    formControlName="description"
+                  ></text>
+                </div>
+                <div class="col-1 mt-4" *ngIf="i != 0">
+                  <gen-button
+                    [btnIcon]="'fa fa-trash'"
+                    [btnType]="'non-bg-btn'"
+                    (onClick)="removeMultipleAsset(i)"
+                    class="mt-2"
+                  ></gen-button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-1 flex justify-content-start">
+            <gen-button
+              [class]="'text-md'"
+              [btnIcon]="'pi pi-plus'"
+              [btnLabel]="'add_assets'"
+              [iconPos]="'left'"
+              (click)="addMultipleAsset()"
+              [btnType]="'non-bg-btn'"
+            ></gen-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-6 disbursement-container">
+    <p class="disburstmentdetails-label">
+      {{ "disbusment_details" | translate }}
+    </p>
+    <form [formGroup]="drawdownDetails">
+      <div class="add-drawdown-request border-round-xl pb-5">
+        <div class="grid">
+          <div class="col-12 pt-2">
+            <text
+              [mode]="'label'"
+              [label]="'disburse_funds_to'"
+              [labelClass]="'px-3 text-xs text-600'"
+            ></text>
+          </div>
+        </div>
+        <div class="flex flex-row gap-3 p-2 pb-3">
+          <div class="pt-2 flex gap-2 radio_label_class">
+            <input
+              type="radio"
+              #Supplier
+              formControlName="disburseFundsTo"
+              value="Supplier"
+            />
+            <text
+              [mode]="'label'"
+              [label]="'supplier'"
+              [labelClass]="'text-md drawdown-label radio_label_class'"
+            ></text>
+          </div>
+          <div class="pt-2 flex gap-2 radio_label_class">
+            <input
+              type="radio"
+              #nominatedBankAccount
+              formControlName="disburseFundsTo"
+              value="nominatedBankAccount"
+            />
+            <text
+              [mode]="'label'"
+              [label]="'nominated_bank_account'"
+              [labelClass]="'text-md drawdown-label radio_label_class'"
+            ></text>
+          </div>
+          <div class="pt-2 flex gap-2 radio_label_class">
+            <input
+              type="radio"
+              #Both
+              formControlName="disburseFundsTo"
+              value="Both"
+            />
+            <text
+              [mode]="'label'"
+              [label]="'both'"
+              [labelClass]="'text-md drawdown-label radio_label_class'"
+            ></text>
+          </div>
+        </div>
+        <div class="px-3">
+          <div
+            class="disburstment-details add-drawdown-request scroll-container"
+          >
+            <div class="grid">
+              <div class="col-12 px-4 ml-3 mt-3">
+                <div
+                  *ngIf="
+                    drawdownDetails.get('disburseFundsTo')?.value ===
+                      'Supplier' ||
+                    drawdownDetails.get('disburseFundsTo')?.value === 'Both'
+                  "
+                >
+                  <ng-container formArrayName="supplierDetails">
+                    <div class="grid">
+                      <div
+                        *ngFor="
+                          let acc of supplierDetails.controls;
+                          let i = index
+                        "
+                        class="col-12 mt-2"
+                      >
+                        <div [formGroupName]="i">
+                          <div class="grid">
+                            <div class="col-5 p-fluid mt-3">
+                              <text
+                                [label]="'supplier_name'"
+                                [labelType]="'vertical'"
+                                [mode]="'edit'"
+                                [labelClass]="
+                                  'disburstment-details-label drawdown-label'
+                                "
+                                formControlName="supplierName"
+                              >
+                              </text>
+                              <div
+                                *ngIf="
+                                  acc.get('supplierName')?.touched &&
+                                  acc.get('supplierName')?.hasError('required')
+                                "
+                                class="text-xs text-danger-color"
+                              >
+                                <p class="p-error danger-color">
+                                  {{ "enter_supplier_name" | translate }}
+                                </p>
+                              </div>
+                              <div
+                                *ngIf="
+                                  acc.get('supplierName')?.invalid &&
+                                  acc.get('supplierName')?.hasError('pattern')
+                                "
+                                class="text-xs text-danger-color"
+                              >
+                                <p class="p-error danger-color">
+                                  {{
+                                    "supplier_name_is_in_an_incorrect_format"
+                                      | translate
+                                  }}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div class="col-5 p-fluid mt-3 ml-2">
+                              <amount
+                                [label]="'amount'"
+                                labelType="vertical"
+                                mode="edit"
+                                [labelClass]="
+                                  'disburstment-details-label drawdown-label'
+                                "
+                                formControlName="amount"
+                              >
+                              </amount>
+                              <div
+                                *ngIf="
+                                  acc.get('amount')?.touched &&
+                                  acc.get('amount')?.hasError('required')
+                                "
+                                class="text-xs text-danger-color"
+                              >
+                                <p class="p-error danger-color">
+                                  {{ "enter_amount" | translate }}
+                                </p>
+                              </div>
+                              <small
+                                class="error"
+                                *ngIf="acc.get('amount')?.hasError('min')"
+                              >
+                                <p class="p-error danger-color">
+                                  {{"supplier_amount_error"  | translate}}                              
+                                </p>
+                              </small>
+                            </div>
+                            <div class="col-1 pt-4 mt-4" *ngIf="i != 0">
+                              <gen-button
+                                [btnIcon]="'fa fa-trash'"
+                                [btnType]="'non-bg-btn'"
+                                (onClick)="removeSupplierDetails(i)"
+                                class=""
+                              ></gen-button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <gen-button
+                        class="text-md"
+                        [btnIcon]="'pi pi-plus'"
+                        [btnLabel]="'add_supplier'"
+                        [iconPos]="'left'"
+                        (click)="addSuppliers()"
+                        [btnType]="'non-bg-btn'"
+                      ></gen-button>
+                    </div>
+                  </ng-container>
+                </div>
+                <div
+                  *ngIf="
+                    drawdownDetails.get('disburseFundsTo')?.value ===
+                      'nominatedBankAccount' ||
+                    drawdownDetails.get('disburseFundsTo')?.value === 'Both'
+                  "
+                >
+                  <ng-container>
+                    <div class="grid">
+                      <div class="col-12 mt-2">
+                        <div class="grid mb-2">
+                          <div class="col-6 p-fluid mt-3">
+                            <text
+                              [mode]="'label'"
+                              [label]="'to_nominated_bank_account'"
+                              [labelClass]="'text-600'"
+                            ></text>
+                          </div>
+                          <div class="col-5 mt-3 p-fluid">
+                            <!-- Use conditional mode based on searchType -->
+                            <amount
+                              [mode]="'edit'"
+                              formControlName="nominatedAmount"
+                            >
+                            </amount>
+                            <div
+                              *ngIf="
+                                drawdownDetails.get('nominatedAmount')
+                                  .touched &&
+                                drawdownDetails.get('nominatedAmount').invalid
+                              "
+                              class="text-xs text-danger-color"
+                            >
+                              <small
+                                class="error"
+                                *ngIf="
+                                  drawdownDetails
+                                    .get('nominatedAmount')
+                                    .hasError('required')
+                                "
+                              >
+                                <p class="p-error danger-color">
+                                  {{ "enter_amount" | translate }}
+                                </p>
+                              </small>
+                              <small
+                                class="error"
+                                *ngIf="
+                                  drawdownDetails
+                                    .get('nominatedAmount')
+                                    ?.hasError('min')
+                                "
+                              >
+                                <p class="p-error danger-color">
+                                  {{
+                                    "invoice_amount_must_be_greater_than_zero"
+                                      | translate
+                                  }}
+                                </p>
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="section-class p-2">
+  <text
+    [mode]="'label'"
+    [label]="'document_upload'"
+    [labelClass]="'request-settle-text font-bold text-sm'"
+  ></text>
+  <text
+    [mode]="'label'"
+    [label]="'supporting_documents_e.g._receipts_etc'"
+    [labelClass]="'request-settle-text text-sm'"
+  ></text>
+  <div class="add-asset-facility mt-2 border-round-md">
+    <app-upload-docs
+      class="upload_docs"
+      [showActionIcons]="'true'"
+    ></app-upload-docs>
+  </div>
+</div>
+<div class="mt-2 p-2 w-full">
+  <p class="request-settle-text font-bold text-sm">
+    {{ "additional_information" | translate }}
+  </p>
+  <textarea
+    [rows]="4"
+    [cols]="115"
+    class="w-full p-fluid p-inputtextarea-responsive border-round-sm"
+    (input)="onTextareaClick($event)"
+  ></textarea>
+</div>
+<p class="text-xs">
+  <!-- {{ "asset_drawdown_message" | translate }} -->
+  {{ customerName }}
+  {{ "gives_notice_pursuant_to_its_floorplan_facility_agreement" | translate }}
+  <br />
+  {{
+    "this_is_an_advance_request_for_the_amount_of_the_advance_requested"
+      | translate
+  }}
+  <br />
+  {{ "we_request_that_udc_finance_pay_the_advance_requested" | translate }}
+  <br />
+  {{ "request_binding" | translate }} <br />
+  {{ "submitted_by" | translate }} {{ username }}
+  {{ "for_and_on_behalf_of" | translate }} {{ customerName }}
+</p>
+<div class="grid gap-2 flex justify-content-end mt-4">
+  <div class="col-2">
+    <gen-button
+      [btnWidth]="'full'"
+      [btnType]="'non-bg-btn'"
+      [btnLabel]="'cancel'"
+      (onClick)="showDialogCancel()"
+    ></gen-button>
+  </div>
+  <div class="col-2">
+    <gen-button
+      [btnWidth]="'full'"
+      [btnType]="'bg-btn'"
+      [btnLabel]="'submit'"
+      (onClick)="submitDrawdownData()"
+    ></gen-button>
+  </div>
+</div>

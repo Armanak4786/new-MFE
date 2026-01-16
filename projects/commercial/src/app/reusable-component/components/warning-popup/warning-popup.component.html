@@ -1,0 +1,19 @@
+<div class="relative">
+   <!-- <div class="flex justify-content-end w-full mb-2">
+    <button class="p-1 bg-transparent border-none text-xl cursor-pointer" (click)="ref.close()">✕</button>
+   </div> -->
+  <div class="flex flex-column align-items-center justify-content-center text-center p-4">
+
+    <i class="pi pi-exclamation-triangle text-black-500 text-4xl mb-5"></i>
+    <p class="font-medium mb-4">
+     <strong> {{ messageKey | translate}} </strong>
+    </p>
+  <div class="w-full sm:w-auto">
+    <gen-button
+      [btnType]="'button-primary'"
+      [btnLabel]="'ok'"
+      (onClick)="onCancel()"
+   ></gen-button>
+  </div>
+ </div>
+</div>

@@ -1,0 +1,27 @@
+.request-settlement-bg {
+  background-color: #f7fafc;
+}
+
+.request-settle-text {
+  font-size: 10px;
+}
+
+.request-settle-text-color {
+  color: #6f6f6f;
+}
+
+.dropdown {
+  &::ng-deep {
+    .p-dropdown {
+      background-color: #f7fafc;
+    }
+  }
+}
+
+.calendar {
+  &::ng-deep {
+    .p-calendar {
+      background-color: #f7fafc;
+    }
+  }
+}

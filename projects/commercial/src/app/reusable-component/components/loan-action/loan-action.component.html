@@ -1,0 +1,22 @@
+<div class="flex-column cursor-pointer">
+  <div
+    *ngIf="isAssetlink || isEasylink"
+    class="flex justify-content-center action-item padding-class"
+    (click)="showRequestQuotePopup()"
+  >
+    {{ "request_settlement_quote" | translate }}
+  </div>
+  <div
+    class="flex justify-content-center action-item-odd padding-class"
+    (click)="showGenerateCustomerPopup()"
+  >
+    {{ "generate_customer_statement" | translate }}
+  </div>
+  <div
+    *ngIf="!isOperatingLease"
+    class="flex justify-content-center action-item padding-class"
+    (click)="showGeneratePiSchedulePopup()"
+  >
+    {{ "generate_principle_interest_schedule" | translate }}
+  </div>
+</div>

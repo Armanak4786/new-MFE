@@ -1,0 +1,192 @@
+/* asset-request-display.component.css */
+.asset-request-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px;
+  background-color: #ffffff;
+}
+
+/* Header Section */
+.header-section {
+  margin-bottom: 32px;
+}
+
+.request-info-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.request-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.request-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Asset Details Section */
+.asset-details-section {
+  margin-bottom: 16px;
+}
+
+.asset-table {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  gap: 16px;
+  background-color: #f9fafb;
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header-disburse {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  gap: 16px;
+  background-color: #f9fafb;
+  padding: 10px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  gap: 16px;
+  padding: 10px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.col-stock-no {
+  display: flex;
+  align-items: center;
+}
+
+.col-description {
+  display: flex;
+  align-items: center;
+}
+
+.col-price {
+  display: flex;
+  align-items: center;
+}
+
+/* Additional Information Section */
+.additional-info-section {
+  margin-bottom: 32px;
+}
+
+.info-content {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .asset-request-container {
+    padding: 16px;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .table-header {
+    display: none; /* Hide header on mobile, or style differently */
+  }
+
+  .table-row {
+    padding: 12px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .col-stock-no::before {
+    content: "Stock No: ";
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .col-description::before {
+    content: "Description: ";
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .col-price::before {
+    content: "Price: ";
+    font-weight: 500;
+    color: #374151;
+  }
+}
+
+@media (max-width: 480px) {
+  .facility-info {
+    font-size: 16px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .request-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+.loan-drawdown-container {
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  background-color: #e8e8e8;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.request-info {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.disburseClass{
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}

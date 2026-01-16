@@ -1,0 +1,64 @@
+<div
+  class="grid-container"
+  style="
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    box-sizing: border-box;
+  "
+>
+  <div class="" style="width: 100%">
+    <!-- <h6 class="font-bold">Curtailment Plan: {{curtailmentPlanName}}</h6> -->
+    <h6>
+      <span class="font-bold">Curtailment Plan:</span> {{ curtailmentPlanName }}
+    </h6>
+
+    <gen-table
+      [columns]="curtailmentPlanColumnDefs"
+      [filter]="true"
+      [dataList]="curtailmentDetailsData"
+      [tableClass]="'border-round'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+      [tableStyle]="'stripped-rows'"
+      [paginatorFlag]="true"
+      style="width: 100%"
+    ></gen-table>
+  </div>
+
+  <div class="" style="width: 100%">
+    <h6 class="font-bold">Subvention</h6>
+    <gen-table
+      [columns]="subventionColumnDefs"
+      [dataList]="subventionData"
+      [filter]="true"
+      [tableClass]="'border-round'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [strippedOddClass]="'tableOddRow'"
+      [strippedEvenClass]="'tableEvenRow'"
+      [tableStyle]="'stripped-rows'"
+      [paginatorFlag]="true"
+      style="width: 100%"
+    ></gen-table>
+  </div>
+</div>
+
+<style>
+  .grid-container {
+    padding: 10px;
+  }
+
+  .border-round-md {
+    border: 1px solid #ddd; /* Example border, adjust as needed */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding inside the table containers */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+
+  gen-table {
+    display: block; /* Important for custom elements to respect width */
+    width: 100%;
+  }
+</style>

@@ -1,0 +1,14 @@
+.card-class {
+  background-color: #f7fafc;
+
+  &-text {
+    color: #6f6f6f;
+  }
+  .nowrap-header {
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+  }
+}
+.paragraph-format {
+  white-space: pre-line;
+  line-height: 1.5;   
+}

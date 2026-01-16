@@ -1,0 +1,15 @@
+<div class="sm:col-12 md:col-8 lg:col-12 border-round-md">
+  <gen-table
+    [columns]="bailmentcolumnDefs"
+    [tableClass]="'border-round'"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [dataList]="bailmentDataList"
+    [tableStyle]="'stripped-rows'"
+    [bodyClass]="'text-xs row-class-bailment'"
+    (onHeaderClick)="onHeaderClick($event)"
+    [strippedOddClass]="'tableOddRow'"
+    [strippedEvenClass]="'tableEvenRow'"
+    [isScrollable]="true"
+    [scrollHeight]="'140px'"
+  ></gen-table>
+</div>

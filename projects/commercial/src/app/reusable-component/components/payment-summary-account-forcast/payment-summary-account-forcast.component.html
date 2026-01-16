@@ -1,0 +1,227 @@
+<div class="grid mt-2">
+  <div
+    class="col-12 sm:col-12 md:col-6 lg:col-6"
+    *ngIf="principalForcastDataList"
+  >
+    <div class="card">
+      <div class="grid">
+        <div class="sm:col-12 md:col-12 lg:col-12">
+          <div class="grid p-3">
+            <text
+              [mode]="'label'"
+              [label]="getLabel()"
+              [labelClass]="'text-xs font-bold p-2'"
+            ></text>
+          </div>
+          <div class="ml-8 p-2">
+            <div class="grid ml-8">
+              <div class="sm:col-4 md:col-4 lg:col-4">
+                <amount
+                  [mode]="'label'"
+                  [label]="'principal_movement'"
+                  [labelClass]="'text-xs text-600'"
+                  [className]="'flex flex-column'"
+                  [value]="
+                    principalForcastDataList?.data.lastMonthPrincipalMovement
+                  "
+                  [labelType]="'vertical'"
+                  [valueClass]="'text-xs mr-auto'"
+                >
+                </amount>
+              </div>
+              <div class="sm:col-4 md:col-4 lg:col-4">
+                <amount
+                  [mode]="'label'"
+                  [label]="'interest'"
+                  [labelClass]="'text-xs text-600'"
+                  [className]="'flex flex-column'"
+                  [value]="
+                    principalForcastDataList?.data.lastMonthInterestMovement
+                  "
+                  [labelType]="'vertical'"
+                  [labelType]="'vertical'"
+                  [valueClass]="'text-xs mr-auto'"
+                >
+                </amount>
+              </div>
+              <div class="sm:col-4 md:col-4 lg:col-4">
+                <amount
+                  [mode]="'label'"
+                  [label]="'total'"
+                  [labelClass]="'text-xs font-semibold text-600'"
+                  [className]="'flex flex-column'"
+                  [value]="principalForcastDataList?.data.lastMonthTotal"
+                  [labelType]="'vertical'"
+                  [valueClass]="'text-xs mr-auto'"
+                >
+                </amount>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="col-12 sm:col-12 md:col-6 lg:col-6"
+    *ngIf="principalForcastDataList"
+  >
+    <div class="card">
+      <div class="grid">
+        <div class="sm:col-12 md:col-12 lg:col-12">
+          <div class="grid p-3">
+            <text
+              [mode]="'label'"
+              [label]="'payment_forcast_summary'"
+              [labelClass]="'text-xs font-bold p-3'"
+            ></text>
+          </div>
+          <div class="ml-8 p-2">
+            <div class="grid ml-8">
+              <div class="sm:col-4 md:col-4 lg:col-4">
+                <amount
+                  [mode]="'label'"
+                  [label]="'principal'"
+                  [labelClass]="'text-xs text-600'"
+                  [className]="'flex flex-column'"
+                  [value]="calculatePrincipalMovement() || 0"
+                  [labelType]="'vertical'"
+                  [valueClass]="'text-xs mr-auto'"
+                >
+                </amount>
+              </div>
+              <div class="sm:col-4 md:col-4 lg:col-4">
+                <amount
+                  [label]="'interest'"
+                  [labelClass]="'text-xs text-600'"
+                  [className]="'flex flex-column'"
+                  [value]="calculateInterest() || 0"
+                  [labelType]="'vertical'"
+                  [valueClass]="'text-xs mr-auto'"
+                  [mode]="'label'"
+                >
+                </amount>
+              </div>
+              <div class="sm:col-4 md:col-4 lg:col-4">
+                <amount
+                  [mode]="'label'"
+                  [label]="'lbl_payments'"
+                  [labelClass]="'text-xs text-600 font-semibold'"
+                  [className]="'flex flex-column'"
+                  [value]="calculatePayment() || 0"
+                  [valueClass]="'text-xs font-semibold mr-auto'"
+                  [labelType]="'vertical'"
+                >
+                </amount>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-6 lg:col-6">
+    <div class="card p-3 pb-2">
+      <text
+        [mode]="'label'"
+        [label]="'account_forcast'"
+        [labelClass]="'flex font-semibold text-xs'"
+      ></text>
+      <div class="pt-5">
+        <gen-table
+          #dt1
+          [columns]="accountForcastColumnDefs"
+          [dataList]="accountForcastDataList?.accountForecasts"
+          [tableStyle]="'stripped-rows'"
+          [tableClass]="'border-round'"
+          [bodyClass]="'text-xs'"
+          [headingClass]="'tableHeader text-xs header-text-color'"
+          [sortable]="true"
+          [filter]="true"
+          [paginatorFlag]="true"
+        ></gen-table>
+      </div>
+      <text
+        [mode]="'label'"
+        [label]="'note_summary'"
+        [labelClass]="'text-xs pt-5 text-600'"
+      ></text>
+    </div>
+  </div>
+
+  <div class="col-12 sm:col-12 md:col-6 lg:col-6">
+    <div class="card p-2">
+      <div class="flex items-center justify-between p-2 pb-1 gap-4">
+        <div class="text-xs font-bold flex-shrink-0 payment-label mt-1">
+          {{
+            principalForcastDataList?.length
+              ? ("payment_forcast" | translate)
+              : "Payment Forecast"
+          }}
+        </div>
+
+        <div class="flex items-center gap-2 flex-shrink-0 -mt-2">
+          <p class="label-xs pt-2 label-color">
+            {{ "frequency" | translate }}
+          </p>
+          <p-dropdown
+            class="frequency-dropdown"
+            [options]="frequencyOptionData"
+            [(ngModel)]="frequency"
+            (onChange)="onFrequencyChange($event)"
+          ></p-dropdown>
+        </div>
+
+        <div class="flex-shrink-0">
+          <date
+            [value]="fromDate"
+            [labelType]="'horizontal'"
+            [labelClass]="'label-xs label-color'"
+            [label]="'from'"
+            [min]="currentDate"
+            [mode]="disableDate ? 'view' : 'edit'"
+            [ngClass]="'custom-width'"
+            (change)="onFromDateChange($event)"
+          ></date>
+        </div>
+
+        <div class="flex-shrink-0">
+          <date
+            [label]="'to'"
+            [labelClass]="'label-xs label-color pl-1'"
+            [labelType]="'horizontal'"
+            [min]="fromDate"
+            [max]="maxDate"
+            [value]="toDate"
+            [mode]="disableDate ? 'view' : 'edit'"
+            (change)="onToDateChange($event)"
+          ></date>
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <gen-table
+          #dt2
+          [columns]="paymentForcastColumnDefs"
+          [headingClass]="'tableHeader text-xs header-text-color'"
+          [tableClass]="'border-round'"
+          [dataList]="paymentForcastDataList?.paymentForecasts"
+          [tableStyle]="'stripped-rows'"
+          [bodyClass]="'text-xs'"
+          [scrollHeight]="'400px'"
+          [sortable]="true"
+          [filter]="true"
+          [scrollHeight]="'400px'"
+          [strippedOddClass]="'tableOddRow'"
+          [strippedEvenClass]="'tableEvenRow'"
+          [paginatorFlag]="true"
+        ></gen-table>
+      </div>
+      <text
+        [mode]="'label'"
+        [label]="'note_payment_summary'"
+        [labelClass]="'text-xs pt-5 text-600'"
+      ></text>
+    </div>
+  </div>
+</div>

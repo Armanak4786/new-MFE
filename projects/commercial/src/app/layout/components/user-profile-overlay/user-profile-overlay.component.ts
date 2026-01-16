@@ -3,7 +3,7 @@ import { AuthenticationService, environment } from 'auro-ui';
 import { Router } from '@angular/router';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { LayoutService } from 'shared-lib';
-import { DashboardService } from '../../../dashboard/services/dashboard.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
     selector: 'app-user-profile-overlay',
@@ -18,10 +18,17 @@ export class UserProfileOverlayComponent {
     constructor(
         private overlayService: LayoutService,
         public authSvc: AuthenticationService,
-        public dashboardService: DashboardService,
         public layoutService: LayoutService,
         public router: Router
     ) { }
+
+    decodeToken(token: string): any {
+        try {
+            return jwtDecode(token);
+        } catch (error) {
+            return null;
+        }
+    }
 
     ngOnInit() {
         this.overlayService.toggleOverlay.subscribe((event) => {
@@ -29,8 +36,8 @@ export class UserProfileOverlayComponent {
         });
 
         let accessToken = sessionStorage.getItem("accessToken");
-        let decodedToken = this.dashboardService.decodeToken(accessToken);
-        this.userName = decodedToken?.sub.replace(".", " ");
+        let decodedToken = this.decodeToken(accessToken);
+        this.userName = decodedToken?.sub?.replace(".", " ");
     }
 
     logout() {
@@ -58,4 +65,3 @@ export class UserProfileOverlayComponent {
         this.router.navigateByUrl("/authentication/change-password");
     }
 }
-

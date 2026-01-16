@@ -1,0 +1,85 @@
+<div class="mb-2">
+  <text
+    [mode]="'label'"
+    [label]="'request_no_is'"
+    [labelClass]="'text-xs font-bold mr-2'"
+    [valueClass]="'text-xs font-bold'"
+    [value]="this.data?.id || selectedRecord['Request No.']"
+  ></text>
+</div>
+<div class="mb-2 flex">
+  <text
+    [mode]="'label'"
+    [label]="'you_have_a_request_to_receive_transferred_inventory_from'"
+    [labelClass]="'text-xs font-bold mr-2'"
+    [valueClass]="'text-xs font-bold mr-2'"
+    [value]="this.data['Original Party'] || selectedRecord['Original Party']"
+    ></text>
+  <text
+    [mode]="'label'"
+    [label]="'as_set_out_below'"
+    [labelClass]="'text-xs font-bold'"
+  ></text>
+</div>
+<div *ngIf="facilityAssset?.length">
+  <div class="mb-2">
+    <gen-table
+      [columns]="transferAssetColumnDefs"
+      [dataList]="facilityAssset"
+      [tableStyle]="'stripped-rows'"
+      [tableClass]="'border-round'"
+      [paginatorFlag]="true"
+      [sortable]="true"
+      [filter]="true"
+      [isScrollable]="true"
+      [bodyClass]="'text-xs'"
+      [headingClass]="'tableHeader text-xs header-text-color'"
+      [sortField]="'id'"
+      (onCellClick)="onCellClick($event)"
+    >
+    </gen-table>
+  </div>
+  <div class="mb-1 flex">
+    <text
+      [mode]="'label'"
+      [label]="
+        ('confirmation_asset_transfer_1' | translate) +
+        ((this.data['Original Party'] || selectedRecord['Original Party']) ?? '')  +
+        '  ' +
+        ('confirmation_asset_transfer_2' | translate)
+      "
+      [labelClass]="'text-xs font-bold'"
+      [valueClass]="'text-xs font-bold'"
+    ></text>
+    <!-- <text
+      [mode]="'label'"
+      [label]="'confirmation_asset_transfer_2'"
+      [labelClass]="'text-xs font-bold'"
+    ></text> -->
+  </div>
+  <div class="mb-1">
+    <text
+      [mode]="'label'"
+      [label]="'rejected_asset_transfer'"
+      [labelClass]="'text-xs font-bold'"
+    ></text>
+  </div>
+  <div class="grid mt-2">
+    <div class="col-3 col-offset-6">
+      <gen-button
+        [btnLabel]="'reject_transfer'"
+        [btnType]="'bg-btn'"
+        (onClick)="rejectTransfer()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+    <div class="col-3">
+      <gen-button
+        [btnLabel]="'accept_transfer'"
+        [btnType]="'bg-btn'"
+        (click)="acceptTransfer()"
+        [btnWidth]="'full'"
+      ></gen-button>
+    </div>
+  </div>
+</div>

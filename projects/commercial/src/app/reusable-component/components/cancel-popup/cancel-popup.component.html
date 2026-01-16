@@ -1,0 +1,39 @@
+<!-- <div>
+  <div class="grid mb-2">
+    <p>Any details entered will be lost. Are you sure you want to continue</p>
+  </div>
+
+  <div class="grid">
+    <div class="col-3 col-offset-6 flex justify-content-end">
+      <gen-button [btnLabel]="'cancel'" (onClick)="cancel()"></gen-button>
+    </div>
+    <div class="col-3 flex justify-content-end">
+      <gen-button
+        class="p-button-lg"
+        [btnLabel]="'continue'"
+        (onClick)="continue()"
+      ></gen-button>
+    </div>
+  </div>
+</div> -->
+<div class="message-container">
+  <div class="message-content">
+  <ng-container *ngIf="confirmationMsg == ''; else customMessage">
+    <p class="message-title">
+      <text mode="label" label="cancel_confirmation_title_msg"></text>
+    </p>
+    <p class="message-body">
+      <text mode="label" label="cancel_confirmation_body_msg"></text>
+    </p>
+  </ng-container>
+
+  <ng-template #customMessage>
+    <p class="message-body">{{ confirmationMsg }}</p>
+  </ng-template>
+</div>
+
+  <div class="button-container">
+    <gen-button [btnLabel]="'No, go back'" (onClick)="cancel()"></gen-button>
+    <gen-button class="p-button-lg" [btnLabel]="'Yes, cancel'" (onClick)="continue()"></gen-button>
+  </div>
+</div>

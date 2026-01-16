@@ -1,0 +1,14 @@
+<div class="sm:col-12 md:col-8 lg:col-12 border-round-md">
+  <gen-table
+    [columns]="fixedFloorPlanColumnDefs"
+    [dataList]="fixedFloorPlanDataList"
+    [tableClass]="'border-round'"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [tableStyle]="'stripped-rows'"
+    [tableStyle]="'stripped-rows'"
+    [bodyClass]="'text-xs row-class-easylink'"
+    (onHeaderClick)="onHeaderClick($event)"
+    [isScrollable]="true"
+    [scrollHeight]="'140px'"
+  ></gen-table>
+</div>

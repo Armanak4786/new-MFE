@@ -1,0 +1,22 @@
+<div class="flex flex-column gap-3 w-25rem">
+  <div>
+    <div class="mb-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold label-color mr-4'"
+        [label]="'description'"
+        [value]="assetDetails?.description"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+    <div class="mb-2">
+      <text
+        [mode]="'label'"
+        [labelClass]="'text-xs font-bold label-color mr-4'"
+        [label]="'registration_number'"
+        [value]="assetDetails?.identifier"
+        [valueClass]="'text-xs'"
+      ></text>
+    </div>
+  </div>
+</div>

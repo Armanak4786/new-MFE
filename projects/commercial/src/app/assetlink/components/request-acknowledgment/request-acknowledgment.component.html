@@ -1,0 +1,24 @@
+<div class="flex flex-column justify-center items-center text-center px-4 overflow: hidden !important;">
+  <!-- Thank You Image -->
+  <div class="mb-4">
+    <img src="assets/images/icon/success-Tick.svg" alt="Thank You" />
+  </div>
+
+  <!-- Thank You Label -->
+  <div class="mb-2">
+    <text [mode]="'label'" [label]="'thank_you'" [labelClass]="'font-bold text-lg text-green-600'"></text>
+  </div>
+
+  <!-- Full Sentence Acknowledgement Message -->
+  <div class="max-w-2xl">
+    <text [mode]="'label'" [label]="
+        ('We_acknowledge_the_receipt_msg_for_any_request' | translate) +
+        subject +
+        ('.' + ('Pls_use_ref_number' | translate) + ' ') +
+        referenceNumber +
+        (' ' + ('requested_email_sent_msg' | translate)) +
+        email +
+        (' ' + ('requested_email_sent_msg2' | translate))
+      " [labelClass]="'text-sm acknowledge leading-relaxed text-center max-w-2xl'"></text>
+  </div>
+</div>

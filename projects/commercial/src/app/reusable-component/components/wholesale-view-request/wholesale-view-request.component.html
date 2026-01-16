@@ -1,0 +1,80 @@
+<p-tabView (onChange)="onTabChange($event)">
+  <p-tabPanel header="View Request">
+    <div class="card border-round-md">
+      <!-- taskId condition -->
+      <ng-container
+        *ngIf="
+          selectedType === 'taskId' &&
+          selectedTypeValue !== 'repayment' &&
+          this.facilityType !== 'Fixed Floorplan'
+        "
+      >
+        <app-same-day-payout-view-request
+          [swapDetails]="transferRequestDetails"
+          [seletedRecoredData]="selectedRowData"
+        ></app-same-day-payout-view-request>
+      </ng-container>
+
+      <!-- Payment Request No. condition -->
+      <ng-container *ngIf="selectedType === 'Request No.'&& !['swap','productTransfer'].includes(selectedRequest)">
+        <app-purchase-payment-view-request
+          [purchaseDetails]="transferRequestDetails"
+          [seletedRecoredData]="selectedRowData"
+        ></app-purchase-payment-view-request>
+      </ng-container>
+
+      <!-- Transfer Request No. condition -->
+      <ng-container *ngIf="this.selectedType === 'Request No.' && ['swap','productTransfer'].includes(selectedRequest)">
+        <app-swap-view-request
+          [swapDetails]="transferRequestDetails"
+          [seletedRecoredData]="selectedRowData"
+        ></app-swap-view-request>
+      </ng-container>
+      <ng-container *ngIf="selectedTypeValue == 'repayment'">
+        <app-w-repayment-view-request
+          [swapDetails]="transferRequestDetails"
+          [seletedRecoredData]="selectedRowData"
+        ></app-w-repayment-view-request>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          (selectedTypeValue == 'drawdown' &&
+            this.facilityType === 'Fixed Floorplan') ||
+          (selectedType === 'Contract No.' &&
+            this.facilityType === 'Fixed Floorplan')
+        "
+      >
+        <app-w-drawdown-view-request
+          [swapDetails]="transferRequestDetails"
+          [seletedRecoredData]="selectedRowData"
+        ></app-w-drawdown-view-request>
+      </ng-container>
+    </div>
+  </p-tabPanel>
+
+  <!-- NOTES TAB -->
+  <p-tabPanel header="Notes">
+    <div class="card border-round-md">
+      <app-notes
+        [notesColumnDefs]="notesColumnDefs"
+        [notesDataList]="notesDataList"
+        [originalDataList]="requestTypeList"
+        (seletedNoteDocumentEmit)="onSeletedData($event)"
+      >
+      </app-notes>
+    </div>
+  </p-tabPanel>
+
+  <!-- DOCUMENTS TAB -->
+  <p-tabPanel header="Documents">
+    <div class="card border-round-md">
+      <app-documents
+        [documentsColumnDefs]="documentsColumnDefs"
+        [documentsDataList]="documentsDataList"
+        (documentEmitter)="onDocumentClick($event)"
+        (docUploadEmitter)="onDocUploadClick($event)"
+        [facilityType]="facilityType"
+      ></app-documents>
+    </div>
+  </p-tabPanel>
+</p-tabView>

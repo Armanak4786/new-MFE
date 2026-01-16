@@ -1,0 +1,11 @@
+@media print {
+  .print-page {
+    width: 50% !important;
+    float: left;
+  }
+
+  .no-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

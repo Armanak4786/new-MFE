@@ -1,0 +1,96 @@
+<div class="grid m-1 mb-0">
+  <div class="sm:col-12 md:col-12 lg:col-6">
+    <div class="card quick-actions-child-card py-3">
+      <div class="grid mx-1">
+        <div class="col-2">
+          <img
+            src="assets/images/icon/hues-company.svg"
+            alt="Hues Company Icon"
+          />
+        </div>
+        <div class="col-10 mt-3">
+          <div class="hue-class text-sm mb-2">Hues Company Ltd</div>
+          <div class="text-xs flex"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sm:col-12 md:col-12 lg:col-6">
+    <div class="grid">
+      <div class="sm:col-12 md:col-6 lg:col-6">
+        <label class="text-xs">{{ "quick_actions" | translate }}</label>
+      </div>
+      <div class="quick-action-btn sm:col-12 md:col-3 lg:col-3">
+        <gen-button
+          class="text-xs"
+          [btnType]="'plus-btn'"
+          [btnLabel]="'Add'"
+          [disabled]="true"
+        >
+        </gen-button>
+      </div>
+      <div class="quick-action-btn sm:col-12 md:col-3 lg:col-3">
+        <gen-button
+          class="text-xs"
+          [btnType]="'minus-btn'"
+          [btnLabel]="'remove'"
+          [disabled]="true"
+        >
+        </gen-button>
+      </div>
+    </div>
+
+    <div class="grid mt-0">
+      <div
+        class="quick-action-btn sm:col-12 md:col-6 lg:col-6"
+        *ngIf="hasAccess('perform_requests')"
+      >
+        <gen-button
+          class="text-xs"
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'drawdown_request'"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (onClick)="showDialogDrawdownRequest()"
+        ></gen-button>
+      </div>
+      <div
+        class="quick-action-btn sm:col-12 md:col-6 lg:col-6"
+        *ngIf="hasAccess('perform_requests')"
+      >
+        <gen-button
+          class="text-xs"
+          [btnType]="'non-bg-btn'"
+          [btnLabel]="'add_asset'"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (onClick)="showDialogAddAsset()"
+        ></gen-button>
+      </div>
+    </div>
+
+    <div class="grid mt-0">
+      <div class="quick-action-btn sm:col-6 md:col-6 lg:col-6">
+        <gen-button
+          class="text-xs"
+          [btnLabel]="'request_history'"
+          [btnType]="'non-bg-btn'"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (onClick)="showDialogRequestHistory()"
+        ></gen-button>
+      </div>
+      <div class="quick-action-btn sm:col-6 md:col-6 lg:col-6">
+        <gen-button
+          class="text-xs"
+          [btnLabel]="'documents'"
+          [btnType]="'non-bg-btn'"
+          [iconPos]="'right'"
+          [btnIcon]="'pi pi-angle-right'"
+          (onClick)="showDialogDocuments()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

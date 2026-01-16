@@ -1,0 +1,116 @@
+<div class="grid card m-2">
+  <div class="sm:col-6 md:col-6 lg:col-3 border-round-md p-2">
+    <div class="asset-link-bg border-round-md p-2">
+      <dropdown
+        [options]="optionData"
+        [value]="facilityTypeDropdown"
+        [labelType]="'vertical'"
+        (change)="onFacilityChange($event)"
+      ></dropdown>
+    </div>
+  </div>
+
+  <div class="sm:col-6 md:col-6 lg:col-9 border-round-md">
+    <gen-table
+      [columns]="buyBackColDefs"
+      [tableClass]="'border-round'"
+      [dataList]="buyBackDataList"
+      [isScrollable]="'true'"
+      [tableStyle]="'stripped-rows'"
+      (onCellClick)="onCellClick($event)"
+      [bodyClass]="'text-xs row-class-assetlink'"
+      [headingClass]="'tableHeader header-text-color'"
+    ></gen-table>
+  </div>
+</div>
+
+<div class="grid" *ngIf="currentComponent !== 'requestHistory'">
+  <div class="col-12 sm:col-12 md:col-8">
+    <div class="flex justify-content-start flex-wrap">
+      <div class="p-2">
+        <gen-button
+          [btnType]="
+            currentComponent === 'BuybackForecast' ? 'bg-btn' : 'border-btn'
+          "
+          [btnLabel]="'buyback_forcast'"
+          class="text-xs"
+          (onClick)="showBuybackForcastTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Leases' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'leases'"
+          class="text-xs"
+          (onClick)="showLeasesTab()"
+        ></gen-button>
+      </div>
+      <div class="p-2">
+        <gen-button
+          [btnType]="currentComponent === 'Documents' ? 'bg-btn' : 'border-btn'"
+          [btnLabel]="'documents'"
+          class="text-xs"
+          (onClick)="showDocumentsTab()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 sm:col-12 md:col-4">
+    <div
+      class="flex justify-content-end flex-wrap"
+      *ngIf="currentComponent == 'BuybackForecast'"
+    >
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'export'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-cloud-upload'"
+          (click)="export()"
+        ></gen-button>
+      </div>
+      <div>
+        <gen-button
+          [btnType]="'non-bg-btn'"
+          [btnWidth]="'full'"
+          [btnLabel]="'print'"
+          class="text-xs"
+          [iconPos]="'left'"
+          [btnIcon]="'pi pi-print'"
+          (click)="onPrint()"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="currentComponent === 'Leases'">
+  <app-loans
+    [facilityType]="facilityType"
+    [loansColumnDefs]="buybackLeasesColumnDefs"
+    [loansDataList]="leasesDataList"
+    [selectedSubFacility]="this.selectedSubFacility"
+  ></app-loans>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'BuybackForecast'">
+  <app-payment-summary-account-forcast
+    [paymentForcastDataList]="paymentForcastDataList"
+    [accountForcastDataList]="accountForcastDataList"
+    [paymentForcastColumnDefs]="paymentForecastColumnDefs"
+    [accountForcastColumnDefs]="accountForcastColumnDefs"
+    (paramsEmit)="onParamsChange($event)"
+    [disableDate]="disableDate"
+    #PaymentSummaryAccountForcast
+  ></app-payment-summary-account-forcast>
+</ng-container>
+<ng-container *ngIf="currentComponent === 'Documents'">
+  <app-documents
+    [documentsColumnDefs]="byubackDocumentsColumnDefs"
+    [documentsDataList]="documentsDataList"
+    [facilityType]="facilityType"
+    (documentEmitter)="onDocumentClick($event)"
+    (docUploadEmitter)="onDocUploadClick($event)"
+  ></app-documents>
+</ng-container>

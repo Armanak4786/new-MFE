@@ -1,0 +1,22 @@
+<div class="gird">
+  <form [formGroup]="formGroup">
+    <div class="sm:col-12 md:col-12 lg:col-12">
+      <textarea
+        [rows]="5"
+        [cols]="columns"
+        class="p-fluid p-inputtextarea-responsive additional-info"
+        autoResize="autoResize"
+        formControlName="inputText"
+        pInputText
+        (input)="onInputChange()"
+      ></textarea>
+      <div>
+        <text
+          [mode]="'label'"
+          [label]="'additional_info_desc'"
+          labelClass="text-xs"
+        ></text>
+      </div>
+    </div>
+  </form>
+</div>

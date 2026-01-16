@@ -1,0 +1,64 @@
+.request-settle-text {
+  font-size: 10px;
+}
+
+.request-settle-text-color {
+  color: #6f6f6f;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  align-items: end;
+}
+.search-inp{
+  width: 125% !important;
+}
+
+// workaround for values overlapping on he dropdown box
+ ::ng-deep .p-dropdown-panel {
+  top: auto !important;
+  bottom: unset !important;
+   transition: all 0.3s ease;
+   margin-top: 5px;
+}
+.customDropdown {
+  .p-dropdown {
+    min-width: 140px;
+    border-radius: 4px;
+  }
+}
+.customDropdown .p-dropdown-trigger-icon {
+  color: var(--primary-text-color) !important;
+}
+
+.customDropdown .p-dropdown {
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.customDropdown .p-dropdown:after {
+  display: none !important;
+}
+
+.customDropdown .p-dropdown .p-dropdown-label {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+::ng-deep  .p-dropdown-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  width: 14rem;
+}
+// Allow text inside options to wrap 
+::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  white-space: normal !important;
+  word-break: break-word !important;
+  line-height: 1.2rem !important;
+  padding: 0.5rem !important;
+}

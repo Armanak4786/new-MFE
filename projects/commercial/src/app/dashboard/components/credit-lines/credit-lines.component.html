@@ -1,0 +1,11 @@
+<div class="sm:col-12 md:col-8 lg:col-12 border-round-md">
+  <gen-table
+    [columns]="creditlineFacilityColumnDefs"
+    [tableClass]="'border-round'"
+    [headingClass]="'tableHeader text-xs header-text-color'"
+    [dataList]="creditlinesDataList"
+    [tableStyle]="'stripped-rows'"
+    [bodyClass]="'text-xs row-class-creditline'"
+    (onHeaderClick)="onheaderclick($event)"
+  ></gen-table>
+</div>
