@@ -1,1 +1,462 @@
 /* You can add global styles to this file, and also import other style files */
+
+$gutter: 0.5rem; //for primeflex grid system
+@import "../../../node_modules/auro-ui/src/auro-ui-assets/styles/layout/layout.scss";
+@import "../../../node_modules/auro-ui/src/auro-ui-assets/styles/global.scss";
+
+/* PrimeNG */
+@import "../../../node_modules/primeng/resources/primeng.min.css";
+@import "../../../node_modules/primeflex/primeflex.scss";
+@import "../../../node_modules/primeicons/primeicons.css";
+
+
+:root {
+    --background-light: #f7fafc;
+    --background-color-primary: #ffff;
+    --primary-header-color: #0f86b1;
+    --selected-background-color: #d5f1fb;
+}
+
+* {
+    font-family: "Verdana";
+}
+
+@media screen and (min-width: 1960px) {
+
+    .layout-main,
+    .landing-wrapper {
+        width: 100% !important;
+    }
+}
+
+.disburstment-details-label {
+    padding-bottom: 4px;
+}
+
+.drawdowm-details-label {
+    padding-bottom: 4px;
+    color: (--background-color);
+}
+
+.drawdown-label {
+    color: (--background-color);
+}
+
+.reasonForRelease {
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+.add-asset-facility-text {
+    color: (--background-color);
+    padding-bottom: 6px;
+}
+
+.add-asset-facility {
+    background-color: var(--background-light) !important;
+}
+
+// layout CSS
+.layout-main-container {
+    padding: 0rem 1rem 2rem 0rem;
+}
+
+.layout-main {
+    overflow: hidden;
+}
+
+.request-settle-quote-bg {
+    background-color: var(--background-light);
+}
+
+.request-settle-text {
+    font-size: 10px;
+}
+
+.request-settle-text-color {
+    color: (--background-color);
+}
+
+.loan-dash-text {
+    font-size: 10px;
+}
+
+.loan-dash-text-color {
+    color: (--background-color);
+}
+
+.p-column-filter-menu-button {
+    height: 1rem !important;
+}
+
+.drawdown-card-bg {
+
+    .p-card .card-header,
+    .p-card .card-body {
+        padding: 0.625rem;
+        background-color: #f7fafc;
+    }
+
+    .grid-nogutter {
+        .drawdown_details_card {
+            dropdown {
+                width: 15px;
+            }
+        }
+    }
+}
+
+.label-xs {
+    font-size: 10px;
+}
+
+.label-color {
+    color: #6f6f6f;
+}
+
+.drawdown-card-bg {
+    .ng-select.ng-select-single .ng-select-container {
+        background-color: #f7fafc;
+    }
+}
+
+.baseform-bg-class {
+    .ng-select.ng-select-single .ng-select-container {
+        background-color: #f7fafc;
+    }
+}
+
+.section-class {
+    background-color: #f7fafc;
+}
+
+.header-class {
+    background-color: none;
+}
+
+.tableHeader {
+    background-color: var(--primary-header-color) !important;
+}
+
+.row-selected {
+    background-color: var(--selected-background-color) !important;
+    /* Blue for selected rows */
+}
+
+.tableOddRow {
+    background-color: #f7fafc;
+}
+
+.header-text-color {
+    color: #fff !important;
+}
+
+.columnColor {
+    background-color: #fffade;
+}
+
+.checkbox1 {
+    margin-top: -8rem;
+}
+
+.checkbox2 {
+    margin-top: -9px;
+}
+
+.checkbox3 {
+    margin-top: -9px;
+}
+
+.tableEvenRow {
+    background-color: var(--primary-text-color);
+}
+
+.main-layout-topbar .layout-topbar {
+    background-color: var(--primary-color) !important;
+}
+
+.p-datatable-striped .p-datatable-odd {
+    background-color: #7ad656 !important;
+}
+
+/* Optional: Change the background color of even rows */
+.p-datatable-striped .p-datatable-even {
+    background-color: #e3a487 !important;
+}
+
+p-datatable.p-datatable-striped .p-datatable-tbody>tr:nth-child(odd) {
+    background: #8c6a6a !important;
+    //fdfdfd
+}
+
+.drawdown_details_field {
+    .p-inputtext {
+        width: 18rem !important;
+    }
+
+    #amount {
+        width: 82% !important;
+    }
+}
+
+.drawdown_details_field {
+    div {
+        input {
+            .p-inputtext {
+                width: 5rem !important;
+            }
+        }
+    }
+}
+
+.drawdown_details_card {
+    .p-field {
+        width: 15rem !important;
+    }
+}
+
+.radio_label_class {
+    div {
+        padding-top: 2px;
+    }
+}
+
+.payment-option {
+    .field-radiobutton {
+        .flex {
+            flex-direction: column;
+        }
+    }
+}
+
+.flex-container {
+    display: flex;
+    /* Use flex to align items inline */
+    gap: 10px;
+    /* Optional: Adds space between the elements */
+    align-items: center;
+    /* Align items vertically in the center */
+    flex-wrap: wrap;
+    /* Allow items to wrap on smaller screens */
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column;
+        /* Stack items vertically on small screens */
+        align-items: flex-start;
+        /* Align items to the left */
+        gap: 5px;
+        /* Smaller gap for stacked elements */
+    }
+}
+
+#amount {
+    width: 100% !important;
+}
+
+.flex-container-for-approval {
+    display: flex;
+    /* Use flex to align items inline */
+    align-items: center;
+    /* Align items vertically in the center */
+    flex-wrap: wrap;
+    /* Allow items to wrap on smaller screens */
+}
+
+.flex.overdue.gap-1.pb-2 text {
+    padding-top: 0.1rem;
+}
+
+.flex.paymentNotYetAllocated.gap-1.pb-2 text {
+    padding-top: 0.1rem;
+}
+
+.searchAssetClass .searchAssetInputClass .p-inputtext {
+    background-color: var(--primary-text-color);
+    width: 260px;
+}
+
+.productTransferClass .productTransferToClass {
+    margin-top: 5px;
+}
+
+.p-datatable .p-datatable-tbody>tr {
+    span.text-right {
+        margin-left: auto;
+    }
+}
+
+form {
+    label {
+        color: var(--label-color) !important;
+    }
+}
+
+.party-height {
+    min-height: 20px;
+}
+
+.p-datatable .p-column-resizer {
+    top: 20%;
+    width: 0.1rem;
+    height: 60%;
+    border: 0.2px solid var(--background-color-primary);
+}
+
+.amountColumnCenter {
+    span {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+.custom-dropdown {
+    //background-color: var(--backgroundColorPrimary);
+    border-radius: 4px;
+    display: inline-flex;
+    //background-color: #4dbae1;
+    //width: 100px;
+}
+
+.custom-dropdown.p-dropdown {
+    width: 100px;
+    /* or any fixed size you want */
+}
+
+.partyCss {
+    .p-dropdown {
+        min-width: 140px;
+        border-radius: 4px;
+        background-color: #4dbae1;
+        color: var(--primary-text-color);
+    }
+}
+
+.partyCss .p-dropdown-label {
+    color: var(--primary-text-color) !important;
+}
+
+.partyCss .p-dropdown-trigger-icon {
+    color: var(--primary-text-color) !important;
+}
+
+.partyCss .p-dropdown {
+    border: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+.partyCss .p-dropdown:after {
+    display: none !important;
+}
+
+.partyCss .p-dropdown .p-dropdown-label {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.contact_udc_dropdown {
+    .p-dropdown {
+        min-width: 180px;
+        border-radius: 4px;
+    }
+}
+
+.contact_udc_team {
+    .p-dropdown {
+        min-width: 100px;
+        border-radius: 4px;
+    }
+}
+
+// .p-dropdown:not(.p-disabled):hover {
+//   border-color: var(--background-color-primary) !important;
+// }
+
+.svg.p-icon.p-sortable-column-icon {
+    color: var(--primary-text-color);
+}
+
+.chartDropdown {
+    .p-dropdown {
+        width: 270px;
+        border-radius: 4px;
+    }
+}
+
+canvas {
+    height: 70px !important;
+    width: 74px !important;
+}
+
+.p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon {
+    color: var(--background-color-primary);
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+    color: var(--background-color-primary);
+}
+
+.subFacility-dropdown.p-dropdown {
+    width: 100px;
+    /* or any fixed size you want */
+}
+
+.trim_label {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    //display: inline-block;
+    max-width: 120px;
+    /* or set a fixed width like 150px */
+    vertical-align: middle;
+}
+
+::ng-deep .wrap-text-cell {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    text-overflow: initial !important;
+    line-height: 1.4;
+}
+
+.p-breadcrumb .p-menuitem-link {
+    padding: 2px;
+}
+
+// styles.scss or your component-specific .scss file
+.layout-logo-centered {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.p-overlaypanel {
+    width: auto !important;
+    max-width: 350px !important;
+}
+
+.bg-cyan {
+    background-color: #dffcfd;
+}
+
+// .border-round {
+//   border-radius: 12px;
+// }
+
+.border-round .p-datatable {
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.border-round .p-datatable-wrapper {
+    border-radius: 0.4rem;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.main-layout-topbar.topbar-expanded {
+    height: 400px;
+    /* expand height automatically */
+}

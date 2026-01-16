@@ -259,6 +259,11 @@
                 "glob": "**/*",
                 "input": "projects/commercial/public",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/"
               }
             ],
             "styles": [

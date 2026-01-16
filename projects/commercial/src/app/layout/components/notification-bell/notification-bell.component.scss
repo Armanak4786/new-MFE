@@ -1,0 +1,32 @@
+.user-profile-background {
+    background-color: aliceblue;
+}
+
+.notification-text {
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.notification-bell {
+    &::ng-deep {
+        .p-overlaypanel {
+            width: 40vw;
+            top: auto;
+            right: 0;
+            left: auto;
+            padding: 0px;
+            --overlayArrowLeft: 90%;
+            z-index: 1003;
+        }
+
+        .p-overlaypanel-content {
+            padding: 0px 0px;
+        }
+    }
+}
+
+// .notification-box {
+//   width: '40vw',
+//   height: '60vh',
+//   overflow: scroll,
+// }

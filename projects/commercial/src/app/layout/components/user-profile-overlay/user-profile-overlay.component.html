@@ -1,0 +1,54 @@
+<p-overlayPanel #overlayPanel>
+    <ng-content>
+        <div class="p-fluid p-2 cursor-pointer" (click)="changePassword()">
+            <div class="inline-block w-1rem h-1rem">
+                <i class="pi pi-lock"></i>
+            </div>
+            <div class="inline-block px-2">
+                Change Password
+            </div>
+        </div>
+
+        <div class="p-fluid p-2 cursor-pointer" (click)="logout()">
+            <div class="inline-block w-1rem h-1rem">
+                <i class="pi pi-user"></i>
+            </div>
+            <div class="inline-block px-2">
+                Logout
+                <!-- {{ userName }} -->
+            </div>
+        </div>
+
+        <!-- <div class="p-fluid p-2 user-profile-background border-round-sm">
+      <div class="py-1">
+        {{ "Corporate Name"  }} : ABC Corporate
+      </div>
+      <div class="py-1">{{ "User ID"  }} : User ID1</div>
+      <div class="mt-1 border-bottom-1 border-white"></div>
+
+      <div class="py-1">{{ "Last Logged In" }} -</div>
+      <div class="py-1">{{ "Last Failed Log In" }} -</div>
+    </div>
+    <div class="p-1 p-fluid">
+      <div class="py-1 pointer">
+        <div class="inline-block w-1rem h-1rem">
+          <i class="pi pi-pencil"></i>
+        </div>
+        <div class="inline-block px-2">
+          {{ "Edit Profile" }}
+        </div>
+      </div>
+      <div class="p-fluid py-1 pointer">
+        <div class="inline-block w-1rem h-1rem">
+          <i class="pi pi-sync"></i>
+        </div>
+        <div class="inline-block px-2">
+          {{ "Last Login Activities" }}
+        </div>
+      </div>
+    </div> -->
+        <!-- <div class="p-fluid">
+      <gen-button [btnLabel]="'Logout'" (onClick)="logout()" />
+    </div> -->
+    </ng-content>
+</p-overlayPanel>
