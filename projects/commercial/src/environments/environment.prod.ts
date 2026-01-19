@@ -17,9 +17,6 @@ export const environment = {
         customerCommercial: 'CustomerDetailsCommercial',
         WorkFlowsCommercial: 'WorkFlowsCommercial',
     },
-    // apiUrl: 'https://portalgateway/gateway',
-    // apiUrl: 'https://portalgatewaydev:447/gateway',
-    //  apiUrl: 'https://udcdevportalgateway:444/gateway',
     apiUrl: 'http://testudcportalgateway:444/gateway',
     // OIDC Config : Start
     authority:
