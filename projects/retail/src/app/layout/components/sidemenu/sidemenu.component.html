@@ -16,10 +16,6 @@
                 <i class="fa-solid fa-wallet"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Dashboard</span>
             </li>
-            <li (click)="navigate('/home')" class="nav-item">
-                <i class="fas fa-home"></i>
-                <span class="icon-label" *ngIf="isExpanded || isLocked">Home</span>
-            </li>
             <li (click)="toggleSubmenu()" class="nav-item">
                 <i class="fa-regular fa-chart-bar"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Reports</span>
