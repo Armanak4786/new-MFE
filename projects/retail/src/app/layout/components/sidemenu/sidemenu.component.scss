@@ -1,0 +1,102 @@
+.sidebar {
+    width: 4%;
+    height: 90vh;
+    position: fixed;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #c4c4c4;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-left: 10px;
+    float: left;
+    transition: width 0.15s ease, background-color 0.15s ease, padding 0.15s ease;
+}
+
+.sidebar.expanded {
+    width: 20%;
+    z-index: 999;
+    position: fixed;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin: 20px 0 0 16px;
+    color: #747474;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-wrap: nowrap;
+
+    i {
+        font-size: 17px;
+    }
+}
+
+.nav-item:hover {
+    color: #3498db;
+}
+
+.icon-label {
+    font-size: 17x;
+    color: #747474;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    margin-left: 15px;
+}
+
+.nav-item:hover .icon-label {
+    color: #3498db;
+}
+
+.sidebar:not(.expanded) .icon-label {
+    opacity: 0;
+}
+
+.sidebar:not(.expanded) .i {
+    text-align: center;
+    margin-left: 0px;
+}
+
+.lock-button {
+    float: right;
+    background: none;
+    border: none;
+    color: #747474;
+    cursor: pointer;
+    margin-right: 10px;
+
+    i {
+        font-size: 17px;
+    }
+}
+
+.lock-button:hover {
+    color: #3498db;
+}
+
+@media (max-width: 991px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+.sub-sidemenu {
+    position: fixed;
+    top: 3%;
+    left: 20%;
+    height: 90vh;
+    width: 18%;
+    background-color: #fff;
+    border: 1px solid #c4c4c4;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+}
+

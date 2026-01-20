@@ -1,0 +1,42 @@
+{
+    "data": {
+        "loanDetails": {
+            "loanNo": "452",
+            "amountDue": "13934.00",
+            "nextPayment": "26 Sept 2024",
+            "frequency": "Monthly"
+        },
+        "requestTypeList": [
+            {
+                "id": 101,
+                "value": "UPD",
+                "label": "Update Payment Details"
+            },
+            {
+                "id": 102,
+                "value": "CLT",
+                "label": "Change Loan Term"
+            },
+            {
+                "id": 103,
+                "value": "MLSP",
+                "label": "Make a Lump Sum Payment"
+            },
+            {
+                "id": 106,
+                "value": "RPA",
+                "label": "Request a Payment Arrangement"
+            },
+            {
+                "id": 104,
+                "value": "VR",
+                "label": "Variation Request"
+            },
+            {
+                "id": 105,
+                "value": "AETO",
+                "label": "AFV End of Term Options"
+            }
+        ]
+    }
+}

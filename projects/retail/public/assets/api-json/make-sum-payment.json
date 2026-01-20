@@ -1,0 +1,15 @@
+{
+    "data": {
+		"makeSumPaymentDetail":
+		{
+            "amount": "1000",
+            "sourceoffunds":"",
+            "proposedPaymentDate":"10 Feb 2025",
+            "paymentOption":"udc",
+            "whatwouldyouliketoOccur":"rt",
+            "note":"",
+            "preferredContactMethod":"",
+            "preferredContactTime":"ev"
+        }
+    }
+}

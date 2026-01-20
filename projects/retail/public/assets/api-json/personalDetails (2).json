@@ -1,0 +1,99 @@
+{
+  "data": {
+    "request":[
+    {
+      "requestStatus": "true",
+      "action": "",
+      "assetType": "Car",
+      "requestType": "Termination Request",
+      "loanNo": "46",
+      "taskNo": "138",
+      "requestNo": "10",
+      "requestDate": "20 Dec 2024",
+      "requestName": "Settlement Request",
+      "borrower": "Mr. Johan Smith",
+      "coBorrower": "Mrs. Syanu Smith",
+      "settlementDate": "15 OCT 2024",
+      "reason": "Bank Consolidation",
+      "paymentMethod": "Credit to UDC",
+      "sourceOfFund": "LTI Source",
+      "taskDetails": "Loan Details",
+      "guarantor": "anikl",
+      "requestTime": "08:00 PM",
+      "requestCapturingSteps": "Loan Details",
+      "requestNameandNumber": "10 | Settlement Request"
+    },
+    {
+      "requestStatus": "true",
+      "action": "",
+      "assetType": "Car",
+      "requestType": "Termination Request",
+      "loanNo": "48",
+      "taskNo": "138",
+      "requestNo": "10",
+      "requestDate": "16 Dec 2024",
+      "requestName": "Variation Request",
+      "borrower": "Mr. Johan Smith",
+      "coBorrower": "Mrs. Mary Smith",
+      "settlementDate": "24 OCT 2024",
+      "reason": "Bank Consolidation",
+      "paymentMethod": "Credit to UDC",
+      "sourceOfFund": "Abc Source",
+      "taskDetails": "Loan Details",
+      "guarantor": "anikl",
+      "requestTime": "08:00 PM",
+      "requestCapturingSteps": "Loan Details",
+      "requestNameandNumber": "10 | Variation Request"
+    },
+    {
+      "requestStatus": "true",
+      "action": "",
+      "assetType": "-",
+      "requestType": "Change Payment Details",
+      "loanNo": "48",
+      "taskNo": "2345",
+      "requestNo": "101",
+      "requestDate": "22 Sept 2024",
+      "requestName": "Variation Request",
+      "borrower": "Mr. Johan Smith",
+      "coBorrower": "Mrs. Mary Smith",
+      "settlementDate": "24 OCT 2024",
+      "reason": "Bank Consolidation",
+      "paymentMethod": "Credit to UDC",
+      "sourceOfFund": "Abc Source",
+      "taskDetails": "Contract Details",
+      "guarantor": "anikl",
+      "requestTime": "08:00 PM",
+      "requestCapturingSteps": "Contract Variation",
+      "proposedpaymentFrequency": "Monthly",
+      "currentPaymentFrequency": "Fortnighly",
+      "principalOutstanding": "78853",
+      "nextPaymentAmount": "170695",
+      "contractAmount": "900000",
+      "contractId": "46-Default VHP",
+      "variationRequestType": "Change Payement Frequency",
+      "requestNameandNumber": "101 | Variation Request"
+    }
+  ],
+  "category": [
+    {
+      "label": "Change Personal Details",
+      "value": "changePersonalDetails"
+    },{
+      "label": "Update Contact Details",
+      "value": "updateContactDetails"
+    },{
+      "label": "Update Address Details",
+      "value": "updateAddressDetails"
+    },{
+      "label": "View Releted Details",
+      "value": "viewReletedParties"
+    },{
+      "label": "Change Bank Details",
+      "value": "changeBankDetails"
+    }
+  ]
+
+}
+
+}

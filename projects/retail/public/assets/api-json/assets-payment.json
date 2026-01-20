@@ -1,0 +1,51 @@
+{
+    "data": {
+        "assets": [
+            {
+                "quoteNo": "48",
+                "date": "2024-09-01",
+                "number": 1,
+                "frequency": "Monthly",
+                "paymentAmount": 1420,
+                "totalcashprice": "880000",
+                "totalAmountborrower": "580000",
+                "term": "48 Months",
+                "interestrate": "7.9",
+                "intrestCharge": "10160",
+                "totalAmountToRepay":"68160",
+                "yourPayment":"$1,142.00 per Months",
+                "assetImage": "assets/images/icon/loan_car.png"
+            },
+            {
+                "quoteNo": "47",
+                "date": "2024-09-01",
+                "number": 2,
+                "frequency": "Monthly",
+                "paymentAmount": 1320,
+                "totalcashprice": "880000",
+                "totalAmountborrower": "580000",
+                "term": "48 Months",
+                "interestrate": "7.9",
+                "intrestCharge": "10160",
+                "totalAmountToRepay":"68160",
+                "yourPayment":"$1,142.00 per Months",
+                "assetImage": "assets/images/icon/personal_asset_bike.svg"
+            },
+            {
+                "quoteNo": "46",
+                "date": "2024-09-01",
+                "number": 3,
+                "frequency": "Monthly",
+                "paymentAmount": 1520,
+                "totalcashprice": "870000",
+                "totalAmountborrower": "570000",
+                "term": "48 Months",
+                "interestrate": "7.9",
+                "intrestCharge": "10110",
+                "totalAmountToRepay":"68160",
+                "yourPayment":"$1,142.00 per Months",
+                "assetImage": "assets/images/icon/personal_asset_boat.svg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+.layout-sidemenu {
+    .sidebar {
+        position: absolute;
+        background-color: #ffffff;
+        justify-content: center;
+        align-items: center;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-item {
+        margin: 10% 0;
+        color: #747474;
+        text-align: left;
+        margin-left: 10%;
+        font-size: 18px;
+        text-wrap: nowrap;
+    }
+
+    i {
+        height: 18px;
+        width: 15px;
+    }
+
+    .icon-label {
+        color: #747474;
+        opacity: 1;
+        transition: opacity 0.4s ease;
+        margin-left: 10px;
+    }
+}
+

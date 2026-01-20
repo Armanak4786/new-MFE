@@ -1,0 +1,104 @@
+{
+  "data": {
+    "activeLoans": [
+      {
+        "carModel": "2021 Ford Ranger PUDS4D",
+        "carImage": "assets/images/toyota-ranger-1.png",
+        "isDraft": false
+      },
+      {
+        "carModel": "2022 Ford Ranger PUDS4D",
+        "carImage": "assets/images/icon/toyota-ranger-1.png",
+        "isDraft": false
+      },
+      {
+        "carMake": "Ford",
+        "carModel": "2021 Ford Ranger PUDS4D",
+        "carImage": "assets/images/icon/toyota-ranger-1.png",
+        "isDraft": false
+      }
+    ],
+    "individualAsset": [
+      {
+        "assetName": "Car or Van",
+        "assetImage": "assets/images/icon/car_or_van.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "assetName": "Moterbike",
+        "assetImage": "assets/images/icon/motorbike.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "assetName": "Boat",
+        "assetImage": "assets/images/icon/boat.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "assetName": "Other",
+        "assetImage": "assets/images/icon/others.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "selectedAssetName": "Car or Van",
+        "selectedAssetImage": "assets/images/icon/car_or_van_selected.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "selectedAssetName": "Moterbike",
+        "selectedAssetImage": "assets/images/icon/motorbike_selected.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "selectedAssetName": "Boat",
+        "selectedAssetImage": "assets/images/icon/boat_selected.png",
+        "isActive": false,
+        "isClicked": false
+      },
+      {
+        "selectedAssetName": "Other",
+        "selectedAssetImage": "assets/images/icon/others_selected.png",
+        "isActive": false,
+        "isClicked": false
+      }
+    ],
+    "bussinessAsset": [
+      {
+        "assetName": "Truck & Trailer Unit",
+        "assetImage": "assets/images/icon/truck.svg",
+        "isActive": false
+      },
+      {
+          "assetName": "Tractor & Agricultureal Implements",
+          "assetImage": "assets/images/icon/tractor.svg",
+          "isActive": false
+        },
+        {
+          "assetName": "Earthmoving Equipments",
+          "assetImage": "assets/images/icon/jcb.svg",
+          "isActive": false
+        },
+        {
+          "assetName": "Other",
+          "assetImage": "assets/images/icon/menu.svg",
+          "isActive": false
+        }
+    ],
+    "loanType":[
+      {
+        "assetName": "individual",
+        "loanType": "Individual"
+      },
+      {
+        "assetName": "business",
+        "loanType": "Business"
+      }
+    ]
+  }
+}

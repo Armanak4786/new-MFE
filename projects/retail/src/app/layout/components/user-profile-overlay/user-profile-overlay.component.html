@@ -1,0 +1,22 @@
+<p-overlayPanel #overlayPanel>
+    <ng-content>
+        <div class="p-fluid p-2 cursor-pointer" (click)="changePassword()">
+            <div class="inline-block w-1rem h-1rem">
+                <i class="pi pi-lock"></i>
+            </div>
+            <div class="inline-block px-2">
+                Change Password
+            </div>
+        </div>
+
+        <div class="p-fluid p-2 cursor-pointer" (click)="logout()">
+            <div class="inline-block w-1rem h-1rem">
+                <i class="pi pi-user"></i>
+            </div>
+            <div class="inline-block px-2">
+                Logout
+            </div>
+        </div>
+    </ng-content>
+</p-overlayPanel>
+

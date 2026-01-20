@@ -1,0 +1,12 @@
+{
+  "status": "1",
+  "message": "Currency Data Fetched Successfully",
+  "currencyId": 8,
+  "currencyName": "New Zealand Dollar",
+  "currencyIsoCode": "NZD",
+  "defaultFraction": 0,
+  "symbol": "$",
+  "defaultGroupingSeparator": ",",
+  "defaultDecimalSeparator": ".",
+  "align": "right"
+}

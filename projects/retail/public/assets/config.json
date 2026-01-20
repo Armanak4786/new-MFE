@@ -1,0 +1,22 @@
+{
+  "production": true,
+  "apiUrl": "https://devportalgateway.aurionpro.com/gateway",
+  "authority": "https://login10.fisglobal.com/idp/aurionpro",
+  "redirectUrl": "https://qaportalrss.aurionpro.com/authentication",
+  "postLogoutRedirectUri": "window.location.origin + '/post-logout'",
+  "scope": "openid profile",
+  "autoUserInfo": false,
+  "responseType": "code",
+  "silentRenew": true,
+  "useRefreshToken": true,
+  "secureRoutes": [""],
+  "maxIdTokenIatOffsetAllowedInSeconds": 600,
+  "clientId": "AURPRRSS.RESTAPI.QA",
+  "client_secret": "E@vCVM4HT7k*",
+  "grant_type": "client_credentials",
+  "CommonConfiguration": "assets/api-json/commonConfiguration.json",
+  "currency": "assets/api-json/currency.json",
+  "validationURL": "https://testudcportalgateway.aurionpro.com/gateway/validationrule/propertyvalidationrule",
+  "revokeAllTokenFIS": "https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me",
+  "ActiveClient": "UDCRSS"
+}

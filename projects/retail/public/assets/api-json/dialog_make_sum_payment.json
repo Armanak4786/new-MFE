@@ -1,0 +1,26 @@
+{
+  "data": {
+    "dialogMakesomePayment": [
+      {
+        "value": "1",
+        "label": "Under your loan agreement, you can only make a lump sum prepayment if we agree. If you would like to request to make a lump sum payment, please complete the mandatory fields and submit your request."
+      },
+      {
+        "value": "2",
+        "label": "We will contact you to discuss your request."
+      },
+      {
+        "value": "3",
+        "label": "Please note, fees may be payable if we agree to your prepayment request.  These fees are set out in your loan agreement."
+      },
+      {
+        "value": "4",
+        "label": "If your request is approved, we will send you a variation letter setting out the changes we have agreed."
+      },
+      {
+        "value": "5",
+        "label": "We reserve the right to decline your request."
+      }
+    ]
+  }
+}

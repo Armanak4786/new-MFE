@@ -1,0 +1,115 @@
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    border: none !important;
+    border-radius: 8px;
+}
+
+.selected {
+    padding: 1.2rem 0 0 1rem;
+    cursor: pointer;
+    color: #ffffff !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none !important;
+    border-radius: 8px;
+}
+
+.dropdown-icon {
+    font-size: 1rem;
+    margin-left: 0.75rem;
+}
+
+.options {
+    position: absolute;
+    background: white;
+    border: none;
+    margin-top: 4px;
+    border-radius: 0.4rem;
+    z-index: 1000;
+    width: 100%;
+    min-width: 10rem;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+.options div {
+    padding: 0.625rem;
+    cursor: pointer;
+}
+
+.options div:hover {
+    background: #f0f0f0;
+}
+
+::ng-deep {
+    .swing-icon {
+        .p-avatar-icon {
+            animation: swing 1.2s ease-in-out infinite;
+            transform-origin: top center;
+        }
+    }
+
+    .bell-icon {
+        ::ng-deep {
+            .p-badge {
+                height: 1.25rem;
+                min-width: 1.25rem;
+                line-height: 1.2rem;
+                font-size: 0.7rem;
+            }
+        }
+    }
+
+    .bell-icon {
+        &.p-avatar {
+            width: 2.3rem;
+            height: 2.3rem;
+            border: 1.5px solid var(--label-color);
+            background-color: white;
+            color: var(--primary-color);
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        &.p-overlay-badge .p-badge {
+            top: 14%;
+            right: 3%;
+            background: var(--secondary-color);
+        }
+
+        .p-overlaypanel {
+            right: 0;
+            top: auto;
+        }
+
+        &.p-avatar.p-avatar-circle {
+            overflow: visible;
+        }
+    }
+
+    .hideBadge {
+        &.p-overlay-badge .p-badge {
+            display: none;
+        }
+    }
+}
+
+@keyframes swing {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(25deg);
+    }
+    50% {
+        transform: rotate(-15deg);
+    }
+    75% {
+        transform: rotate(25deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+

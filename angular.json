@@ -160,6 +160,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/dealer/src/environments/environment.ts",
+                  "with": "projects/dealer/src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -378,6 +384,11 @@
                 "glob": "**/*",
                 "input": "projects/retail/public",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/"
               }
             ],
             "styles": [
@@ -387,6 +398,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/retail/src/environments/environment.ts",
+                  "with": "projects/retail/src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",

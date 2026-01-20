@@ -1,0 +1,8 @@
+<ul class="report-list">
+    <li *ngFor="let report of reports" (click)="reportSelected(report)">
+        <span class="nav-item">
+            <span class="icon-label">{{ report?.ReportName }}</span>
+        </span>
+    </li>
+</ul>
+

@@ -1,0 +1,110 @@
+{
+    "data": {
+        "proposedPaymentFrequency": [
+            {
+                "value": "M",
+                "label": "Monthly"
+            },
+            {
+                "value": "F",
+                "label": "Fortnighly"
+            },
+            {
+                "value": "W",
+                "label": "Weekly"
+            }
+        ],
+        "newPaymentDay": [
+            {
+                "value": "SUN",
+                "label": "Sunday"
+            },
+            {
+                "value": "MON",
+                "label": "Monday"
+            },
+            {
+                "value": "TUE",
+                "label": "Tuesday"
+            },
+            {
+                "value": "WED",
+                "label": "Wednesday"
+            },
+            {
+                "value": "THU",
+                "label": "Thursay"
+            },
+            {
+                "value": "FRI",
+                "label": "Friday"
+            },
+            {
+                "value": "SAT",
+                "label": "Saturday"
+            }
+        ],
+        "preferredContactTime": [
+            {
+                "value": "B",
+                "label": "Business Hours"
+            },
+            {
+                "value": "E",
+                "label": "Evening"
+            },
+            {
+                "value": "M",
+                "label": "Morning"
+            }
+        ],
+        "endOfTermsOptions": [
+            {
+                "value": "RA",
+                "label": "Return Asset"
+            },
+            {
+                "value": "R",
+                "label": "Refinance"
+            },
+            {
+                "value": "PA",
+                "label": "Purchase Asset"
+            },
+            {
+                "value": "T",
+                "label": "Trade-in"
+            }
+        ],
+        "whatWouldYouLikeToDo": [
+            {
+                "value": "201",
+                "label": "Extend my contract term and reduce the amount of each paymentt"
+            },
+            {
+                "value": "202",
+                "label": "Stop my repayments for a period of time(A Payment Holiday)"
+            },
+            {
+                "value": "203",
+                "label": "Extend the term of the contract and stop my repayments for a period of time(A payment Holiday)"
+            },
+            {
+                "value": "204",
+                "label": "Add Arrears Amount-Extend term"
+            },
+            {
+                "value": "205",
+                "label": "Add Arrears Amount-Do Not Extend term"
+            },
+            {
+                "value": "206",
+                "label": "Interest Only"
+            },
+            {
+                "value": "207",
+                "label": "Other, Please Specify"
+            }
+        ]
+    }
+}

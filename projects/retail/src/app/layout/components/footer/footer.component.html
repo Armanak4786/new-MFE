@@ -1,0 +1,66 @@
+<div class="layout-footer">
+    <a href="javascript:void(0)">
+        <i class="fab fa-linkedin"></i>
+    </a>
+    <a href="javascript:void(0)">
+        <i class="fab fa-facebook mx-3"></i>
+    </a>
+    <a href="javascript:void(0)">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <p class="text-white ml-auto cursor-pointer" (click)="openVersionPopup()">
+        {{ releaseInfo?.releaseVersion }}
+    </p>
+</div>
+
+<p-dialog header="Portal's Version" [modal]="true" [(visible)]="visible" [style]="{ width: '75rem' }">
+    <div class="mb-3">
+        <gen-card headerText="Release {{ releaseInfo?.releaseVersion }} ">
+            <ng-container header>
+                <div class="d-flex">
+                    <div class="d-flex ai-center gap-2">
+                        <date className="" [mode]="'label'" [value]="releaseInfo?.releaseDate"></date>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container body>
+                <p class="p-mt-2">
+                    {{ releaseInfo?.description }}
+                </p>
+            </ng-container>
+        </gen-card>
+    </div>
+
+    <div class="grid mb-3">
+        <div class="col-12">
+            <gen-card [headerText]="''" class="h-full">
+                <ng-container body>
+                    <div class="p-fluid">
+                        <div class="p-field p-d-flex p-jc-between">
+                            <label>Portal UI:
+                                <span class="font-semibold">{{
+                                    releaseInfo?.angular?.version
+                                }}</span>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+            </gen-card>
+        </div>
+    </div>
+
+    <gen-card [headerText]="'Microservices'">
+        <ng-container body>
+            <div class="microservices">
+                <ng-container *ngIf="columnsAsset?.length > 0">
+                    <gen-table [columns]="columnsAsset" [dataList]="microservicesList" [tableStyle]="'stripped-rows'"
+                        [rowHeight]="'12px'" [sortFlag]="true" [sortable]="true" [bodyClass]="''"
+                        [headingClass]="''"></gen-table>
+                </ng-container>
+                <p *ngIf="columnsAsset?.length === 0">Microservices list unavailable</p>
+            </div>
+        </ng-container>
+    </gen-card>
+</p-dialog>
+

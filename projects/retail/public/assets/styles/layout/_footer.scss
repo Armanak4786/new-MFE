@@ -1,0 +1,11 @@
+.layout-footer {
+  transition: margin-left $transitionDuration;
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  //   justify-content: center;
+  clear: both;
+  padding: 1rem;
+  border-top: 1px solid var(--surface-border);
+  background-color: var(--background-color-dark);
+}

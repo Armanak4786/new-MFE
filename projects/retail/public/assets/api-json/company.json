@@ -1,0 +1,37 @@
+{
+    "data": {
+        "companyAddress": "AB Sample, PO Box 17999, Greenlane, Auckland 1546",
+        "trandingName": "Sample Name",
+        "udcCustomerName": "345689345",
+        "customerType": "Business",
+        "companyList": [
+            {
+                "quoteId": "1234543",
+                "purchasePrice": "40,000.00",
+                "intrestRate": "10.34",
+                "quoteType": "CSA <Product Name>",
+                "term": "12",
+                "payment": "3,400.00",
+                "customerRole": "Borrower"
+            },
+            {
+                "quoteId": "1234543",
+                "purchasePrice": "40,000.00",
+                "intrestRate": "10.34",
+                "quoteType": "CSA <Product Name>",
+                "term": "24",
+                "payment": "3,400.00",
+                "customerRole": "Borrower"
+            },
+            {
+                "quoteId": "1234543",
+                "purchasePrice": "40,000.00",
+                "intrestRate": "10.34",
+                "quoteType": "CSA <Product Name>",
+                "term": "36",
+                "payment": "3,400.00",
+                "customerRole": "Borrower"
+            }
+        ]
+    }
+}

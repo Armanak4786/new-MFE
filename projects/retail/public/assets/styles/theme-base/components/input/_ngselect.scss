@@ -1,0 +1,148 @@
+.ng-select {
+    font-family: var(--font-family);
+    font-feature-settings: var(--font-feature-settings, normal);
+    font-size: $inputTextFontSize;
+    color: $inputTextColor;
+    background: $inputBg;
+    padding: 0px;
+    border: none;
+    border-bottom: $inputBorder;
+    transition: $formElementTransition;
+    appearance: none;
+    border-radius: $inputBorderRadius;
+    margin-top: -8px;
+    // &.ng-select-untouched {
+    //   border-color: $inputDefaultBorderColor;
+    // }
+  
+    &.ng-select-open {
+      border-color: $inputHoverBorderColor;
+    }
+  
+    &:enabled:hover {
+      border-color: $inputHoverBorderColor;
+    }
+  
+    &:enabled:focus {
+      @include focused-input();
+    }
+  
+    &.ng-dirty.ng-invalid {
+      @include invalid-input();
+    }
+  
+    &.ng-select-compact {
+      @include scaledFontSize($inputTextFontSize, $scaleSM);
+      @include scaledPadding($inputPadding, $scaleSM);
+    }
+  
+    &.ng-select-large {
+      @include scaledFontSize($inputTextFontSize, $scaleLG);
+      @include scaledPadding($inputPadding, $scaleLG);
+    }
+  
+    // Placeholder text
+    .ng-placeholder {
+      color: $inputPlaceholderTextColor;
+      transition-duration: $transitionDuration;
+    }
+  
+    // Dropdown container
+    .ng-select-container {
+      display: flex;
+      align-items: center;
+      border-radius: $inputBorderRadius;
+      background-color: $inputBg;
+  
+      &:focus {
+        @include focused-input();
+      }
+  
+      .ng-select-search {
+        font-size: $inputTextFontSize;
+        padding: $inputPadding;
+      }
+  
+      .ng-select-clear {
+        color: $inputIconColor;
+        padding-right: $inputPadding;
+      }
+  
+      &.ng-select-single {
+        .ng-select-label {
+          font-size: 0.85rem;
+          color: $inputPlaceholderTextColor;
+        }
+      }
+  
+      &.ng-select-multiple {
+        .ng-value-container {
+          padding: $inputPadding;
+        }
+      }
+    }
+  
+    // Dropdown item
+    .ng-option {
+      font-size: $inputTextFontSize;
+      padding: $inputPadding;
+      background-color: $inputBg;
+  
+    //   &:hover {
+    //     background-color: $inputHoverBg;
+    //   }
+  
+    //   &.ng-option-selected {
+    //     background-color: $inputSelectedBg;
+    //     color: $inputSelectedTextColor;
+    //   }
+  
+    //   &.ng-option-disabled {
+    //     color: $inputDisabledTextColor;
+    //     background-color: $inputDisabledBg;
+    //   }
+    }
+  
+    // Icon for left and right positioning
+    .ng-select-search > .ng-select-clear {
+      color: $inputIconColor;
+      padding-left: $inputPadding;
+    }
+  
+    // Focused input
+    &.ng-select-focused .ng-select-container {
+      @include focused-input();
+    }
+  
+    &.p-input-filled {
+      background-color: $inputFilledBg;
+  
+      &:enabled:hover {
+        background-color: $inputFilledHoverBg;
+      }
+  
+      &:enabled:focus {
+        background-color: $inputFilledFocusBg;
+      }
+    }
+  }
+  
+  @include placeholder {
+    color: $inputPlaceholderTextColor;
+  }
+  
+  // Responsive styles for smaller and larger sizes
+  .ng-select-sm {
+    .ng-select {
+      @include scaledFontSize($inputTextFontSize, $scaleSM);
+      @include scaledPadding($inputPadding, $scaleSM);
+    }
+  }
+  
+  .ng-select-lg {
+    .ng-select {
+      @include scaledFontSize($inputTextFontSize, $scaleLG);
+      @include scaledPadding($inputPadding, $scaleLG);
+    }
+  }
+  

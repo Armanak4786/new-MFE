@@ -1,0 +1,22 @@
+{
+  "data": {
+    "dialogRequestPaymentArrangement": [
+      {
+        "value": "1",
+        "label": "If you would like to set up a payment arrangement for your arrears or pay them in full, please complete the mandatory fields and submit your request."
+      },
+      {
+        "value": "2",
+        "label": "We will contact you to discuss your request."
+      },
+      {
+        "value": "3",
+        "label": "If your request is approved, we will send you a letter setting out the payment terms we have agreed."
+      },
+      {
+        "value": "4",
+        "label": "We reserve the right to decline your request."
+      }
+    ]
+  }
+}

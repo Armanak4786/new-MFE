@@ -1,1 +1,121 @@
 /* You can add global styles to this file, and also import other style files */
+
+$gutter: 0.5rem; //for primeflex grid system
+@import "../../../node_modules/auro-ui/src/auro-ui-assets/styles/layout/layout.scss";
+@import "../../../node_modules/auro-ui/src/auro-ui-assets/styles/global.scss";
+
+/* PrimeNG */
+@import "../../../node_modules/primeng/resources/primeng.min.css";
+@import "../../../node_modules/primeflex/primeflex.scss";
+@import "../../../node_modules/primeicons/primeicons.css";
+
+// Theme Specific Variables
+$primaryColor: #0f86b1;
+$primaryDarkColor: #1e88e5;
+$primaryDarkerColor: #1976d2;
+$primaryLightColor: #d5edf5;
+$primaryLighterColor: #fafdfe;
+$headerbgColor: #ebf7fb;
+$primaryTextColor: #ffffff;
+$secondaryColor: #aab734;
+$secondaryLightColor: #c7ffbe;
+$backgroundColorPrimary: #ffff;
+$backgroundColorDark: #000000;
+$backgroundColorTransparentDark: #00000080;
+$backgroundColorSecondary: #f3f3f3;
+$backgroundColorSecondaryLight: #fafdfe;
+$backgroundColorSecondaryDark: #0095db26;
+$disableColor: #ccc;
+$inputDisableColor: #000;
+$labelColor: #666666;
+$primaryBorderColor: #0095db;
+$danger: #d80027;
+
+:root {
+    --primary-color: #0f86b1 !important;
+    --primary-light-color: #d5edf5 !important;
+    --primary-lighter-color: #fafdfe !important;
+    --secondary-color: #aab734 !important;
+    --secondary-light-color: #c7ffbe !important;
+    --primary-text-color: #ffffff !important;
+    --disable-color: #ccc !important;
+    --input-disable-color: #000 !important;
+    --background-color-primary: #ffff !important;
+    --background-color-dark: #000000 !important;
+    --background-color-transparent-dark: #00000080 !important;
+    --background-color-secondary: #f3f3f3 !important;
+    --background-color-secondary-light: #fafdfe !important;
+    --background-color-secondary-dark: #0095db26 !important;
+    --label-color: #{$labelColor};
+    --primary-border-color: #0095db !important;
+    --danger-color: #{$danger};
+}
+
+.p-button {
+    min-width: auto;
+
+    &.p-highlight {
+        background: var(--primary-color);
+    }
+}
+
+.p-button.p-button-outlined {
+    background-color: transparent !important;
+}
+
+.p-button.p-button-text {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.main-layout-topbar.expanded .layout-topbar {
+    left: 16%;
+    position: fixed;
+}
+
+.layout-sidemenu {
+    z-index: 99;
+    position: fixed;
+    top: 3%;
+}
+
+.main-layout-topbar {
+    position: fixed;
+    padding-top: 15px;
+
+    .layout-topbar {
+        position: unset;
+        top: 2%;
+        width: 92.8vw;
+        margin-left: 6vw;
+    }
+}
+
+.layout-main {
+    overflow: unset;
+}
+
+.layout-main-container {
+    position: relative;
+    padding-bottom: 10rem;
+    padding-top: 5rem;
+}
+
+.layout-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 4;
+}
+
+@media (min-width: 992px) {
+    .layout-wrapper.layout-static .layout-main-container {
+        margin-left: 6vw;
+    }
+}
+
+form {
+    label {
+        color: var(--label-color) !important;
+    }
+}

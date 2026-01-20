@@ -1,0 +1,36 @@
+{
+    "data": [
+      {
+        "termMonths": "12 months",
+        "level": "Basic"
+      },
+      {
+        "termMonths": "24 months",
+        "level": "Standard",
+        "monthlyPayment": 130,
+        "totalAmount": 3120,
+        "description": "24-month standard plan with additional features."
+      },
+      {
+        "termMonths": "36 months",
+        "level": "Premium",
+        "monthlyPayment": 120,
+        "totalAmount": 4320,
+        "description": "36-month premium plan with extended benefits."
+      },
+      {
+        "termMonths": "48 months",
+        "level": "Exclusive",
+        "monthlyPayment": 110,
+        "totalAmount": 5280,
+        "description": "48-month exclusive plan with VIP support."
+      },
+      {
+        "termMonths": "24 months",
+        "level": "Elite",
+        "monthlyPayment": 200,
+        "totalAmount": 4800,
+        "description": "24-month elite plan with all premium features and services."
+      }
+    ]
+  }
