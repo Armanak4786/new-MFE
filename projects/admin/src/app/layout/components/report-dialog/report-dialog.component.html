@@ -1,0 +1,15 @@
+<div class="grid">
+    <div class="col-12">
+
+        <base-form #mainForm [formConfig]="formConfig" (formReady)="onFormReady()"
+            (valueChanges)="onValueChanges($event)" (formEvent)="onFormEvent($event)"
+            (formButtonEvent)="onButtonClick($event)"></base-form>
+
+    </div>
+</div>
+
+<div class="flex justify-content-center gap-2 mt-3">
+    <gen-button [btnLabel]="'CANCEL'" [btnType]="'border-btn'" (onClick)="onCancel()"></gen-button>
+    <gen-button [btnLabel]="'SUBMIT'" (onClick)="onSave()"></gen-button>
+</div>
+

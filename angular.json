@@ -349,7 +349,7 @@
         }
       }
     },
-    "retail": {
+    "admin": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -363,26 +363,26 @@
           "standalone": false
         }
       },
-      "root": "projects/retail",
-      "sourceRoot": "projects/retail/src",
+      "root": "projects/admin",
+      "sourceRoot": "projects/admin/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
-            "extraWebpackConfig": "projects/retail/webpack.config.js",
-            "outputPath": "dist/retail",
-            "index": "projects/retail/src/index.html",
-            "main": "projects/retail/src/main.ts",
+            "extraWebpackConfig": "projects/admin/webpack.config.js",
+            "outputPath": "dist/admin",
+            "index": "projects/admin/src/index.html",
+            "main": "projects/admin/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/retail/tsconfig.app.json",
+            "tsConfig": "projects/admin/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/retail/public",
+                "input": "projects/admin/public",
                 "output": "/"
               },
               {
@@ -392,7 +392,7 @@
               }
             ],
             "styles": [
-              "projects/retail/src/styles.scss"
+              "projects/admin/src/styles.scss"
             ],
             "scripts": []
           },
@@ -400,8 +400,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/retail/src/environments/environment.ts",
-                  "with": "projects/retail/src/environments/environment.prod.ts"
+                  "replace": "projects/admin/src/environments/environment.ts",
+                  "with": "projects/admin/src/environments/environment.prod.ts"
                 }
               ],
               "budgets": [
@@ -429,15 +429,15 @@
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
-            "extraWebpackConfig": "projects/retail/webpack.config.js",
+            "extraWebpackConfig": "projects/admin/webpack.config.js",
             "port": 4203
           },
           "configurations": {
             "production": {
-              "buildTarget": "retail:build:production"
+              "buildTarget": "admin:build:production"
             },
             "development": {
-              "buildTarget": "retail:build:development"
+              "buildTarget": "admin:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -452,16 +452,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/retail/tsconfig.spec.json",
+            "tsConfig": "projects/admin/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/retail/public"
+                "input": "projects/admin/public"
               }
             ],
             "styles": [
-              "projects/retail/src/styles.scss"
+              "projects/admin/src/styles.scss"
             ],
             "scripts": []
           }

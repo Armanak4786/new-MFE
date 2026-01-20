@@ -1,0 +1,22 @@
+<div class="layout-sidebar">
+    <nav class="sidebar">
+        <ul>
+            <li (click)="onIconClick('menu')" class="nav-item">
+                <i class="fa fa-bars"></i>
+                <span class="icon-label">Menu</span>
+            </li>
+            <li (click)="navigate('/dashboard')" class="nav-item">
+                <i class="fa-solid fa-wallet"></i>
+                <span class="icon-label">Dashboard</span>
+            </li>
+            <li (click)="navigate('/users')" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span class="icon-label">User Management</span>
+            </li>
+            <li (click)="navigate('/settings')" class="nav-item">
+                <i class="fa-solid fa-cog"></i>
+                <span class="icon-label">Settings</span>
+            </li>
+        </ul>
+    </nav>
+</div>
