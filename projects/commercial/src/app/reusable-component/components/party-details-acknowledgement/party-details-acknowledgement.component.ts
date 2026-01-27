@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonService } from 'auro-ui';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
@@ -10,7 +11,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 export class PartyDetailsAcknowledgementComponent {
   requestId;
   isContactUDC:boolean = false
-  constructor(public router: Router,public dynamicDialog: DynamicDialogConfig,public ref: DynamicDialogRef){}
+  constructor(public router: Router,public dynamicDialog: DynamicDialogConfig,public ref: DynamicDialogRef, public svc: CommonService){}
   ngOnInit(){
     if(this.dynamicDialog?.data?.requestType){
       this.requestId = this.dynamicDialog?.data?.responseId
@@ -22,9 +23,9 @@ export class PartyDetailsAcknowledgementComponent {
 onOkClick(){
   this.ref.close(); 
     if (this.dynamicDialog?.data?.requestType) {
-      this.router.navigate(['/commercial/dashboard']);
+      this.svc.router.navigateByUrl('/dashboard');
     } else {
-      this.router.navigate(['/commercial/dashboard/update-party-details']);
+      this.svc.router.navigateByUrl('/dashboard/update-party-details');
     }
   }
 }

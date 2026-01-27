@@ -80,7 +80,7 @@ export class ReleaseSecurityRequestComponent
     }
 
     this.setupFormListeners();
-    this.facilityType = window.location.pathname.split('/')[2] ?? '';
+    this.facilityType = window.location.pathname.split('/')[1] ?? '';
   }
 
   private setupFormListeners() {
@@ -168,7 +168,6 @@ export class ReleaseSecurityRequestComponent
       const aasetListToRelease = [];
       const mainForm = [];
       aasetListToRelease.push(this.aasetListToRelease);
-      console.log('aasetListToRelease', this.aasetListToRelease);
       mainForm.push(this.releaseForm.value);
       // Create a mock form object that matches the expected structure
       const mockForm = {
@@ -218,7 +217,7 @@ export class ReleaseSecurityRequestComponent
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-          this.router.navigate([`commercial/${this.facilityType}`]);
+         this.router.navigateByUrl(`/${this.facilityType}`);
         }
       });
   }

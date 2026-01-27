@@ -39,7 +39,7 @@ export class BailmentComponent {
       'bailmentDetails',
       JSON.stringify(this.bailmentDataList)
     );
-    this.router.navigateByUrl('/commercial/bailments');
+    this.router.navigateByUrl('/bailments');
   }
 
   onHeaderClick(event) {

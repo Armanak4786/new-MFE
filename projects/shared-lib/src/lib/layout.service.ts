@@ -68,29 +68,27 @@ export class LayoutService {
         this.toggleOverlay.emit(event);
     }
 
-    getCurrentTimeString() {
-        // Create a new Date object
-        const currentDate = new Date();
+      getCurrentTimeString() {
+    // Create a new Date object
+    const currentDate = new Date();
 
-        // Extract hours, minutes, and AM/PM
-        const hours = currentDate.getHours();
-        const minutes = currentDate.getMinutes();
-        const ampm = hours >= 12 ? "PM" : "AM";
-        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+    // Extract hours, minutes, and AM/PM
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12; // Convert to 12-hour format
 
-        // Format the date string
-        const formattedDate = `${String(formattedHours).padStart(2, "0")}:${String(
-            minutes
-        ).padStart(2, "0")} ${ampm} | ${String(currentDate.getDate()).padStart(
-            2,
-            "0"
-        )}/${String(currentDate.getMonth() + 1).padStart(
-            2,
-            "0"
-        )}/${currentDate.getFullYear()}`;
+    // Format date as YYYY-MM-DD
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
 
-        return formattedDate;
-    }
+    // Format final string (time | date)
+    return `${String(formattedHours).padStart(2, '0')}:${String(
+      minutes
+    ).padStart(2, '0')} ${ampm} | ${formattedDate}`;
+  }
 
     onMenuToggle() {
         if (this.isOverlay()) {

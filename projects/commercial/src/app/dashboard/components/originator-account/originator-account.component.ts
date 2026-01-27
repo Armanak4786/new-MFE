@@ -74,7 +74,7 @@ export class OriginatorAccountComponent {
       'introducerTransactionDetails',
       this.orinatorDataList
     );
-    this.router.navigate(['/commercial/introducer']);
+    this.router.navigateByUrl('/introducer');
   }
 
   onHeaderClick(event) {

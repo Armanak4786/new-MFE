@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonService } from 'auro-ui';
 import { creditlineFacilityColumnDefs } from '../../utils/dashboard-header.util';
-import { CreditlineSetterGetterService } from '../../../creditlines/services/creditline-setter-getter.service';
 import { DashboardSetterGetterService } from '../../services/dashboard-setter-getter.service';
 import { updateDataList } from '../../../utils/common-utils';
 import { FacilityType } from '../../../utils/common-enum';
@@ -42,7 +41,7 @@ export class CreditLinesComponent {
       'creditlinesDataList',
       JSON.stringify(this.creditlinesDataList)
     );
-    this.router.navigate(['/commercial/creditlines']);
+    this.router.navigate(['/creditlines']);
   }
 
   onheaderclick(event) {

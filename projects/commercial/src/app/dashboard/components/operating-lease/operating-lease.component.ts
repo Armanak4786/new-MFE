@@ -41,7 +41,7 @@ export class OperatingLeaseComponent implements OnChanges {
       'operatingLeaseDataList',
       JSON.stringify(this.operatingListDataList)
     );
-    this.router.navigate(['/commercial/operating-lease']);
+    this.router.navigateByUrl('/operating-lease');
   }
 
   onHeaderClick(event) {
