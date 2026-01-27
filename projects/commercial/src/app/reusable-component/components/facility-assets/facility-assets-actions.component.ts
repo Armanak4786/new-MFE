@@ -85,9 +85,9 @@ export class FacilityAssetsActionsComponent implements OnInit {
     this.facilityAssets.setData(assetDetailList);
 
     if (this.facilityType == 'AssetLink') {
-      this.router.navigate(['commercial/assetlink/releaseSecurityRequest']);
+      this.svc.router.navigateByUrl('assetlink/releaseSecurityRequest');
     } else if (this.facilityType == 'EasyLink') {
-      this.router.navigate(['commercial/easylink/releaseSecurityRequest']);
+      this.svc.router.navigateByUrl('easylink/releaseSecurityRequest');
     }
   }
 

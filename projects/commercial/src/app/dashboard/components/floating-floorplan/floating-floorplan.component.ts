@@ -48,7 +48,7 @@ export class FloatingFloorplanComponent {
       'floatingFloorPlanDetails',
       JSON.stringify(this.floatingFloorPlanDataList)
     );
-    this.router.navigate(['commercial/floatingfloorplan']);
+    this.router.navigateByUrl('/floatingfloorplan');
   }
 
   onHeaderClick(event) {

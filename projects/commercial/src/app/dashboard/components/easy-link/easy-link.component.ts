@@ -26,18 +26,6 @@ export class EasyLinkComponent {
     public commonSetterGetterService: CommonSetterGetterService
   ) {}
 
-  // ngOnInit() {
-  //   let data;
-  //   this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
-  //     data = list?.easyLinkDetails;
-  //     data &&
-  //       (this.easylinkDataList = updateDataList(
-  //         data,
-  //         FacilityType.Easylink_Group
-  //       ));
-  //   });
-  // }
-
   ngOnChanges(changes) {
     if (changes['financialSummaryData']) {
       this.easylinkDataList = updateDataList(
@@ -56,7 +44,7 @@ export class EasyLinkComponent {
       'easylinkDataList',
       JSON.stringify(this.easylinkDataList)
     );
-    this.router.navigate(['commercial/easylink']);
+   this.router.navigateByUrl('/easylink');
   }
 
   onHeaderClick(event) {

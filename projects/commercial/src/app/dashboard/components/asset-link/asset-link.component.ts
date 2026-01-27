@@ -44,7 +44,7 @@ export class AssetLinkComponent {
       'assetlinkDataList',
       JSON.stringify(this.assetlinkDataList)
     );
-    this.router.navigateByUrl('/commercial/assetlink');
+    this.router.navigateByUrl('/assetlink');
   }
 
   onHeaderClick(event) {

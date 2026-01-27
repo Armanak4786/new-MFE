@@ -77,14 +77,14 @@ export class FacilityAssetsComponent {
   getBailmentEvaluated(event) {
     if (event.colName == 'contractId') {
       this.svc.router.navigateByUrl(
-        `/commercial/bailments/asset-details/${event.rowData.contractId}`
+        `/bailments/asset-details/${event.rowData.contractId}`
       );
     }
   }
   getFixedFloorPlanEvaluated(event) {
     if (event.colName == 'contractId') {
       this.svc.router.navigateByUrl(
-        `/commercial/fixedfloorplan/asset-details/${event.rowData.contractId}`
+        `/fixedfloorplan/asset-details/${event.rowData.contractId}`
       );
     }
   }
@@ -92,7 +92,7 @@ export class FacilityAssetsComponent {
     console.log(event.rowData);
     if (event.colName == 'contractId') {
       this.svc.router.navigateByUrl(
-        `/commercial/creditlines/loan/${event.rowData.contractId}`
+        `/creditlines/loan/${event.rowData.contractId}`
       );
     }
   }
@@ -100,7 +100,7 @@ export class FacilityAssetsComponent {
     console.log(event.rowData);
     if (event.colName == 'contractId') {
       this.svc.router.navigateByUrl(
-        `/commercial/assetlink/loan/${event.rowData.contractId}`
+        `/assetlink/loan/${event.rowData.contractId}`
       );
     }
   }
@@ -108,7 +108,7 @@ export class FacilityAssetsComponent {
     console.log(event.rowData);
     if (event.colName == 'contractId') {
       this.svc.router.navigateByUrl(
-        `/commercial/easylink/loan/${event.rowData.contractId}`
+        `/easylink/loan/${event.rowData.contractId}`
       );
     }
   }

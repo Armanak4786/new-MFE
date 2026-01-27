@@ -39,7 +39,7 @@ export class BuybackFacilityComponent {
       'buybackDetails',
       JSON.stringify(this.buyBackDataList)
     );
-    this.router.navigate(['/commercial/buyback']);
+    this.router.navigate(['/buyback']);
   }
   onheaderclick(event) {
     this[event.actionName]();

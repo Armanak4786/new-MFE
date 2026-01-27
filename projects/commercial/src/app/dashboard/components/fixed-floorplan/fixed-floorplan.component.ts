@@ -39,7 +39,7 @@ export class FixedFloorplanComponent {
       JSON.stringify(this.fixedFloorPlanDataList)
     );
 
-    this.router.navigate(['commercial/fixedfloorplan']);
+    this.router.navigateByUrl('/fixedfloorplan');
   }
 
   onHeaderClick(event) {
