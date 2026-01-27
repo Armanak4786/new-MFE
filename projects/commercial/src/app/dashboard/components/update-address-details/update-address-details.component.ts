@@ -19,7 +19,7 @@ import { AddressNotFoundPopupComponent } from '../../../reusable-component/compo
 @Component({
   selector: 'app-update-address-details',
   templateUrl: './update-address-details.component.html',
-  styleUrls: ['./update-address-details.component.scss'],
+  styleUrl: './update-address-details.component.scss',
 })
 export class UpdateAddressDetailsComponent extends BaseFormClass {
   searchType: any = 'physical';
@@ -269,7 +269,7 @@ export class UpdateAddressDetailsComponent extends BaseFormClass {
           width: '50vw',
         })
         .onClose.subscribe((data: any) => {
-          this.svc.router.navigateByUrl('/dashboard/update-party-details');
+          this.router.navigateByUrl('/dashboard/update-party-details');
         });
     }
   }
@@ -287,7 +287,7 @@ export class UpdateAddressDetailsComponent extends BaseFormClass {
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
           // this.ref.close();
-          this.svc.router.navigateByUrl('/dashboard/update-party-details');
+          this.router.navigateByUrl('/dashboard/update-party-details');
         }
       });
   }

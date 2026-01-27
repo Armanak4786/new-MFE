@@ -48,7 +48,7 @@ export class AssetlinkComponent {
     private dashSvc: DashboardService,
     public router: Router,
     public commonSetterGetterService: CommonSetterGetterService,
-    public dashboardSetterGetterSvc: DashboardSetterGetterService
+    public dashboardSetterGetterSvc: DashboardSetterGetterService,
   ) {}
 
   ngOnInit() {
@@ -56,7 +56,7 @@ export class AssetlinkComponent {
     const partyId = JSON.parse(partyData);
     this.partyId = partyId?.id;
     const sessionAssetLink = sessionStorage.getItem('assetlinkDataList');
-    const optionsData = sessionStorage.getItem('optionDataAssetlink');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionAssetLink) {
       this.assetlinkDataList = JSON.parse(sessionAssetLink);
@@ -70,7 +70,7 @@ export class AssetlinkComponent {
 
       this.assetlinkDataList = updateDataList(
         assetLinkDetails,
-        FacilityType.Assetlink_Group
+        FacilityType.Assetlink_Group,
       );
     }
     if (optionsData) {
@@ -83,26 +83,107 @@ export class AssetlinkComponent {
   storeAssetLinkAndContinue() {
     sessionStorage.setItem(
       'assetlinkDataList',
-      JSON.stringify(this.assetlinkDataList)
+      JSON.stringify(this.assetlinkDataList),
     );
     this.afterAssetLinkLoad();
   }
 
+  // afterAssetLinkLoad() {
+  //   this.initChart();
+  //   this.commonSetterGetterService.setDisableParty(false);
+  //   this.dashSvc.setFacilityTpe(this.facilityType);
+  //   sessionStorage.setItem('currentFacilityType', this.facilityType);
+  //   const selectedSessionSubFacility = JSON.parse(
+  //     sessionStorage.getItem('selectedAssetlinkSubFacility')
+  //   );
+  //   if (
+  //     !selectedSessionSubFacility ||
+  //     selectedSessionSubFacility === this.assetlinkDataList[0]
+  //   ) {
+  //     this.selectedSubFacility = this.assetlinkDataList[0];
+  //     sessionStorage.setItem(
+  //       'selectedAssetlinkSubFacility',
+  //       JSON.stringify(this.selectedSubFacility)
+  //     );
+  //     this.currentSubFacility = 'viewAssetLink';
+  //   } else if (selectedSessionSubFacility.facilityType === 'Current Account') {
+  //     this.selectedSubFacility = selectedSessionSubFacility;
+  //     this.currentSubFacility = 'currentAccount';
+  //   } else {
+  //     this.selectedSubFacility = selectedSessionSubFacility;
+  //     this.currentSubFacility = 'assetLinkSubfacility';
+  //   }
+
+  //   this.componentLoaderService.facilityComponent$.subscribe(
+  //     (componentName) => {
+  //       this.currentSubFacility = componentName;
+  //     }
+  //   );
+
+  //   this.commonSetterGetterService.facilityList$.subscribe((list) => {
+  //     if (list && list.length > 0) {
+  //       this.facilityDataList = list;
+  //       this.optionData = this.facilityDataList.map((item) => ({
+  //         label: FacilityTypeDropdown[item.value],
+  //         value:
+  //           optionDataFacilities[
+  //             item.label as keyof typeof optionDataFacilities
+  //           ],
+  //       }));
+  //       if (this.optionData) {
+  //         sessionStorage.setItem(
+  //           'optionDataAssetlink',
+  //           JSON.stringify(this.optionData)
+  //         );
+  //       }
+  //       this.facilityTypeDropdown = optionDataFacilities['Assetlink'];
+  //     }
+  //   });
+  // }
   afterAssetLinkLoad() {
     this.initChart();
     this.commonSetterGetterService.setDisableParty(false);
-    this.dashSvc.setFacilityTpe(this.facilityType);
+    this.dashSvc.setFacilityTpe(this.facilityType);{}
     sessionStorage.setItem('currentFacilityType', this.facilityType);
-    this.selectedSubFacility = this.assetlinkDataList[0];
-    sessionStorage.setItem(
-      'selectedAssetlinkSubFacility',
-      JSON.stringify(this.selectedSubFacility)
+
+    const selectedSessionSubFacility = JSON.parse(
+      sessionStorage.getItem('selectedAssetlinkSubFacility'),
     );
-    this.currentSubFacility = 'viewAssetLink';
+
+    const storedView = sessionStorage.getItem('assetlinkCurrentView');
+    if (storedView) {
+      this.currentSubFacility = storedView;
+      if (selectedSessionSubFacility) {
+        this.selectedSubFacility = selectedSessionSubFacility;
+      } else {
+        this.selectedSubFacility = this.assetlinkDataList[0];
+      }
+    } else if (
+      !selectedSessionSubFacility ||
+      selectedSessionSubFacility === this.assetlinkDataList[0]
+    ) {
+      this.selectedSubFacility = this.assetlinkDataList[0];
+      sessionStorage.setItem(
+        'selectedAssetlinkSubFacility',
+        JSON.stringify(this.selectedSubFacility),
+      );
+      this.currentSubFacility = 'viewAssetLink';
+      sessionStorage.setItem('assetlinkCurrentView', this.currentSubFacility);
+    } else if (selectedSessionSubFacility.facilityType === 'Current Account') {
+      this.selectedSubFacility = selectedSessionSubFacility;
+      this.currentSubFacility = 'currentAccount';
+      sessionStorage.setItem('assetlinkCurrentView', this.currentSubFacility);
+    } else {
+      this.selectedSubFacility = selectedSessionSubFacility;
+      this.currentSubFacility = 'assetLinkSubfacility';
+      sessionStorage.setItem('assetlinkCurrentView', this.currentSubFacility);
+    }
+
     this.componentLoaderService.facilityComponent$.subscribe(
       (componentName) => {
         this.currentSubFacility = componentName;
-      }
+        sessionStorage.setItem('assetlinkCurrentView', componentName);
+      },
     );
 
     this.commonSetterGetterService.facilityList$.subscribe((list) => {
@@ -117,8 +198,8 @@ export class AssetlinkComponent {
         }));
         if (this.optionData) {
           sessionStorage.setItem(
-            'optionDataAssetlink',
-            JSON.stringify(this.optionData)
+            'optionDataFacilities',
+            JSON.stringify(this.optionData),
           );
         }
         this.facilityTypeDropdown = optionDataFacilities['Assetlink'];
@@ -173,35 +254,41 @@ export class AssetlinkComponent {
   }
 
   onCellClick(event: any) {
-    if (!event.cellData || event.cellData.trim() === '') return;
+    if (!event?.cellData || event?.cellData?.trim() === '') return;
     const clickedFacility = event.rowData;
-    this.selectedSubFacility = { ...clickedFacility }; // clone to avoid reference issue
+    this.selectedSubFacility = { ...clickedFacility };
     sessionStorage.setItem(
       'selectedAssetlinkSubFacility',
-      JSON.stringify(this.selectedSubFacility)
+      JSON.stringify(this.selectedSubFacility),
     );
     const componentToLoad =
       clickedFacility.facilityType === 'Current Account'
         ? 'currentAccount'
         : 'assetLinkSubfacility';
 
+    sessionStorage.setItem('assetlinkCurrentView', componentToLoad);
     // Always call even if same component
-    this.componentLoaderService.loadComponentOnFacilitySelection(null); // Clear it
+    this.componentLoaderService.loadComponentOnFacilitySelection(null);
     setTimeout(() => {
       this.componentLoaderService.loadComponentOnFacilitySelection(
-        componentToLoad
+        componentToLoad,
       );
-    }, 0); // Force a refresh
+    }, 0);
   }
 
   onFacilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('subfacilityCurrentComponent');
+    clearSession('selectedAssetlinkSubFacility');
+    clearSession('assetlinkCurrentView');
+    clearSession('assetlinkDataList');
   }
 }

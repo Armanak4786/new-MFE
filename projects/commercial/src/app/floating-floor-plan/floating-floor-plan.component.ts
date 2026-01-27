@@ -62,7 +62,7 @@ import { FloatingFloorPlanDrawdownRequestComponent } from './components/floating
   //standalone: true,
   //imports: [],
   templateUrl: './floating-floor-plan.component.html',
-  styleUrls: ['./floating-floor-plan.component.scss'],
+  styleUrl: './floating-floor-plan.component.scss',
 })
 export class FloatingFloorPlanComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -199,9 +199,12 @@ export class FloatingFloorPlanComponent {
       'assetlinkDataList',
       'easylinkDataList',
       'creditlineDataList',
+      'bailmentDataList',
       'fixedFloorPlanDetails',
       'selectedEasylinkSubFacility',
       'selectedAssetlinkSubFacility',
+      'selectedBailmentSubFacility',
+      'selectedFixedFloorSubFacility',
       'forecastToDate',
       'forecastFromDate',
       'forecastFrequency',
@@ -222,9 +225,9 @@ export class FloatingFloorPlanComponent {
     this.partyId = party?.id;
 
     const sessionFloatingFloor = sessionStorage.getItem(
-      'floatingFloorDataList'
+      'floatingFloorPlanDetails'
     );
-    const optionsData = sessionStorage.getItem('optionDataFloatingFloor');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionFloatingFloor) {
       this.floatingFloorFacilityDataList = JSON.parse(sessionFloatingFloor);
@@ -238,7 +241,7 @@ export class FloatingFloorPlanComponent {
       this.floatingFloorFacilityDataList = generateSummary(details);
 
       sessionStorage.setItem(
-        'floatingFloorDataList',
+        'floatingFloorPlanDetails',
         JSON.stringify(this.floatingFloorFacilityDataList)
       );
     }
@@ -253,35 +256,56 @@ export class FloatingFloorPlanComponent {
       this.facilityTypeDropdown = optionDataFacilities['FloatingFloorPlan'];
     }
 
-    this.afterFloatingFloorLoad();
     this.updateVisibleData();
+    this.afterFloatingFloorLoad();
   }
 
   afterFloatingFloorLoad() {
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'FacilitySummary';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
+    const validTabs = ['FacilitySummary','Documents','TransactionFlow','RequestHistory'];
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    } else {
+      this.currentComponent = 'FacilitySummary';
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    }
+
+    this.commonSetterGetterService.setCurrentComponent(
+      FacilityType.FloatingFloorPlan
+    );
+    sessionStorage.setItem('currentFacilityType', FacilityType.FloatingFloorPlan_Group);
+
+    const selectedSessionSubFacility = JSON.parse(sessionStorage.getItem('selectedFloatingFloorSubFacility'));
 
     this.subFacilityNameList = this.getNonEmptySubFacilityNames(
       this.floatingFloorFacilityDataList
     );
 
-    this.selectedSubFacility = this.floatingFloorFacilityDataList[0];
-    sessionStorage.setItem(
-      'selectedFloatingFloorSubFacility',
-      JSON.stringify(this.selectedSubFacility)
-    );
+    if (selectedSessionSubFacility) {
+      this.selectedSubFacility = selectedSessionSubFacility;
+    } else {
+      this.selectedSubFacility = this.floatingFloorFacilityDataList[0];
+      sessionStorage.setItem(
+        'selectedFloatingFloorSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
+    }
 
     this.initChart();
-    this.showFacilitySummary();
+
+    if (this.currentComponent === 'FacilitySummary') {
+      this.showFacilitySummary();
+    } else if (this.currentComponent === 'Documents') {
+      this.showDocuments();
+    } else if (this.currentComponent === 'TransactionFlow') {
+      this.showStatements();
+    }
 
     this.componentLoaderService.component$.subscribe((componentName) => {
       this.currentComponent = componentName;
     });
-
-    this.commonSetterGetterService.setCurrentComponent(
-      FacilityType.FloatingFloorPlan
-    );
 
     this.commonSetterGetterService.facilityList$.subscribe((list) => {
       if (list?.length) {
@@ -296,7 +320,7 @@ export class FloatingFloorPlanComponent {
         }));
 
         sessionStorage.setItem(
-          'optionDataFloatingFloor',
+          'optionDataFacilities',
           JSON.stringify(this.optionData)
         );
 
@@ -304,29 +328,9 @@ export class FloatingFloorPlanComponent {
       }
     });
 
-    const params = { partyId: this.partyId };
-    this.fetchDocuments(params);
-
-    const facilitySummaryParams: FacilitySummaryParams = {
-      partyNo: this.partyId,
-      facilityType: this.facilityType,
-      ...(this.selectedSubFacility?.facilityName?.trim() !== '' && {
-        subFacilityId: this.selectedSubFacility.id,
-      }),
-    };
-    this.fetchFacilitySummaryData(facilitySummaryParams);
-
-    const transactionFlowParams = {
-      partyId: this.partyId,
-      facilityType: this.facilityType,
-      facility_type_cf_name: FacilityType.FacilityType,
-      floating_floorplan_facility_name: FacilityType.FloatingFloorPlanGroup,
-      credit_line_id: this.selectedSubFacility?.id,
-      facility_type: FacilityType.FloatingFloorPlanGroup,
-      contractId: 0,
-    };
-    this.fetchPaymentsTab(transactionFlowParams);
-    this.fetchTransactionsTab(transactionFlowParams);
+    if (this.currentComponent === 'RequestHistory') {
+      this.requestHistory();
+    }
   }
 
   hasAccess(key) {
@@ -339,7 +343,7 @@ export class FloatingFloorPlanComponent {
   onFrequencyChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
@@ -390,8 +394,10 @@ export class FloatingFloorPlanComponent {
           subfacility: this.selectedSubFacility,
           floatingFloorFacilityDataList: this.floatingFloorFacilityDataList,
         },
-        height: '42vw',
-        width: '78vw',
+        // height: '42vw',
+        // width: '78vw',
+        height: '30vw',
+        width: '70vw',
         contentStyle: { overflow: 'auto' },
         styleClass: 'dialogue-scroll',
         position: 'center',
@@ -408,8 +414,10 @@ export class FloatingFloorPlanComponent {
           facilityType: this.facilityType,
           subfacility: this.selectedSubFacility,
         },
-        height: '42vw',
-        width: '78vw',
+        // height: '42vw',
+        // width: '78vw',
+        height: '30vw',
+        width: '70vw',
         contentStyle: { overflow: 'auto' },
         styleClass: 'dialogue-scroll',
         position: 'center',
@@ -418,7 +426,19 @@ export class FloatingFloorPlanComponent {
   }
   async showStatements() {
     this.currentComponent = 'TransactionFlow';
+    const transactionFlowParams = {
+      partyId: this.partyId,
+      facilityType: this.facilityType,
+      facility_type_cf_name: FacilityType.FacilityType,
+      floating_floorplan_facility_name: FacilityType.FloatingFloorPlanGroup,
+      credit_line_id: this.selectedSubFacility?.id,
+      facility_type: FacilityType.FloatingFloorPlanGroup,
+      contractId: 0,
+    };
+    this.fetchPaymentsTab(transactionFlowParams);
+    this.fetchTransactionsTab(transactionFlowParams);
     this.componentLoaderService.loadComponent('TransactionFlow');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
   async fetchPaymentsTab(params) {
     try {
@@ -462,7 +482,10 @@ export class FloatingFloorPlanComponent {
 
   showDocuments() {
     this.currentComponent = 'Documents';
+    const params = { partyId: this.partyId };
+    this.fetchDocuments(params);
     this.componentLoaderService.loadFloatingFloorDashboard('Documents');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
   async fetchDocuments(params: DocumentsParams) {
     try {
@@ -476,7 +499,16 @@ export class FloatingFloorPlanComponent {
 
   showFacilitySummary() {
     this.currentComponent = 'FacilitySummary';
+    const facilitySummaryParams: FacilitySummaryParams = {
+      partyNo: this.partyId,
+      facilityType: this.facilityType,
+      ...(this.selectedSubFacility?.facilityName?.trim() !== '' && {
+        subFacilityId: this.selectedSubFacility.id,
+      }),
+    };
+    this.fetchFacilitySummaryData(facilitySummaryParams);
     this.componentLoaderService.loadFloatingFloorDashboard('FacilitySummary');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
   async fetchFacilitySummaryData(params) {
     try {
@@ -490,12 +522,17 @@ export class FloatingFloorPlanComponent {
   requestHistory() {
     this.currentComponent = 'RequestHistory';
     this.componentLoaderService.loadComponent('RequestHistory');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   onCellClick(event: any) {
     const clickedFacility = event.rowData;
     if (clickedFacility.facilityName) {
       this.selectedSubFacility = { ...clickedFacility };
+      sessionStorage.setItem(
+        'selectedFloatingFloorSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
     }
     this.showFacilitySummary();
   }
@@ -677,5 +714,9 @@ export class FloatingFloorPlanComponent {
 
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('floatingFloorPlanDetails');
+    clearSession('selectedFloatingFloorSubFacility');
+    clearSession('currentFacilityType');
   }
 }

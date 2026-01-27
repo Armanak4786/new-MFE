@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonService } from 'auro-ui';
 
@@ -8,7 +8,7 @@ import {
   taskPostStaticFields,
 } from '../../../utils/common-enum';
 
-import { formatDate } from '../../../utils/common-utils';
+import { formatDate, clearSession } from '../../../utils/common-utils';
 
 import { SameDayPayoutRequestBody } from '../../../utils/common-interface';
 
@@ -30,9 +30,9 @@ import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-bailment-summary-dashboard',
   templateUrl: './bailment-summary-dashboard.component.html',
-  styleUrls: ['./bailment-summary-dashboard.component.scss'],
+  styleUrl: './bailment-summary-dashboard.component.scss',
 })
-export class BailmentSummaryDashboardComponent implements OnInit {
+export class BailmentSummaryDashboardComponent implements OnInit, OnDestroy {
   // -------------------- State --------------------
   purchaseAssetDataList;
   dataList;
@@ -81,7 +81,21 @@ export class BailmentSummaryDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.initPartyDetails();
-    this.receivedData = history.state?.params;
+    
+    // Load receivedData from sessionStorage or router state
+    const storedReceivedData = sessionStorage.getItem('bailmentSummaryReceivedData');
+    if (storedReceivedData) {
+      this.receivedData = JSON.parse(storedReceivedData);
+      console.log('this.receivedData (from sessionStorage)', this.receivedData);
+    } else {
+      this.receivedData = history.state?.params;
+      console.log('this.receivedData (from router state)', this.receivedData);
+      // Save to sessionStorage for future refreshes
+      if (this.receivedData) {
+        sessionStorage.setItem('bailmentSummaryReceivedData', JSON.stringify(this.receivedData));
+      }
+    }
+    
     const params = {
       programId: this.receivedData?.programId,
     };
@@ -145,20 +159,30 @@ export class BailmentSummaryDashboardComponent implements OnInit {
   }
 
   private initDataList() {
-    if (this.pageFrom === 'purchase-asset') {
-      if (this.receivedData.typeofnavigation === 'actions') {
-        // this.dataList = this.bailmentComponentLoaderService.getData();
-        this.dataList= JSON.parse(sessionStorage.getItem('filteredAssetsDataList') || '[]');
-      } else {
-        this.bailmentSetterGetterService.purchaseRequestData.subscribe(
-          (data) => {
-            this.dataList = data;
-          }
-        );
+    const storedDataList = sessionStorage.getItem('bailmentSummaryDataList');
+    
+    if (storedDataList) {
+      this.dataList = JSON.parse(storedDataList);
+      console.log('dataList loaded from sessionStorage', this.dataList);
+    } else {
+      if (this.pageFrom === 'purchase-asset') {
+        if (this.receivedData.typeofnavigation === 'actions') {
+          this.dataList = JSON.parse(sessionStorage.getItem('filteredAssetsDataList') || '[]');
+        } else {
+          this.bailmentSetterGetterService.purchaseRequestData.subscribe(
+            (data) => {
+              this.dataList = data;
+              sessionStorage.setItem('bailmentSummaryDataList', JSON.stringify(this.dataList));
+            }
+          );
+          return;
+        }
+      } else if (['swap', 'same-day-payout'].includes(this.pageFrom)) {
+        this.dataList = JSON.parse(sessionStorage.getItem('filteredAssetsDataList') || '[]');
+      }      
+      if (this.dataList) {
+        sessionStorage.setItem('bailmentSummaryDataList', JSON.stringify(this.dataList));
       }
-    } else if (['swap', 'same-day-payout'].includes(this.pageFrom)) {
-      this.dataList = this.bailmentComponentLoaderService.getData();
-      this.dataList= JSON.parse(sessionStorage.getItem('filteredAssetsDataList') || '[]');
     }
   }
 
@@ -222,6 +246,7 @@ export class BailmentSummaryDashboardComponent implements OnInit {
     } else {
       console.warn('Invalid data structure passed to deleteAssets');
     }
+    sessionStorage.setItem('bailmentSummaryDataList', JSON.stringify(this.dataList));
   }
 
   onCancel() {
@@ -235,7 +260,8 @@ export class BailmentSummaryDashboardComponent implements OnInit {
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-          this.router.navigate(['commercial/bailments']);
+          clearSession(['bailmentSummaryReceivedData', 'bailmentSummaryDataList']);
+          this.router.navigate(['bailment']);
         }
       });
   }
@@ -262,7 +288,7 @@ export class BailmentSummaryDashboardComponent implements OnInit {
 
   async onSubmit() {
     this.prepareRequestPayloads();
-    this.router.navigate(['commercial/bailments']);
+    this.router.navigate(['bailment']);
 
     try {
       await this.submitRequest();
@@ -440,6 +466,8 @@ export class BailmentSummaryDashboardComponent implements OnInit {
   }
 
   private openConfirmationDialog() {
+    clearSession(['bailmentSummaryReceivedData', 'bailmentSummaryDataList']);
+    
     if (this.pageFrom === 'same-day-payout') {
       const message = `Same Day Payout Request
     Your Request has been submitted to UDC Finance for processing and approval.Request Number is:${this.referenceNumber}.`;
@@ -538,5 +566,9 @@ export class BailmentSummaryDashboardComponent implements OnInit {
       console.error('Invalid Token', error);
       return null;
     }
+  }
+  
+  ngOnDestroy() {
+    clearSession(['bailmentSummaryReceivedData', 'bailmentSummaryDataList']);
   }
 }

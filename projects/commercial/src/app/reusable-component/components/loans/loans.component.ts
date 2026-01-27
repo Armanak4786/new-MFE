@@ -29,7 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-loans',
   templateUrl: './loans.component.html',
-  styleUrls: ['./loans.component.scss'],
+  styleUrl: './loans.component.scss',
 })
 export class LoansComponent {
   @Input() selectedSubFacility;
@@ -164,7 +164,7 @@ export class LoansComponent {
         currentFacility: this.selectedSubFacility,
       });
       this.svc.router.navigateByUrl(
-        `easylink/loan/${event.rowData.contractId}`
+        `commercial/easylink/loan/${event.rowData.contractId}`
       );
     } else if (event.colName == 'associatedAssets') {
       const params = {
@@ -183,7 +183,7 @@ export class LoansComponent {
         currentFacility: this.selectedSubFacility,
       });
       this.svc.router.navigateByUrl(
-        `buyback/lease/${event.rowData.leaseId}`
+        `commercial/buyback/lease/${event.rowData.leaseId}`
       );
     } else if (event.colName == 'associatedAssets') {
       this.getReleaseSecurityPopup();
@@ -202,7 +202,7 @@ export class LoansComponent {
       if (loanProductType.includes(matchedProduct?.code)) {
         this.nonFacilityService.setLoansData(event.rowData);
         this.svc.router.navigateByUrl(
-          `non-facility-loan/loan/${event.rowData.contractId}`
+          `commercial/non-facility-loan/loan/${event.rowData.contractId}`
         );
       } else if (leaseProductType.includes(matchedProduct?.code)) {
         this.nonFacilityService.setLeaseData({
@@ -210,7 +210,7 @@ export class LoansComponent {
           currentFacility: this.selectedSubFacility,
         });
         this.svc.router.navigateByUrl(
-          `non-facility-loan/lease/${event.rowData.contractId}`
+          `commercial/non-facility-loan/lease/${event.rowData.contractId}`
         );
       } else if (afvProductType.includes(matchedProduct?.code)) {
         this.nonFacilityService.setAfvLoanData({
@@ -218,7 +218,7 @@ export class LoansComponent {
           currentFacility: this.selectedSubFacility,
         });
         this.svc.router.navigateByUrl(
-          `non-facility-loan/afv-loan/${event.rowData.contractId}`
+          `commercial/non-facility-loan/afv-loan/${event.rowData.contractId}`
         );
       }
     } else if (event.colName == 'associatedAssets') {
@@ -252,7 +252,7 @@ export class LoansComponent {
           currentFacility: this.selectedSubFacility,
         });
         this.svc.router.navigateByUrl(
-          `creditlines/loan/${event.rowData.contractId}`
+          `commercial/creditlines/loan/${event.rowData.contractId}`
         );
       } else if (leaseProductType.includes(matchedProduct?.code)) {
         this.creditSetterGetter.setLeaseData({
@@ -260,7 +260,7 @@ export class LoansComponent {
           currentFacility: this.selectedSubFacility,
         });
         this.svc.router.navigateByUrl(
-          `creditlines/lease/${event.rowData.contractId}`
+          `commercial/creditlines/lease/${event.rowData.contractId}`
         );
       }
     } else if (event.colName == 'associatedAssets') {
@@ -278,7 +278,7 @@ export class LoansComponent {
     if (event.colName == 'leaseId') {
       // this.olSetterGetterService.setLeaseData(event.rowData);
       this.svc.router.navigateByUrl(
-        `operating-lease/lease/${event.rowData.leaseId}`
+        `commercial/operating-lease/lease/${event.rowData.leaseId}`
       );
     }
   }

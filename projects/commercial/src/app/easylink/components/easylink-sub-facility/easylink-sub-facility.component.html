@@ -55,7 +55,7 @@
     <div class="flex justify-content-start flex-wrap">
       <div class="p-1">
         <gen-button
-          [btnType]="'border-btn'"
+          [btnType]="currentComponent === 'Loans' ? 'bg-btn' : 'border-btn'"
           [btnLabel]="'loans'"
           class="text-xs"
           (onClick)="showLoans()"
@@ -64,7 +64,7 @@
       </div>
       <div class="p-1">
         <gen-button
-          [btnType]="'border-btn'"
+          [btnType]="currentComponent === 'FacilityAssets' ? 'bg-btn' : 'border-btn'"
           [btnLabel]="'facility_assets'"
           class="text-xs"
           (onClick)="showFacilityAssets()"

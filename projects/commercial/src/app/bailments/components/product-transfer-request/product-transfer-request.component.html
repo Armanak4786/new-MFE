@@ -69,7 +69,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-3 ml-5">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color pr-1 text-sm'"
@@ -87,7 +87,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-2 ml-2">
+  <div class="col-12 md:col-2 ml-2 mr-4">
      <div class="">
       <p-dropdown
         [options]="subFailityOptionList"
@@ -143,7 +143,7 @@
       [defaultRows]="5"
     ></gen-table>
     <div class="grid gap-2 flex justify-content-end mt-5">
-      <div class="col-12 sm:col-4 md:col-2">
+      <div class="btn-uniform">
         <gen-button
           [btnLabel]="'cancel'"
           [btnWidth]="'full'"
@@ -151,7 +151,7 @@
           (click)="onCancelClick()"
         ></gen-button>
       </div>
-      <div class="col-12 sm:col-4 md:col-2">
+      <div class="btn-uniform">
         <gen-button
           [btnLabel]="'btn_lbl_proceed'"
           [btnWidth]="'full'"

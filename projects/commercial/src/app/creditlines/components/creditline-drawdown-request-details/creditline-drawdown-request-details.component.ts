@@ -11,7 +11,7 @@ import { DrawdownService } from '../../../drawdown.service';
 @Component({
   selector: 'app-creditline-drawdown-request-details',
   templateUrl: './creditline-drawdown-request-details.component.html',
-  styleUrls: ['./creditline-drawdown-request-details.component.scss'],
+  styleUrl: './creditline-drawdown-request-details.component.scss',
 })
 export class CreditlineDrawdownRequestDetailsComponent
   extends BaseCreditlineClass

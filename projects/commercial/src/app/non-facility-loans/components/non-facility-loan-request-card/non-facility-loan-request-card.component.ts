@@ -12,7 +12,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-non-facility-loan-request-card',
   templateUrl: './non-facility-loan-request-card.component.html',
-  styleUrls: ['./non-facility-loan-request-card.component.scss'],
+  styleUrl: './non-facility-loan-request-card.component.scss',
 })
 export class NonFacilityLoanRequestCardComponent extends BaseNonFacilityClass {
   facilityType;

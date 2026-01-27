@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, PLATFORM_ID, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   CommonService,
@@ -18,6 +18,7 @@ import { take } from 'rxjs';
 import {
   base64ToBlob,
   calculatePaymentNotYetAllocated,
+  clearSession,
   clearUploadedDocuments,
   downloadBase64File,
   filterByFacilityType,
@@ -28,6 +29,8 @@ import {
 import {
   introducerColumnDefs,
   introducerDocumentsColumnDefs,
+  introducerPaymentColDef,
+  introducerTransactionColDef,
 } from './utils/introducer-header.utils';
 import { CommonApiService } from '../services/common-api.service';
 import {
@@ -46,9 +49,9 @@ import { IntroducerPaymentRequestComponent } from './introducer-payment-request/
   //standalone: true,
   //imports: [],
   templateUrl: './introducer.component.html',
-  styleUrls: ['./introducer.component.scss'],
+  styleUrl: './introducer.component.scss',
 })
-export class IntroducerComponent {
+export class IntroducerComponent implements OnDestroy {
   platformId = inject(PLATFORM_ID);
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
   currentComponent: string | null = null;
@@ -71,6 +74,8 @@ export class IntroducerComponent {
   requestHistoryDataList: any;
   originalRequestHistoryDatalist;
   accessGranted;
+  transactionsColumnDef = introducerTransactionColDef
+  paymentColumnDefs = introducerPaymentColDef;
 
   constructor(
     public svc: CommonService,
@@ -87,6 +92,24 @@ export class IntroducerComponent {
   ) {}
 
   ngOnInit() {
+    clearSession([
+      'assetlinkDataList',
+      'easylinkDataList',
+      'creditlineDataList',
+      'bailmentDataList',
+      'fixedFloorPlanDetails',
+      'floatingFloorPlanDetails',
+      'buybackDataList',
+      'selectedEasylinkSubFacility',
+      'selectedAssetlinkSubFacility',
+      'selectedBailmentSubFacility',
+      'selectedFixedFloorSubFacility',
+      'selectedFloatingFloorSubFacility',
+      'selectedBuybackSubFacility',
+      'forecastToDate',
+      'forecastFromDate',
+      'forecastFrequency',
+    ]);
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
     if (
       roleBased &&
@@ -99,45 +122,90 @@ export class IntroducerComponent {
     } else {
       this.accessGranted = [];
     }
-    this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-      this.partyId = currentParty?.id;
-    });
-    this.currentComponent = 'TransactionSummary';
-    this.commonSetterGetterSvc.financial.subscribe((data) => {
-      this.introducerFacilityDataList =
-        data?.introducerTransactionDetails ?? [];
 
-      if (!this.introducerFacilityDataList.length) {
-        this.dashboardSetterGetterSvc.financialList$
-          .pipe(take(1))
-          .subscribe((list) => {
-            const details = list?.introducerTransactionDetails ?? [];
-            this.introducerFacilityDataList = updateDataList(
-              details,
-              FacilityType.IntroducerTransactionSummary
-            );
-          });
-      }
-    });
-    this.selectedSubFacility = this.introducerFacilityDataList[0];
-    const transactionFlowParams = {
-      partyId: this.partyId,
-      //facilityType: this.facilityType,
-      subFacilityId: this.selectedSubFacility?.id,
-    };
-    //this.fetchPaymentsTab(transactionFlowParams);
-    // this.fetchTransactionsTab(transactionFlowParams);
-    this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
-      this.facilityDataList = list;
+    const partyData = sessionStorage.getItem('currentParty');
+    const party = partyData ? JSON.parse(partyData) : null;
+    this.partyId = party?.id;
 
-      this.optionData = this.facilityDataList.map((item) => ({
-        label: FacilityTypeDropdown[item.value],
-        value:
-          optionDataFacilities[item.label as keyof typeof optionDataFacilities],
-      }));
+    const sessionIntroducer = sessionStorage.getItem('introducerDataList');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
+    if (sessionIntroducer) {
+      this.introducerFacilityDataList = JSON.parse(sessionIntroducer);
+    } else {
+      const sessionFinancial = sessionStorage.getItem('financialSummaryData');
+      const financialData = sessionFinancial
+        ? JSON.parse(sessionFinancial)
+        : null;
+
+      this.introducerFacilityDataList = financialData?.introducerTransactionDetails ?? [];
+
+      sessionStorage.setItem(
+        'introducerDataList',
+        JSON.stringify(this.introducerFacilityDataList)
+      );
+    }
+
+    if (optionsData) {
+      this.optionData = JSON.parse(optionsData);
       this.facilityTypeDropdown =
         optionDataFacilities['IntroducerTransactionSummary'];
+    }
+
+    this.afterIntroducerLoad();
+  }
+
+  afterIntroducerLoad() {
+    const validTabs = ['TransactionSummary','Documents'];
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    } else {
+      this.currentComponent = 'TransactionSummary';
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    }
+
+    sessionStorage.setItem('currentFacilityType', FacilityType.IntroducerTransactionSummary);
+
+    const storedSubFacility = sessionStorage.getItem('selectedIntroducerSubFacility');
+    const selectedSessionSubFacility = storedSubFacility ? JSON.parse(storedSubFacility) : null;
+
+    if (selectedSessionSubFacility) {
+      this.selectedSubFacility = selectedSessionSubFacility;
+    } else {
+      this.selectedSubFacility = this.introducerFacilityDataList[0];
+      sessionStorage.setItem(
+        'selectedIntroducerSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
+    }
+
+    if (this.currentComponent === 'TransactionSummary') {
+      this.showTransactionSummaryTab();
+    } else if (this.currentComponent === 'Documents') {
+      this.showDocumentsTab();
+    }
+
+    this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
+      if (list?.length) {
+        this.facilityDataList = list;
+
+        this.optionData = this.facilityDataList.map((item) => ({
+          label: FacilityTypeDropdown[item.value],
+          value:
+            optionDataFacilities[item.label as keyof typeof optionDataFacilities],
+        }));
+
+        sessionStorage.setItem(
+          'optionDataFacilities',
+          JSON.stringify(this.optionData)
+        );
+
+        this.facilityTypeDropdown =
+          optionDataFacilities['IntroducerTransactionSummary'];
+      }
     });
   }
 
@@ -170,21 +238,22 @@ export class IntroducerComponent {
   showTransactionSummaryTab() {
     const transactionFlowParams = {
       partyId: this.partyId,
-      //facilityType: this.facilityType,
-      subFacilityId: this.selectedSubFacility.id,
+      subFacilityId: this.selectedSubFacility?.id,
     };
     this.fetchPaymentsTab(transactionFlowParams);
-    this.fetchTransactionsTab(transactionFlowParams);
     this.currentComponent = 'TransactionSummary';
     this.componentLoaderService.loadComponent('TransactionFlow');
     this.tableId = 'TransactionFlow';
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   async fetchPaymentsTab(params) {
     try {
-      this.paymentDataList = await this.commonApiService.getPaymentsTabData(
-        params
-      );
+      const result = await this.commonApiService.getIntroducerPaymentTransaction(params.partyId)
+      this.paymentDataList = result?.paymentExtract
+      this.transactionsDataList = result?.transExtract
+
+      sessionStorage.setItem("transactions",JSON.stringify(this.transactionsDataList))
       if (this.paymentDataList) {
         this.paymentNotYetAllocated = calculatePaymentNotYetAllocated(
           this.paymentDataList
@@ -195,19 +264,19 @@ export class IntroducerComponent {
     }
   }
 
-  async fetchTransactionsTab(params) {
-    try {
-      this.transactionsDataList =
-        await this.commonApiService.getTransactionsTabData(params);
-      if (this.transactionsDataList) {
-        this.overDue = this.calculateTotalOutstandingAmount(
-          this.transactionsDataList
-        );
-      }
-    } catch (error) {
-      console.log('Error while loading payment forcast data', error);
-    }
-  }
+  // async fetchTransactionsTab(params) {
+  //   try {
+  //     this.transactionsDataList =
+  //       await this.commonApiService.getTransactionsTabData(params);
+  //     if (this.transactionsDataList) {
+  //       this.overDue = this.calculateTotalOutstandingAmount(
+  //         this.transactionsDataList
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log('Error while loading payment forcast data', error);
+  //   }
+  // }
 
   calculateTotalOutstandingAmount(transactionsDataList: any): any {
     throw new Error('Method not implemented.');
@@ -218,6 +287,7 @@ export class IntroducerComponent {
     this.fetchDocuments(params);
     this.currentComponent = 'Documents';
     this.componentLoaderService.loadComponent('Documents');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   async fetchDocuments(params: DocumentsParams) {
@@ -317,7 +387,16 @@ export class IntroducerComponent {
   onFacilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
+  }
+
+  ngOnDestroy() {
+    clearSession('transactions');
+    clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('introducerDataList');
+    clearSession('selectedIntroducerSubFacility');
+    clearSession('currentFacilityType');
   }
 }

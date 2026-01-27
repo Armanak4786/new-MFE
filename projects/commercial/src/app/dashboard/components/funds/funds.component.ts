@@ -13,7 +13,7 @@ import { updateDataList } from '../../../utils/common-utils';
 
   templateUrl: './funds.component.html',
 
-  styleUrls: ['./funds.component.scss'],
+  styleUrl: './funds.component.scss',
   //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FundsComponent {

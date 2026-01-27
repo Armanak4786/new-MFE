@@ -8,7 +8,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-operating-lease',
   templateUrl: './operating-lease.component.html',
-  styleUrls: ['./operating-lease.component.scss'],
+  styleUrl: './operating-lease.component.scss',
 })
 export class OperatingLeaseComponent implements OnChanges {
   columnsAsset = [];

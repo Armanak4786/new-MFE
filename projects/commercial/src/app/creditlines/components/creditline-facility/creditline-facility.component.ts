@@ -23,7 +23,7 @@ import { FacilityType } from '../../../utils/common-enum';
 @Component({
   selector: 'app-creditline-facility',
   templateUrl: './creditline-facility.component.html',
-  styleUrls: ['./creditline-facility.component.scss'],
+  styleUrl: './creditline-facility.component.scss',
 })
 export class CreditlineFacilityComponent {
   @Input() facilityType;
@@ -70,10 +70,80 @@ export class CreditlineFacilityComponent {
   //   this.fetchLoans(params);
   // }
 
+  // ngOnInit() {
+  //   const current = sessionStorage.getItem('currentComponent');
+  //   this.currentComponent = current ? current : 'loans';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
+  //   const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+  //   if (
+  //     roleBased &&
+  //     roleBased.functions &&
+  //     typeof roleBased.functions === 'object'
+  //   ) {
+  //     this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
+  //       fn.trim()
+  //     );
+  //   } else {
+  //     this.accessGranted = [];
+  //   }
+
+  //   const partyData = sessionStorage.getItem('currentParty');
+  //   const party = partyData ? JSON.parse(partyData) : null;
+
+  //   this.partyId = party?.id;
+  //   this.partyNo = party?.partyNo;
+
+  //   const storedSubFacility = sessionStorage.getItem(
+  //     'selectedCreditlineSubFacility'
+  //   );
+
+  //   if (storedSubFacility) {
+  //     this.selectedSubFacility = JSON.parse(storedSubFacility);
+  //   } else {
+  //     const sessionFinancial = sessionStorage.getItem('financialSummaryData');
+  //     const financialData = sessionFinancial
+  //       ? JSON.parse(sessionFinancial)
+  //       : null;
+
+  //     const creditlinesList = financialData?.creditlinesDataList ?? [];
+
+  //     if (creditlinesList.length) {
+  //       this.selectedSubFacility = creditlinesList[0];
+  //       sessionStorage.setItem(
+  //         'selectedCreditlineSubFacility',
+  //         JSON.stringify(this.selectedSubFacility)
+  //       );
+  //     }
+  //   }
+  //   const params = {
+  //     partyId: this.partyId,
+  //     facilityType: 'CreditLine',
+  //     subFacilityId: this.selectedSubFacility.id,
+  //   };
+
+  //   this.fetchLoans(params);
+  //   this.componentLoaderService.component$.subscribe((componentName) => {
+  //     this.currentComponent = componentName;
+  //   });
+  // }
   ngOnInit() {
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'loans';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
+    const validTabs = ['Loans', 'FacilityAssets', 'requestHistory'];
+    this.componentLoaderService.component$.subscribe((componentName) => {
+      if (validTabs.includes(componentName)) {
+        this.currentComponent = componentName;
+        sessionStorage.setItem('subfacilityCurrentComponent', componentName);
+      }
+    });
+    this.facilityType = sessionStorage.getItem('currentFacilityType');
+    const storedComponent = sessionStorage.getItem(
+      'subfacilityCurrentComponent'
+    );
+    if (storedComponent) {
+      this.currentComponent = storedComponent;
+    } else {
+      this.currentComponent = 'Loans';
+      sessionStorage.setItem('subfacilityCurrentComponent',this.currentComponent);
+    }
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
     if (
       roleBased &&
@@ -86,45 +156,41 @@ export class CreditlineFacilityComponent {
     } else {
       this.accessGranted = [];
     }
-
     const partyData = sessionStorage.getItem('currentParty');
-    const party = partyData ? JSON.parse(partyData) : null;
-
-    this.partyId = party?.id;
-    this.partyNo = party?.partyNo;
-
-    const storedSubFacility = sessionStorage.getItem(
-      'selectedCreditlineSubFacility'
+    const partyId = JSON.parse(partyData);
+    this.partyId = partyId?.id;
+    this.partyNo = partyId?.partyNo;
+    this.selectedSubFacility = JSON.parse(
+      sessionStorage.getItem('selectedCreditlineSubFacility')
     );
 
-    if (storedSubFacility) {
-      this.selectedSubFacility = JSON.parse(storedSubFacility);
-    } else {
-      const sessionFinancial = sessionStorage.getItem('financialSummaryData');
-      const financialData = sessionFinancial
-        ? JSON.parse(sessionFinancial)
-        : null;
+    // const storedCreditline = JSON.parse(sessionStorage.getItem('creditlineFacilityDataList'));
 
-      const creditlinesList = financialData?.creditlinesDataList ?? [];
-
-      if (creditlinesList.length) {
-        this.selectedSubFacility = creditlinesList[0];
-        sessionStorage.setItem(
-          'selectedCreditlineSubFacility',
-          JSON.stringify(this.selectedSubFacility)
-        );
-      }
+    // if (storedCreditline && storedCreditline.length > 0) {
+    //   this.selectedSubFacility = storedCreditline;
+    // } else {
+    //  const financialList = JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+    //  this.selectedSubFacility = financialList?.creditlinesDataList ?? [];
+    // }
+    if (this.currentComponent === 'requestHistory') {
+      const params = { partyNo: this.partyId };
+      this.fetchRequestHistory(params);
     }
+    if (this.currentComponent === 'FacilityAssets') {
+      const params = {
+        partyId: this.partyId,
+        subFacilityId: this.selectedSubFacility.id,
+      };
+      this.fetchFacilityAssets(params);
+      }
+    if (this.currentComponent === 'Loans') {
     const params = {
       partyId: this.partyId,
       facilityType: 'CreditLine',
       subFacilityId: this.selectedSubFacility.id,
     };
-
     this.fetchLoans(params);
-    this.componentLoaderService.component$.subscribe((componentName) => {
-      this.currentComponent = componentName;
-    });
+    }
   }
 
   // private fetchLoansForSubFacility(): void {

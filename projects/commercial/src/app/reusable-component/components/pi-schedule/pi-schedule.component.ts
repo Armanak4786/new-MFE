@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
   //standalone: true,
   //imports: [],
   templateUrl: './pi-schedule.component.html',
-  styleUrls: ['./pi-schedule.component.scss'],
+  styleUrl: './pi-schedule.component.scss',
 })
 export class PiScheduleComponent {
   @Input() piScheduleDataList;

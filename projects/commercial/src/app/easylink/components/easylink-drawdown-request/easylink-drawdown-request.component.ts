@@ -13,7 +13,7 @@ import { DrawdownRequestSubmitComponent } from '../../../reusable-component/comp
 @Component({
   selector: 'app-easylink-drawdown-request',
   templateUrl: './easylink-drawdown-request.component.html',
-  styleUrls: ['./easylink-drawdown-request.component.scss'],
+  styleUrl: './easylink-drawdown-request.component.scss',
 })
 export class EasylinkDrawdownRequestComponent
   extends BaseEasylinkClass

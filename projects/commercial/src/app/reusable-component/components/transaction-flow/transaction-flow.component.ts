@@ -1,8 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { GenTableComponent, PrintService, ToasterService } from 'auro-ui';
+import { CommonService, GenTableComponent, PrintService, ToasterService } from 'auro-ui';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import { buildSheetData, printTable } from '../../../utils/common-utils';
 import { TranslateService } from '@ngx-translate/core';
+import { IntroducerPaymentTabPopUpComponent } from '../introducer-payment-tab-pop-up/introducer-payment-tab-pop-up.component';
 
 @Component({
   selector: 'app-transaction-flow',
@@ -23,6 +24,7 @@ export class TransactionFlowComponent {
   @ViewChild('dt2')
   dt2: GenTableComponent;
   allocatedPayments: any;
+ selectedRow: any;
 
   tableId: string = 'Payments';
   currentPaymentId: number;
@@ -31,13 +33,27 @@ export class TransactionFlowComponent {
     public commonSetterGetterService: CommonSetterGetterService,
     public printSer: PrintService,
     public translateService: TranslateService,
-    public toasterService: ToasterService
+    public toasterService: ToasterService,
+    public svc: CommonService
   ) {}
   ngOnInit() {}
 
   onTransactionCellClick(event) {
     if (event.cellData == 'View') {
       this.getTransactionId(event.rowData.id);
+    }else if(event.colName === 'paymentId'){
+       this.svc.dialogSvc
+        .show(IntroducerPaymentTabPopUpComponent, ' ', {
+          templates: {
+            footer: null,
+          },
+          data: { transactionId:event?.rowData?.flowId},
+          height: '100px',
+          width: '47vw',
+        })
+        .onClose.subscribe((data: any) => {
+        });
+     
     }
     this.tableId = 'Transaction';
   }
@@ -65,7 +81,25 @@ export class TransactionFlowComponent {
   onPaymentCellClick(event) {
     if (event.cellData == 'View') {
       this.getPaymentId(event.rowData.id);
-    }
+    }else if(event.colName === 'paymentId'){
+      
+      const result = sessionStorage.getItem('transactions')
+      const transactions = result ? JSON.parse(result) : [];
+
+      const data = transactions.filter(x=>x.paymentId === event.cellData)
+      
+      this.svc.dialogSvc
+        .show(IntroducerPaymentTabPopUpComponent, ' ', {
+          templates: {
+            footer: null,
+          },
+          data: { data,component:"Payment" },
+          height: '100px',
+          width: '80vw',
+        })
+        .onClose.subscribe((data: any) => {
+        });
+     }
   }
 
   // export() {

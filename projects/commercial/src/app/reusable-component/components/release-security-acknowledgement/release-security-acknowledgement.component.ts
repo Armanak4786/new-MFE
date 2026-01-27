@@ -6,7 +6,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-release-security-acknowledgement',
   templateUrl: './release-security-acknowledgement.component.html',
-  styleUrls: ['./release-security-acknowledgement.component.scss'],
+  styleUrl: './release-security-acknowledgement.component.scss',
 })
 export class ReleaseSecurityAcknowledgementComponent {
   referenceNumber;

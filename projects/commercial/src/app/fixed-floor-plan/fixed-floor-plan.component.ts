@@ -62,7 +62,7 @@ import { TranslateService } from '@ngx-translate/core';
   //standalone: true,
   //imports: [],
   templateUrl: './fixed-floor-plan.component.html',
-  styleUrls: ['./fixed-floor-plan.component.scss'],
+  styleUrl: './fixed-floor-plan.component.scss',
 })
 export class FixedFloorPlanComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -188,9 +188,11 @@ export class FixedFloorPlanComponent {
       'assetlinkDataList',
       'easylinkDataList',
       'creditlineDataList',
+      'bailmentDataList',
       'floatingFloorPlanDetails',
       'selectedEasylinkSubFacility',
       'selectedAssetlinkSubFacility',
+      'selectedBailmentSubFacility',
       'forecastToDate',
       'forecastFromDate',
       'forecastFrequency',
@@ -211,9 +213,9 @@ export class FixedFloorPlanComponent {
     this.partyId = party?.id;
 
     const sessionFixedFloor = sessionStorage.getItem(
-      'floatingFloorPlanDetails'
+      'fixedFloorPlanDetails'
     );
-    const optionsData = sessionStorage.getItem('optionDataFixedFloor');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionFixedFloor) {
       this.fixedFloorFacilityDataList = JSON.parse(sessionFixedFloor);
@@ -227,7 +229,7 @@ export class FixedFloorPlanComponent {
       this.fixedFloorFacilityDataList = generateSummary(details);
 
       sessionStorage.setItem(
-        'floatingFloorPlanDetails',
+        'fixedFloorPlanDetails',
         JSON.stringify(this.fixedFloorFacilityDataList)
       );
     }
@@ -241,30 +243,58 @@ export class FixedFloorPlanComponent {
   }
 
   afterFixedFloorLoad() {
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'FacilitySummary';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
-    this.showFacilitySummary();
+    const validTabs = ['FacilitySummary','FacilityAssets','Documents','RequestHistory'];
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    } else {
+      this.currentComponent = 'FacilitySummary';
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    }
+
+    this.commonSetterGetterService.setCurrentComponent(
+      FacilityType.FixedFloorPlan
+    );
+    sessionStorage.setItem('currentFacilityType', FacilityType.FixedFloorPlan_Group);
+
+    const selectedSessionSubFacility = JSON.parse(sessionStorage.getItem('selectedFixedFloorSubFacility'));
 
     this.subFacilityNameList = this.getNonEmptySubFacilityNames(
       this.fixedFloorFacilityDataList
     );
 
-    this.selectedSubFacility = this.fixedFloorFacilityDataList[0];
-    sessionStorage.setItem(
-      'selectedFixedFloorSubFacility',
-      JSON.stringify(this.selectedSubFacility)
-    );
+    if (selectedSessionSubFacility) {
+      this.selectedSubFacility = selectedSessionSubFacility;
+    } else {
+      this.selectedSubFacility = this.fixedFloorFacilityDataList[0];
+      sessionStorage.setItem(
+        'selectedFixedFloorSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
+    }
 
     this.initChart();
 
-    this.componentLoaderService.component$.subscribe((componentName) => {
-      this.currentComponent = componentName;
-    });
+    if (this.currentComponent === 'FacilitySummary') {
+      this.showFacilitySummary();
+    } else if (this.currentComponent === 'FacilityAssets') {
+      this.showFacilityAssets();
+    } else if (this.currentComponent === 'Documents') {
+      this.showDocuments();
+    }
 
-    this.commonSetterGetterService.setCurrentComponent(
-      FacilityType.FixedFloorPlan
-    );
+    this.FixedFloorSubFacilityDataList = [
+      {
+        id: null,
+        contractId: null,
+        facilityName: null,
+        facilityType: null,
+        noOfAssets: null,
+      },
+      selectedSessionSubFacility,
+    ];
 
     this.commonSetterGetterService.facilityList$.subscribe((list) => {
       if (list?.length) {
@@ -279,7 +309,7 @@ export class FixedFloorPlanComponent {
         }));
 
         sessionStorage.setItem(
-          'optionDataFixedFloor',
+          'optionDataFacilities',
           JSON.stringify(this.optionData)
         );
 
@@ -287,30 +317,9 @@ export class FixedFloorPlanComponent {
       }
     });
 
-    const params: FacilitySummaryParams = {
-      partyNo: this.partyId,
-      facilityType: FacilityType.FixedFloorPlanGroup,
-      subFacilityId: this.selectedSubFacility?.facilityName?.trim()
-        ? this.selectedSubFacility.id
-        : null,
-    };
-    this.fetchFacilitySummaryData(params);
-
-    const documentParams = { partyId: this.partyId };
-    this.fetchDocuments(documentParams);
-
-    const assetParams = {
-      partyId: this.partyId,
-      facilityType: this.facilityType,
-      ...(this.selectedSubFacility?.facilityName?.trim() !== '' && {
-        subFacilityId: this.selectedSubFacility.id,
-      }),
-    };
-    this.commonApiService.getAssetsData(assetParams).then((data) => {
-      if (data) {
-        this.facilityAsssetsDatalist = data;
-      }
-    });
+    if (this.currentComponent === 'RequestHistory') {
+      this.requestHistory();
+    }
   }
 
   hasAccess(key) {
@@ -370,6 +379,7 @@ export class FixedFloorPlanComponent {
   requestHistory() {
     this.currentComponent = 'RequestHistory';
     this.componentLoaderService.loadComponent('RequestHistory');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   async fetchPaymentRequestList(params: PaymentRequestParams) {
@@ -393,7 +403,7 @@ export class FixedFloorPlanComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.fixedFloorFacilityDataList,
         },
-        width: '60vw',
+        width: '70vw',
         height: '30vw',
       })
       .onClose.subscribe((data: any) => {});
@@ -417,7 +427,20 @@ export class FixedFloorPlanComponent {
 
   showFacilityAssets() {
     this.currentComponent = 'FacilityAssets';
+    const assetParams = {
+      partyId: this.partyId,
+      facilityType: this.facilityType,
+      ...(this.selectedSubFacility?.facilityName?.trim() !== '' && {
+        subFacilityId: this.selectedSubFacility.id,
+      }),
+    };
+    this.commonApiService.getAssetsData(assetParams).then((data) => {
+      if (data) {
+        this.facilityAsssetsDatalist = data;
+      }
+    });
     this.componentLoaderService.loadFixedFloorDashboard('FacilityAssets');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   async fetchFacilitySummaryData(params) {
@@ -431,12 +454,23 @@ export class FixedFloorPlanComponent {
 
   showFacilitySummary() {
     this.currentComponent = 'FacilitySummary';
+    const params: FacilitySummaryParams = {
+      partyNo: this.partyId,
+      facilityType: FacilityType.FixedFloorPlanGroup,
+      subFacilityId: this.selectedSubFacility?.facilityName?.trim()
+        ? this.selectedSubFacility.id
+        : null,
+    };
+    this.fetchFacilitySummaryData(params);
     this.componentLoaderService.loadFixedFloorDashboard('FacilitySummary');
   }
 
   showDocuments() {
     this.currentComponent = 'Documents';
+    const documentParams = { partyId: this.partyId };
+    this.fetchDocuments(documentParams);
     this.componentLoaderService.loadFixedFloorDashboard('Documents');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
   async fetchDocuments(params: DocumentsParams) {
     try {
@@ -516,7 +550,7 @@ export class FixedFloorPlanComponent {
   onFrequencyChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
@@ -709,5 +743,9 @@ export class FixedFloorPlanComponent {
 
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('fixedFloorPlanDetails');
+    clearSession('selectedFixedFloorSubFacility');
+    clearSession('currentFacilityType');
   }
 }

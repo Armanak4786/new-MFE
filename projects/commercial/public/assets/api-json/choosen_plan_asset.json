@@ -1,0 +1,93 @@
+{
+    "data": {
+      "activeLoans": [
+        {
+          "carModel": "2021 Ford Ranger PUDS4D",
+          "carImage": "assets/images/toyota-ranger-1.png",
+          "isDraft": false
+        },
+        {
+          "carModel": "2022 Ford Ranger PUDS4D",
+          "carImage": "assets/images/icon/toyota-ranger-1.png",
+          "isDraft": false
+        },
+        {
+          "carMake": "Ford",
+          "carModel": "2021 Ford Ranger PUDS4D",
+          "carImage": "assets/images/icon/toyota-ranger-1.png",
+          "isDraft": false
+        }
+      ],
+      "individualAsset": [
+        {
+          "assetName": "Car or Van",
+          "assetImage": "assets/images/icon/car.svg",
+          "isActive": false
+        },
+        {
+         
+          "assetName": "MoterBike",
+          "assetImage": "assets/images/icon/bike.svg",
+          "isActive": false
+        },
+        {
+         
+          "assetName": "Boat",
+          "assetImage": "assets/images/icon/boats.svg",
+          "isActive": false
+        },
+        {
+         
+          "assetName": "Other",
+          "assetImage": "assets/images/icon/menu.svg",
+          "isActive": false
+        }
+      ],
+      "bussinessAsset": [
+        {
+         
+          "assetName": "Car & Light Commercial",
+          "assetImage": "assets/images/icon/car.svg",
+          "isActive": false
+        },
+        {
+         
+          "assetName": "Truck & Trailer Unit",
+          "assetImage": "assets/images/icon/truck.svg",
+          "isActive": false
+        },
+        {
+         
+            "assetName": "Tractor & Agricultureal Implements",
+            "assetImage": "assets/images/icon/tractor.svg",
+            "isActive": false
+          },
+          {
+         
+            "assetName": "Earthmoving Equipments",
+            "assetImage": "assets/images/icon/jcb.svg",
+            "isActive": false
+          },
+          {
+            "assetName": "Lifting Equipments",
+            "assetImage": "assets/images/icon/creane.svg",
+            "isActive": false
+          },
+          {
+            "assetName": "Forest & Mobile Logging Machinery",
+            "assetImage": "assets/images/icon/wooden.svg",
+            "isActive": false
+          },
+          {
+            "assetName": "MoterBike",
+            "assetImage": "assets/images/icon/bike.svg",
+            "isActive": false
+          },
+          {
+            "assetName": "Other",
+            "assetImage": "assets/images/icon/menu.svg",
+            "isActive": false
+          }
+      ]
+    }
+  }

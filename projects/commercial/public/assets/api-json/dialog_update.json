@@ -1,0 +1,26 @@
+{
+    "data": {
+        "dialogUpdate": [
+            {
+                "value": "1",
+                "label": "If you would like to update your payment date (vary your loan), please complete the mandatory fields and submit your request."
+            },
+            {
+                "value": "2",
+                "label": "All variation requests are subject to credit criteria. We reserve the right to decline your request."
+            },
+            {
+                "value": "3",
+                "label": "If your request is approved, you authorize UDC to vary your contract schedule as per your request and issue a disclosure notification to you."
+            },
+            {
+                "value": "4",
+                "label": "If UDC is unable to approve your request, we will notify you."
+            },
+            {
+                "value": "5",
+                "label": "If further information is required, we will contact you."
+            }
+        ]
+    }
+}

@@ -6,7 +6,7 @@ import { buybackResidualValueColumnDefs } from '../../utils/buyback-header.utils
   //standalone: true,
   //imports: [],
   templateUrl: './buyback-rental-summary.component.html',
-  styleUrls: ['./buyback-rental-summary.component.scss'],
+  styleUrl: './buyback-rental-summary.component.scss',
 })
 export class BuybackRentalSummaryComponent {
   @Input() leaseData;

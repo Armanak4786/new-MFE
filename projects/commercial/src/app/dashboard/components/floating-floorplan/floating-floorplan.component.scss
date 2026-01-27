@@ -2,7 +2,15 @@
   .p-datatable.p-datatable-striped
   .p-datatable-tbody
   > tr:nth-child(1) {
-  .row-class-bailment {
+  .row-class-floatingfloorplan {
     font-weight: 700;
   }
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-floatingfloorplan {
+  pointer-events: none !important;
 }

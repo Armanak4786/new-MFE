@@ -10,7 +10,7 @@ import { DrawdownService } from '../../../drawdown.service';
 @Component({
   selector: 'app-drawdown-request-card',
   templateUrl: './drawdown-request-card.component.html',
-  styleUrls: ['./drawdown-request-card.component.scss'],
+  styleUrl: './drawdown-request-card.component.scss',
 })
 export class DrawdownRequestCardComponent extends BaseAssetlinkClass {
   formFieldFlag: any = '';
@@ -106,7 +106,7 @@ export class DrawdownRequestCardComponent extends BaseAssetlinkClass {
     ],
   };
 
-  override onButtonClick($event) { }
+  override onButtonClick($event) {}
 
   override onFormEvent(event) {
     this.facilityOptions = this.getFacilitiesByType(event.value);
@@ -142,7 +142,7 @@ export class DrawdownRequestCardComponent extends BaseAssetlinkClass {
       }));
   }
 
-  override onValueChanges(event) { }
+  override onValueChanges(event) {}
   override onFormReady() {
     this.mainForm?.form.valueChanges.subscribe((value) => {
       this.formDataService.updateFormData(this.mainForm?.form?.value);

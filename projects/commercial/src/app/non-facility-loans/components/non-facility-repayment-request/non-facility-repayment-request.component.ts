@@ -17,7 +17,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
   //standalone: true,
   //imports: [],
   templateUrl: './non-facility-repayment-request.component.html',
-  styleUrls: ['./non-facility-repayment-request.component.scss'],
+  styleUrl: './non-facility-repayment-request.component.scss',
 })
 export class NonFacilityRepaymentRequestComponent extends BaseCommercialClass {
   selectedFacility: string;

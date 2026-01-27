@@ -2,15 +2,16 @@ import { Component } from '@angular/core';
 import { CommonService } from 'auro-ui';
 import { AddAssetComponent } from '../../../reusable-component/components/add-asset/add-asset.component';
 import { ActivatedRoute } from '@angular/router';
-import { LayoutService } from '../../../services/layout.service';
+
 import { Subscription, timer } from 'rxjs';
 import { DrawdownRequestComponent } from '../../../assetlink/components/drawdown-request/drawdown-request.component';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
+import { LayoutService } from '../../../services/layout.service';
 
 @Component({
   selector: 'app-quick-actions',
   templateUrl: './quick-actions.component.html',
-  styleUrls: ['./quick-actions.component.scss'],
+  styleUrl: './quick-actions.component.scss',
 })
 export class QuickActionsComponent {
   currentServerTimeA: string;
@@ -41,7 +42,7 @@ export class QuickActionsComponent {
     public route: ActivatedRoute,
     public layoutService: LayoutService,
     public commonSetterGetterService: CommonSetterGetterService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.updateServerTime();
@@ -96,7 +97,7 @@ export class QuickActionsComponent {
         // styleClass: 'dialogue-scroll',
         // position: 'center',
       })
-      .onClose.subscribe((data: any) => { });
+      .onClose.subscribe((data: any) => {});
   }
 
   private updateServerTime() {

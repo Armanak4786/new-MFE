@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-release-security',
   templateUrl: './release-security.component.html',
-  styleUrls: ['./release-security.component.scss'],
+  styleUrl: './release-security.component.scss',
 })
 export class ReleaseSecurityComponent implements OnInit {
   facilityType;
@@ -61,9 +61,9 @@ export class ReleaseSecurityComponent implements OnInit {
     if (this.disablebReleaseButtonFlag === false) {
       this.facilityAsset.setData(this.filteredAssetsDataListToRelease);
       if (this.facilityType == 'AssetLink') {
-        this.router.navigate(['commercial/assetlink/releaseSecurityRequest']);
+        this.router.navigate(['assetlink/releaseSecurityRequest']);
       } else if (this.facilityType == 'EasyLink') {
-        this.router.navigate(['commercial/easylink/releaseSecurityRequest']);
+        this.router.navigate(['easylink/releaseSecurityRequest']);
       }
       this.ref.close();
     }

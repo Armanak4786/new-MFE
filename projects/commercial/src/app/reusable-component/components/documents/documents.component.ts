@@ -34,7 +34,7 @@ interface Document {
 @Component({
   selector: 'app-documents',
   templateUrl: './documents.component.html',
-  styleUrls: ['./documents.component.scss'],
+  styleUrl: './documents.component.scss',
 })
 export class DocumentsComponent {
   @Input() documentsColumnDefs: any[];

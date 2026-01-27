@@ -1,6 +1,8 @@
 import {
   Component,
+  EventEmitter,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +10,8 @@ import {
   BaseFormClass,
   CloseDialogData,
   CommonService,
+  GenericFormConfig,
+  Mode,
   ToasterService,
 } from 'auro-ui';
 import {
@@ -35,30 +39,26 @@ import { BaseCommercialService } from '../../../reusable-component/services/base
 import { DocumentsComponent } from '../../../reusable-component/components/documents/documents.component';
 import {
   ContractNotesDropdown_values,
+  FacilityType,
   taskPostStaticFields,
 } from '../../../utils/common-enum';
 import { CancelPopupComponent } from '../../../reusable-component/components/cancel-popup/cancel-popup.component';
 import { AcknowledgmentPopupComponent } from '../../../reusable-component/components/acknowledgment-popup/acknowledgment-popup.component';
 import { MotocheckComponent } from '../motocheck/motocheck.component';
 import { jwtDecode } from 'jwt-decode';
-// Keys imported inline - previously from 'src/assets/api-json/en_US.json'
-const keys = {
-  labelData: {
-    fixed_floorplan_drawdown_request_your_request_has_been_submitted_to_udc_finance_for_processing_and_approval_request_number_is: 'Fixed Floorplan Drawdown Request: Your request has been submitted to UDC Finance for processing and approval. Request Number is: ',
-    approval_is_subject_to_the_terms_and_conditions_applicable_to_your_dealer_floorplan_facility_agreement_fixed_you_can_track_its_progress_in_your_request_history: 'Approval is subject to the terms and conditions applicable to your Dealer Floorplan Facility Agreement. You can track its progress in your Request History.'
-  }
-};
+import keys from '../../../../../../../public/assets/api-json/en_US.json';
 
 @Component({
   selector: 'app-fixed-floor-plan-drawdown-request',
   // standalone: true,
   // imports: [],
   templateUrl: './fixed-floor-plan-drawdown-request.component.html',
-  styleUrls: ['./fixed-floor-plan-drawdown-request.component.scss'],
+  styleUrl: './fixed-floor-plan-drawdown-request.component.scss',
 })
 export class FixedFloorPlanDrawdownRequestComponent
   extends BaseFormClass
-  implements OnInit {
+  implements OnInit
+{
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
   selectedProgramAssetType: string = '';
   isMotorVehicle: boolean = false;
@@ -163,7 +163,7 @@ export class FixedFloorPlanDrawdownRequestComponent
     public commonSetterGetterSvc: CommonSetterGetterService,
     public dashboardSetterGetterSvc: DashboardSetterGetterService,
     private fb: FormBuilder,
-    public baseCommSvc: BaseCommercialService
+    public baseCommSvc: BaseCommercialService,
   ) {
     super(route, svc);
     this.form = this.fb.group({
@@ -239,7 +239,9 @@ export class FixedFloorPlanDrawdownRequestComponent
     //   this.customerName = currentParty.name;
     // });
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
-    this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
+    this.customerName = JSON.parse(
+      sessionStorage.getItem('currentParty'),
+    )?.name;
 
     const params = {
       partyNo: this.partyId,
@@ -515,7 +517,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       } else {
         // Fallback to the original logic if getProgramDefault fails
         const selectedProgram = this.programOptions.find(
-          (program) => program.value === event.value?.value
+          (program) => program.value === event.value?.value,
         );
         if (selectedProgram && selectedProgram.assetTypePath) {
           this.selectedProgramAssetType = selectedProgram.assetTypePath;
@@ -550,9 +552,8 @@ export class FixedFloorPlanDrawdownRequestComponent
 
   async getProgramCustomField(params) {
     try {
-      const response = await this.commonapiService.getCustomFieldProgram(
-        params
-      );
+      const response =
+        await this.commonapiService.getCustomFieldProgram(params);
       const customFields =
         response?.customFields ?? response?.data?.customFields ?? [];
       const programresponse = customFields.map((field) => ({
@@ -606,6 +607,23 @@ export class FixedFloorPlanDrawdownRequestComponent
         this.form.patchValue({
           programname: this.programOptions[0],
         });
+      }
+      // Manually trigger the program selection logic
+      const assetType = this.assetForm.get('assetType')?.value;
+      if (assetType !== 'multiple' && this.programOptions[0]?.value) {
+        const programParams = { programId: this.programOptions[0].value };
+        this.programCustomFields =
+          await this.getProgramCustomField(programParams);
+        const programDefaults = await this.getProgramDefault(
+          this.programOptions[0].value,
+        );
+
+        if (programDefaults && programDefaults.assetTypePath) {
+          this.selectedProgramAssetType = programDefaults.assetTypePath;
+          this.isMotorVehicle =
+            programDefaults.assetTypePath.includes('Motor Vehicles');
+          this.vehicleDetails.reset();
+        }
       }
       // this.mainForm.updateList('programname', this.programOptions);
     } catch (error) {
@@ -816,10 +834,10 @@ export class FixedFloorPlanDrawdownRequestComponent
       const gstRate = Number(this.taxrate);
       const programDrawdownPercent = Number(
         this.programCustomFields.find((field) => field.name === 'Drawdown %')
-          ?.value
+          ?.value,
       );
       const fundGst = this.programCustomFields.find(
-        (field) => field.name === 'Fund GST'
+        (field) => field.name === 'Fund GST',
       )?.value;
 
       const invoiceAmountInc = invoiceAmount;
@@ -838,7 +856,7 @@ export class FixedFloorPlanDrawdownRequestComponent
           ...invoiceAmountControl?.errors,
           advanceExceedsProgram: {
             message: `Advance (${advanceAmount}) exceeds max (${programLevelAmount.toFixed(
-              2
+              2,
             )})`,
           },
         });
@@ -849,7 +867,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         if (errors) {
           delete errors['advanceExceedsProgram'];
           invoiceAmountControl?.setErrors(
-            Object.keys(errors).length ? errors : null
+            Object.keys(errors).length ? errors : null,
           );
         }
       }
@@ -859,10 +877,10 @@ export class FixedFloorPlanDrawdownRequestComponent
       const gstRate = Number(this.taxrate);
       const programDrawdownPercent = Number(
         this.programCustomFields.find((field) => field.name === 'Drawdown %')
-          ?.value
+          ?.value,
       );
       const fundGst = this.programCustomFields.find(
-        (field) => field.name === 'Fund GST'
+        (field) => field.name === 'Fund GST',
       )?.value;
 
       const invoiceAmountEx = invoiceAmount;
@@ -879,7 +897,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         invoiceAmountControl?.setErrors({
           advanceExceedsProgram: {
             message: `Advance amount (${advanceAmount}) exceeds maximum allowed (${programLevelAmount.toFixed(
-              2
+              2,
             )})`,
           },
         });
@@ -890,7 +908,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         if (errors && errors['advanceExceedsProgram']) {
           delete errors['advanceExceedsProgram'];
           invoiceAmountControl?.setErrors(
-            Object.keys(errors).length ? errors : null
+            Object.keys(errors).length ? errors : null,
           );
         }
       }
@@ -915,7 +933,7 @@ export class FixedFloorPlanDrawdownRequestComponent
           this.dynamicDialogConfig?.data.facilityType,
         wholesaleAccountId:
           this.facilityTypeOptions.find(
-            (option) => option.value === facilityTypeData?.value
+            (option) => option.value === facilityTypeData?.value,
           )?.contractId || null,
         isSupplierDisbursement:
           drawdownDetailsData.disburseFundsTo === 'Supplier' ||
@@ -937,11 +955,11 @@ export class FixedFloorPlanDrawdownRequestComponent
           })),
           suppliers:
             drawdownDetailsData.disburseFundsTo === 'Supplier' ||
-              drawdownDetailsData.disburseFundsTo === 'Both'
+            drawdownDetailsData.disburseFundsTo === 'Both'
               ? drawdownDetailsData.supplierDetails.map((supplier) => ({
-                supplierName: supplier.supplierName,
-                amount: supplier.amount,
-              }))
+                  supplierName: supplier.supplierName,
+                  amount: supplier.amount,
+                }))
               : [],
         },
         assetDetails: {
@@ -949,30 +967,30 @@ export class FixedFloorPlanDrawdownRequestComponent
           singleAsset:
             assetFormData.assetType === 'single'
               ? {
-                assetType: assetFormData.vehicleDetails?.assetType || '',
-                registrationNumber:
-                  assetFormData.vehicleDetails?.regoNo || '',
-                vehicleIdentificationNumber:
-                  assetFormData.vehicleDetails?.vin || '',
-                chassisNumber: assetFormData.vehicleDetails?.chassisNo || '',
-                color: assetFormData.vehicleDetails?.colour || '',
-                make: assetFormData.vehicleDetails?.make || '',
-                model: assetFormData.vehicleDetails?.model || '',
-                // year: assetFormData.vehicleDetails?.year || '',
-                year:
-                  assetFormData.vehicleDetails?.year?.getFullYear?.() ||
-                  assetFormData.vehicleDetails?.year ||
-                  '',
-                registrationDate:
-                  assetFormData.vehicleDetails?.registrationDate || '',
-                assetId: assetFormData.vehicleDetails?.assetId || '',
-              }
+                  assetType: assetFormData.vehicleDetails?.assetType || '',
+                  registrationNumber:
+                    assetFormData.vehicleDetails?.regoNo || '',
+                  vehicleIdentificationNumber:
+                    assetFormData.vehicleDetails?.vin || '',
+                  chassisNumber: assetFormData.vehicleDetails?.chassisNo || '',
+                  color: assetFormData.vehicleDetails?.colour || '',
+                  make: assetFormData.vehicleDetails?.make || '',
+                  model: assetFormData.vehicleDetails?.model || '',
+                  // year: assetFormData.vehicleDetails?.year || '',
+                  year:
+                    assetFormData.vehicleDetails?.year?.getFullYear?.() ||
+                    assetFormData.vehicleDetails?.year ||
+                    '',
+                  registrationDate:
+                    assetFormData.vehicleDetails?.registrationDate || '',
+                  assetId: assetFormData.vehicleDetails?.assetId || '',
+                }
               : null,
         },
       };
       const floorplanLabel =
         this.subFacilityOptions.find(
-          (option) => option.value === floorplanNameData
+          (option) => option.value === floorplanNameData,
         )?.label || '';
       const drawdownTaskPostBody: FixedFloorPlanDrawdownTaskBody = {
         party: { partyNo: this.partyId },
@@ -997,41 +1015,41 @@ export class FixedFloorPlanDrawdownRequestComponent
               to: drawdownDetailsData.disburseFundsTo,
               suppliers:
                 drawdownDetailsData.disburseFundsTo === 'Supplier' ||
-                  drawdownDetailsData.disburseFundsTo === 'Both'
+                drawdownDetailsData.disburseFundsTo === 'Both'
                   ? drawdownDetailsData.supplierDetails.map((supplier) => ({
-                    supplierName: supplier.supplierName,
-                    amountToSupplier: supplier.amount,
-                  }))
+                      supplierName: supplier.supplierName,
+                      amountToSupplier: supplier.amount,
+                    }))
                   : [],
               nominatedBankAccount: {
                 amountToNominatedBank: Number(
-                  drawdownDetailsData.nominatedAmount
+                  drawdownDetailsData.nominatedAmount,
                 ),
               },
             },
 
             assetDetails:
               assetFormData.assetType === 'single' &&
-                assetFormData.vehicleDetails
+              assetFormData.vehicleDetails
                 ? {
-                  singleAsset: [
-                    {
-                      regoNo: assetFormData.vehicleDetails.regoNo || '',
-                      vin: assetFormData.vehicleDetails.vin || '',
-                      chassisNo: assetFormData.vehicleDetails.chassisNo || '',
-                      colour: assetFormData.vehicleDetails.colour || '',
-                      make: assetFormData.vehicleDetails.make || '',
-                      model: assetFormData.vehicleDetails.model || '',
-                      year:
-                        assetFormData.vehicleDetails?.year?.getFullYear?.() ||
-                        assetFormData.vehicleDetails?.year ||
-                        '',
-                      registrationDate:
-                        assetFormData.vehicleDetails.registrationDate || '',
-                      assetId: assetFormData.vehicleDetails.assetId || '',
-                    },
-                  ],
-                }
+                    singleAsset: [
+                      {
+                        regoNo: assetFormData.vehicleDetails.regoNo || '',
+                        vin: assetFormData.vehicleDetails.vin || '',
+                        chassisNo: assetFormData.vehicleDetails.chassisNo || '',
+                        colour: assetFormData.vehicleDetails.colour || '',
+                        make: assetFormData.vehicleDetails.make || '',
+                        model: assetFormData.vehicleDetails.model || '',
+                        year:
+                          assetFormData.vehicleDetails?.year?.getFullYear?.() ||
+                          assetFormData.vehicleDetails?.year ||
+                          '',
+                        registrationDate:
+                          assetFormData.vehicleDetails.registrationDate || '',
+                        assetId: assetFormData.vehicleDetails.assetId || '',
+                      },
+                    ],
+                  }
                 : null,
           },
         },
@@ -1046,7 +1064,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       this.uploadeddocsfortask = await this.getDocumentDataForTask();
       const floorplanLabel =
         this.subFacilityOptions.find(
-          (option) => option.value === floorplanNameData
+          (option) => option.value === floorplanNameData,
         )?.label || '';
 
       const drawdownPostBody: AssetDrawdownRequestBodyTask = {
@@ -1073,53 +1091,53 @@ export class FixedFloorPlanDrawdownRequestComponent
               to: drawdownDetailsData.disburseFundsTo,
               suppliers:
                 drawdownDetailsData.disburseFundsTo === 'Supplier' ||
-                  drawdownDetailsData.disburseFundsTo === 'Both'
+                drawdownDetailsData.disburseFundsTo === 'Both'
                   ? drawdownDetailsData.supplierDetails.map((supplier) => ({
-                    supplierName: supplier.supplierName,
-                    amountToSupplier: supplier.amount,
-                  }))
+                      supplierName: supplier.supplierName,
+                      amountToSupplier: supplier.amount,
+                    }))
                   : [],
               nominatedBankAccount: {
                 amountToNominatedBank: Number(
-                  drawdownDetailsData.nominatedAmount
+                  drawdownDetailsData.nominatedAmount,
                 ),
               },
             },
             assetDetails:
               assetFormData.assetType === 'single' &&
-                assetFormData.vehicleDetails
+              assetFormData.vehicleDetails
                 ? {
-                  singleAsset: {
-                    assetType: assetFormData.vehicleDetails.assetType || '',
-                    registrationNumber:
-                      assetFormData.vehicleDetails.regoNo || '',
-                    vehicleIdentificationNumber:
-                      assetFormData.vehicleDetails.vin || '',
-                    chassisNumber:
-                      assetFormData.vehicleDetails.chassisNo || '',
-                    color: assetFormData.vehicleDetails.colour || '',
-                    make: assetFormData.vehicleDetails.make || '',
-                    model: assetFormData.vehicleDetails.model || '',
-                    // year: assetFormData.vehicleDetails.year || '',
-                    year:
-                      assetFormData.vehicleDetails?.year?.getFullYear?.() ||
-                      assetFormData.vehicleDetails?.year ||
-                      '',
-                    registrationDate:
-                      assetFormData.vehicleDetails.registrationDate || '',
-                    assetId: assetFormData.vehicleDetails.assetId || '',
-                  },
-                }
-                : assetFormData.assetType === 'multiple' &&
-                  assetFormData.multipleAssets?.length
-                  ? {
-                    multipleAsset: assetFormData.multipleAssets.map(
-                      (asset) => ({
-                        stockNumber: asset.stockNo,
-                        assetDescription: asset.description,
-                      })
-                    ),
+                    singleAsset: {
+                      assetType: assetFormData.vehicleDetails.assetType || '',
+                      registrationNumber:
+                        assetFormData.vehicleDetails.regoNo || '',
+                      vehicleIdentificationNumber:
+                        assetFormData.vehicleDetails.vin || '',
+                      chassisNumber:
+                        assetFormData.vehicleDetails.chassisNo || '',
+                      color: assetFormData.vehicleDetails.colour || '',
+                      make: assetFormData.vehicleDetails.make || '',
+                      model: assetFormData.vehicleDetails.model || '',
+                      // year: assetFormData.vehicleDetails.year || '',
+                      year:
+                        assetFormData.vehicleDetails?.year?.getFullYear?.() ||
+                        assetFormData.vehicleDetails?.year ||
+                        '',
+                      registrationDate:
+                        assetFormData.vehicleDetails.registrationDate || '',
+                      assetId: assetFormData.vehicleDetails.assetId || '',
+                    },
                   }
+                : assetFormData.assetType === 'multiple' &&
+                    assetFormData.multipleAssets?.length
+                  ? {
+                      multipleAsset: assetFormData.multipleAssets.map(
+                        (asset) => ({
+                          stockNumber: asset.stockNo,
+                          assetDescription: asset.description,
+                        }),
+                      ),
+                    }
                   : {},
 
             additionalInformation: this.remarks,
@@ -1135,7 +1153,7 @@ export class FixedFloorPlanDrawdownRequestComponent
 
   async submitDrawdownRequest(
     params: AssetDrawdownRequestBody,
-    drawdownTaskPostBody
+    drawdownTaskPostBody,
   ) {
     try {
       const newAssetDrawdownRequestResponse =
@@ -1144,9 +1162,8 @@ export class FixedFloorPlanDrawdownRequestComponent
         wholesaleAssetContract: { ...newAssetDrawdownRequestResponse },
         ...params,
       };
-      this.referenceNumber = await this.commonapiService.assetDrawdownRequest(
-        assetDrawdownPayload
-      );
+      this.referenceNumber =
+        await this.commonapiService.assetDrawdownRequest(assetDrawdownPayload);
       await this.commonapiService.postTaskRequest(drawdownTaskPostBody);
       const taskId = this.referenceNumber?.data.referenceNumber;
       this.message =
@@ -1172,13 +1189,13 @@ export class FixedFloorPlanDrawdownRequestComponent
         additionalInfo: this.remarks,
         supplierInfo: this.drawdownDetails.value.supplierDetails?.length
           ? this.drawdownDetails.value.supplierDetails
-            .filter(
-              (supplier: any) => supplier.supplierName || supplier.amount
-            )
-            .map((supplier: any) => ({
-              supplierName: supplier.supplierName,
-              amount: supplier.amount ? Number(supplier.amount) : null,
-            }))
+              .filter(
+                (supplier: any) => supplier.supplierName || supplier.amount,
+              )
+              .map((supplier: any) => ({
+                supplierName: supplier.supplierName,
+                amount: supplier.amount ? Number(supplier.amount) : null,
+              }))
           : null,
         nominatedBankInfo: this.drawdownDetails.value.nominatedAmount
           ? { amount: Number(this.drawdownDetails.value.nominatedAmount) }
@@ -1186,7 +1203,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       };
       await this.commonapiService.postContractNotes(
         contractNotesParams,
-        contractNoteBody
+        contractNoteBody,
       );
       this.svc.dialogSvc
         .show(AcknowledgmentPopupComponent, ' ', {
@@ -1210,7 +1227,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your request. Please try again or contact UDC on ',
         '',
-        () => { }
+        () => {},
       );
       console.log('Error release error', error);
     }
@@ -1218,9 +1235,8 @@ export class FixedFloorPlanDrawdownRequestComponent
 
   async submitDrawdownRequestTask(params: AssetDrawdownRequestBodyTask) {
     try {
-      this.referenceNumber = await this.commonapiService.postTaskRequest(
-        params
-      );
+      this.referenceNumber =
+        await this.commonapiService.postTaskRequest(params);
       const taskId = this.referenceNumber?.taskId;
       this.subject = extractSubjectValue(this.referenceNumber?.subject);
       this.message =
@@ -1253,7 +1269,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your request. Please try again or contact UDC on ',
         '',
-        () => { }
+        () => {},
       );
       console.log('Error release error', error);
     }
@@ -1285,7 +1301,7 @@ export class FixedFloorPlanDrawdownRequestComponent
             documentId: 0,
             name: file.fileData.name.substring(
               0,
-              file.fileData.name.lastIndexOf('.')
+              file.fileData.name.lastIndexOf('.'),
             ),
             category: 'Other Correspondence',
             description: '',
@@ -1299,14 +1315,14 @@ export class FixedFloorPlanDrawdownRequestComponent
             reference: '',
             generatedDocs: [],
           };
-        })
+        }),
       );
 
       return documentData;
     } catch (error) {
       console.error(
         'Error converting files to DocumentUploadRequest format:',
-        error
+        error,
       );
       return [];
     }
@@ -1316,14 +1332,14 @@ export class FixedFloorPlanDrawdownRequestComponent
 
     try {
       const binaryFiles = await Promise.all(
-        files.map((file) => convertFileToBase64(file.fileData))
+        files.map((file) => convertFileToBase64(file.fileData)),
       );
       return files.map(
         (file, index): uploadedFiles => ({
           file: binaryFiles[index],
           fileName: file.fileData.name,
           fileType: file.type,
-        })
+        }),
       );
     } catch (error) {
       console.error('Error converting files to binary:', error);

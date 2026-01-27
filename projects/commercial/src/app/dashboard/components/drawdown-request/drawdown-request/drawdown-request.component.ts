@@ -14,7 +14,7 @@
 // @Component({
 //   selector: 'app-drawdown-request',
 //   templateUrl: './drawdown-request.component.html',
-//   styleUrls: ['./drawdown-request.component.scss'],
+//   styleUrl: './drawdown-request.component.scss',
 // })
 // export class DrawdownRequestComponent
 //   extends BaseDashboardClass

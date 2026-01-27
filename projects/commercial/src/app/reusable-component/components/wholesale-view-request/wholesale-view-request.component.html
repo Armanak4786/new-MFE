@@ -16,7 +16,7 @@
       </ng-container>
 
       <!-- Payment Request No. condition -->
-      <ng-container *ngIf="selectedType === 'Request No.'&& !['swap','productTransfer'].includes(selectedRequest)">
+      <ng-container *ngIf="selectedType === 'Request No.'&& (!['swap','productTransfer'].includes(selectedRequest) || ['purchaseDetails'].includes(selectedRequest))">
         <app-purchase-payment-view-request
           [purchaseDetails]="transferRequestDetails"
           [seletedRecoredData]="selectedRowData"

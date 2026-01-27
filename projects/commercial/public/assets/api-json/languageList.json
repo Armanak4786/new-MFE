@@ -1,0 +1,29 @@
+{
+    "data": [
+      {
+        "languageId": 9,
+        "languageDesc": "العربية(AE)",
+        "locale": "ar_AE",
+        "defaultLanguage": "N"
+      },
+      {
+        "languageId": 1,
+        "languageDesc": "English(US)",
+        "locale": "en_US",
+        "defaultLanguage": "Y"
+      },
+      {
+        "languageId": 3,
+        "languageDesc": "हिन्दी(IN)",
+        "locale": "hi_IN",
+        "defaultLanguage": "N"
+      },
+      {
+        "languageId": 12,
+        "languageDesc": "français(BE)",
+        "locale": "fr_BE",
+        "defaultLanguage": "N"
+      }
+    ]
+  }
+  

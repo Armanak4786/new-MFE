@@ -6,7 +6,7 @@ import { GenTableComponent, PrintService } from 'auro-ui';
   // standalone: true,
   // imports: [],
   templateUrl: './rental-schedule.component.html',
-  styleUrls: ['./rental-schedule.component.scss']
+  styleUrl: './rental-schedule.component.scss'
 })
 export class RentalScheduleComponent {
     @Input() rentalScheduleDataList;

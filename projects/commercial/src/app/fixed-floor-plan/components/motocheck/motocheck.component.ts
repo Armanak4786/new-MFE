@@ -5,7 +5,7 @@ import { CommonApiService } from '../../../services/common-api.service';
 @Component({
   selector: 'app-motocheck',
   templateUrl: './motocheck.component.html',
-  styleUrls: ['./motocheck.component.scss']
+  styleUrl: './motocheck.component.scss'
 })
 export class MotocheckComponent {
   registrationplate: string;

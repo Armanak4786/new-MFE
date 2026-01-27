@@ -1748,6 +1748,21 @@
      "residenceTypeRequired":"Residence Type is required",
      "unitNumberPattern":"Unit/Lot is in an incorrect format",
      "BuildingNamePatternErrorMsg":"Building Name is in an incorrect format",
-     "FloorNumberPatternErrorMsg":"Floor Number is in an incorrect format"
+     "FloorNumberPatternErrorMsg":"Floor Number is in an incorrect format",
+     "for_and_on_behalf_of": "for and on behalf of ",
+     "same_day_payout_message": "1.This is a Notice and Acknowledgement.\n2.We would like to purchase the future inventory, and accordingly we authorise UDC Finance to direct debit our nominated bank account with the Repayment Amount(s) on the day that the Inventory becomes active.\n3.We understand that if this request is sent after 1:00 PM or on a non-business day, any amounts immediately due will be direct debited on the next business day.\n4.We acknowledge that this request is binding.",
+     "product_transfer_message_demonstrator": "1. This is a Notice and Acknowledgement.\n2. This request is to transfer the Asset(s) described above to Demonstrator.\n3. We acknowledge that this request is binding.",
+     "fixed_floorplan_drawdown_request_your_request_has_been_submitted_to_udc_finance_for_processing_and_approval_request_number_is": "Fixed Floorplan Drawdown Request Your Request has been submitted to UDC Finance for processing and approval. Request Number is:",
+     "purchase_asset_legal_message_pre_submission": "1. This is a Notice and Acknowledgement.\n2. We would like to purchase this item of inventory,and accordingly we authorise UDC to direct debit our nominated bank account with the amount(s) as required.\n3. We acknowledge that if this request is sent after 1:00 PM or on a non-business day, any amounts immediately due will be direct debited on the next business day.\n4.We acknowledge that this request is binding.",
+     "we_would_like_to_purchase_this_item_of_inventory_and_accordingly_we_authorise": "2. We would like to purchase this item of inventory, and accordingly we authorise UDC to direct debit our nominated bank account with the amount(s) as required;",
+     "we_acknowledge_that_if_this_request_is_sent_after": "3. We acknowledge that if this request is sent after 1:00 PM or on a non-business day, any amounts immediately due will be direct debited on the next business day.",
+     "this_request_is_to_transfer_the_inventory_listed_above": "2. This request is to transfer the Inventory listed above from",
+     "supplier_name_is_in_an_incorrect_format": "Supplier Name is in an incorrect format.",
+     "floating_floorplan_repayment_your_request_has_been_submitted_successfully_request_number_is": "Floating Floorplan Repayment Request Your request has been submitted successfully. Request Number is:",
+     "approval_is_subject_to_the_terms_and_conditions_applicable_to_your_dealer_floorplan_facility_agreement_fixed_you_can_track_its_progress_in_your_request_history": "Approval is subject to the terms and conditions applicable to your Dealer Floorplan Facility Agreement - Fixed. You can track its progress in your Request History.",
+     "repayment_will_be_direct_debited_from_your_nominated_bank_account_on_the": "Repayment will be direct debited from your nominated bank account on the",
+     "floating_floorplan_repayment_request_request_number_is": "Floating Floorplan Repayment Request Request Number is:",
+     "thank_you_for_your_repayment_request_please_make_your_payment_using_the_details_provided_UDC_Bank_account": "Thank you for your Repayment Request. Please make your payment using the details provided.UDC Bank Account:",
+     "your_reference_number": "Your Reference Number:"
   }
 }

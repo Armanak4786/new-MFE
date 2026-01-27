@@ -6,7 +6,7 @@ import { CommonService } from 'auro-ui';
 @Component({
   selector: 'app-easylink-drawdown-request-submit',
   templateUrl: './easylink-drawdown-request-submit.component.html',
-  styleUrls: ['./easylink-drawdown-request-submit.component.scss']
+  styleUrl: './easylink-drawdown-request-submit.component.scss'
 })
 export class EasylinkDrawdownRequestSubmitComponent {
  constructor(public svc: CommonService,

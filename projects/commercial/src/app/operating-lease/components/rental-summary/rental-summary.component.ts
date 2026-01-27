@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
   //standalone: true,
   //imports: [],
   templateUrl: './rental-summary.component.html',
-  styleUrls: ['./rental-summary.component.scss'],
+  styleUrl: './rental-summary.component.scss',
 })
 export class RentalSummaryComponent {
   @Input() rentalSummaryDataList;

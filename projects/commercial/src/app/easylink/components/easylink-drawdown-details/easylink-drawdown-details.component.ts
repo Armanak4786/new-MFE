@@ -6,7 +6,7 @@ import { BaseEasylinkClass } from '../../base-easylink.class';
 @Component({
   selector: 'app-easylink-drawdown-details',
   templateUrl: './easylink-drawdown-details.component.html',
-  styleUrls: ['./easylink-drawdown-details.component.scss'],
+  styleUrl: './easylink-drawdown-details.component.scss',
 })
 export class EasylinkDrawdownDetailsComponent extends BaseEasylinkClass {
   override formConfig: GenericFormConfig = {

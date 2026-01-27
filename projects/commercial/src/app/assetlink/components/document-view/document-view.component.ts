@@ -8,7 +8,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
   //standalone: true,
   //imports: [],
   templateUrl: './document-view.component.html',
-  styleUrls: ['./document-view.component.scss'],
+ styleUrls: ['./document-view.component.scss'],
 })
 export class DocumentViewComponent {
   displayDoc: string;

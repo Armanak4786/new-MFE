@@ -13,7 +13,7 @@ import { CancelPopupComponent } from '../../../reusable-component/components/can
 @Component({
   selector: 'app-non-facility-loan-request',
   templateUrl: './non-facility-loan-request.component.html',
-  styleUrls: ['./non-facility-loan-request.component.scss'],
+  styleUrl: './non-facility-loan-request.component.scss',
 })
 export class NonFacilityLoanRequestComponent extends BaseNonFacilityClass {
   searchType: any = '';

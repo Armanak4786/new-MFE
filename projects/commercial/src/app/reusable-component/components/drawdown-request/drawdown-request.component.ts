@@ -18,11 +18,13 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { BaseAssetlinkService } from '../../../assetlink/services/base-assetlink.service';
 import { DrawdownServiceService } from '../../../dashboard/services/drawdown-service.service';
+
 import { debounceTime, merge, of, takeUntil } from 'rxjs';
 import {
   DrawdownRequestBody,
   uploadedFiles,
 } from '../../../utils/common-interface';
+import { RequestAcknowledgmentComponent } from '../../../assetlink/components/request-acknowledgment/request-acknowledgment.component';
 import { CommonApiService } from '../../../services/common-api.service';
 import {
   convertFileToBase64,
@@ -44,7 +46,8 @@ import { DrawdownService } from '../../../drawdown.service';
 })
 export class DrawdownRequestComponent
   extends BaseAssetlinkClass
-  implements OnInit {
+  implements OnInit
+{
   // facilityType;
   partyId: any;
   facilityTypeOptionList: any[] = [];
@@ -240,89 +243,89 @@ export class DrawdownRequestComponent
 
   loadContractsByFacility(facility: string, facilityType: string) {
     // this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
-    const financialList = JSON.parse(sessionStorage.getItem('financialSummaryData') || '[]');
-    const facilityMap = {
-      [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
-      [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
-      default: financialList?.assetLinkDetails ?? [],
-    };
+    const financialList=JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+      const facilityMap = {
+        [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
+        [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
+        default: financialList?.assetLinkDetails ?? [],
+      };
 
-    const contracts = facilityMap[facilityType] || facilityMap.default;
+      const contracts = facilityMap[facilityType] || facilityMap.default;
 
-    const filteredContracts = contracts.filter(
-      (item) =>
-        item.facilityType === facility &&
-        item.contractId !== 0 &&
-        item.facilityName?.trim()
-    );
+      const filteredContracts = contracts.filter(
+        (item) =>
+          item.facilityType === facility &&
+          item.contractId !== 0 &&
+          item.facilityName?.trim()
+      );
 
-    this.facilityWiseContractsList = filteredContracts.map((contract) => ({
-      label: String(contract.contractId),
-      value: contract.contractId,
-    }));
+      this.facilityWiseContractsList = filteredContracts.map((contract) => ({
+        label: String(contract.contractId),
+        value: contract.contractId,
+      }));
 
-    if (
-      facilityType === FacilityType.Easylink &&
-      facility === FacilityType.Current_Account
-    ) {
-      if (this.facilityWiseContractsList.length) {
-        this.mainForm?.updateList('loan', this.facilityWiseContractsList);
-        this.mainForm?.form.controls['loan']?.setValue(
-          this.facilityWiseContractsList[0].value
-        );
+      if (
+        facilityType === FacilityType.Easylink &&
+        facility === FacilityType.Current_Account
+      ) {
+        if (this.facilityWiseContractsList.length) {
+          this.mainForm?.updateList('loan', this.facilityWiseContractsList);
+          this.mainForm?.form.controls['loan']?.setValue(
+            this.facilityWiseContractsList[0].value
+          );
+        } else {
+          this.mainForm?.updateList('loan', []);
+          this.mainForm?.form.controls['loan']?.setValue(null);
+        }
+      } else if (facilityType === FacilityType.Easylink) {
+        this.mainForm?.updateList('loan', [
+          { label: 'New Loan', value: 'new-loan' },
+        ]);
+        this.mainForm?.form.controls['loan']?.setValue('new-loan');
+      } else if (facility === FacilityType.AssetLink_N_type) {
+        const updatedList = [
+          ...this.facilityWiseContractsList,
+          { label: 'New Loan', value: 'new-loan' },
+        ];
+        this.mainForm?.updateList('loan', updatedList);
+        this.mainForm?.form.controls['loan']?.setValue('new-loan');
       } else {
-        this.mainForm?.updateList('loan', []);
-        this.mainForm?.form.controls['loan']?.setValue(null);
+        this.mainForm?.updateList('loan', this.facilityWiseContractsList);
+        if (this.facilityWiseContractsList.length) {
+          this.mainForm?.form.controls['loan']?.setValue(
+            this.facilityWiseContractsList[0].value
+          );
+        }
       }
-    } else if (facilityType === FacilityType.Easylink) {
-      this.mainForm?.updateList('loan', [
-        { label: 'New Loan', value: 'new-loan' },
-      ]);
-      this.mainForm?.form.controls['loan']?.setValue('new-loan');
-    } else if (facility === FacilityType.AssetLink_N_type) {
-      const updatedList = [
-        ...this.facilityWiseContractsList,
-        { label: 'New Loan', value: 'new-loan' },
-      ];
-      this.mainForm?.updateList('loan', updatedList);
-      this.mainForm?.form.controls['loan']?.setValue('new-loan');
-    } else {
-      this.mainForm?.updateList('loan', this.facilityWiseContractsList);
-      if (this.facilityWiseContractsList.length) {
-        this.mainForm?.form.controls['loan']?.setValue(
-          this.facilityWiseContractsList[0].value
-        );
-      }
-    }
     // });
   }
 
   loadFacilityContractsByType(facilityType: string) {
     // this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
-    const financialList = JSON.parse(sessionStorage.getItem('financialSummaryData') || '[]');
-    const facilityMap = {
-      [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
-      [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
-      default: financialList?.assetLinkDetails ?? [],
-    };
+    const financialList=JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+      const facilityMap = {
+        [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
+        [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
+        default: financialList?.assetLinkDetails ?? [],
+      };
 
-    const facilityMapDataList =
-      facilityMap[facilityType] || facilityMap.default;
+      const facilityMapDataList =
+        facilityMap[facilityType] || facilityMap.default;
 
-    const details = facilityMapDataList.filter(
-      (item) => item.facilityName?.trim().length > 0
-    );
+      const details = facilityMapDataList.filter(
+        (item) => item.facilityName?.trim().length > 0
+      );
 
-    const uniqueFacilityTypes = Array.from(
-      new Set(details.map((item) => item.facilityType))
-    );
+      const uniqueFacilityTypes = Array.from(
+        new Set(details.map((item) => item.facilityType))
+      );
 
-    this.facilityOptions = uniqueFacilityTypes.map((type) => ({
-      label: type,
-      value: type,
-    }));
+      this.facilityOptions = uniqueFacilityTypes.map((type) => ({
+        label: type,
+        value: type,
+      }));
 
-    this.mainForm?.updateList('facility', this.facilityOptions);
+      this.mainForm?.updateList('facility', this.facilityOptions);
     // });
   }
 

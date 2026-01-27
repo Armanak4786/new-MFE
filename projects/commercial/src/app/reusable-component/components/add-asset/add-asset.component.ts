@@ -23,7 +23,7 @@ import { AcknowledgmentPopupComponent } from '../acknowledgment-popup/acknowledg
 @Component({
   selector: 'app-add-asset',
   templateUrl: './add-asset.component.html',
-  styleUrls: ['./add-asset.component.scss'],
+  styleUrl: './add-asset.component.scss',
 })
 export class AddAssetComponent implements OnInit {
   @Input() facilityType;
@@ -49,7 +49,7 @@ export class AddAssetComponent implements OnInit {
     public baseSvc: BaseCommercialService,
     public dynamicDialogConfig: DynamicDialogConfig,
     public commonSetterGetterSvc: CommonSetterGetterService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.optionData = optionDataForAddAsset;
@@ -200,7 +200,7 @@ export class AddAssetComponent implements OnInit {
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your Request. Please try again or contact UDC on 0800 500 832',
         '',
-        () => { }
+        () => {}
       );
     }
   }

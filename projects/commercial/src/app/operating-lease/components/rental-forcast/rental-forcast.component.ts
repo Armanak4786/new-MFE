@@ -19,7 +19,7 @@ import { PaymentForcastParams } from '../../../utils/common-interface';
 @Component({
   selector: 'app-rental-forcast',
   templateUrl: './rental-forcast.component.html',
-  styleUrls: ['./rental-forcast.component.scss'],
+  styleUrl: './rental-forcast.component.scss',
 })
 export class RentalForcastComponent {
   @Input() facilityType;

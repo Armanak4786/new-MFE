@@ -10,7 +10,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-asset-link',
   templateUrl: './asset-link.component.html',
-  styleUrls: ['./asset-link.component.scss'],
+  styleUrl: './asset-link.component.scss',
 })
 export class AssetLinkComponent {
   @Input() financialSummaryData;
@@ -32,6 +32,16 @@ export class AssetLinkComponent {
         this.financialSummaryData?.assetLinkDetails,
         FacilityType.Assetlink_Group
       );
+      this.addIndexToDataList();
+    }
+  }
+
+  addIndexToDataList() {
+    if (this.assetlinkDataList && Array.isArray(this.assetlinkDataList)) {
+      this.assetlinkDataList = this.assetlinkDataList.map((item, index) => ({
+        ...item,
+        __index: index
+      }));
     }
   }
 

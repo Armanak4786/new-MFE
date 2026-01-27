@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-additional-info',
   templateUrl: './additional-info.component.html',
-  styleUrls: ['./additional-info.component.scss']
+  styleUrl: './additional-info.component.scss'
 })
 export class AdditionalInfoComponent {
 @Input() columns = 125;

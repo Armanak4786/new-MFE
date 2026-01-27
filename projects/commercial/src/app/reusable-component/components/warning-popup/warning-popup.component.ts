@@ -32,7 +32,7 @@ export class WarningPopupComponent {
     this.ref.close();
     if (this.facilityRoute) {
       setTimeout(() => {
-        this.router.navigate([`commercial/${this.facilityRoute}`]);
+        this.router.navigate([`${this.facilityRoute}`]);
       }, 0);
     }
   }

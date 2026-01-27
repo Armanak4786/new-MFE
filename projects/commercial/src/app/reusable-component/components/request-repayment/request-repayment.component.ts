@@ -40,16 +40,7 @@ import {
 import { CancelPopupComponent } from '../cancel-popup/cancel-popup.component';
 import { UploadDocsComponent } from '../upload-docs/upload-docs.component';
 import { AcknowledgmentPopupComponent } from '../acknowledgment-popup/acknowledgment-popup.component';
-// Keys imported inline - previously from 'src/assets/api-json/en_US.json'
-const keys = {
-  labelData: {
-    floating_floorplan_repayment_your_request_has_been_submitted_successfully_request_number_is: 'Floating Floorplan Repayment: Your request has been submitted successfully. Request Number is: ',
-    repayment_will_be_direct_debited_from_your_nominated_bank_account_on_the: 'Repayment will be direct debited from your nominated bank account on the ',
-    floating_floorplan_repayment_request_request_number_is: 'Floating Floorplan Repayment Request: Request Number is: ',
-    thank_you_for_your_repayment_request_please_make_your_payment_using_the_details_provided_UDC_Bank_account: ' Thank you for your Repayment Request. Please make your payment using the details provided. UDC Bank Account: ',
-    your_reference_number: ' Your Reference Number: '
-  }
-};
+import keys from '../../../../../../../public/assets/api-json/en_US.json';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -276,8 +267,8 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
       this.mainForm?.updateProps('facilityType', { mode: 'edit' });
     }
     if (this.selectedFacility != 'Floating Floorplan') {
-      this.loadFacilityContractsByType(this.selectedFacility);
-    }
+            this.loadFacilityContractsByType(this.selectedFacility);
+    } 
     // if (this.selectedSubFacility === 'Current Account') {
     //   // this.mainForm.updateList('loan', this.facilityWiseContractsList);
     // }
@@ -687,7 +678,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         .onClose.subscribe((data: any) => {
           this.ref.close();
           this.router.navigate([
-            `commercial/${this.selectedFacility
+            `${this.selectedFacility
               .toLowerCase()
               .replace(/\s+/g, '')}`,
           ]);
@@ -696,7 +687,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your request. Please try again or contact UDC on ',
         '',
-        () => { }
+        () => {}
       );
       console.log('Error release error', error);
     }
@@ -742,7 +733,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
           .onClose.subscribe((data: any) => {
             this.ref.close();
             this.router.navigate([
-              `commercial/${this.selectedFacility
+              `${this.selectedFacility
                 .toLowerCase()
                 .replace(/\s+/g, '')}`,
             ]);
@@ -763,7 +754,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
           .onClose.subscribe((data: any) => {
             this.ref.close();
             this.router.navigate([
-              `commercial/${this.selectedFacility
+              `${this.selectedFacility
                 .toLowerCase()
                 .replace(/\s+/g, '')}`,
             ]);
@@ -773,7 +764,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your request. Please try again or contact UDC on ',
         '',
-        () => { }
+        () => {}
       );
       console.log('Error release error', error);
     }
@@ -806,7 +797,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         if (data?.data == 'cancel') {
           this.ref.close();
           this.router.navigate([
-            `commercial/${this.selectedFacility
+            `${this.selectedFacility
               .toLowerCase()
               .replace(/\s+/g, '')}`,
           ]);

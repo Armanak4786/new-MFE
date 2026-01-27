@@ -1,0 +1,7 @@
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-introducer {
+  pointer-events: none !important;
+}

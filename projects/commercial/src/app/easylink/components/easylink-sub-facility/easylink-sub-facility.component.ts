@@ -29,11 +29,12 @@ import { FacilityType } from '../../../utils/common-enum';
 @Component({
   selector: 'app-easylink-sub-facility',
   templateUrl: './easylink-sub-facility.component.html',
-  styleUrls: ['./easylink-sub-facility.component.scss'],
+  styleUrl: './easylink-sub-facility.component.scss',
 })
 export class EasylinkSubFacilityComponent {
   @Input() selectedSubFacility;
-  @Input() facilityType;
+  // @Input() facilityType;
+  facilityType=FacilityType.Easylink;
   currentComponent: string | null = null;
   @ViewChild('PaymentSummaryAccountForcast')
   PaymentSummaryAccountForcast: PaymentSummaryAccountForcastComponent;
@@ -60,37 +61,87 @@ export class EasylinkSubFacilityComponent {
     public commonSetterGetterSvc: CommonSetterGetterService
   ) {}
 
-  ngOnInit() {
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'Loans';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
-    const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
-    if (
-      roleBased &&
-      roleBased.functions &&
-      typeof roleBased.functions === 'object'
-    ) {
-      this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
-        fn.trim()
-      );
-    } else {
-      this.accessGranted = [];
-    }
-    const partyData = sessionStorage.getItem('currentParty');
-    const party = partyData ? JSON.parse(partyData) : null;
+  // ngOnInit() {
+  //   const current = sessionStorage.getItem('currentComponent');
+  //   this.currentComponent = current ? current : 'Loans';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
+  //   const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+  //   if (
+  //     roleBased &&
+  //     roleBased.functions &&
+  //     typeof roleBased.functions === 'object'
+  //   ) {
+  //     this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
+  //       fn.trim()
+  //     );
+  //   } else {
+  //     this.accessGranted = [];
+  //   }
+  //   const partyData = sessionStorage.getItem('currentParty');
+  //   const party = partyData ? JSON.parse(partyData) : null;
 
-    this.partyId = party?.id;
+  //   this.partyId = party?.id;
+  //   this.easylinkComponentLoaderService.component$.subscribe(
+  //     (componentName) => {
+  //       this.currentComponent = componentName;
+  //     }
+  //   );
+  //   const params = {
+  //     partyId: this.partyId,
+  //     subFacilityId: this.selectedSubFacility?.id,
+  //   };
+  //   this.fetchLoans(params);
+  // }
+  ngOnInit() {
+   const validTabs = ['Loans', 'FacilityAssets', 'requestHistory'];
+   const storedComponent = sessionStorage.getItem('easylinkSubfacilityCurrentComponent');
+   this.currentComponent = storedComponent || 'Loans';
+   sessionStorage.setItem('easylinkSubfacilityCurrentComponent',this.currentComponent);
+
     this.easylinkComponentLoaderService.component$.subscribe(
       (componentName) => {
+        if (validTabs.includes(componentName)) {
         this.currentComponent = componentName;
+        sessionStorage.setItem('easylinkSubfacilityCurrentComponent',componentName);
       }
+     }
     );
+
+   const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+   this.accessGranted =
+     roleBased?.functions && typeof roleBased.functions === 'object'
+       ? Object.keys(roleBased.functions).map((fn) => fn.trim())
+       : [];
+   const storedEasylink = JSON.parse(
+     sessionStorage.getItem('easylinkDataList') || '[]'
+   );
+   const party = JSON.parse(sessionStorage.getItem('currentParty') || '{}');
+   this.partyId = party?.id;
+   this.selectedSubFacility = sessionStorage.getItem('selectedEasylinkSubFacility')
+      ? JSON.parse(sessionStorage.getItem('selectedEasylinkSubFacility'))
+      : storedEasylink[0];
+
+   if (this.currentComponent === 'requestHistory') {
+    this.fetchRequestHistory({ partyNo: this.partyId });
+   }
+   if (this.currentComponent === 'Loans') {
     const params = {
       partyId: this.partyId,
+      facilityType: this.facilityType,
       subFacilityId: this.selectedSubFacility?.id,
     };
     this.fetchLoans(params);
+   }
+   if (this.currentComponent === 'FacilityAssets') {
+    const params = {
+      partyId: this.partyId,
+      facilityType: this.facilityType,
+      subFacilityId: this.selectedSubFacility?.id,
+    };
+    this.fetchFacilityAssets(params); 
+   }
   }
+
 
   hasAccess(key) {
     if (!this.accessGranted || !Array.isArray(this.accessGranted)) {

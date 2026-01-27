@@ -11,7 +11,7 @@ import { GenerateCustomerStatementParams } from '../../../utils/common-enum';
   //standalone: true,
   //imports: [],
   templateUrl: './loan-action.component.html',
-  styleUrls: ['./loan-action.component.scss'],
+  styleUrl: './loan-action.component.scss',
 })
 export class LoanActionComponent {
   facilityType: boolean;
@@ -73,9 +73,9 @@ export class LoanActionComponent {
 
   showRequestQuotePopup() {
     if (this.router.url.includes('/easylink')) {
-      this.router.navigate(['commercial/easylink/requestQuote']);
+      this.router.navigate(['easylink/requestQuote']);
     } else if (this.router.url.includes('/assetlink')) {
-      this.router.navigate(['commercial/assetlink/requestQuote']);
+      this.router.navigate(['assetlink/requestQuote']);
     }
   }
 }

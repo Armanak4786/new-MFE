@@ -4,7 +4,6 @@
       <div class="p-1" *ngIf="hasAccess('perform_requests')">
         <gen-button
           [btnType]="'non-bg-btn'"
-          [btnColor]="'danger'"
           [btnLabel]="'drawdown_request'"
           class="text-xs"
           (onClick)="showDialogDrawdownRequest()"
@@ -13,7 +12,6 @@
       <div class="p-1" *ngIf="hasAccess('perform_requests')">
         <gen-button
           [btnType]="'non-bg-btn'"
-          [btnColor]="'danger'"
           [btnLabel]="'repayment_request'"
           (click)="showDialogRepaymentRequest()"
           class="text-xs"
@@ -22,7 +20,6 @@
       <div class="p-1">
         <gen-button
           [btnType]="'non-bg-btn'"
-          [btnColor]="'danger'"
           [btnLabel]="'request_history'"
           (click)="requestHistory()"
           class="text-xs"
@@ -32,13 +29,13 @@
   </div>
 </div>
 
-<div class="grid mt-2" *ngIf="currentComponent !== 'requestHistory'">
+<div class="grid mt-2">
   <div class="col-12 sm:col-12 md:col-8">
     <div class="flex justify-content-start flex-wrap">
       <div class="p-2">
         <gen-button
           [btnType]="
-            currentComponent === 'PaymentForecast' ? 'bg-btn' : 'border-btn'
+            currentComponent === 'PaymentForcast' ? 'bg-btn' : 'border-btn'
           "
           [btnLabel]="'payment_forcast'"
           class="text-xs"
@@ -50,7 +47,7 @@
           [btnType]="
             currentComponent === 'TransactionFlow' ? 'bg-btn' : 'border-btn'
           "
-          [btnLabel]="'transaction_flow'"
+          [btnLabel]="'statements'"
           class="text-xs"
           (onClick)="showTransactionFlow()"
         ></gen-button>

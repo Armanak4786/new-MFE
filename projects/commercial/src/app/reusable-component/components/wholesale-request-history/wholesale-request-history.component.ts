@@ -34,15 +34,14 @@ import {
 import { threeDotIcon } from '../../../utils/common-header-definition';
 import { fixedDrawdownColumnDefs } from '../../../fixed-floor-plan/utils/fixed-floor-plan-header.utils';
 import { DashboardSetterGetterService } from '../../../dashboard/services/dashboard-setter-getter.service';
-// Config values - previously imported from config.json
-const config = { clientId: 1 };
+import config from '../../../../../public/assets/config.json';
 
 @Component({
   selector: 'app-wholesale-request-history',
   //standalone: true,
   //imports: [],
   templateUrl: './wholesale-request-history.component.html',
-  styleUrls: ['./wholesale-request-history.component.scss'],
+  styleUrl: './wholesale-request-history.component.scss',
 })
 export class WholesaleRequestHistoryComponent {
   [x: string]: any;
@@ -81,7 +80,7 @@ export class WholesaleRequestHistoryComponent {
     public translateService: TranslateService,
     public commonSetterGetterSvc: CommonSetterGetterService,
     public dashboardSetterGetterSvc: DashboardSetterGetterService
-  ) { }
+  ) {}
 
   async ngOnInit() {
     // this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
@@ -117,21 +116,21 @@ export class WholesaleRequestHistoryComponent {
 
   loadFacilityContractsByType(facilityType: string) {
     // this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
-    const financialList = JSON.parse(sessionStorage.getItem('financialSummaryData') || '[]');
-    const facilityMap = {
-      [FacilityType.FloatingFloorPlan_Group]:
-        financialList?.floatingFloorplanDetails ?? [],
-    };
+     const financialList=JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+      const facilityMap = {
+        [FacilityType.FloatingFloorPlan_Group]:
+          financialList?.floatingFloorplanDetails ?? [],
+      };
 
-    const details = facilityMap[facilityType];
-    if (facilityType === FacilityType.FloatingFloorPlan_Group) {
-      this.selectedSubFacilityList = details
-        .filter((item) => item.contractId === 0)
-        .map((item) => ({
-          label: item.facilityName,
-          value: item.facilityName,
-        }));
-    }
+      const details = facilityMap[facilityType];
+      if (facilityType === FacilityType.FloatingFloorPlan_Group) {
+        this.selectedSubFacilityList = details
+          .filter((item) => item.contractId === 0)
+          .map((item) => ({
+            label: item.facilityName,
+            value: item.facilityName,
+          }));
+      }
     // });
   }
 
@@ -218,15 +217,19 @@ export class WholesaleRequestHistoryComponent {
             facilityType: this.facilityType,
             type: event.colName,
             // selectedType: this.selectedType,
-            selectedRequest: this.selectedRequest,
+            selectedRequest:this.selectedRequest,
             selectedType:
               this.selectedType || event.rowData?.type?.toLowerCase(),
             selectedRowData: rowDataToSet,
             selectedPaymentOption: this.selectedPaymentOption,
           },
           width: '78vw',
+          height: '30vw',
+          contentStyle: { overflow: 'auto' },
+          styleClass: 'dialogue-scroll',
+          position: 'center',
         })
-        .onClose.subscribe((data: any) => { });
+        .onClose.subscribe((data: any) => {});
     } else if (event.colName === 'idRef') {
       this.commonSvc.router.navigateByUrl(
         `/bailments/asset-details/${event.rowData.idRef}`
@@ -334,7 +337,7 @@ export class WholesaleRequestHistoryComponent {
       let params;
       params = {
         inboxViewType: WholesaleRequestHistoryType.PURCHASE_REQUEST_INBOX,
-        clientId: config.clientId,
+        clientId: config.environment,
       };
       this.fetchSwapRequestList(params, event.value);
     } else if (
@@ -507,22 +510,22 @@ export class WholesaleRequestHistoryComponent {
 
   loadContractsBySubFacility(facility: string, facilityType: string) {
     // this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
-    const financialList = JSON.parse(sessionStorage.getItem('financialSummaryData') || '[]');
-    const facilityMap = {
-      [FacilityType.FloatingFloorPlan_Group]:
-        financialList?.floatingFloorplanDetails ?? [],
-    };
-    const contracts = facilityMap[facilityType];
-    const filteredContracts = contracts.filter(
-      (item) =>
-        item.facilityName === facility &&
-        item.contractId !== 0 &&
-        item.facilityType?.trim()
-    );
+     const financialList=JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+      const facilityMap = {
+        [FacilityType.FloatingFloorPlan_Group]:
+          financialList?.floatingFloorplanDetails ?? [],
+      };
+      const contracts = facilityMap[facilityType];
+      const filteredContracts = contracts.filter(
+        (item) =>
+          item.facilityName === facility &&
+          item.contractId !== 0 &&
+          item.facilityType?.trim()
+      );
 
-    this.facilityContractId = filteredContracts.map((contract) => ({
-      value: contract.contractId,
-    }));
+      this.facilityContractId = filteredContracts.map((contract) => ({
+        value: contract.contractId,
+      }));
     // });
   }
 

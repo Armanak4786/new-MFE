@@ -38,7 +38,7 @@ const excludeValues: any = ['OperatingLease', 'BuyBack Facility','Introducer Tra
 @Component({
   selector: 'app-request-history',
   templateUrl: './request-history.component.html',
-  styleUrls: ['./request-history.component.scss'],
+  styleUrl: './request-history.component.scss',
 })
 export class RequestHistoryComponent {
   @ViewChild('dt')

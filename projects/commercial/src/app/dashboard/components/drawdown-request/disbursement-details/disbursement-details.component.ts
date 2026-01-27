@@ -5,7 +5,7 @@ import { GenericFormConfig } from 'auro-ui';
 @Component({
   selector: 'app-disbursement-details',
   templateUrl: './disbursement-details.component.html',
-  styleUrls: ['./disbursement-details.component.scss']
+  styleUrl: './disbursement-details.component.scss'
 })
 export class DisbursementDetailsComponent {
   constructor(){

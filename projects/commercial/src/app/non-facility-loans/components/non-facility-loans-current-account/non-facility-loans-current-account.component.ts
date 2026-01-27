@@ -30,7 +30,7 @@ import {
 @Component({
   selector: 'app-non-facility-loans-current-account',
   templateUrl: './non-facility-loans-current-account.component.html',
-  styleUrls: ['./non-facility-loans-current-account.component.scss'],
+  styleUrl: './non-facility-loans-current-account.component.scss',
 })
 export class NonFacilityLoansCurrentAccountComponent {
   @Input() facilityType;

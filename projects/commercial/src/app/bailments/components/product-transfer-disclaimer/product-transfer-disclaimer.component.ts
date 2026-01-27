@@ -13,6 +13,7 @@ import {
 import { WarningPopupComponent } from '../../../reusable-component/components/warning-popup/warning-popup.component';
 import { jwtDecode } from 'jwt-decode';
 import { CancelPopupComponent } from '../../../reusable-component/components/cancel-popup/cancel-popup.component';
+import { clearSession } from '../../../utils/common-utils';
 
 @Component({
   selector: 'app-product-transfer-disclaimer',
@@ -43,18 +44,28 @@ export class ProductTransferDisclaimerComponent {
   ) {}
 
   ngOnInit() {
-    // this.productTransferDisclaimerDataList = this.bailmentComponentLoaderService.getData();
     this.productTransferDisclaimerDataList=JSON.parse(sessionStorage.getItem('filteredAssetsDataList') || '[]');
     console.log(
       'this.productTransferDisclaimerDataList',
       this.productTransferDisclaimerDataList
     );
-    console.log('wertyu', this.productTransferDisclaimerDataList.length);
-    // if (!this.productTransferDisclaimerDataList.length) {
-    //   this.svc.router.navigateByUrl('commercial');
-    // }
-    this.receivedData = history.state.params;
-    console.log('this.receivedData', this.receivedData);
+    console.log('productTransferDisclaimerDataList', this.productTransferDisclaimerDataList.length);    
+    const storedReceivedData = sessionStorage.getItem('productTransferReceivedData');
+    if (storedReceivedData) {
+      this.receivedData = JSON.parse(storedReceivedData);
+      console.log('this.receivedData (from sessionStorage)', this.receivedData);
+    } else {
+      this.receivedData = history?.state?.params;
+      console.log('this.receivedData (from router state)', this.receivedData);
+      if (this.receivedData) {
+        sessionStorage.setItem('productTransferReceivedData', JSON.stringify(this.receivedData));
+      }
+    }    
+    if (!this.receivedData || !this.productTransferDisclaimerDataList.length) {
+      this.svc.router.navigateByUrl('commercial/bailment');
+      return;
+    }
+    
     this.searchedBy = this.receivedData?.searchedBy;
     if (this.receivedData.exculdeDealTypeId == 'DEMO') {
       this.productTransferTo = 'Demonstrator (DEMO)';
@@ -110,6 +121,7 @@ export class ProductTransferDisclaimerComponent {
   }
   deleteAssets(data, Index) {
     this.productTransferDisclaimerDataList.splice(Index, 1);
+    sessionStorage.setItem('filteredAssetsDataList', JSON.stringify(this.productTransferDisclaimerDataList));
   }
 
   onCancel() {
@@ -124,8 +136,8 @@ export class ProductTransferDisclaimerComponent {
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-          // this.ref.close();
-          this.router.navigate(['commercial/bailments']);
+          clearSession(['productTransferReceivedData', 'filteredAssetsDataList']);
+          this.router.navigate(['bailment']);
         }
       });
   }
@@ -160,7 +172,7 @@ export class ProductTransferDisclaimerComponent {
         affectedAssets: sanitizedAffectedAssets,
       },
     };
-    this.router.navigate(['commercial/bailments']);
+    this.router.navigate(['bailment']);
     try {
       // const ServicingRequestResponse =
       //   await this.commonApiService.newAssetServicingRequest(
@@ -197,7 +209,9 @@ export class ProductTransferDisclaimerComponent {
         });
         console.error('Product Transfer request error:', errorMsg);
         return;
-      }
+      }      
+      clearSession(['productTransferReceivedData', 'filteredAssetsDataList']);
+      
       // if (RequestNumber)
       // this.router.navigate(['commercial/bailments']);
       this.filteredProductTransferResponseList =
@@ -233,6 +247,11 @@ export class ProductTransferDisclaimerComponent {
       console.log('Error release error', error);
     }
   }
+  
+  ngOnDestroy() {
+    clearSession(['productTransferReceivedData', 'filteredAssetsDataList']);
+  }
+  
   decodeToken(token: string): any {
     try {
       return jwtDecode(token);

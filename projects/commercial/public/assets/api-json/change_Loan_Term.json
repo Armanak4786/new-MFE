@@ -1,0 +1,16 @@
+{
+    "data": {
+		"changeLoanTerm":
+		{
+        "numberOfInstallments": "10",
+        "additionalInstallments":"1",
+        "effectiveDate":"2024-01-01",
+        "scheduled":"Monthly",
+        "maturityDate":"10 Dec 2029",
+        "note":"",
+        "preferredContactMethod":"simple text",
+        "preferredContactTime":"ev"
+		}
+		
+		}
+}

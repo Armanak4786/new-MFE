@@ -1,0 +1,88 @@
+{
+  "releaseVersion": "19.0.0",
+  "releaseDate": "2026-01-23",
+  "description": "Stability improvements, Peformance Changes and UI enhancements.",
+  "angular": {
+    "version": "20251017.2.4840-Commit 2e8db9e",
+    "Release": "Release-139",
+    "Portal": "CSS/WSS"
+  },
+  "microservices": {
+    "CSSContractService": {
+      "version": "20251007.2.4833-Commit 07cffa6",
+      "Release": "Release-95",
+      "releaseType": "PARTIAL"
+    },
+    "CSSCustomerService": {
+      "version": "20251007.2.4833-Commit 020ad10",
+      "Release": "Release-91",
+      "releaseType": "FULL"
+    },
+    "CSSProductService": {
+      "version": "20251125.2.4833-Commit f167aed",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSDocumentService": {
+      "version": "20251125.2.4833-Commit d73e914",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSTaskService": {
+      "version": "20251125.2.4833-Commit 447ebbb",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSAssetSummaryService": {
+      "version": "20251125.2.4833-Commit c1e1573",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSServicingRequestService": {
+      "version": "20251125.2.4833-Commit 44a9f9c",
+      "Release": "Release-93",
+      "releaseType": "FULL"
+    },
+    "CSSPaymentService": {
+      "version": "20251125.2.4833-Commit 6130772",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSLookUpService": {
+      "version": "20251125.2.4833-Commit 9682784",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSMotocheckService": {
+      "version": "20251125.2.4833-Commit ded350c",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSNoteService": {
+      "version": "20251125.2.4833-Commit 2628efd",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSUsersService": {
+      "version": "20251125.2.4833-Commit 9830b96",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSWorkflowService": {
+      "version": "20251125.2.4833-Commit 029ae87",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    },
+    "CSSRolePermissionService": {
+      "version": "20251125.2.4833-Commit fd67edb",
+      "Release": "Release-93",
+      "releaseType": "PARTIAL"
+    }
+  },
+  "Portal.GatewayAPI": {
+    "version": "20251125.2.4833-Commit d29a0fd",
+    "Release": "Release-93",
+    "releaseType": "PARTIAL"
+  },
+  "Dbschema": "3.2.0"
+}

@@ -1,0 +1,18 @@
+{
+    "data": {
+        "dialogAfv": [
+            {
+                "value": "1",
+                "label": "Please let us know what end of term option you would like to choose and submit your request."
+            },
+            {
+                "value": "2",
+                "label": "Your request may be subject to credit approval if you wish to upgrade or retain and refinance the vehicle with us, and we may request further information from you to assess your request."
+            },
+            {
+                "value": "3",
+                "label": "If further information is required, we will contact you."
+            }
+        ]
+    }
+}

@@ -96,18 +96,129 @@ export class ViewAssetlinkFacilityComponent {
     public translateService: TranslateService
   ) {}
 
+  // ngOnInit() {
+  // this.tableId = 'PaymentSummaryAccountForcast';
+  
+  // // Check if there's a stored current component from a previous session
+  // const storedComponent = sessionStorage.getItem('currentComponent');
+  
+  // if (storedComponent) {
+  //   // If component exists in session, restore it (for page refresh)
+  //   this.currentComponent = storedComponent;
+  // } else {
+  //   // First time load - default to PaymentForecast
+  //   this.currentComponent = 'PaymentForecast';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
+  // }
+  
+  // // Handle special navigation flag (if navigating from another page to Loans)
+  // if (sessionStorage.getItem('navigateToLoan')) {
+  //   this.currentComponent = 'Loans';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
+  //   sessionStorage.removeItem('navigateToLoan');
+  // }
+  
+  // const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+  // if (
+  //   roleBased &&
+  //   roleBased.functions &&
+  //   typeof roleBased.functions === 'object'
+  // ) {
+  //   this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
+  //     fn.trim()
+  //   );
+  // } else {
+  //   this.accessGranted = [];
+  // }
+  
+  // this.commonSetterGetterSvc.navigateToLoan = false;
+  // this.componentLoaderService.component$.subscribe((componentName) => {
+  //   this.currentComponent = componentName;
+  //   // Store component changes in session for refresh persistence
+  //   sessionStorage.setItem('currentComponent', componentName);
+  // });
+  
+  // const partyData = sessionStorage.getItem('currentParty');
+  // const partyId = JSON.parse(partyData);
+  // this.partyId = partyId?.id;
+  // const stored = sessionStorage.getItem('selectedAssetlinkSubFacility');
+  // this.selectedSubFacility = stored ? JSON.parse(stored) : [];
+  // const sessionAssetLink = sessionStorage.getItem('assetlinkDataList');
+  // if (sessionAssetLink) {
+  //   this.assetlinkDataList = JSON.parse(sessionAssetLink);
+  // }
+  //   this.paramChangeSubject
+  //     .pipe(
+  //       debounceTime(300),
+  //       distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+  //     )
+  //     .subscribe((eventData) => {
+  //       const updatedParams = {
+  //         ...eventData,
+  //         facilityTypeCFname: FacilityType.FacilityType,
+  //         facilityType: FacilityType.Assetlink_Group,
+  //       };
+  //       this.fetchPaymentForecast(updatedParams);
+  //     });
+
+  //   this.commonSetterGetterSvc.financial.subscribe((data) => {
+  //     this.assetlinkDataList = data?.assetLinkDetails ?? [];
+
+  //     if (!this.assetlinkDataList.length) {
+  //       this.dashboardSetterGetterSvc.financialList$
+  //         .pipe(take(1))
+  //         .subscribe((list) => {
+  //           const details = list?.assetLinkDetails ?? [];
+  //           this.assetlinkDataList = updateDataList(
+  //             details,
+  //             FacilityType.Assetlink_Group
+  //           );
+  //         });
+  //     }
+  //   });
+
+  //   const params = {
+  //     partyId: this.partyId,
+  //     facilityType: this.facilityTypeGroup,
+  //     subFacilityId: this.selectedSubFacility?.id,
+  //   };
+  //   this.fetchAccountForecast(params);
+  //   const loanParams = {
+  //     partyId: this.partyId,
+  //     facilityType: this.facilityTypeGroup,
+  //   };
+  //   this.fetchLoans(loanParams);
+  //   const principalforecast = {
+  //     partyId: this.partyId,
+  //     facilityType: this.facilityTypeGroup,
+  //     subFacilityId: this.selectedSubFacility?.id,
+  //   };
+  //   this.fetchPrincipalForecast(principalforecast);
+  //   const documentParams = { partyId: this.partyId };
+  //   this.fetchDocuments(documentParams);
+  //   const assetParams = {
+  //     partyId: this.partyId,
+  //     facilityType: FacilityType.Assetlink_Group,
+  //     //subFacilityId: this.selectedSubFacility?.id,
+  //   };
+  //   this.fetchFacilityAssets(assetParams);
+  // }
   ngOnInit() {
-    this.tableId = 'PaymentSummaryAccountForcast';
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : '';
-    if (!sessionStorage.getItem('navigateToLoan')) {
-      this.currentComponent = 'PaymentForecast';
-      sessionStorage.setItem('currentComponent', this.currentComponent);
-    } else {
+    this.tableId = 'PaymentSummaryAccountForcast'; 
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+    if (sessionStorage.getItem('navigateToLoan')) {
       this.currentComponent = 'Loans';
-      sessionStorage.setItem('currentComponent', this.currentComponent);
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
       sessionStorage.removeItem('navigateToLoan');
-    }
+    } else if (storedComponent) {
+      //restore it (for page refresh)
+      this.currentComponent = storedComponent;
+    } else {
+      //default to PaymentForecast
+      this.currentComponent = 'PaymentForecast';
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+  }
+  
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
     if (
       roleBased &&
@@ -122,7 +233,8 @@ export class ViewAssetlinkFacilityComponent {
     }
     this.commonSetterGetterSvc.navigateToLoan = false;
     this.componentLoaderService.component$.subscribe((componentName) => {
-      this.currentComponent = componentName;
+    this.currentComponent = componentName;
+    sessionStorage.setItem('facilityCurrentComponent', componentName);
     });
     const partyData = sessionStorage.getItem('currentParty');
     const partyId = JSON.parse(partyData);
@@ -188,6 +300,10 @@ export class ViewAssetlinkFacilityComponent {
       //subFacilityId: this.selectedSubFacility?.id,
     };
     this.fetchFacilityAssets(assetParams);
+    if (this.currentComponent === 'requestHistory') {
+      const requestParams = { partyNo: this.partyId };
+      this.fetchRequestHistory(requestParams);
+    }
   }
 
   hasAccess(key) {

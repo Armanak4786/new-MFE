@@ -70,6 +70,7 @@ import {
 } from '../utils/common-header-definition';
 import { environment } from '../../environments/environment';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -79,7 +80,7 @@ export class CommonApiService {
     private commonSvc: CommonService,
     public dataService: DataService,
     public toasterService: ToasterService
-  ) { }
+  ) {}
 
   public getDataUrl(url: string, params?: string) {
     return this.dataService.get(url, params).pipe(
@@ -989,7 +990,7 @@ export class CommonApiService {
       | AssetDrawdownRequestBodyTask
       | ServiceRequestBody
       | FixedFloorPlanDrawdownTaskBody
-      | ContactUsTaskBody
+      |ContactUsTaskBody
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.postDataUrl(
@@ -1592,7 +1593,7 @@ export class CommonApiService {
     // const params = {partyId: partyId}
     const params: any = {};
     // List of properties to check and add to params
-    const keys: (keyof SwapRequestParams)[] = ['inboxViewType', 'clientId'];
+    const keys: (keyof SwapRequestParams)[] = ['inboxViewType','clientId'];
 
     // Loop through keys and add to params if defined ${this.baseUrls.paymentCommercial}/
     keys.forEach((key) => {
@@ -2189,8 +2190,8 @@ export class CommonApiService {
     });
   }
 
-  postContractIdForRepayment(
-    floatingRepaymentBody
+    postContractIdForRepayment(
+   floatingRepaymentBody
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.postDataUrl(
@@ -2214,8 +2215,8 @@ export class CommonApiService {
     });
   }
 
-  getContractIdForFloatingFloorPlan(
-    floatingDrawdownBody
+   getContractIdForFloatingFloorPlan(
+   floatingDrawdownBody
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.getDataUrl(
@@ -2254,7 +2255,7 @@ export class CommonApiService {
     });
   }
 
-  newAssetServicingRequest(transferRequest): Promise<any> {
+    newAssetServicingRequest(transferRequest): Promise<any> {
     return new Promise((resolve, reject) => {
       this.postDataUrl(
         `${this.baseUrls.ServicingRequest}/new_asset_servicing_request`,
@@ -2276,7 +2277,7 @@ export class CommonApiService {
       });
     });
   }
-  saveAssetServicingRequest(transferRequest): Promise<any> {
+   saveAssetServicingRequest(transferRequest): Promise<any> {
     return new Promise((resolve, reject) => {
       this.postDataUrl(
         `${this.baseUrls.ServicingRequest}/save_asset_servicing_request`,
@@ -2298,7 +2299,7 @@ export class CommonApiService {
       });
     });
   }
-  searchPaymentRequestAsset(date): Promise<any> {
+    searchPaymentRequestAsset(date): Promise<any> {
     return new Promise((resolve, reject) => {
       this.getDataUrl(
         `${this.baseUrls.ServicingRequest}/search_payment_request_asset?date=${date}`
@@ -2346,6 +2347,27 @@ export class CommonApiService {
       this.getDataUrl(
         `${this.baseUrls.ServicingRequest}/get_date_time`,
       ).subscribe({
+        next: (data) => {
+          if (data.apiError.errors.length !== 0) {
+            data.apiError.errors.forEach((error) => {
+              console.log(error.messageId);
+            });
+          } else {
+            resolve(data.data); // Resolve the promise with the response data
+          }
+        },
+        error: (err) => {
+          reject(err); // Reject the promise on error
+        },
+      });
+    });
+  }
+
+   getIntroducerPaymentTransaction(paymentTransParams): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getDataUrl(
+        `${this.baseUrls.paymentCommercial}/get_introducer_payment_trans?partyNo=${paymentTransParams}`,
+      paymentTransParams).subscribe({
         next: (data) => {
           if (data.apiError.errors.length !== 0) {
             data.apiError.errors.forEach((error) => {

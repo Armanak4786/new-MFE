@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-payment-and-loan',
   templateUrl: './payment-and-loan.component.html',
-  styleUrls: ['./payment-and-loan.component.scss'],
+  styleUrl: './payment-and-loan.component.scss',
 })
 export class PaymentAndLoanComponent {
   @Input() total;

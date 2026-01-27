@@ -57,10 +57,61 @@ export class AssetLinkSubfacilityComponent {
     public commonSetterGetterService: CommonSetterGetterService
   ) {}
 
+  // ngOnInit() {
+  //   this.componentLoaderService.component$.subscribe((componentName) => {
+  //     this.currentComponent = componentName;
+  //   });
+  //   this.currentComponent = 'Loans';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
+  //   const current = sessionStorage.getItem('currentComponent');
+  //   const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+  //   if (
+  //     roleBased &&
+  //     roleBased.functions &&
+  //     typeof roleBased.functions === 'object'
+  //   ) {
+  //     this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
+  //       fn.trim()
+  //     );
+  //   } else {
+  //     this.accessGranted = [];
+  //   }
+  //   const partyData = sessionStorage.getItem('currentParty');
+  //   const partyId = JSON.parse(partyData);
+  //   this.partyId = partyId?.id;
+  //   this.partyNo = partyId?.partyNo;
+
+  //   const storedAssetlink = JSON.parse(sessionStorage.getItem('assetlinkDataList'));
+
+  //   if (storedAssetlink && storedAssetlink.length > 0) {
+  //     this.assetlinkDataList = storedAssetlink;
+  //     this.initializeSubFacilityAndFetch();
+  //   } else {
+  //     // this.commonSetterGetterService.financial.subscribe((data) => {
+  //     const financialList=JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+  //       this.assetlinkDataList = financialList?.assetLinkDetails ?? [];
+
+  //       this.initializeSubFacilityAndFetch();
+  //     // });
+  //   }
+
+  // }
   ngOnInit() {
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'Loans';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
+  const validTabs = ['Loans', 'FacilityAssets', 'requestHistory'];
+  this.componentLoaderService.component$.subscribe((componentName) => {
+    if (validTabs.includes(componentName)) {
+      this.currentComponent = componentName;
+      sessionStorage.setItem('subfacilityCurrentComponent', componentName);
+    }
+  });
+  
+  const storedComponent = sessionStorage.getItem('subfacilityCurrentComponent');
+  if (storedComponent) {
+    this.currentComponent = storedComponent;
+  } else {
+    this.currentComponent = 'Loans';
+    sessionStorage.setItem('subfacilityCurrentComponent', this.currentComponent);
+  }
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
     if (
       roleBased &&
@@ -78,30 +129,36 @@ export class AssetLinkSubfacilityComponent {
     this.partyId = partyId?.id;
     this.partyNo = partyId?.partyNo;
 
-    const storedAssetlink = JSON.parse(sessionStorage.getItem('assetlinkData'));
+    const storedAssetlink = JSON.parse(sessionStorage.getItem('assetlinkDataList'));
 
     if (storedAssetlink && storedAssetlink.length > 0) {
       this.assetlinkDataList = storedAssetlink;
       this.initializeSubFacilityAndFetch();
     } else {
-      this.commonSetterGetterService.financial.subscribe((data) => {
-        this.assetlinkDataList = data?.assetLinkDetails ?? [];
-
-        this.initializeSubFacilityAndFetch();
-      });
+     const financialList = JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
+     this.assetlinkDataList = financialList?.assetLinkDetails ?? [];
+     this.initializeSubFacilityAndFetch();
     }
-
-    this.componentLoaderService.component$.subscribe((componentName) => {
-      this.currentComponent = componentName;
-    });
+  if (this.currentComponent === 'requestHistory') {
+    const requestParams = { partyNo: this.partyId };
+    this.fetchRequestHistory(requestParams);
   }
+  if (this.currentComponent === 'FacilityAssets') {
+     const params = {
+      partyId: this.partyId,
+      facilityType: this.facilityType,
+      subFacilityId: this.selectedSubFacility.id,
+    };
+    this.fetchFacilityAssets(params);
+  }
+}
 
   initializeSubFacilityAndFetch() {
     if (!this.assetlinkDataList?.length) return;
 
     // set default selected subfacility
-    this.selectedSubFacility = sessionStorage.getItem('selectedSubFacility')
-      ? JSON.parse(sessionStorage.getItem('selectedSubFacility'))
+    this.selectedSubFacility = sessionStorage.getItem('selectedAssetlinkSubFacility')
+      ? JSON.parse(sessionStorage.getItem('selectedAssetlinkSubFacility'))
       : this.assetlinkDataList[0];
 
     // prepare params

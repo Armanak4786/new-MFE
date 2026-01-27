@@ -58,7 +58,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-view-creditline',
   templateUrl: './view-creditline.component.html',
-  styleUrls: ['./view-creditline.component.scss'],
+  styleUrl: './view-creditline.component.scss',
 })
 export class ViewCreditlineComponent implements OnInit {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -181,9 +181,18 @@ export class ViewCreditlineComponent implements OnInit {
     //   this.currentComponent = 'Loans';
     //   sessionStorage.removeItem('navigateToLoan');
     // }
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'PaymentForcast';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+    if (sessionStorage.getItem('navigateToLoan')) {
+      this.currentComponent = 'Loans';
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+      sessionStorage.removeItem('navigateToLoan');
+    } else if (storedComponent) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+    } else {
+      this.currentComponent = 'PaymentForecast';
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+    }
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
     if (
       roleBased &&
@@ -200,6 +209,7 @@ export class ViewCreditlineComponent implements OnInit {
 
     this.componentLoaderService.component$.subscribe((componentName) => {
       this.currentComponent = componentName;
+      sessionStorage.setItem('facilityCurrentComponent', componentName);
     });
 
     const partyData = sessionStorage.getItem('currentParty');
@@ -288,6 +298,10 @@ export class ViewCreditlineComponent implements OnInit {
     this.fetchFacilityAssets(assetsParams);
     const documentParams = { partyId: this.partyId };
     this.fetchDocuments(documentParams);
+    if (this.currentComponent === 'requestHistory') {
+      const requestParams = { partyNo: this.partyId };
+      this.fetchRequestHistory(requestParams);
+    }
   }
 
   hasAccess(key) {

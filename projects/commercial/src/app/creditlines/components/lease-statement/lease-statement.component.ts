@@ -5,6 +5,6 @@ import { Component } from '@angular/core';
   //standalone: true,
   //imports: [],
   templateUrl: './lease-statement.component.html',
-  styleUrls: ['./lease-statement.component.scss'],
+  styleUrl: './lease-statement.component.scss',
 })
 export class LeaseStatementComponent {}

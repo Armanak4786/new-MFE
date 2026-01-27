@@ -1,0 +1,16 @@
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-non-facility {
+    font-weight: 700;
+  }
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-non-facility {
+  pointer-events: none !important;
+}

@@ -16,7 +16,7 @@ import { NonFacilityLoansColumnDefs } from './utils/non-facility-header-definiti
 @Component({
   selector: 'app-non-facility-loans',
   templateUrl: './non-facility-loans.component.html',
-  styleUrls: ['./non-facility-loans.component.scss'],
+  styleUrl: './non-facility-loans.component.scss',
 })
 export class NonFacilityLoansComponent {
   platformId = inject(PLATFORM_ID);
@@ -48,7 +48,7 @@ export class NonFacilityLoansComponent {
     public commonSetterGetterSvc: CommonSetterGetterService,
     public dashboardSetterGetterSvc: DashboardSetterGetterService,
     public commonSetterGetterService: CommonSetterGetterService
-  ) { }
+  ) {}
 
   // ngOnInit() {
   //   this.commonSetterGetterService.setDisableParty(false);
@@ -187,7 +187,7 @@ export class NonFacilityLoansComponent {
           label: FacilityTypeDropdown[item.value],
           value:
             optionDataFacilities[
-            item.label as keyof typeof optionDataFacilities
+              item.label as keyof typeof optionDataFacilities
             ],
         }));
 
@@ -253,7 +253,7 @@ export class NonFacilityLoansComponent {
   facilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 

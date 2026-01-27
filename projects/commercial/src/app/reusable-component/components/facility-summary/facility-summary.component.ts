@@ -8,7 +8,7 @@ import {
 @Component({
   selector: 'app-facility-summary',
   templateUrl: './facility-summary.component.html',
-  styleUrls: ['./facility-summary.component.scss'],
+  styleUrl: './facility-summary.component.scss',
 })
 export class FacilitySummaryComponent {
   @Input() facilityType;

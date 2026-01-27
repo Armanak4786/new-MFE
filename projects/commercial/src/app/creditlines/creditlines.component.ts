@@ -23,7 +23,7 @@ import { DashboardSetterGetterService } from '../dashboard/services/dashboard-se
 @Component({
   selector: 'app-creditlines',
   templateUrl: './creditlines.component.html',
-  styleUrls: ['./creditlines.component.scss'],
+  styleUrl: './creditlines.component.scss',
 })
 export class CreditlinesComponent {
   selectedSubFacility;
@@ -134,7 +134,7 @@ export class CreditlinesComponent {
     const sessionCreditline = sessionStorage.getItem(
       'creditlineFacilityDataList'
     );
-    const optionsData = sessionStorage.getItem('optionDataCreditline');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionCreditline) {
       this.creditlineFacilityDataList = JSON.parse(sessionCreditline);
@@ -165,34 +165,104 @@ export class CreditlinesComponent {
     this.afterCreditlineLoad();
   }
 
+  // afterCreditlineLoad() {
+  //   this.initChart();
+  //   this.commonSetterGetterSvc.setDisableParty(false);
+  //   this.dashSvc.setFacilityTpe(this.facilityType);
+
+  //   sessionStorage.setItem(
+  //     'creditlineFacilityDataList',
+  //     JSON.stringify(this.creditlineFacilityDataList)
+  //   );
+  //   sessionStorage.setItem('currentFacilityType', this.facilityType);
+
+  //   this.selectedSubFacility = this.creditlineFacilityDataList[0];
+  //   sessionStorage.setItem(
+  //     'selectedCreditlineSubFacility',
+  //     JSON.stringify(this.selectedSubFacility)
+  //   );
+
+  //   this.accountType = 'viewCreditline';
+  //   this.componentLoaderService.facilityComponent$.subscribe(
+  //     (componentName) => {
+  //       this.accountType = componentName;
+  //     }
+  //   );
+
+  //   this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
+  //     if (list && list.length > 0) {
+  //       this.facilityDataList = list;
+
+  //       this.optionData = this.facilityDataList.map((item) => ({
+  //         label: FacilityTypeDropdown[item.value],
+  //         value:
+  //           optionDataFacilities[
+  //             item.label as keyof typeof optionDataFacilities
+  //           ],
+  //       }));
+
+  //       sessionStorage.setItem(
+  //         'optionDataFacilities',
+  //         JSON.stringify(this.optionData)
+  //       );
+
+  //       this.facilityTypeDropdown = optionDataFacilities['CreditLines'];
+  //     }
+  //   });
+  // }
+
   afterCreditlineLoad() {
     this.initChart();
     this.commonSetterGetterSvc.setDisableParty(false);
     this.dashSvc.setFacilityTpe(this.facilityType);
-
-    sessionStorage.setItem(
-      'creditlineFacilityDataList',
-      JSON.stringify(this.creditlineFacilityDataList)
-    );
     sessionStorage.setItem('currentFacilityType', this.facilityType);
 
-    this.selectedSubFacility = this.creditlineFacilityDataList[0];
-    sessionStorage.setItem(
-      'selectedCreditlineSubFacility',
-      JSON.stringify(this.selectedSubFacility)
+    const selectedSessionSubFacility = JSON.parse(
+      sessionStorage.getItem('selectedCreditlineSubFacility')
     );
 
-    this.accountType = 'viewCreditline';
+    const storedView = sessionStorage.getItem('creditlineCurrentView');
+    if (storedView) {
+      this.accountType = storedView;
+      if (selectedSessionSubFacility) {
+        this.selectedSubFacility = selectedSessionSubFacility;
+        sessionStorage.setItem('selectedCreditlineSubFacility',JSON.stringify(this.selectedSubFacility));
+      } else {
+        this.selectedSubFacility = this.creditlineFacilityDataList[0];
+        sessionStorage.setItem('selectedCreditlineSubFacility',JSON.stringify(this.selectedSubFacility));
+      }
+    } else if (
+      !selectedSessionSubFacility ||
+      selectedSessionSubFacility === this.creditlineFacilityDataList[0]
+    ) {
+      this.selectedSubFacility = this.creditlineFacilityDataList[0];
+      sessionStorage.setItem(
+        'selectedCreditlineSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
+      this.accountType = 'viewCreditline';
+      sessionStorage.setItem('creditlineCurrentView', this.accountType);
+    } else if (selectedSessionSubFacility.facilityType === 'Current Account') {
+      this.selectedSubFacility = selectedSessionSubFacility;
+      this.accountType = 'currentAccount';
+      sessionStorage.setItem('selectedCreditlineSubFacility',JSON.stringify(this.selectedSubFacility));
+      sessionStorage.setItem('creditlineCurrentView', this.accountType);
+    } else {
+      this.selectedSubFacility = selectedSessionSubFacility;
+      this.accountType = 'creditlineFacility';
+      sessionStorage.setItem('selectedCreditlineSubFacility',JSON.stringify(this.selectedSubFacility));
+      sessionStorage.setItem('creditlineCurrentView', this.accountType);
+    }
+
     this.componentLoaderService.facilityComponent$.subscribe(
       (componentName) => {
         this.accountType = componentName;
+        sessionStorage.setItem('creditlineCurrentView', componentName);
       }
     );
-
     this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
       if (list && list.length > 0) {
         this.facilityDataList = list;
-
         this.optionData = this.facilityDataList.map((item) => ({
           label: FacilityTypeDropdown[item.value],
           value:
@@ -200,12 +270,12 @@ export class CreditlinesComponent {
               item.label as keyof typeof optionDataFacilities
             ],
         }));
-
-        sessionStorage.setItem(
-          'optionDataCreditline',
-          JSON.stringify(this.optionData)
-        );
-
+        if (this.optionData) {
+          sessionStorage.setItem(
+            'optionDataFacilities',
+            JSON.stringify(this.optionData)
+          );
+        }
         this.facilityTypeDropdown = optionDataFacilities['CreditLines'];
       }
     });
@@ -218,7 +288,7 @@ export class CreditlinesComponent {
   facilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
@@ -273,7 +343,7 @@ export class CreditlinesComponent {
   onFrequencyChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
@@ -300,5 +370,13 @@ export class CreditlinesComponent {
   }
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('creditlineFacilityDataList');
+    clearSession('creditlinesDataList');
+    clearSession('currentFacilityType');
+    clearSession('facilityCurrentComponent');
+    clearSession('selectedCreditlineSubFacility');    
+    clearSession('subfacilityCurrentComponent');
+    clearSession('creditlineCurrentAccountComponent');
+    clearSession('creditlineCurrentView');
   }
 }

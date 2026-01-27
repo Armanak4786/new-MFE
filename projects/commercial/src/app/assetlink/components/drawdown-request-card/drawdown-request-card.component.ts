@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { BaseAssetlinkClass } from '../../base-assetlink.class';
-import { DrawdownService } from '../../../drawdown.service';
 import { CommonService, GenericFormConfig } from 'auro-ui';
 import { ActivatedRoute } from '@angular/router';
 import { BaseAssetlinkService } from '../../services/base-assetlink.service';
@@ -8,11 +7,12 @@ import { DashboardService } from '../../../dashboard/services/dashboard.service'
 import { Validators } from '@angular/forms';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DrawdownService } from '../../../drawdown.service';
 
 @Component({
   selector: 'app-drawdown-request-card',
   templateUrl: './drawdown-request-card.component.html',
-  styleUrls: ['./drawdown-request-card.component.scss'],
+ styleUrls: ['./drawdown-request-card.component.scss'],
 })
 export class DrawdownRequestCardComponent extends BaseAssetlinkClass {
   facilityType;

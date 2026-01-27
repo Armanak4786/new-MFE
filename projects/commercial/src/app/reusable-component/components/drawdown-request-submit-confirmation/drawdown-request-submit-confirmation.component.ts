@@ -5,7 +5,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-drawdown-request-submit-confirmation',
   templateUrl: './drawdown-request-submit-confirmation.component.html',
-  styleUrls: ['./drawdown-request-submit-confirmation.component.scss'],
+  styleUrl: './drawdown-request-submit-confirmation.component.scss',
 })
 export class DrawdownRequestSubmitConfirmationComponent {
   constructor(

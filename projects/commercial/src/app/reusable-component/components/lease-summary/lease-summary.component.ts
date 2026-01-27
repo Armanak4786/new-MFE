@@ -7,7 +7,7 @@ import { residualValueColumnDefs } from '../../../creditlines/utils/creditline-h
   //standalone: true,
   //imports: [],
   templateUrl: './lease-summary.component.html',
-  styleUrls: ['./lease-summary.component.scss'],
+  styleUrl: './lease-summary.component.scss',
 })
 export class LeaseSummaryComponent {
   @Input() leaseData;

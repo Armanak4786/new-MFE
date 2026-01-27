@@ -1,0 +1,21 @@
+{
+    "data":[
+        {
+          "countryCode": "+91",
+          "countryFlag": "auro-ui-assets/images/india.png",
+          "countryLabel": "India",
+          "isDefault": true,
+          "isActive": true,
+          "order": "1"
+        },
+        {
+          "countryCode": "+1",
+          "countryFlag": "auro-ui-assets/images/us.png",
+          "countryLabel": "United States",
+          "isDefault": false,
+          "isActive": true,
+          "order": "2"
+        }
+      ]
+      
+}

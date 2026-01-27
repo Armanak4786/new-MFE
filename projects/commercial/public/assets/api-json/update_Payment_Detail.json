@@ -1,0 +1,17 @@
+{
+    "data": {
+        "updatePaymentDetail": {
+            "currentPayment": "Fortinighly",
+            "proposedPaymentFrequency": "",
+            "paymentFrequency": "Weekly" ,
+            "newPaymentDay": "",
+            "currentPaymentDay":"Monday",
+            "currentPaymentFrequency": "Monthly",
+            "currentPaymentDate":"10 Dec 2023", 
+            "newPaymentDate": "",
+            "notes": "",
+            "preferredContactMethod": "",
+            "preferredContactTime": ""
+        }
+    }
+}

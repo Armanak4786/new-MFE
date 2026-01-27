@@ -1,0 +1,21 @@
+{
+    "data":{
+        "requestPaymentArrangement" :{
+            "numberOfInstallments": "10",
+            "dateOfPayment":"1",
+            "proposedPaymentDate":"2024-01-01",
+            "scheduled":"Monthly",
+            "paymentMethod":"abc",
+            "whatwouldyouliketoOccur":"rt",
+            "maturityDate":"10 Dec 2029",
+            "paymentFrequency":"m",
+            "arreas":"$2500.00",
+            "repaymentAmounteas":"$00.00",
+            "reasonforArrears":"",
+            "note":"",
+            "preferredContactMethod":"simple text",
+            "preferredContactTime":"ev"
+        }
+    }
+    
+}

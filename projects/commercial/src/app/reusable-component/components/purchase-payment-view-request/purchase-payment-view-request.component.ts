@@ -9,7 +9,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
   //standalone: true,
   //imports: [],
   templateUrl: './purchase-payment-view-request.component.html',
-  styleUrls: ['./purchase-payment-view-request.component.scss'],
+  styleUrl: './purchase-payment-view-request.component.scss',
 })
 export class PurchasePaymentViewRequestComponent {
   @Input() seletedRecoredData;
@@ -17,12 +17,18 @@ export class PurchasePaymentViewRequestComponent {
   originalRecord;
   partyId: any;
   facilityAssset: any;
+  isIntroducer;
 
   constructor(
     private commonApiService: CommonApiService,
     public commonSetterGetterSvc: CommonSetterGetterService
   ) {}
 
+  ngOnInit(){
+   if(sessionStorage.getItem('currentFacilityType')=== "Introducer Transaction Summary"){
+      this.isIntroducer = true
+   }
+  }
   ngOnChanges(changes) {
     if (changes['seletedRecoredData']) {
       this.seletedRecoredData = changes?.['seletedRecoredData']?.currentValue;

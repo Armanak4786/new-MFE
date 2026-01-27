@@ -18,7 +18,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
   //standalone: true,
   //imports: [],
   templateUrl: './buyback-forcast.component.html',
-  styleUrls: ['./buyback-forcast.component.scss'],
+  styleUrl: './buyback-forcast.component.scss',
 })
 export class BuybackForcastComponent {
   @Input() facilityType: string;

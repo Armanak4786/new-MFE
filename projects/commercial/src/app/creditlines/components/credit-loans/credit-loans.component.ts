@@ -51,7 +51,7 @@ import { DialogService } from 'primeng/dynamicdialog';
   //standalone: true,
   //imports: [],
   templateUrl: './credit-loans.component.html',
-  styleUrls: ['./credit-loans.component.scss'],
+  styleUrl: './credit-loans.component.scss',
 })
 export class CreditLoansComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -110,7 +110,7 @@ export class CreditLoansComponent {
       this.partyId = currentParty?.id;
     });
     if (!this.partyId) {
-      this.router.navigate(['commercial/creditlines']);
+      this.router.navigate(['creditlines']);
     }
     this.idParam = this.route.snapshot.paramMap.get('id');
     const param = { partyId: this.partyId, contractId: this.idParam };
@@ -269,7 +269,7 @@ export class CreditLoansComponent {
   }
 
   navigateToCreditline() {
-    this.router.navigate(['commercial/creditlines']);
+    this.router.navigate(['creditlines']);
   }
 
   navigateToLoansDashboard() {
@@ -285,7 +285,7 @@ export class CreditLoansComponent {
     const route = routeMap[this.facilityType];
 
     if (route) {
-      this.router.navigate([`commercial/${route}`]);
+      this.router.navigate([`${route}`]);
     } else {
       console.warn('Invalid facility type:', this.facilityType);
     }

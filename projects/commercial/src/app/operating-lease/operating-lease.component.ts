@@ -48,7 +48,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-operating-lease',
   templateUrl: './operating-lease.component.html',
-  styleUrls: ['./operating-lease.component.scss'],
+  styleUrl: './operating-lease.component.scss',
 })
 export class OperatingLeaseComponent {
   optionData;
@@ -403,7 +403,7 @@ export class OperatingLeaseComponent {
   onFacilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 }

@@ -1,0 +1,90 @@
+{
+  "data": {
+    "activeLoanCount": "3",
+    "repaidLoanCount": "2",
+    "draftLoanCount": "2",
+    "activeLoans": [
+      {
+        "contractNumber": "Contract 45",
+        "productName": "Product 1",
+        "nextPaymentDate": "2024-09-26",
+        "frequency": "Monthly",
+        "amountDue": "3934.00",
+        "carMake": "Toyota",
+        "carModel": "2021 Ford Ranger PUDS4D",
+        "carImage": "assets/images/toyota-ranger-1.png",
+        "isDraft": false
+      },
+      {
+        "contractNumber": "Contract 49",
+        "productName": "Product 2",
+        "nextPaymentDate": "2024-08-21",
+        "frequency": "Monthly",
+        "amountDue": "3733.00",
+        "carMake": "Ford",
+        "carModel": "2022 Ford Ranger PUDS4D",
+        "carImage": "assets/images/toyota-ranger-1.png",
+        "isDraft": false
+      },
+      {
+        "contractNumber": "Contract 51",
+        "productName": "Product 4",
+        "nextPaymentDate": "2024-09-26",
+        "frequency": "Monthly",
+        "amountDue": "2934.00",
+        "carMake": "Ford",
+        "carModel": "2021 Ford Ranger PUDS4D",
+        "carImage": "assets/images/toyota-ranger-1.png",
+        "isDraft": false
+      }
+    ],
+    "repaidLoans": [
+      {
+        "contractNumber": "Contract 32",
+        "productName": "Product 5",
+        "nextPaymentDate": "2024-09-26",
+        "frequency": "Monthly",
+        "amountDue": "5934.00",
+        "carMake": "Ford",
+        "carModel": "2023 Ford Ranger PUDS4D",
+        "carImage": "assets/images/toyota-ranger-1.png",
+        "isDraft": false
+      },
+      {
+        "contractNumber": "Contract 39",
+        "productName": "Product 3",
+        "nextPaymentDate": "2024-08-21",
+        "frequency": "Monthly",
+        "amountDue": "1934.00",
+        "carMake": "Ford",
+        "carModel": "2023 Ford Ranger PUDS4D",
+        "carImage": "assets/images/toyota-ranger-1.png",
+        "isDraft": false
+      }
+    ],
+    "draftLoans": [
+      {
+        "contractNumber": "Quote 12",
+        "productName": "Product 5",
+        "nextPaymentDate": "2024-09-26",
+        "frequency": "Monthly",
+        "amountDue": "5934.00",
+        "carMake": "Ford",
+        "carModel": "2023 Ford Ranger PUDS4D",
+        "carImage": "assets/images/White_bkg.png",
+        "isDraft": true
+      },
+      {
+        "contractNumber": "Quote 14",
+        "productName": "Product 5",
+        "nextPaymentDate": "2024-09-26",
+        "frequency": "Monthly",
+        "amountDue": "5934.00",
+        "carMake": "Ford",
+        "carModel": "2023 Ford Ranger PUDS4D",
+        "carImage": "assets/images/White_bkg.png",
+        "isDraft": true
+      }
+    ]
+  }
+}

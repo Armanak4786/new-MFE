@@ -1,0 +1,168 @@
+/* Customizations to the designer theme should be defined here */
+
+.float-right {
+  float: right;
+}
+
+.text-primary-color {
+  color: var(--primary-color);
+}
+
+.text-danger-color {
+  color: var(--danger-color);
+  .p-button.p-button-text {
+    color: var(--danger-color);
+  }
+}
+
+.header-bg-color {
+  background-color: var(--background-color-secondary);
+}
+
+.primary-light-color {
+  background-color: var(--primary-light-color);
+  .p-card {
+    background-color: var(--primary-light-color) !important;
+  }
+}
+
+.labelType {
+  .p-inputtext {
+    border-bottom: none;
+  }
+}
+
+.primary-background-color {
+  background-color: var(--primary-color);
+  color: var(--primary-text-color);
+}
+
+.yearmonthClass {
+  padding-top: 9px !important;
+}
+
+.label-color {
+  color: var(--label-color);
+}
+
+p-progressSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1103;
+  position: fixed;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--disable-color);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--label-color);
+  border-radius: 6px;
+}
+
+.width-10 {
+  width: 10% !important;
+}
+
+.p-fileupload .p-fileupload-content {
+  background: none;
+  padding: 0;
+  color: none;
+  border: none;
+}
+
+.p-fileupload .p-fileupload-buttonbar,
+.p-fileupload-content .p-progressbar {
+  display: none;
+}
+
+.text-wrap {
+  text-wrap: wrap;
+}
+
+.status {
+  background-color: var(--primary-color);
+  color: var(--background-color-primary) !important;
+  border-radius: 20px;
+  max-width: 200px;
+  height: 30px;
+  margin-top: 6px;
+
+  label,
+  .p-dropdown {
+    color: var(--background-color-primary) !important;
+    border-bottom: none;
+    background-color: transparent !important;
+
+    .p-inputtext {
+      color: var(--background-color-primary) !important;
+      padding-right: 0px !important;
+      padding-left: 0px !important;
+    }
+
+    .p-dropdown-trigger {
+      color: var(--background-color-primary) !important;
+    }
+  }
+}
+
+.successStatus {
+  background-color: #b7c200;
+  color: var(--background-color-primary) !important;
+  border-radius: 20px;
+  max-width: 200px;
+  height: 30px;
+  margin-top: 6px;
+
+  label,
+  .p-dropdown {
+    color: var(--background-color-primary) !important;
+    border-bottom: none;
+    background-color: transparent !important;
+
+    .p-inputtext {
+      color: var(--background-color-primary) !important;
+    }
+
+    .p-dropdown-trigger {
+      color: var(--background-color-primary) !important;
+    }
+  }
+}
+
+.gst {
+  input {
+    text-transform: uppercase !important;
+  }
+}
+
+.dashboard {
+  .lg\:col-10 {
+    width: 81%;
+  }
+
+  .lg\:col-2 {
+    width: 19%;
+  }
+}
+
+.transparent-bg {
+  background-color: red;
+}
+
+.test {
+  background-color: red;
+  min-width: 1.5rem;
+}

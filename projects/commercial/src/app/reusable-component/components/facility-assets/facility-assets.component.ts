@@ -20,7 +20,7 @@ import {
 @Component({
   selector: 'app-facility-assets',
   templateUrl: './facility-assets.component.html',
-  styleUrls: ['./facility-assets.component.scss'],
+  styleUrl: './facility-assets.component.scss',
 })
 export class FacilityAssetsComponent {
   @Input() columnsFacilityAsset;
@@ -77,7 +77,7 @@ export class FacilityAssetsComponent {
   getBailmentEvaluated(event) {
     if (event.colName == 'contractId') {
       this.svc.router.navigateByUrl(
-        `/bailments/asset-details/${event.rowData.contractId}`
+        `/bailment/asset-details/${event.rowData.contractId}`
       );
     }
   }
@@ -175,5 +175,21 @@ export class FacilityAssetsComponent {
 
   onSubmit(form: NgForm) {
     console.log(form.value);
+  }
+   getFacilityTypeLabel(facilityType: string): string {
+    if (!facilityType) return '';
+    const type = facilityType;
+    switch (type) {
+      case 'AssetLink':
+        return 'Assetlink Facility';
+      case 'EasyLink':
+        return 'Easylink Facility';
+      case 'CreditLines':
+        return 'Creditline Facility';
+      case 'OperatingLease':
+        return 'Operating Lease';
+      default:
+        return facilityType;
+    }
   }
 }

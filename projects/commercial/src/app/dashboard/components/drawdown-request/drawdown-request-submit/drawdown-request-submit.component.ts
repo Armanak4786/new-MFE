@@ -6,7 +6,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-drawdown-request-submit',
   templateUrl: './drawdown-request-submit.component.html',
-  styleUrls: ['./drawdown-request-submit.component.scss']
+  styleUrl: './drawdown-request-submit.component.scss'
 })
 export class DrawdownRequestSubmitComponent {
 

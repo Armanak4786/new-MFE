@@ -8,7 +8,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-bailments',
   templateUrl: './bailment.component.html',
-  styleUrls: ['./bailment.component.scss'],
+  styleUrl: './bailment.component.scss',
 })
 export class BailmentComponent {
   @Input() financialSummaryData;
@@ -39,7 +39,7 @@ export class BailmentComponent {
       'bailmentDetails',
       JSON.stringify(this.bailmentDataList)
     );
-    this.router.navigateByUrl('/bailments');
+    this.router.navigateByUrl('/bailment');
   }
 
   onHeaderClick(event) {

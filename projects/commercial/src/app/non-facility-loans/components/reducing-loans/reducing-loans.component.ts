@@ -23,7 +23,7 @@ import {
 @Component({
   selector: 'app-reducing-loans',
   templateUrl: './reducing-loans.component.html',
-  styleUrls: ['./reducing-loans.component.scss'],
+  styleUrl: './reducing-loans.component.scss',
 })
 export class ReducingLoansComponent {
   @Input() facilityType;

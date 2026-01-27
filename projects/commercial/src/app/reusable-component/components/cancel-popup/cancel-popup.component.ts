@@ -4,7 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-cancel-popup',
   templateUrl: './cancel-popup.component.html',
-  styleUrls: ['./cancel-popup.component.scss'],
+  styleUrl: './cancel-popup.component.scss',
 })
 export class CancelPopupComponent {
   confirmationMsg: any = '';

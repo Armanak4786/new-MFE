@@ -25,7 +25,7 @@ import { CancelPopupComponent } from '../../../reusable-component/components/can
   //standalone: true,
   //imports: [],
   templateUrl: './request-settlement-quote.component.html',
-  styleUrls: ['./request-settlement-quote.component.scss'],
+  styleUrl: './request-settlement-quote.component.scss',
 })
 export class RequestSettlementQuoteComponent extends BaseCommercialClass {
   settlementObject: SettlementQuoteRequestBody;
@@ -382,7 +382,7 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
         })
         .onClose.subscribe((data: any) => {
           this.router.navigate([
-            `commercial/${this.facilityTypeOptionList[0].toLowerCase()}`,
+            `${this.facilityTypeOptionList[0].toLowerCase()}`,
           ]);
         });
     } catch (error) {
@@ -408,7 +408,7 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
       .onClose.subscribe((data: any) => {
         if (data.data == 'cancel') {
           this.router.navigate([
-            `commercial/${this.facilityTypeOptionList[0].toLowerCase()}`,
+            `${this.facilityTypeOptionList[0].toLowerCase()}`,
           ]);
         }
       });
