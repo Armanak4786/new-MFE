@@ -229,7 +229,7 @@ export class WholesaleRequestHistoryComponent {
         .onClose.subscribe((data: any) => { });
     } else if (event.colName === 'idRef') {
       this.commonSvc.router.navigateByUrl(
-        `/commercial/bailments/asset-details/${event.rowData.idRef}`
+        `/bailments/asset-details/${event.rowData.idRef}`
       );
     }
   }

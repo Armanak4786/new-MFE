@@ -39,7 +39,7 @@ export class NonFacilityComponent {
       'nonFacilityLoanDataList',
       JSON.stringify(this.nonFacilityLoanDataList)
     );
-    this.router.navigate(['/commercial/non-facility-loan']);
+    this.router.navigateByUrl('/non-facility-loan');
   }
 
   onheaderclick(event) {

@@ -1,84 +1,215 @@
-<div class="main-layout-topbar" [ngClass]="{ expanded: isSidemenuExpanded }">
-    <div class="layout-topbar">
-        <div class="flex">
-            <!-- <button
-        #menubutton
-        class="p-link layout-menu-button layout-topbar-button"
-        (click)="layoutService.onMenuToggle()"
-      >
-        <i class="pi pi-bars"></i>
-      </button> -->
-            <span class="sidebar-control">
-                <i #menubutton (click)="layoutService.onMenuToggle()" class="fa fa-bars"></i></span>
+<div
+  class="main-layout-topbar"
+  [class.collapsed]="isTopbarCollapsed"
+  [ngClass]="{ expanded: isSidemenuExpanded }"
+>
+  <div class="layout-topbar">
+    <div class="flex">
+      <span class="sidebar-control">
+        <i #menubutton class="fa fa-bars"></i
+      ></span>
 
-            <!-- (click)="navigate()" -->
-            <a class="layout-topbar-logo py-0">
-                <img class="cursor-pointer" src="assets/images/{{
+      <a
+        class="layout-topbar-logo layout-logo-centered py-0"
+        (click)="goToHome()"
+      >
+        <img
+          class="cursor-pointer"
+          src="assets/images/{{
             layoutService.config.colorScheme === 'light'
               ? 'logo-dark'
               : 'logo-white'
-          }}.png" alt="logo" />
-            </a>
-        </div>
-        <div class="ml-2 dealer w-4">
-            <!-- Dealer dropdown removed for commercial -->
-        </div>
+          }}.png"
+          alt="logo"
+        />
+      </a>
+    </div>
 
-        <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
-            (click)="layoutService.showProfileSidebar()">
-            <i class="pi pi-ellipsis-v"></i>
-        </button>
+    <div class="ml-4">
+      <p-dropdown
+        class="partyCss"
+        [options]="partyDataList"
+        optionLabel="name"
+        optionValue="id"
+        [(ngModel)]="currentParty"
+        (onChange)="onPartyChange($event)"
+        [disabled]="!disableParty"
+      ></p-dropdown>
+    </div>
 
-        <div #topbarmenu class="layout-topbar-menu" [ngClass]="{
+    <button
+      *ngIf="isTopbarCollapsed && showExpandableSection"
+      class="topbar-toggle-btn collapsed"
+      (click)="toggleTopbarCollapse()"
+      title="Expand Topbar"
+    >
+      <i class="fa fa-chevron-down"></i>
+    </button>
+    <button
+      #topbarmenubutton
+      class="p-link layout-topbar-menu-button layout-topbar-button"
+      (click)="layoutService.showProfileSidebar()"
+    >
+      <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div
+      #topbarmenu
+      class="layout-topbar-menu"
+      [ngClass]="{
         'layout-topbar-menu-mobile-active':
           layoutService.state.profileSidebarVisible
-      }">
-            <span class="flex align-items-center sm:px-2 p-0 text-sm layout-text date-wrapper">
-                {{ currentServerTimeA }}</span>
+      }"
+    >
+      <div class="pt-1">
+        <date
+          [labelClass]="'text-white text-sm mr-2'"
+          [label]="currentServerTime"
+          [valueClass]="'text-white text-sm'"
+          [value]="currentServerDate"
+          [mode]="'label'"
+        ></date>
+      </div>
+      <!-- <div class="vertical-line mx-3"></div>
 
-            <div class="vertical-line mx-3"></div>
+      <div class="bg-white" *ngIf="showFlag">
+        <input
+          type="text"
+          pInputText
+          placeholder="Quick Menu Search"
+          [(ngModel)]="searchInput"
+        />
+      </div> -->
 
-            <div class="bg-white" *ngIf="showFlag">
-                <input type="text" pInputText placeholder="Quick Menu Search" [(ngModel)]="searchInput" />
-            </div>
+      <!-- <button
+        class="p-link layout-topbar-button"
+        (click)="onSearchClick(!showFlag)"
+      >
+        <i class="fa-regular fa-magnifying-glass"></i> <span>Search</span>
+      </button>
+      <button class="p-link layout-topbar-button pr-0">
+        <i class="fa-light fa-grid-2"></i>
+      </button> -->
 
-            <button class="p-link layout-topbar-button" (click)="onSearchClick(!showFlag)">
-                <i class="fa-regular fa-magnifying-glass"></i> <span>Search</span>
-            </button>
-            <button class="p-link layout-topbar-button pr-0">
-                <i class="fa-light fa-grid-2"></i>
-            </button>
+      <!-- <button
+        class="p-link layout-topbar-button"
+        (click)="onSearchClick(!showFlag)"
+      >
+        <i class="fa-regular fa-arrow-up-right-from-square"></i>
+      </button> -->
 
-            <button class="p-link layout-topbar-button" (click)="onSearchClick(!showFlag)">
-                <i class="fa-regular fa-arrow-up-right-from-square"></i>
-            </button>
+      <div class="vertical-line mx-3"></div>
 
-            <div class="vertical-line mx-3"></div>
+      <button class="p-link layout-topbar-button notification-btn" (click)="onBellClick()">
+        <i class="pi pi-bell"></i>
+        <span class="notification-badge">
+          {{notificationCount}}
+        </span>
+      </button>
 
-            <div class="bell-icon" [style]="{ position: 'relative' }" #notificationContainer>
-                <p-avatar (click)="showNotification($event)" icon="{{
-            swingIcon ? 'fa-solid' : 'fa-light'
-          }} fa-bell swing-icon bell-font" styleClass="bell-icon {{ swingIcon ? 'swing-icon' : '' }} {{
-            notificationValue > 0 ? '' : 'hideBadge'
-          }}" shape="circle" pBadge value="{{ notificationValue }}" />
-                <app-notification-bell [target]="notificationContainer"></app-notification-bell>
-            </div>
+      <button class="p-link layout-topbar-button" (click)="contactUdc()">
+        <i class="fa-regular fa-envelope"></i>
+      </button>
 
-            <button class="p-link layout-topbar-button">
-                <i class="fa-regular fa-envelope"></i>
-            </button>
+      <div class="mx-3 border-round-sm">
+        <button
+          (click)="showOverlay($event)"
+          class="p-link layout-topbar-button layout-topbar-button-profile"
+        >
+          <i class="fa-solid fa-circle-user text-4xl" style="color: white"> </i>
+          <span>profile</span>
+        </button>
+      </div>
+      <div
+        class="flex justify-content-center align-items-center mr-3 text-white"
+      ></div>
 
-            <div class="mx-3 border-round-sm">
-                <button (click)="showOverlay($event)" class="p-link layout-topbar-button layout-topbar-button-profile">
-                    <i class="fa-solid fa-circle-user text-4xl" style="color: white"> </i>
-                    <span>profile</span>
-                </button>
-            </div>
-            <div class="flex justify-content-center align-items-center mr-3 text-white">
-                {{ userName | titlecase }}
-            </div>
-
-            <app-user-profile-overlay></app-user-profile-overlay>
-        </div>
+      <app-user-profile-overlay></app-user-profile-overlay>
+      <!-- <app-language-switcher></app-language-switcher> -->
+      <div class="pt-1">
+        <text
+          [mode]="'label'"
+          [label]="userName"
+          [labelClass]="'text-white font-bold text-sm'"
+        ></text>
+      </div>
     </div>
+  </div>
+  <div
+    class="topbar-expanded-content"
+    *ngIf="!isTopbarCollapsed && showExpandableSection"
+  >
+    <!-- CONTACT DETAILS -->
+    <div class="section contact-section">
+      <h4>
+        {{ "contact_details" | translate }}
+        <i class="fal fa-square-pen" (click)="onEditClick()"></i>
+      </h4>
+      <text
+        mode="label"
+        [label]="'Business Phone'"
+        [value]="businessDetails?.phone[0]?.value"
+        labelType="vertical"
+        class="field-label"
+      ></text>
+
+      <text
+        mode="label"
+        [label]="'Email'"
+        labelType="vertical"
+        [value]="businessDetails?.emails[0]?.value"
+        class="field-label"
+      ></text>
+    </div>
+
+    <!-- ADDRESS DETAILS -->
+    <div class="section address-section">
+      <h4>
+        {{ "address_details" | translate }}
+        <i class="fal fa-square-pen" (click)="onEditClick()"></i>
+      </h4>
+
+      <ng-container *ngFor="let field of addressFields">
+        <text
+          mode="label"
+          [label]="field.label | translate"
+          [value]="field.value"
+          labelType="horizontal"
+          labelClass="label"
+          valueClass="value"
+        ></text>
+      </ng-container>
+    </div>
+
+    <div class="section related-parties-section">
+      <h4>
+        {{ "related_parties" | translate }}
+      </h4>
+      <ng-container *ngFor="let field of contactFields">
+        <text
+          mode="label"
+          [label]="field.label"
+          [value]="field.value"
+          labelType="horizontal"
+          labelClass="label"
+          valueClass="value text-sm"
+        ></text>
+      </ng-container>
+    </div>
+  </div>
+
+  <button
+    *ngIf="!isTopbarCollapsed"
+    class="topbar-toggle-btn expanded"
+    (click)="toggleTopbarCollapse()"
+    title="Collapse Topbar"
+  >
+    <i class="fa fa-chevron-up"></i>
+  </button>
+</div>
+<div class="annual-review-container">
+  <label class="text-xs label-color"
+    >{{ "annual_review_due_date" | translate
+    }}{{ this.annualReviewDate }}</label
+  >
 </div>

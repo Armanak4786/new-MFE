@@ -123,9 +123,9 @@ export class UpdatePartyDetailsComponent {
   }
   onUpdateClick(event, updateType) {
     if (updateType === 'contact') {
-      this.router.navigate(['/commercial/dashboard/update-contact-details']);
+      this.svc.router.navigateByUrl('/dashboard/update-contact-details');
     } else {
-      this.router.navigate(['/commercial/dashboard/update-address-details']);
+      this.svc.router.navigateByUrl('/dashboard/update-address-details');
     }
   }
 }

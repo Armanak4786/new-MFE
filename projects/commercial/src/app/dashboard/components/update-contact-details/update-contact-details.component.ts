@@ -217,7 +217,7 @@ export class UpdateContactDetailsComponent extends BaseFormClass {
           width: '50vw',
         })
         .onClose.subscribe(() => {
-          this.router.navigate(['/commercial/dashboard/update-party-details']);
+          this.svc.router.navigateByUrl('/dashboard/update-party-details');
         });
     }
   }
@@ -234,7 +234,7 @@ export class UpdateContactDetailsComponent extends BaseFormClass {
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-          this.router.navigate(['/commercial/dashboard/update-party-details']);
+          this.svc.router.navigateByUrl('/dashboard/update-party-details');
         }
       });
   }

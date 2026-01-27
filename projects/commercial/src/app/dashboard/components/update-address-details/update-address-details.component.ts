@@ -269,7 +269,7 @@ export class UpdateAddressDetailsComponent extends BaseFormClass {
           width: '50vw',
         })
         .onClose.subscribe((data: any) => {
-          this.router.navigate(['/commercial/dashboard/update-party-details']);
+          this.svc.router.navigateByUrl('/dashboard/update-party-details');
         });
     }
   }
@@ -287,7 +287,7 @@ export class UpdateAddressDetailsComponent extends BaseFormClass {
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
           // this.ref.close();
-          this.router.navigate(['/commercial/dashboard/update-party-details']);
+          this.svc.router.navigateByUrl('/dashboard/update-party-details');
         }
       });
   }

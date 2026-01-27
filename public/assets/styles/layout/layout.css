@@ -387,6 +387,7 @@ a {
 }
 @media (min-width: 992px) {
   .layout-wrapper.layout-overlay .layout-main-container {
+    padding-top: 39px;
     margin-left: 0;
     padding-left: 2rem;
   }
