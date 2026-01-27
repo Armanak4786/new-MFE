@@ -8,7 +8,7 @@ import { FacilityType } from '../../../utils/common-enum';
 @Component({
   selector: 'app-fixed-floorplan',
   templateUrl: './fixed-floorplan.component.html',
-  styleUrls: ['./fixed-floorplan.component.scss'],
+  styleUrl: './fixed-floorplan.component.scss',
 })
 export class FixedFloorplanComponent {
   @Input() financialSummaryData;
@@ -39,7 +39,7 @@ export class FixedFloorplanComponent {
       JSON.stringify(this.fixedFloorPlanDataList)
     );
 
-    this.router.navigateByUrl('/fixedfloorplan');
+    this.router.navigate(['fixedfloorplan']);
   }
 
   onHeaderClick(event) {

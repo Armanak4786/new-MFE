@@ -6,7 +6,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-originator-account',
   templateUrl: './originator-account.component.html',
-  styleUrls: ['./originator-account.component.scss'],
+  styleUrl: './originator-account.component.scss',
 })
 export class OriginatorAccountComponent {
   @Input() financialSummaryData;

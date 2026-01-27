@@ -64,7 +64,7 @@ export class TransferRequestSubmissionComponent {
     //this.commonSetterGetterSvc.setTransferRequestContract(event.rowData);
   }
   backToDashboard() {
-    this.router.navigate(['commercial/bailments']);
+    this.router.navigate(['bailment']);
     this.svc?.dialogSvc?.ref?.close();
   }
 }

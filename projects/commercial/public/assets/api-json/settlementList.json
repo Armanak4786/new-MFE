@@ -1,0 +1,14 @@
+{
+  "data": {
+    "loanDetails": {
+      "loanNo": "45",
+      "amountDue": "13934.00",
+      "nextPayment": "26 Sept 2024",
+      "frequency": "Monthly"
+    },
+    "settlement":
+      {
+        "terminationAmount":"81347.33"
+      }
+   }
+  }

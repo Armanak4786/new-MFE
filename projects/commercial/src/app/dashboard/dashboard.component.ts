@@ -13,11 +13,12 @@ import {
   SwapRequestParams,
 } from '../utils/common-interface';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
+import { BreadcrumbService } from 'auro-ui';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   facilityType = FacilityType;
@@ -41,7 +42,8 @@ export class DashboardComponent {
     private dashboardApiSvc: DashboardApiService,
     public commonSetterGetterService: CommonSetterGetterService,
     public dashboardSetterGetterSvc: DashboardSetterGetterService,
-    private commonApiService: CommonApiService //public breadSvc: BreadcrumbService
+    private commonApiService: CommonApiService,
+    public breadSvc: BreadcrumbService,
   ) {}
 
   keyMap = {
@@ -61,13 +63,13 @@ export class DashboardComponent {
     let sub;
     let decodedToken = sessionStorage.getItem('accessToken');
     sub = this.decodeToken(decodedToken)?.sub;
-    // this.breadSvc.homeBreadcrumb = [
-    //   {
-    //     label: '',
-    //     icon: 'pi pi-home',
-    //     url: '/commercial/dashboard',
-    //   },
-    // ];
+    this.breadSvc.homeBreadcrumb = [
+      {
+        label: '',
+        icon: 'pi pi-home',
+        url: '/dashboard',
+      },
+    ];
     this.commonSetterGetterService.dashboardRefresh$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -141,11 +143,11 @@ export class DashboardComponent {
       this.financialSummaryData = financialSummary.financialSummaryList;
       if (this.financialSummaryData) {
         this.dashboardSetterGetterSvc.setFinanacialSummary(
-          this.financialSummaryData
+          this.financialSummaryData,
         );
         sessionStorage.setItem(
           'financialSummaryData',
-          JSON.stringify(this.financialSummaryData)
+          JSON.stringify(this.financialSummaryData),
         );
         this.total = {
           totalRepaymentsDueToday:
@@ -166,7 +168,7 @@ export class DashboardComponent {
           }
         }
         this.commonSetterGetterService.setAllFacilities(
-          this.facilityTypeOptions
+          this.facilityTypeOptions,
         );
       }
     } catch (error) {
@@ -175,9 +177,8 @@ export class DashboardComponent {
   }
 
   async fetchCustomerDetails(customerNo: string) {
-    const customerDetails = await this.dashboardApiSvc.getCustomerDetails(
-      customerNo
-    );
+    const customerDetails =
+      await this.dashboardApiSvc.getCustomerDetails(customerNo);
 
     this.storeFormattedAddess(customerDetails?.addressDetails || []);
     const isIndividual =
@@ -200,13 +201,13 @@ export class DashboardComponent {
     await this.fetchSwapRequestList(params, 'swap');
     const paramsSearch: SearchRequestParams = {
       typeId: this.transformedSwapRequestList?.find(
-        (x) => x.label === 'Swap Pending'
+        (x) => x.label === 'Swap Pending',
       )?.value,
     };
 
     const paramsSearchComplete: SearchRequestParams = {
       typeId: this.transformedSwapRequestList?.find(
-        (x) => x.label === 'Swap Complete'
+        (x) => x.label === 'Swap Complete',
       )?.value,
     };
 
@@ -228,9 +229,8 @@ export class DashboardComponent {
   }
   async fetchSwapRequestList(params: SwapRequestParams, value) {
     try {
-      this.swapRequestList = await this.commonApiService.getSwapRequestTypeList(
-        params
-      );
+      this.swapRequestList =
+        await this.commonApiService.getSwapRequestTypeList(params);
       if (this.swapRequestList) {
         if (value === 'swap') {
           this.transformedSwapRequestList = this.swapRequestList
@@ -250,7 +250,7 @@ export class DashboardComponent {
       const userInfoData = await this.dashboardApiSvc.getUserInfoData(usercode);
 
       this.currentParty = userInfoData?.partyDetails?.find(
-        (item) => item.isDefault === true
+        (item) => item.isDefault === true,
       );
       this.userDetails = userInfoData.userDetails;
       this.commonSetterGetterService.setUserDetails(this.userDetails);
@@ -259,7 +259,7 @@ export class DashboardComponent {
       sessionStorage.setItem('currentParty', JSON.stringify(this.currentParty));
       sessionStorage.setItem(
         'partyDetails',
-        JSON.stringify(userInfoData?.partyDetails)
+        JSON.stringify(userInfoData?.partyDetails),
       );
       sessionStorage.setItem('userDetails', JSON.stringify(this.userDetails));
     } catch (error) {
@@ -278,9 +278,8 @@ export class DashboardComponent {
 
   async fetchRelatedParties(partyNo) {
     try {
-      const relatedParties = await this.dashboardApiSvc.getRelatedParties(
-        partyNo
-      );
+      const relatedParties =
+        await this.dashboardApiSvc.getRelatedParties(partyNo);
       this.commonSetterGetterService.setContactItems(relatedParties);
     } catch (error) {
       console.log('Error while loading facility data', error);
@@ -289,13 +288,13 @@ export class DashboardComponent {
 
   storeFormattedAddess(addressDetails: any[]) {
     const physicalAddressObj = addressDetails.find(
-      (s) => s.addressType === 'Street' && s.isCurrent === true
+      (s) => s.addressType === 'Street' && s.isCurrent === true,
     );
     const postalAddressObj = addressDetails.find(
-      (s) => s.addressType === 'Mailing' && s.isCurrent === true
+      (s) => s.addressType === 'Mailing' && s.isCurrent === true,
     );
     const registeredAddressObj = addressDetails.find(
-      (s) => s.addressType === 'Registered'
+      (s) => s.addressType === 'Registered',
     );
 
     const physicalAddress = this.getFormattedAddress(physicalAddressObj);
@@ -311,10 +310,13 @@ export class DashboardComponent {
   }
   getFormattedAddress(addr: any): string {
     if (!addr || !addr.addressComponents) return '';
-    const componentMap = addr.addressComponents.reduce((map, comp) => {
-      map[comp.type] = comp.value;
-      return map;
-    }, {} as { [key: string]: string });
+    const componentMap = addr.addressComponents.reduce(
+      (map, comp) => {
+        map[comp.type] = comp.value;
+        return map;
+      },
+      {} as { [key: string]: string },
+    );
 
     const fullAddress = [
       componentMap.BuildingName,
@@ -339,7 +341,7 @@ export class DashboardComponent {
       .filter((item) => {
         const wfThree = item.values.find((v: any) => v.name === 'WFThree');
         const newParty = item.values.find(
-          (v: any) => v.name === 'NewPartyExtName'
+          (v: any) => v.name === 'NewPartyExtName',
         );
         return (
           wfThree?.value === 'Pending Transfer' &&
@@ -351,7 +353,7 @@ export class DashboardComponent {
     const declined = data.filter((item) => {
       const wfThree = item.values.find((v: any) => v.name === 'WFThree');
       const originalParty = item.values.find(
-        (v: any) => v.name === 'OriginalPartyExtName'
+        (v: any) => v.name === 'OriginalPartyExtName',
       );
       return (
         wfThree?.value === 'Declined' && originalParty?.value === this.partyName
@@ -362,7 +364,7 @@ export class DashboardComponent {
     const completed = resultComplete.filter((item) => {
       const wfThree = item.values.find((v: any) => v.name === 'WFThree');
       const originalParty = item.values.find(
-        (v: any) => v.name === 'OriginalPartyExtName'
+        (v: any) => v.name === 'OriginalPartyExtName',
       );
       return (
         wfThree?.value === 'Complete' && originalParty?.value === this.partyName
@@ -371,7 +373,7 @@ export class DashboardComponent {
     const filterCompleted = this.getFilteredResultByDate(completed);
     const countOfNotifi =
       pending.length + filterDecline.length + filterCompleted.length;
-      
+
     // Update observable
     this.commonSetterGetterService.transferRequestsSubject.next({
       pending,

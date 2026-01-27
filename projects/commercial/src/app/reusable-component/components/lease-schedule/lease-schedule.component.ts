@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   //standalone: true,
   //imports: [],
   templateUrl: './lease-schedule.component.html',
-  styleUrls: ['./lease-schedule.component.scss'],
+  styleUrl: './lease-schedule.component.scss',
 })
 export class LeaseScheduleComponent {
   @Input() leaseScheduleColumnDefs;

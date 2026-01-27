@@ -52,7 +52,7 @@ import { easylinkFacilityAssetsColumnDefs } from '../../../easylink/utils/easyli
   //standalone: true,
   //imports: [],
   templateUrl: './loan-dashboard.component.html',
-  styleUrls: ['./loan-dashboard.component.scss'],
+  styleUrl: './loan-dashboard.component.scss',
 })
 export class LoanDashboardComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -363,7 +363,7 @@ export class LoanDashboardComponent {
     //this.loanData = this.easylinkSetterGetterSvc.getLoanData().loan;
     if (!this.loanData) {
       // If no data found, navigate back
-      this.router.navigate(['commercial/easylink']);
+      this.router.navigate(['easylink']);
     }
     const params = {
       partyId: this.partyId,
@@ -418,11 +418,11 @@ export class LoanDashboardComponent {
 
   navigateToFacility() {
     if (this.facilityType === FacilityType.NonFacilityLoan) {
-      this.router.navigate(['commercial/non-facility-loan']);
+      this.router.navigate(['non-facility-loan']);
     } else if (this.facilityType === 'AssetLink') {
-      this.router.navigate(['commercial/assetlink']);
+      this.router.navigate(['assetlink']);
     } else if (this.facilityType === 'EasyLink') {
-      this.router.navigate(['commercial/easylink']);
+      this.router.navigate(['easylink']);
     }
   }
 
@@ -439,7 +439,7 @@ export class LoanDashboardComponent {
     const route = routeMap[this.facilityType];
 
     if (route) {
-      this.router.navigate([`commercial/${route}`]);
+      this.router.navigate([`${route}`]);
     } else {
       console.warn('Invalid facility type:', this.facilityType);
     }

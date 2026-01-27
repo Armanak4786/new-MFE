@@ -67,7 +67,7 @@
 
       <!-- Program -->
       <div class="col-12 md:col-4">
-        <label class="mb-2 text-sm block">{{'program'|translate}}</label>
+        <label class="mb-2 text-sm block" [ngClass]="{'required': assetForm.get('assetType')?.value === 'single'}">{{'program'|translate}}</label>
         <p-dropdown
           formControlName="programname"
           [options]="programOptions"
@@ -1082,15 +1082,15 @@
   {{ "for_and_on_behalf_of" | translate }} {{ customerName }}
 </p>
 <div class="grid gap-2 flex justify-content-end mt-4">
-  <div class="col-2">
+  <div class="btn-uniform">
     <gen-button
       [btnWidth]="'full'"
-      [btnType]="'non-bg-btn'"
+      [btnType]="'border-btn'"
       [btnLabel]="'cancel'"
       (onClick)="showDialogCancel()"
     ></gen-button>
   </div>
-  <div class="col-2">
+  <div class="btn-uniform">
     <gen-button
       [btnWidth]="'full'"
       [btnType]="'bg-btn'"

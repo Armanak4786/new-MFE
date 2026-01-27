@@ -9,6 +9,7 @@
         [value]="facilityTypeDropdown"
         [labelType]="'vertical'"
         (change)="onFrequencyChange($event)"
+        [clearable]="false"
       ></dropdown>
       <br />
 
@@ -79,6 +80,7 @@
         (onCellClick)="onCellClick($event)"
         [bodyClass]="'text-xs row-class-assetlink'"
         [headingClass]="'tableHeader text-xs header-text-color'"
+        [tableClass]="'non-interactive-table'"
       >
       </gen-table>
     </div>

@@ -1,0 +1,20 @@
+{
+  "production": true,
+  "apiUrl": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortalGateway/gateway",
+  "clientId": "AURPR.RESTAPI.IACSS",
+  "authority": "https://login10.fisglobal.com/idp/aurionpro",
+  "redirectUrl": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortal/authentication",
+  "postLogoutRedirectUri": "window.location.origin + '/post-logout'",
+  "scope": "'openid profile'",
+  "autoUserInfo": false,
+  "responseType": "code",
+  "silentRenew": true,
+  "useRefreshToken": true,
+  "secureRoutes": [""],
+  "maxIdTokenIatOffsetAllowedInSeconds": 600,
+  "grant_type": "client_credentials",
+  "currency": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortalGateway/gateway/LookUpServices/currency",
+  "revokeSessionUrlEntra": "https://graph.microsoft.com/v1.0/me/revokeSignInSessions",
+  "revokeAllTokenFIS": "https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me",
+  "environment": "SandboxEnvironment"
+}

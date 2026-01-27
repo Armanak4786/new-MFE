@@ -5,7 +5,7 @@ import { FacilityAssetsService } from '../../../assetlink/services/facility-asse
 @Component({
   selector: 'app-interest-payment-forcast',
   templateUrl: './interest-payment-forcast.component.html',
-  styleUrls: ['./interest-payment-forcast.component.scss'],
+  styleUrl: './interest-payment-forcast.component.scss',
 })
 export class InterestPaymentForcastComponent implements OnInit {
   @Input() InterestPaymentcolumnDefs;

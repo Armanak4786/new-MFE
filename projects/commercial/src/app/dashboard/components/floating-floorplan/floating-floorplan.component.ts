@@ -8,7 +8,7 @@ import { floatingFloorPlanColumnDefs } from '../../utils/dashboard-header.util';
 @Component({
   selector: 'app-floating-floorplan',
   templateUrl: './floating-floorplan.component.html',
-  styleUrls: ['./floating-floorplan.component.scss'],
+  styleUrl: './floating-floorplan.component.scss',
 })
 export class FloatingFloorplanComponent {
   @Input() financialSummaryData;
@@ -48,7 +48,7 @@ export class FloatingFloorplanComponent {
       'floatingFloorPlanDetails',
       JSON.stringify(this.floatingFloorPlanDataList)
     );
-    this.router.navigateByUrl('/floatingfloorplan');
+    this.router.navigate(['floatingfloorplan']);
   }
 
   onHeaderClick(event) {

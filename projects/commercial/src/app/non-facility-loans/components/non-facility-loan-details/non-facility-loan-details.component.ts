@@ -8,7 +8,7 @@ import { Validators } from '@angular/forms';
 @Component({
   selector: 'app-non-facility-loan-details',
   templateUrl: './non-facility-loan-details.component.html',
-  styleUrls: ['./non-facility-loan-details.component.scss'],
+  styleUrl: './non-facility-loan-details.component.scss',
 })
 export class NonFacilityLoanDetailsComponent {
   formFieldFlag: any = '';

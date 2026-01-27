@@ -11,7 +11,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-buyback-facility',
   templateUrl: './buyback-facility.component.html',
-  styleUrls: ['./buyback-facility.component.scss'],
+  styleUrl: './buyback-facility.component.scss',
 })
 export class BuybackFacilityComponent {
   @Input() financialSummaryData;
@@ -39,7 +39,7 @@ export class BuybackFacilityComponent {
       'buybackDetails',
       JSON.stringify(this.buyBackDataList)
     );
-    this.router.navigate(['/buyback']);
+    this.router.navigateByUrl('/buyback');
   }
   onheaderclick(event) {
     this[event.actionName]();

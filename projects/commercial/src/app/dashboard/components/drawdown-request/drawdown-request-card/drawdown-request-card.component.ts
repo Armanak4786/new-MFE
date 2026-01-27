@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { CommonService, GenericFormConfig } from 'auro-ui';
 import { BaseDashboardClass } from '../../../base-dashboard.class';
-import { DrawdownService } from '../../../drawdown.service';
+import { DrawdownService } from 'src/app/drawdown.service';
 import { ActivatedRoute } from '@angular/router';
 import { DashboardService } from '../../../services/dashboard.service';
 import { BaseDashboardServiceService } from '../../../services/base-dashboard-service.service';
@@ -10,7 +10,7 @@ import { BaseDashboardServiceService } from '../../../services/base-dashboard-se
 @Component({
   selector: 'app-drawdown-request-card',
   templateUrl: './drawdown-request-card.component.html',
-  styleUrls: ['./drawdown-request-card.component.scss'],
+  styleUrl: './drawdown-request-card.component.scss',
 })
 export class DrawdownRequestCardComponent extends BaseDashboardClass {
   public facilityValue: any;

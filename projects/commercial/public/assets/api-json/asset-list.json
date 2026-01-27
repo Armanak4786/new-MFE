@@ -1,0 +1,29 @@
+{
+    "data": {
+    "loanDetails":{
+        "loanNo": "45",
+        "amountDue": "13934",
+        "nextPayment": "26 Sept 2024",
+        "frequency": "Monthly"
+    },
+    "assetList": [
+        {
+            "id": 1,
+            "vin": "WRYUT-8989867",
+            "assetNo": "2019",
+            "regoNo": "989898989",
+            "insurer": "ABC TYN",
+            "productName":"2021 Ford Range PUDS4S"
+        },
+        {
+            "id": 2,
+            "vin": "YUTV-89877867",
+            "assetNo": "2022",
+            "regoNo": "9676598989",
+            "insurer": "ABC TYX",
+            "productName":"2022 Ford Range PUDS4S"
+        }
+     
+    ]
+}
+}

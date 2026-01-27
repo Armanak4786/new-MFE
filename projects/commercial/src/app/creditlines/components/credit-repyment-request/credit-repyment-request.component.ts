@@ -12,7 +12,7 @@ import { CommonApiService } from '../../../services/common-api.service';
   //standalone: true,
   //imports: [],
   templateUrl: './credit-repyment-request.component.html',
-  styleUrls: ['./credit-repyment-request.component.scss'],
+  styleUrl: './credit-repyment-request.component.scss',
 })
 export class CreditRepymentRequestComponent {
   udcBankDetails: string = '';

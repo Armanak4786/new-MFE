@@ -5,7 +5,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-address-not-found-popup',
   templateUrl: './address-not-found-popup.component.html',
-  styleUrls: ['./address-not-found-popup.component.scss'],
+  styleUrl: './address-not-found-popup.component.scss',
 })
 export class AddressNotFoundPopupComponent {
   constructor(public router: Router, public ref: DynamicDialogRef) {}

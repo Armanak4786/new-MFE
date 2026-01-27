@@ -1,0 +1,27 @@
+{
+    "data":{
+       "bankDetails":[ 
+        {
+        "loanNo":"46",
+        "assetType":"Car",
+        "accountName":"Mr. Jhon Smith",
+        "bankId":"1",
+        "bankName":"ANZ Bank",
+        "accountNumber":"898808090",
+        "branchNo":"0000"
+
+    }, 
+       {
+        "loanNo":"45",
+        "assetType":"Car",
+        "accountName":"Mr. Jhon Smith",
+        "bankId":"2",
+        "bankName":"Citi Bank",
+        "accountNumber":"878778878",
+        "branchNo":"0000"
+    }
+    ]
+
+        
+    }
+}

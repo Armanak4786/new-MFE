@@ -35,7 +35,7 @@
     <div class="flex justify-content-start flex-wrap">
       <div class="p-2">
         <gen-button
-          [btnType]="'border-btn'"
+          [btnType]="currentComponent === 'PaymentForcast' ? 'bg-btn' : 'border-btn'"
           [btnLabel]="'payment_forcast'"
           class="text-xs"
           (onClick)="showPaymentForcast()"
@@ -43,7 +43,7 @@
       </div>
       <div class="p-2">
         <gen-button
-          [btnType]="'border-btn'"
+          [btnType]="currentComponent === 'TransactionFlow' ? 'bg-btn' : 'border-btn'"
           [btnLabel]="'statement'"
           class="text-xs"
           (onClick)="showTransactionFlow()"

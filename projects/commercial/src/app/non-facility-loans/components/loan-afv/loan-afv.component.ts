@@ -42,7 +42,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
   //standalone: true,
   //imports: [],
   templateUrl: './loan-afv.component.html',
-  styleUrls: ['./loan-afv.component.scss'],
+  styleUrl: './loan-afv.component.scss',
 })
 export class LoanAfvComponent {
   currentComponent = 'PaymentSummary';
@@ -99,7 +99,7 @@ export class LoanAfvComponent {
       this.partyId = currentParty?.id;
     });
     if (!this.partyId) {
-      this.router.navigate(['commercial/non-facility-loan']);
+      this.router.navigate(['non-facility-loan']);
     }
   }
 
@@ -121,12 +121,12 @@ export class LoanAfvComponent {
   }
 
   navigateToNonFacility() {
-    this.router.navigate(['commercial/non-facility-loan']);
+    this.router.navigate(['non-facility-loan']);
   }
 
   navigateToLoansDashboard() {
     this.nonFacilityService.navigateToLoan = true;
-    this.router.navigate([`commercial/non-facility-loan`]);
+    this.router.navigate([`non-facility-loan`]);
   }
 
   getNonFacilityData() {

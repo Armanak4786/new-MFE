@@ -125,7 +125,7 @@
     color: var(--primary-color);
 
     &:hover {
-      background-color: #f0f9ff;
+      background-color: var(--subfacility-bg-color);
       border-color: var(--primary-color);
       color: var(--primary-color);
     }
@@ -209,7 +209,7 @@ gen-table {
 .sub-facility{
   // height: 3rem;
   // width: 90rem;
-  background-color: #f0f9ff;
+  background-color: var(--subfacility-bg-color);
   margin-top: -5px;
   border-radius: 10px;
 }
@@ -219,4 +219,18 @@ gen-table {
 }
 .facilityOverlapFix{
   z-index: 0;
+}
+// Non-interactive table styles for bailments subfacility
+::ng-deep .non-interactive-table {
+  pointer-events: none;
+  cursor: default;
+  
+  tbody tr {
+    background-color: var(--subfacility-bg-color);
+    
+    &:hover {
+      background-color: var(--subfacility-bg-color);
+      cursor: default;
+    }
+  }
 }

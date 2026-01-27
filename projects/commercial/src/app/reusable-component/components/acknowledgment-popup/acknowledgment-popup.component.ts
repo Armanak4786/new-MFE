@@ -8,7 +8,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
   // standalone: true,
   // imports: [],
   templateUrl: './acknowledgment-popup.component.html',
-  styleUrls: ['./acknowledgment-popup.component.scss']
+  styleUrl: './acknowledgment-popup.component.scss'
 })
 export class AcknowledgmentPopupComponent {
   message;

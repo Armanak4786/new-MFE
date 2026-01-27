@@ -6,6 +6,7 @@ import { TransactionFlowComponent } from '../../../reusable-component/components
 import { EasylinkComponentLoaderService } from '../../services/easylink-component-loader.service';
 import { RequestRepaymentComponent } from '../../../reusable-component/components/request-repayment/request-repayment.component';
 import {
+  buildSheetData,
   calculatePaymentNotYetAllocated,
   filterByFacilityType,
   getCurrentAccountLoans,
@@ -29,15 +30,16 @@ import { DrawdownRequestComponent } from '../../../reusable-component/components
 import { FacilityType } from '../../../utils/common-enum';
 import { RequestHistoryParams } from '../../../utils/common-interface';
 import { DashboardSetterGetterService } from '../../../dashboard/services/dashboard-setter-getter.service';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-easylink-current-account',
   templateUrl: './easylink-current-account.component.html',
-  styleUrls: ['./easylink-current-account.component.scss'],
+  styleUrl: './easylink-current-account.component.scss',
 })
 export class EasylinkCurrentAccountComponent {
   currentComponent: string | null = null;
   tableId: string;
-  @ViewChild('paymentForcast') paymentForcast: PaymentForcastComponent;
+  @ViewChild('paymentForcast') PaymentForcast: PaymentForcastComponent;
   @Input() facilityType;
   @Input() selectedSubFacility;
   @ViewChild('InterestPaymentForecast')
@@ -71,7 +73,8 @@ export class EasylinkCurrentAccountComponent {
     public printSer: PrintService,
     private commonApiService: CommonApiService,
     public commonSetterGetterSvc: CommonSetterGetterService,
-    public dashboardSetterGetterSvc: DashboardSetterGetterService
+    public dashboardSetterGetterSvc: DashboardSetterGetterService,
+    public translateService: TranslateService,
   ) {}
 
   // ngOnInit() {
@@ -103,28 +106,43 @@ export class EasylinkCurrentAccountComponent {
   // }
 
   ngOnInit() {
-    this.tableId = 'PaymentForcast';
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'PaymentForcast';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
-    const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
-    if (
-      roleBased &&
-      roleBased.functions &&
-      typeof roleBased.functions === 'object'
-    ) {
-      this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
-        fn.trim()
-      );
+    this.facilityType = sessionStorage.getItem('currentFacilityType');
+    this.tableId = 'paymentForcast';
+    const validTabs = ['paymentForcast', 'TransactionFlow', 'requestHistory'];
+
+    const storedComponent = sessionStorage.getItem(
+      'easylinkCurrentAccountComponent',
+    );
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
     } else {
-      this.accessGranted = [];
+      this.currentComponent = 'paymentForcast';
+      sessionStorage.setItem(
+        'easylinkCurrentAccountComponent',
+        this.currentComponent,
+      );
     }
 
-    const partyData = sessionStorage.getItem('currentParty');
-    const party = partyData ? JSON.parse(partyData) : null;
-    this.partyId = party?.id;
+    this.componentLoaderService.component$.subscribe((componentName) => {
+      if (validTabs.includes(componentName)) {
+        this.currentComponent = componentName;
+        sessionStorage.setItem(
+          'easylinkCurrentAccountComponent',
+          componentName,
+        );
+      }
+    });
 
-    const stored = sessionStorage.getItem('selectedAssetlinkSubFacility');
+    const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+    this.accessGranted =
+      roleBased?.functions && typeof roleBased.functions === 'object'
+        ? Object.keys(roleBased.functions).map((fn) => fn.trim())
+        : [];
+
+    const party = JSON.parse(sessionStorage.getItem('currentParty') || '{}');
+    this.partyId = party?.id;
+    const stored = sessionStorage.getItem('selectedEasylinkSubFacility');
     this.selectedSubFacility = stored ? JSON.parse(stored) : null;
 
     this.componentLoaderService.component$.subscribe((componentName) => {
@@ -134,7 +152,7 @@ export class EasylinkCurrentAccountComponent {
     this.paramChangeSubject
       .pipe(
         debounceTime(300),
-        distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+        distinctUntilChanged((prev, curr) => isEqual(prev, curr)),
       )
       .subscribe((eventData) => {
         const updatedParams = {
@@ -168,6 +186,71 @@ export class EasylinkCurrentAccountComponent {
       this.fetchPaymentsTab(transactionFlowParams);
       this.fetchTransactionsTab(transactionFlowParams);
     }
+    // this.tableId = 'PaymentForcast';
+    // const current = sessionStorage.getItem('currentComponent');
+    // this.currentComponent = current ? current : 'PaymentForcast';
+    // sessionStorage.setItem('currentComponent', this.currentComponent);
+    // const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+    // if (
+    //   roleBased &&
+    //   roleBased.functions &&
+    //   typeof roleBased.functions === 'object'
+    // ) {
+    //   this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
+    //     fn.trim()
+    //   );
+    // } else {
+    //   this.accessGranted = [];
+    // }
+
+    // const partyData = sessionStorage.getItem('currentParty');
+    // const party = partyData ? JSON.parse(partyData) : null;
+    // this.partyId = party?.id;
+
+    // const stored = sessionStorage.getItem('selectedAssetlinkSubFacility');
+    // this.selectedSubFacility = stored ? JSON.parse(stored) : null;
+
+    // this.componentLoaderService.component$.subscribe((componentName) => {
+    //   this.currentComponent = componentName;
+    // });
+
+    // this.paramChangeSubject
+    //   .pipe(
+    //     debounceTime(300),
+    //     distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+    //   )
+    //   .subscribe((eventData) => {
+    //     const updatedParams = {
+    //       ...eventData,
+    //       partyId: this.partyId,
+    //       subFacilityId: this.selectedSubFacility?.id,
+    //     };
+    //     this.fetchPaymentForecast(updatedParams);
+    //   });
+
+    // const sessionData = sessionStorage.getItem('financialSummaryData');
+    // const facilityData = sessionData ? JSON.parse(sessionData) : null;
+
+    // const facilityMap = {
+    //   [FacilityType.Assetlink]: facilityData?.assetLinkDetails ?? [],
+    //   [FacilityType.Easylink]: facilityData?.easyLinkDetails ?? [],
+    //   [FacilityType.CreditLines]: facilityData?.creditlineDetails ?? [],
+    //   default: facilityData?.nonFacilityLoansDetails ?? [],
+    // };
+
+    // const details = facilityMap[this.facilityType] || facilityMap.default;
+
+    // this.currentAccountContract = getCurrentAccountLoans(details);
+
+    // if (this.currentAccountContract?.length) {
+    //   const transactionFlowParams = {
+    //     partyId: this.partyId,
+    //     contractId: this.currentAccountContract[0],
+    //   };
+
+    //   this.fetchPaymentsTab(transactionFlowParams);
+    //   this.fetchTransactionsTab(transactionFlowParams);
+    // }
   }
 
   hasAccess(key) {
@@ -219,7 +302,7 @@ export class EasylinkCurrentAccountComponent {
           (sum, item) => {
             return sum + (item.principal || 0);
           },
-          0
+          0,
         );
       }
     }
@@ -260,12 +343,11 @@ export class EasylinkCurrentAccountComponent {
 
   async fetchPaymentsTab(params) {
     try {
-      this.paymentDataList = await this.commonApiService.getPaymentsTabData(
-        params
-      );
+      this.paymentDataList =
+        await this.commonApiService.getPaymentsTabData(params);
       if (this.paymentDataList) {
         this.paymentNotYetAllocated = calculatePaymentNotYetAllocated(
-          this.paymentDataList
+          this.paymentDataList,
         );
       }
     } catch (error) {
@@ -279,7 +361,7 @@ export class EasylinkCurrentAccountComponent {
         await this.commonApiService.getTransactionsTabData(params);
       if (this.transactionsDataList) {
         this.overDue = this.calculateTotalOutstandingAmount(
-          this.transactionsDataList
+          this.transactionsDataList,
         );
       }
     } catch (error) {
@@ -310,10 +392,10 @@ export class EasylinkCurrentAccountComponent {
       if (data) {
         this.originalRequestHistoryDatalist = filterByFacilityType(
           data,
-          FacilityType.Easylink
+          FacilityType.Easylink,
         );
         this.requestHistoryDataList = transformHistoryData(
-          this.originalRequestHistoryDatalist
+          this.originalRequestHistoryDatalist,
         );
       }
     } catch (error) {
@@ -361,36 +443,86 @@ export class EasylinkCurrentAccountComponent {
   }
 
   export() {
-    let dt: any;
-    let columns = [];
-    let data = [];
     const tableId = this.tableId;
-    if (this.tableId == 'paymentForcast') {
-      dt = this.paymentForcast;
-      columns = dt.paymentForecastColumnDefs || [];
-      data = dt.paymentForcastDataList?.paymentForecasts || [];
-    }
-    if (this.tableId == 'TransactionFlow') {
-      if (this.TransactionFlow.dt1) {
-        dt = this.TransactionFlow.dt1;
-        columns = dt.columns || [];
-        data = dt.dataList || [];
-      }
-      if (this.TransactionFlow.dt2) {
-        dt = this.TransactionFlow.dt2;
-        columns = dt.columns || [];
-        data = dt.dataList || [];
-      }
-    }
-
-    if (!tableId || !dt) {
-      console.error('Table ID or data is missing');
+    if (!tableId) {
+      console.error('Table ID is missing');
       return;
     }
 
-    if (columns) {
-      columns = columns.filter((column) => column.headerName !== 'Action');
+    const workbookData = [];
+
+    if (
+      tableId === 'InterestPaymentForecast' &&
+      this.InterestPaymentForecast?.dt1
+    ) {
+      const dt1 = this.InterestPaymentForecast.dt1;
+      const dataListWithoutMonth = dt1.dataList.map(
+        ({ month, ...rest }) => rest,
+      );
+      workbookData.push(
+        buildSheetData({
+          sheetName: 'Interest Payment Forecast',
+          columns: dt1.columns || [],
+          dataList: dataListWithoutMonth || [],
+          translateService: this.translateService,
+          excludedFields: ['Action', 'month'],
+        }),
+      );
     }
-    this.printSer.export('xlsx', tableId, columns, data);
+
+    if (tableId === 'PaymentForcast' && this.PaymentForcast) {
+      const dataListWithoutMonth =
+        this.PaymentForcast.paymentForcastDataList?.paymentForecasts.map(
+          ({ month, ...rest }) => rest,
+        );
+      workbookData.push(
+        buildSheetData({
+          sheetName: 'Payment Forecast',
+          columns: this.PaymentForcast.paymentForecastColumnDefs || [],
+          dataList: dataListWithoutMonth || [],
+          translateService: this.translateService,
+          excludedFields: ['Action', 'month'],
+        }),
+      );
+    }
+
+    if (tableId === 'TransactionFlow') {
+      if (this.TransactionFlow?.dt1) {
+        const dt1 = this.TransactionFlow.dt1;
+        workbookData.push(
+          buildSheetData({
+            sheetName: this.currentComponent,
+            columns: dt1.columns || [],
+            dataList: dt1.dataList || [],
+            translateService: this.translateService,
+            excludedFields: ['Action'],
+          }),
+        );
+      }
+
+      if (this.TransactionFlow?.dt2) {
+        const dt2 = this.TransactionFlow.dt2;
+
+        const dataListWithoutMonth =
+          dt2.dataList?.map(({ month, ...rest }) => rest) || [];
+
+        workbookData.push(
+          buildSheetData({
+            sheetName: 'Transaction Flow - dt2',
+            columns: dt2.columns || [],
+            dataList: dataListWithoutMonth,
+            translateService: this.translateService,
+            excludedFields: ['Action', 'month'],
+          }),
+        );
+      }
+    }
+
+    if (workbookData.length === 0) {
+      console.error('No valid sheets to export');
+      return;
+    }
+
+    this.printSer.export('xlsx', tableId, workbookData);
   }
 }

@@ -1,0 +1,460 @@
+{
+  "data": {
+    "contractDetails": [
+      {
+        "loanNo": 45,
+        "amountDue": "13934",
+        "nextPayment": "26 Sept 2024",
+        "frequency": "Monthly",
+        "loanHeader": {
+          "borrowerInfo": {
+            "name": "Mr. John Smith",
+            "role": "Borrower"
+          },
+          "coBorrowerInfo": {
+            "name": "Mrs. Mary Smith",
+            "role": "Co-Borrower"
+          },
+          "loanDetails": {
+            "loanProgress": {
+              "currentMonth": "01",
+              "totalMonths": "60"
+            },
+            "loanAmount": {
+             
+              "amount": 80000.00
+            },
+            "principalOutstanding": {
+             
+              "amount": 78853.00
+            },
+            "frequency": "Monthly",
+            "interestRate": "6.00%"
+          },
+          "paymentInfo": {
+            "nextPayment": {
+              "amount": 3934.00,
+              "dueDate": "26 Sept 2024"
+            },
+            "finalPayment": {
+              "amount": 3934.00,
+              "dueDate": "26 Sept 2029"
+            }
+          },
+          "footerInfo": {
+            "totalTerm": "60 Months",
+            "vehicleRego": "XYS592YSJSSJ"
+          }
+        },
+        "assetList": [
+          {
+            "id": 1,
+            "vin": "WRYUT-8989867",
+            "assetNo": "2019",
+            "regoNo": 23,
+            "insurer": "ABC TYN",
+            "asset": "2021 Ford Range PUDS4S"
+          },
+          {
+            "id": 2,
+            "vin": "YUTV-89877867",
+            "assetNo": "2022",
+            "regoNo": 266,
+            "insurer": "ABC TYX",
+            "asset": "2022 Ford Range PUDS4S"
+          }
+        ],
+        "transactionsList": [
+          {
+            "id": "1",
+            "date": "26 Aug 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "78853.00"
+          },
+          {
+            "id": "2",
+            "date": "26 Aug 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "78853.00"
+          },
+          {
+            "id": "3",
+            "date": "26 Aug 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "78853.00"
+          },
+          {
+            "id": "4",
+            "date": "26 Sep 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "77700.00"
+          },
+          {
+            "id": "5",
+            "date": "26 Sep 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "77700.00"
+          },
+          {
+            "id": "6",
+            "date": "26 Oct 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "76541.00"
+          },
+          {
+            "id": "7",
+            "date": "26 Oct 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "76541.00"
+          },
+          {
+            "id": "8",
+            "date": "26 Nov 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "75377.00"
+          },
+          {
+            "id": "9",
+            "date": "26 Nov 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "75377.00"
+          },
+          {
+            "id": "10",
+            "date": "26 Dec 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "74207.00"
+          }
+        ],
+        "documentDetails": [
+          {
+            "documentName": "Customer Quote-Basic",
+            "date": "26 OCT 2024",
+            "document": "Screenshot",
+            "docId": "1"
+          },
+          {
+            "documentName": "Payment Shedule",
+            "date": "04 AUG 2024",
+            "document": "Screenshot",
+            "docId": "2"
+          },
+          {
+            "documentName": "Document Name",
+            "date": "14 NOV 2024",
+            "document": "Screenshot",
+            "docId": "3"
+          },
+          {
+            "documentName": "Document name 3",
+            "date": "04 JAN 2024",
+            "document": "Screenshot",
+            "docId": "4"
+          },
+          {
+            "documentName": "Disbursal  Account",
+            "date": "24 OCT 2024",
+            "document": "Screenshot",
+            "docId": "5"
+          }
+        ],
+        "paymentSummary": [
+          {
+            "date": "2024-09-01",
+            "number": 1,
+            "frequency": "Monthly",
+            "payment": 500.0
+          },
+          {
+            "date": "2024-09-15",
+            "number": 2,
+            "frequency": "Weekly",
+            "payment": 150.0
+          }
+        ],
+        "paymentSchedule": [
+          {
+            "paymentDate": "2023-05-05",
+            "principalAmount": 13653,
+            "interestPayment": 13653,
+            "principalBalance": 13653,
+            "remainingInterest": 13653,
+            "paymentAmount": 13653
+          },
+          {
+            "paymentDate": "2023-05-05",
+            "principalAmount": 13653,
+            "interestPayment": 13653,
+            "principalBalance": 13653,
+            "remainingInterest": 13653,
+            "paymentAmount": 13653
+          },
+          {
+            "paymentDate": "2023-05-05",
+            "principalAmount": 13653,
+            "interestPayment": 13653,
+            "principalBalance": 13653,
+            "remainingInterest": 13653,
+            "paymentAmount": 13653
+          },
+          {
+            "paymentDate": "2023-05-05",
+            "principalAmount": 13653,
+            "interestPayment": 13653,
+            "principalBalance": 13653,
+            "remainingInterest": 13653,
+            "paymentAmount": 13653
+          }
+        ]
+      },
+      {
+        "loanNo": 46,
+        "amountDue": "11934",
+        "nextPayment": "11 Sept 2024",
+        "frequency": "Monthly",
+        "loanHeader": {
+          "borrowerInfo": {
+            "name": "Mr. John Smith",
+            "role": "Borrower"
+          },
+          "coBorrowerInfo": {
+            "name": "Mrs. Mary Smith",
+            "role": "Co-Borrower"
+          },
+          "loanDetails": {
+            "loanProgress": {
+              "currentMonth": "05",
+              "totalMonths": "60"
+            },
+            "loanAmount": {
+             
+              "amount": 70000.00
+            },
+            "principalOutstanding": {
+             
+              "amount": 58853.00
+            },
+            "frequency": "Monthly",
+            "interestRate": "6.00%"
+          },
+          "paymentInfo": {
+            "nextPayment": {
+              "amount": 3934.00,
+              "dueDate": "11 Sept 2024"
+            },
+            "finalPayment": {
+              "amount": 3934.00,
+              "dueDate": "11 Sept 2029"
+            }
+          },
+          "footerInfo": {
+            "totalTerm": "60 Months",
+            "vehicleRego": "XYS592YSJSSJ"
+          }
+        },
+        "assetList": [
+          {
+            "id": 1,
+            "vin": "WRYUT-8989867",
+            "assetNo": "235",
+            "regoNo": "989898989",
+            "insurer": "ABC TYN",
+            "asset": "2021 Ford Range PUDS4S"
+          },
+          {
+            "id": 2,
+            "vin": "YUTV-89877867",
+            "assetNo": "236",
+            "regoNo": "676598989",
+            "insurer": "XYZ ABC",
+            "asset": "2022 Ford Range PUDS4S"
+          }
+        ],
+        "transactionsList": [
+          {
+            "id": "1",
+            "date": "26 Aug 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "78853.00"
+          },
+          {
+            "id": "2",
+            "date": "26 Sep 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "76466.00"
+          },
+          {
+            "id": "3",
+            "date": "29 Sep 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "74919.00"
+          },
+          {
+            "id": "4",
+            "date": "16 Oct 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "72532.00"
+          },
+          {
+            "id": "5",
+            "date": "26 Oct 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "70985.00"
+          },
+          {
+            "id": "6",
+            "date": "26 Nov 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "68598.00"
+          },
+          {
+            "id": "7",
+            "date": "29 Nov 2024",
+            "type": "Installment",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "1547.00",
+            "runningBalance": "67051.00"
+          },
+          {
+            "id": "8",
+            "date": "26 Nov 2024",
+            "type": "Custom",
+            "paymentMethod": "Cheque Receivable",
+            "creditAmount": "00.00",
+            "debitAmount": "2387.00",
+            "runningBalance": "64664.00"
+          }
+        ],
+        "documentDetails": [
+          {
+            "documentName": "Customer Quote-Basic",
+            "date": "26 OCT 2024",
+            "document": "Screenshot",
+            "docId": "1"
+          },
+          {
+            "documentName": "Payment Shedule",
+            "date": "04 AUG 2024",
+            "document": "Screenshot",
+            "docId": "2"
+          },
+          {
+            "documentName": "Document Name",
+            "date": "14 NOV 2024",
+            "document": "Screenshot",
+            "docId": "3"
+          },
+          {
+            "documentName": "Document name 3",
+            "date": "04 JAN 2024",
+            "document": "Screenshot",
+            "docId": "4"
+          },
+          {
+            "documentName": "Disbursal  Account",
+            "date": "24 OCT 2024",
+            "document": "Screenshot",
+            "docId": "5"
+          }
+        ],
+        "paymentSummary": [
+          {
+            "date": "2024-09-01",
+            "number": 1,
+            "frequency": "Monthly",
+            "payment": 500.0
+          },
+          {
+            "date": "2024-09-15",
+            "number": 2,
+            "frequency": "Weekly",
+            "payment": 150.0
+          }
+        ],
+        "paymentSchedule": [
+          {
+            "paymentDate": "2023-05-05",
+            "principalAmount": 13653,
+            "interestPayment": 3653,
+            "principalBalance": 12453,
+            "remainingInterest": 3200,
+            "paymentAmount": 1653
+          },
+          {
+            "paymentDate": "2023-06-05",
+            "principalAmount": 12453,
+            "interestPayment": 3200,
+            "principalBalance": 11253,
+            "remainingInterest": 2747,
+            "paymentAmount": 1653
+          },
+          {
+            "paymentDate": "2023-07-05",
+            "principalAmount": 11253,
+            "interestPayment": 2747,
+            "principalBalance": 10053,
+            "remainingInterest": 2294,
+            "paymentAmount": 1653
+          },
+          {
+            "paymentDate": "2023-08-05",
+            "principalAmount": 10053,
+            "interestPayment": 2294,
+            "principalBalance": 8853,
+            "remainingInterest": 1841,
+            "paymentAmount": 1653
+          }
+        ]
+      }
+    ]
+  }
+}

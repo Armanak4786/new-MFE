@@ -35,7 +35,7 @@ import { jwtDecode } from 'jwt-decode';
   // standalone: true,
   // imports: [],
   templateUrl: './floating-floor-plan-drawdown-request.component.html',
-  styleUrls: ['./floating-floor-plan-drawdown-request.component.scss'],
+  styleUrl: './floating-floor-plan-drawdown-request.component.scss',
 })
 export class FloatingFloorPlanDrawdownRequestComponent extends BaseCommercialClass {
   partyId: any;
@@ -474,7 +474,7 @@ export class FloatingFloorPlanDrawdownRequestComponent extends BaseCommercialCla
         if (data?.data == 'cancel') {
           this.ref.close();
           this.router.navigate([
-            `commercial/${this.selectedFacility
+            `${this.selectedFacility
               .toLowerCase()
               .replace(/\s+/g, '')}`,
           ]);

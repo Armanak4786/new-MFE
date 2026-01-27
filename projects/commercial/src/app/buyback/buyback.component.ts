@@ -26,6 +26,7 @@ import {
 import { Router } from '@angular/router';
 import {
   base64ToBlob,
+  clearSession,
   clearUploadedDocuments,
   downloadBase64File,
   getBuyBackSummaryData,
@@ -50,7 +51,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-buyback',
   templateUrl: './buyback.component.html',
-  styleUrls: ['./buyback.component.scss'],
+  styleUrl: './buyback.component.scss',
 })
 export class BuybackComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -164,6 +165,22 @@ export class BuybackComponent {
   // }
 
   ngOnInit() {
+    clearSession([
+      'assetlinkDataList',
+      'easylinkDataList',
+      'creditlineDataList',
+      'bailmentDataList',
+      'fixedFloorPlanDetails',
+      'floatingFloorPlanDetails',
+      'selectedEasylinkSubFacility',
+      'selectedAssetlinkSubFacility',
+      'selectedBailmentSubFacility',
+      'selectedFixedFloorSubFacility',
+      'selectedFloatingFloorSubFacility',
+      'forecastToDate',
+      'forecastFromDate',
+      'forecastFrequency',
+    ]);
     this.tableId = 'buybackForcast';
 
     const partyData = sessionStorage.getItem('currentParty');
@@ -171,7 +188,7 @@ export class BuybackComponent {
     this.partyId = party?.id;
 
     const sessionBuyback = sessionStorage.getItem('buybackDataList');
-    const optionsData = sessionStorage.getItem('optionDataBuyback');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionBuyback) {
       this.buyBackDataList = JSON.parse(sessionBuyback);
@@ -199,17 +216,42 @@ export class BuybackComponent {
   }
 
   afterBuybackLoad() {
+    const validTabs = ['BuybackForecast','Documents','Leases'];
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    } else {
+      this.currentComponent = 'BuybackForecast';
+      sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
+    }
+
     this.dashSvc.setFacilityTpe(FacilityType.Buyback_Group);
+    sessionStorage.setItem('currentFacilityType', FacilityType.Buyback_Group);
 
     this.currencyService.initializeCurrency();
 
-    this.selectedSubFacility = this.buyBackDataList[0];
-    sessionStorage.setItem(
-      'selectedBuybackSubFacility',
-      JSON.stringify(this.selectedSubFacility)
-    );
+    const selectedSessionSubFacility = JSON.parse(sessionStorage.getItem('selectedBuybackSubFacility'));
 
-    this.currentComponent = 'BuybackForecast';
+    if (selectedSessionSubFacility) {
+      this.selectedSubFacility = selectedSessionSubFacility;
+    } else {
+      this.selectedSubFacility = this.buyBackDataList[0];
+      sessionStorage.setItem(
+        'selectedBuybackSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
+    }
+
+    if (this.currentComponent === 'BuybackForecast') {
+      this.showBuybackForcastTab();
+    } else if (this.currentComponent === 'Documents') {
+      this.showDocumentsTab();
+    } else if (this.currentComponent === 'Leases') {
+      this.showLeasesTab();
+    }
+
     this.componentLoaderSvc.component$.subscribe((componentName) => {
       this.currentComponent = componentName;
     });
@@ -222,20 +264,6 @@ export class BuybackComponent {
       };
       this.fetchPaymentForecast(updatedParams);
     });
-
-    const params = {
-      partyId: this.partyId,
-      subFacilityId: this.selectedSubFacility?.id,
-      facilityType: FacilityType.Buyback_Group,
-    };
-    this.fetchAccountForecast(params);
-
-    const principalforecast = {
-      partyId: this.partyId,
-      facilityType: FacilityType.Buyback_Group,
-      subFacilityId: this.selectedSubFacility?.id,
-    };
-    this.fetchPrincipalForecast(principalforecast);
 
     this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
       if (list?.length) {
@@ -250,21 +278,13 @@ export class BuybackComponent {
         }));
 
         sessionStorage.setItem(
-          'optionDataBuyback',
+          'optionDataFacilities',
           JSON.stringify(this.optionData)
         );
 
         this.facilityTypeDropdown = optionDataFacilities['Buyback'];
       }
     });
-    const documentParams = { partyId: this.partyId };
-    this.fetchDocuments(documentParams);
-    const leaseParams = {
-      partyId: this.partyId,
-      facilityType: FacilityType.Buyback_Group,
-      BuybackfacilityType: FacilityType.Buyback_Group,
-    };
-    this.fetchLeases(leaseParams);
   }
 
   async fetchPrincipalForecast(params) {
@@ -346,14 +366,29 @@ export class BuybackComponent {
 
   showBuybackForcastTab() {
     this.currentComponent = 'BuybackForecast';
+    const params = {
+      partyId: this.partyId,
+      subFacilityId: this.selectedSubFacility?.id,
+      facilityType: FacilityType.Buyback_Group,
+    };
+    this.fetchAccountForecast(params);
+    const principalforecast = {
+      partyId: this.partyId,
+      facilityType: FacilityType.Buyback_Group,
+      subFacilityId: this.selectedSubFacility?.id,
+    };
+    this.fetchPrincipalForecast(principalforecast);
     this.componentLoaderSvc.loadComponent('BuybackForecast');
     this.tableId = 'buybackForcast';
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   showDocumentsTab() {
     this.currentComponent = 'Documents';
-
+    const documentParams = { partyId: this.partyId };
+    this.fetchDocuments(documentParams);
     this.componentLoaderSvc.loadComponent('Documents');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   onDocUploadClick(event) {
@@ -376,7 +411,14 @@ export class BuybackComponent {
 
   showLeasesTab() {
     this.currentComponent = 'Leases';
+    const leaseParams = {
+      partyId: this.partyId,
+      facilityType: FacilityType.Buyback_Group,
+      BuybackfacilityType: FacilityType.Buyback_Group,
+    };
+    this.fetchLeases(leaseParams);
     this.componentLoaderSvc.loadComponent('Leases');
+    sessionStorage.setItem('facilityCurrentComponent',this.currentComponent);
   }
 
   async onDocumentClick(event) {
@@ -500,7 +542,15 @@ export class BuybackComponent {
   onFacilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
+  }
+
+  ngOnDestroy() {
+    clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('buybackDataList');
+    clearSession('selectedBuybackSubFacility');
+    clearSession('currentFacilityType');
   }
 }

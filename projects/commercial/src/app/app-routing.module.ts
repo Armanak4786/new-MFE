@@ -57,10 +57,10 @@ const routes: Routes = [
     data: { breadcrumb: 'Buyback' },
   },
   {
-    path: 'bailments',
+    path: 'bailment',
     loadChildren: () =>
       import('./bailments/bailments.module').then((m) => m.BailmentsModule),
-    data: { breadcrumb: 'Bailments' },
+    data: { breadcrumb: 'Bailment' },
   },
   {
     path: 'fixedfloorplan',

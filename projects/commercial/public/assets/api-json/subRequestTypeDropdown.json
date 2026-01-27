@@ -1,0 +1,56 @@
+{
+    "data": {
+        "subRequestTypeList": [
+            {
+                "requestTypeId": 101,
+                "value": "CPF",
+                "label": "Change Payment Frequency"
+            },
+            {
+                "requestTypeId": 101,
+                "value": "CPD",
+                "label": " Change Payment Day"
+            },
+            {
+                "requestTypeId": 101,
+                "value": "CPDD",
+                "label": "Change Payment Date"
+            },
+            {
+                "requestTypeId":102,
+                "value":"ELT",
+                "label":"Extend Loan Term"
+            },
+            {
+                "requestTypeId":102,
+                "value":"RLT",
+                "label":"Reduce Loan Term"
+            },
+            {
+                "requestTypeId":105,
+                "value":"LOE",
+                "label":"Loss of Employment"
+            },
+            {
+                "requestTypeId":105,
+                "value":"SICK",
+                "label":"Sickness"
+            },
+            {
+                "requestTypeId":105,
+                "value":"RI",
+                "label":"Reduced Income"
+            },
+            {
+                "requestTypeId":105,
+                "value":"TEAR",
+                "label":"The End of A Relationship"
+            },
+            {
+                "requestTypeId":105,
+                "value":"OPS",
+                "label":"Other, Please Specify"
+            }
+        ]
+    }
+}

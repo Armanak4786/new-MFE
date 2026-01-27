@@ -49,7 +49,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-view-easylink',
   templateUrl: './view-easylink.component.html',
-  styleUrls: ['./view-easylink.component.scss'],
+  styleUrl: './view-easylink.component.scss',
 })
 export class ViewEasylinkComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -171,15 +171,18 @@ export class ViewEasylinkComponent {
 
   ngOnInit() {
     this.tableId = 'PaymentSummaryAccountForcast';
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'PaymentForcast';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
-    // if (!sessionStorage.getItem('navigateToLoan')) {
-    //   this.currentComponent = 'PaymentForecast';
-    // } else {
-    //   this.currentComponent = 'Loans';
-    //   sessionStorage.removeItem('navigateToLoan');
-    // }
+    const storedComponent = sessionStorage.getItem('easylinkCurrentComponent');
+
+   if (sessionStorage.getItem('navigateToLoan')) {
+     this.currentComponent = 'Loans';
+     sessionStorage.setItem('easylinkCurrentComponent', this.currentComponent);
+     sessionStorage.removeItem('navigateToLoan');
+   } else if (storedComponent) {
+     this.currentComponent = storedComponent;
+   } else {
+   this.currentComponent = 'PaymentForecast';
+   sessionStorage.setItem('easylinkCurrentComponent',this.currentComponent);
+   }
 
     this.commonSetterGetterSvc.navigateToLoan = false;
 
@@ -199,6 +202,7 @@ export class ViewEasylinkComponent {
     this.easylinkComponentLoaderService.component$.subscribe(
       (componentName) => {
         this.currentComponent = componentName;
+        sessionStorage.setItem('easylinkCurrentComponent', componentName);
       }
     );
 
@@ -279,8 +283,13 @@ export class ViewEasylinkComponent {
       //subFacilityId: this.selectedSubFacility.id,
     };
     this.fetchFacilityAssets(assetsParams);
-    const documentarams = { partyId: this.partyId };
-    this.fetchDocuments(documentarams);
+    const documentParams = { partyId: this.partyId };
+    this.fetchDocuments(documentParams);
+
+    if (this.currentComponent === 'requestHistory') {
+      const requestParams = { partyNo: this.partyId };
+      this.fetchRequestHistory(requestParams);
+    }
   }
 
   hasAccess(key) {

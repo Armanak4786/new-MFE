@@ -79,62 +79,143 @@ export class CurrentAccountComponent implements OnInit {
     public translateService: TranslateService
   ) {}
 
+  // ngOnInit() {
+  //   this.tableId = 'PaymentForcast';
+  //   const current = sessionStorage.getItem('currentComponent');
+  //   this.currentComponent = current ? current : 'PaymentForcast';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
+  //   const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+  //   if (
+  //     roleBased &&
+  //     roleBased.functions &&
+  //     typeof roleBased.functions === 'object'
+  //   ) {
+  //     this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
+  //       fn.trim()
+  //     );
+  //   } else {
+  //     this.accessGranted = [];
+  //   }
+  //   const partyData = sessionStorage.getItem('currentParty');
+  //   const partyId = JSON.parse(partyData);
+  //   this.partyId = partyId?.id;
+  //   const stored = sessionStorage.getItem('selectedAssetlinkSubFacility');
+  //   this.selectedSubFacility = stored ? JSON.parse(stored) : [];
+  //   this.componentLoaderService.component$.subscribe((componentName) => {
+  //     this.currentComponent = componentName;
+  //   });
+
+  //   this.paramChangeSubject
+  //     .pipe(
+  //       debounceTime(300),
+  //       distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+  //     )
+  //     .subscribe((eventData) => {
+  //       const updatedParams = {
+  //         ...eventData,
+  //         partyId: this.partyId,
+  //         subFacilityId: this.selectedSubFacility?.id,
+  //       };
+  //       this.fetchPaymentForecast(updatedParams);
+  //     });
+  //   const sessionData = sessionStorage.getItem('financialSummaryData');
+  //   const facilityData = sessionData ? JSON.parse(sessionData) : null;
+  //   const facilityMap = {
+  //     [FacilityType.Assetlink]: facilityData?.assetLinkDetails ?? [],
+  //     [FacilityType.Easylink]: facilityData?.easyLinkDetails ?? [],
+  //     [FacilityType.CreditLines]: facilityData?.creditlineDetails ?? [],
+  //     default: facilityData?.nonFacilityLoansDetails ?? [],
+  //   };
+  //   const details = facilityMap[this.facilityType] || facilityMap.default;
+  //   this.currentAccountContract = getCurrentAccountLoans(details);
+  //   const transactionFlowParams = {
+  //     partyId: this.partyId,
+  //     contractId: this.currentAccountContract[0],
+  //   };
+  //   this.fetchPaymentsTab(transactionFlowParams);
+  //   this.fetchTransactionsTab(transactionFlowParams);
+  // }
   ngOnInit() {
-    this.tableId = 'PaymentForcast';
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'PaymentForcast';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
-    const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
-    if (
-      roleBased &&
-      roleBased.functions &&
-      typeof roleBased.functions === 'object'
-    ) {
-      this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
-        fn.trim()
-      );
-    } else {
-      this.accessGranted = [];
-    }
-    const partyData = sessionStorage.getItem('currentParty');
-    const partyId = JSON.parse(partyData);
-    this.partyId = partyId?.id;
-    const stored = sessionStorage.getItem('selectedAssetlinkSubFacility');
-    this.selectedSubFacility = stored ? JSON.parse(stored) : [];
-    this.componentLoaderService.component$.subscribe((componentName) => {
+  this.tableId = 'PaymentForcast';
+  const validTabs = ['PaymentForcast', 'TransactionFlow','requestHistory'];
+
+  const storedComponent = sessionStorage.getItem(
+    'assetlinkCurrentAccountComponent'
+  );
+
+  if (storedComponent && validTabs.includes(storedComponent)) {
+    this.currentComponent = storedComponent;
+  } else {
+    this.currentComponent = 'PaymentForcast';
+    sessionStorage.setItem(
+      'assetlinkCurrentAccountComponent',
+      this.currentComponent
+    );
+  }
+
+  this.componentLoaderService.component$.subscribe((componentName) => {
+    if (validTabs.includes(componentName)) {
       this.currentComponent = componentName;
+      sessionStorage.setItem(
+        'assetlinkCurrentAccountComponent',
+        componentName
+      );
+    }
+  });
+
+  const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
+  this.accessGranted =
+    roleBased?.functions && typeof roleBased.functions === 'object'
+      ? Object.keys(roleBased.functions).map((fn) => fn.trim())
+      : [];
+
+  const party = JSON.parse(sessionStorage.getItem('currentParty') || '{}');
+  this.partyId = party?.id;
+
+  const stored = sessionStorage.getItem('selectedAssetlinkSubFacility');
+  this.selectedSubFacility = stored ? JSON.parse(stored) : null;
+
+  this.paramChangeSubject
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+    )
+    .subscribe((eventData) => {
+      const updatedParams = {
+        ...eventData,
+        partyId: this.partyId,
+        subFacilityId: this.selectedSubFacility?.id,
+      };
+      this.fetchPaymentForecast(updatedParams);
     });
 
-    this.paramChangeSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged((prev, curr) => isEqual(prev, curr))
-      )
-      .subscribe((eventData) => {
-        const updatedParams = {
-          ...eventData,
-          partyId: this.partyId,
-          subFacilityId: this.selectedSubFacility?.id,
-        };
-        this.fetchPaymentForecast(updatedParams);
-      });
-    const sessionData = sessionStorage.getItem('financialSummaryData');
-    const facilityData = sessionData ? JSON.parse(sessionData) : null;
-    const facilityMap = {
-      [FacilityType.Assetlink]: facilityData?.assetLinkDetails ?? [],
-      [FacilityType.Easylink]: facilityData?.easyLinkDetails ?? [],
-      [FacilityType.CreditLines]: facilityData?.creditlineDetails ?? [],
-      default: facilityData?.nonFacilityLoansDetails ?? [],
-    };
-    const details = facilityMap[this.facilityType] || facilityMap.default;
-    this.currentAccountContract = getCurrentAccountLoans(details);
-    const transactionFlowParams = {
-      partyId: this.partyId,
-      contractId: this.currentAccountContract[0],
-    };
-    this.fetchPaymentsTab(transactionFlowParams);
-    this.fetchTransactionsTab(transactionFlowParams);
+  const facilityData = JSON.parse(
+    sessionStorage.getItem('financialSummaryData') || '{}'
+  );
+
+  const facilityMap = {
+    [FacilityType.Assetlink]: facilityData?.assetLinkDetails ?? [],
+    [FacilityType.Easylink]: facilityData?.easyLinkDetails ?? [],
+    [FacilityType.CreditLines]: facilityData?.creditlineDetails ?? [],
+    default: facilityData?.nonFacilityLoansDetails ?? [],
+  };
+
+  const details = facilityMap[this.facilityType] || facilityMap.default;
+  this.currentAccountContract = getCurrentAccountLoans(details);
+
+  const transactionFlowParams = {
+    partyId: this.partyId,
+    contractId: this.currentAccountContract?.[0],
+  };
+
+  this.fetchPaymentsTab(transactionFlowParams);
+  this.fetchTransactionsTab(transactionFlowParams);
+
+  if (this.currentComponent === 'requestHistory') {
+    this.fetchRequestHistory({ partyNo: this.partyId });
   }
+}
+
 
   onParamsChange(eventData) {
     this.paramChangeSubject.next(eventData);
@@ -214,17 +295,18 @@ export class CurrentAccountComponent implements OnInit {
   }
 
   async showTransactionFlow() {
-    this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
+    // this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
+      const financialList=JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
       const facilityMap = {
-        [FacilityType.Assetlink]: list?.assetLinkDetails ?? [],
-        [FacilityType.Easylink]: list?.easyLinkDetails ?? [],
-        [FacilityType.CreditLines]: list?.creditlineDetails ?? [],
-        default: list?.nonFacilityLoansDetails ?? [],
+        [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
+        [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
+        [FacilityType.CreditLines]: financialList?.creditlineDetails ?? [],
+        default: financialList?.nonFacilityLoansDetails ?? [],
       };
 
       const details = facilityMap[this.facilityType] || facilityMap.default;
       this.currentAccountContract = getCurrentAccountLoans(details);
-    });
+    // });
 
     this.currentComponent = 'TransactionFlow';
     this.componentLoaderService.loadComponent('TransactionFlow');

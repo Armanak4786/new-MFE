@@ -14,3 +14,11 @@
     font-weight: 700;
   }
 }
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-easylink {
+  pointer-events: none !important;
+}

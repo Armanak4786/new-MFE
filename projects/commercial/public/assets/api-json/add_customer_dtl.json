@@ -1,0 +1,40 @@
+{
+    "data": {
+                "title":"Mr.",
+                "firstName":"John",
+                "middleName":"Alex",
+                "lastName":"Smith",
+                "dateOfBirth":"12 Apr 1985",
+                "emailAddress":"JohnSmith@test.com",
+                "mobileNumber":"+64 04 99 999 999",
+                "gender":"Male",
+                "maritalStatus":"Married",
+                "driverLicenceType":"Licence Type Here",
+                "driverLicenceNumber":"12345",
+                "driverLicenceVersion":"628",
+                "noOfDependents":"4",
+                "countryBirth":"Country Name",
+                "countryCitizenship":"New Zealand",
+                "addressId":"",
+                "physicalSearchValue":"Monthly",
+                "residenceType":"Own",
+                "timeAtAddress":"2 years 8 months",
+                "addressCheck":"true",
+                "buildingName": "Building Name",
+                "unitFloorType": "Type",
+                "unitLotNumber": "12",
+                "streetNumber": "4",
+                "streetName": "Unit Type Name",
+                "streetType": "Type",
+                "streetDirection": "Direction Name",
+                "ruralDelivery": "Unit Type Name",
+                "city":"City Name",
+                "suburb": "Type",
+                "postcode": "256790",
+                "country":"New Zealand",
+                "status": "1",
+                "message": "Address updated successfully"   
+        
+            }
+        }
+    

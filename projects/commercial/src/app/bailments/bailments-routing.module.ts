@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: BailmentsComponent,
-    data: { breadcrumb: 'Bailments' },
+    data: { breadcrumb: 'Bailment' },
   },
   {
     path: 'productTransferDisclaimer',

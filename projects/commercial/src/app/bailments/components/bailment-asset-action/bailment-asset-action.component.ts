@@ -100,7 +100,7 @@ export class BailmentAssetActionComponent {
       typeofnavigation:'actions'
     };
     console.log("showPurchaseAssetRequest",params);
-    this.router.navigate(['commercial/bailments/purchase-asset-request'], {
+    this.router.navigate(['bailment/purchase-asset-request'], {
       state: { params: params },
     });
     }
@@ -113,7 +113,7 @@ export class BailmentAssetActionComponent {
       subFacilityId: this.clickedSubfacility.subFacilityId,
       pageFrom: 'swap',
     };
-    this.router.navigate(['commercial/bailments/swaps'], {
+    this.router.navigate(['bailment/swaps'], {
       state: { params: params },
     });
   }

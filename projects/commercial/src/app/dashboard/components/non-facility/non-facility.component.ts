@@ -8,7 +8,7 @@ import { FacilityType } from '../../../utils/common-enum';
 @Component({
   selector: 'app-non-facility-loan',
   templateUrl: './non-facility.component.html',
-  styleUrls: ['./non-facility.component.scss'],
+  styleUrl: './non-facility.component.scss',
 })
 export class NonFacilityComponent {
   @Input() financialSummaryData;
@@ -27,6 +27,16 @@ export class NonFacilityComponent {
         this.financialSummaryData?.nonFacilityLoansDetails,
         FacilityType.NonFacilityLoan
       );
+      this.addIndexToDataList();
+    }
+  }
+
+  addIndexToDataList() {
+    if (this.nonFacilityLoanDataList && Array.isArray(this.nonFacilityLoanDataList)) {
+      this.nonFacilityLoanDataList = this.nonFacilityLoanDataList.map((item, index) => ({
+        ...item,
+        __index: index
+      }));
     }
   }
 

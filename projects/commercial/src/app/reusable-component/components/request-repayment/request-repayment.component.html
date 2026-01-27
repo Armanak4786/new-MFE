@@ -38,10 +38,10 @@
 </p>
 
 <div class="grid gap-2 flex justify-content-end mt-4">
-  <div class="col-12 sm:col-4 md:col-2">
-    <gen-button [btnLabel]="'cancel'" (onClick)="showDialogCancel()" [btnWidth]="'full'"></gen-button>
+  <div class="btn-uniform">
+    <gen-button  [btnType]="'border-btn'" [btnLabel]="'cancel'" (onClick)="showDialogCancel()" [btnWidth]="'full'"></gen-button>
   </div>
-  <div class="col-12 sm:col-4 md:col-2">
+  <div class="btn-uniform">
     <gen-button [btnLabel]="'submit'" (click)="submitData()" [btnWidth]="'full'"></gen-button>
   </div>
 </div>

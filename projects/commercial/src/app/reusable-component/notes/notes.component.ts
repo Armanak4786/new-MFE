@@ -10,7 +10,7 @@ import { documentActions } from '../../utils/common-header-definition';
   //standalone: true,
   //imports: [],
   templateUrl: './notes.component.html',
-  styleUrls: ['./notes.component.scss'],
+  styleUrl: './notes.component.scss',
 })
 export class NotesComponent {
   @Output() seletedNoteDocumentEmit = new EventEmitter<any>();

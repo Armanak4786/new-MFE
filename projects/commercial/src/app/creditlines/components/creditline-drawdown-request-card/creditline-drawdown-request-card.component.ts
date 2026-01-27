@@ -12,7 +12,7 @@ import { DrawdownService } from '../../../drawdown.service';
 @Component({
   selector: 'app-creditline-drawdown-request-card',
   templateUrl: './creditline-drawdown-request-card.component.html',
-  styleUrls: ['./creditline-drawdown-request-card.component.scss'],
+  styleUrl: './creditline-drawdown-request-card.component.scss',
 })
 export class CreditlineDrawdownRequestCardComponent extends BaseCreditlineClass {
   facilityType;

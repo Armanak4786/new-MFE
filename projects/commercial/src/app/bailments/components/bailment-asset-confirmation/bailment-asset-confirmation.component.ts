@@ -64,7 +64,7 @@ export class BailmentAssetConfirmationComponent {
       partyId: this.partyId,
       facilityType: this.facilityType,
     };
-    this.router.navigate(['commercial/bailments']);
+    this.router.navigateByUrl('bailment');
     try {
       if (this.flag == 'purchase-asset') {
         // this.purchaseAssetResponse=

@@ -51,7 +51,7 @@ export const paymentForecastColumnDefs = [
   },
   {
     field: 'amount',
-    headerName: 'total_payments',
+    headerName: 'total_payment',
     format: '#currency',
     sortable: true,
   },

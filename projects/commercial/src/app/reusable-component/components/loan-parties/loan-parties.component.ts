@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   //standalone: true,
   //imports: [],
   templateUrl: './loan-parties.component.html',
-  styleUrls: ['./loan-parties.component.scss'],
+  styleUrl: './loan-parties.component.scss',
 })
 export class LoanPartiesComponent {
   @Input() leasePartiesData;

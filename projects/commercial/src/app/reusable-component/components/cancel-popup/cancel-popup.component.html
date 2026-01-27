@@ -33,7 +33,7 @@
 </div>
 
   <div class="button-container">
-    <gen-button [btnLabel]="'No, go back'" (onClick)="cancel()"></gen-button>
-    <gen-button class="p-button-lg" [btnLabel]="'Yes, cancel'" (onClick)="continue()"></gen-button>
+    <gen-button [btnLabel]="'No, go back'" [btnType]="'border-btn'" (onClick)="cancel()"></gen-button>
+    <gen-button [btnLabel]="'Yes, cancel'" [btnType]="'bg-btn'"(onClick)="continue()"></gen-button>
   </div>
 </div>

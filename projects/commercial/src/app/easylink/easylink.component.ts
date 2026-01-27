@@ -26,7 +26,7 @@ import { take } from 'rxjs';
 @Component({
   selector: 'app-easylink',
   templateUrl: './easylink.component.html',
-  styleUrls: ['./easylink.component.scss'],
+  styleUrl: './easylink.component.scss',
 })
 export class EasylinkComponent {
   optionData;
@@ -132,8 +132,89 @@ export class EasylinkComponent {
   //   });
   // }
 
+  // ngOnInit() {
+  //   // Clear unrelated session (same as you had)
+  //   clearSession([
+  //     'assetlinkDataList',
+  //     'selectedAssetlinkSubFacility',
+  //     'forecastToDate',
+  //     'forecastFromDate',
+  //     'forecastFrequency',
+  //   ]);
+
+  //   this.commonSetterGetterSvc.setDisableParty(false);
+
+  //   const partyData = sessionStorage.getItem('currentParty');
+  //   this.partyId = partyData ? JSON.parse(partyData)?.id : null;
+
+  //   const sessionEasylink = sessionStorage.getItem('easylinkDataList');
+  //   const optionsData = sessionStorage.getItem('optionDataEasylink');
+  //   if (optionsData) {
+  //     this.facilityTypeDropdown = optionDataFacilities['Easylink'];
+  //     this.optionData = JSON.parse(optionsData);
+  //   }
+  //   if (sessionEasylink) {
+  //     this.easylinkDataList = JSON.parse(sessionEasylink);
+  //   } else {
+  //     const sessionFinancial = sessionStorage.getItem('financialSummaryData');
+  //     const financialData = sessionFinancial
+  //       ? JSON.parse(sessionFinancial)
+  //       : null;
+
+  //     const easylinkDetails = financialData?.easyLinkDetails || [];
+
+  //     this.easylinkDataList = updateDataList(
+  //       easylinkDetails,
+  //       FacilityType.Easylink_Group
+  //     );
+
+  //     sessionStorage.setItem(
+  //       'easylinkDataList',
+  //       JSON.stringify(this.easylinkDataList)
+  //     );
+  //   }
+
+  //   if (!this.easylinkDataList?.length) {
+  //     this.router.navigate(['commercial']);
+  //     return;
+  //   }
+
+  //   this.initChart();
+  //   this.dashSvc.setFacilityTpe(this.facilityType);
+
+  //   this.selectedSubFacility = this.easylinkDataList[0];
+  //   sessionStorage.setItem(
+  //     'selectedEasylinkSubFacility',
+  //     JSON.stringify(this.selectedSubFacility)
+  //   );
+
+  //   this.currentFacility = 'viewEasylink';
+  //   this.componentLoaderService.facilityComponent$.subscribe(
+  //     (componentName) => {
+  //       this.currentFacility = componentName;
+  //     }
+  //   );
+
+  //   this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
+  //     if (!list?.length) return;
+
+  //     this.facilityDataList = list;
+  //     this.optionData = this.facilityDataList.map((item) => ({
+  //       label: FacilityTypeDropdown[item.value],
+  //       value:
+  //         optionDataFacilities[item.label as keyof typeof optionDataFacilities],
+  //     }));
+  //     if (this.optionData) {
+  //       sessionStorage.setItem(
+  //         'optionDataEasylink',
+  //         JSON.stringify(this.optionData)
+  //       );
+  //     }
+
+  //     this.facilityTypeDropdown = optionDataFacilities['Easylink'];
+  //   });
+  // }
   ngOnInit() {
-    // Clear unrelated session (same as you had)
     clearSession([
       'assetlinkDataList',
       'selectedAssetlinkSubFacility',
@@ -141,14 +222,19 @@ export class EasylinkComponent {
       'forecastFromDate',
       'forecastFrequency',
     ]);
-
     this.commonSetterGetterSvc.setDisableParty(false);
+    sessionStorage.setItem('currentFacilityType', this.facilityType);
 
     const partyData = sessionStorage.getItem('currentParty');
     this.partyId = partyData ? JSON.parse(partyData)?.id : null;
 
+    const storedSubFacility = JSON.parse(
+      sessionStorage.getItem('selectedEasylinkSubFacility')
+    );
+    const storedView = sessionStorage.getItem('easylinkCurrentView');
+
     const sessionEasylink = sessionStorage.getItem('easylinkDataList');
-    const optionsData = sessionStorage.getItem('optionDataEasylink');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
     if (optionsData) {
       this.facilityTypeDropdown = optionDataFacilities['Easylink'];
       this.optionData = JSON.parse(optionsData);
@@ -174,24 +260,35 @@ export class EasylinkComponent {
       );
     }
 
-    if (!this.easylinkDataList?.length) {
-      this.router.navigate(['commercial']);
-      return;
+  if (!this.easylinkDataList?.length) {
+    this.router.navigate(['dashboard']);
+    return;
+  }
+  this.initChart();
+  this.dashSvc.setFacilityTpe(this.facilityType);
+  if (storedView) {
+    this.currentFacility = storedView;
+
+    if (storedSubFacility) {
+      this.selectedSubFacility = storedSubFacility;
+    } else {
+      this.selectedSubFacility = this.easylinkDataList[0];
     }
-
-    this.initChart();
-    this.dashSvc.setFacilityTpe(this.facilityType);
-
+  } else {
+    // First-time load
     this.selectedSubFacility = this.easylinkDataList[0];
+    this.currentFacility = 'viewEasylink';
     sessionStorage.setItem(
       'selectedEasylinkSubFacility',
       JSON.stringify(this.selectedSubFacility)
     );
+     sessionStorage.setItem('easylinkCurrentView', this.currentFacility);
+   }
 
-    this.currentFacility = 'viewEasylink';
     this.componentLoaderService.facilityComponent$.subscribe(
       (componentName) => {
         this.currentFacility = componentName;
+        sessionStorage.setItem('easylinkCurrentView', componentName);
       }
     );
 
@@ -206,7 +303,7 @@ export class EasylinkComponent {
       }));
       if (this.optionData) {
         sessionStorage.setItem(
-          'optionDataEasylink',
+          'optionDataFacilities',
           JSON.stringify(this.optionData)
         );
       }
@@ -309,6 +406,7 @@ export class EasylinkComponent {
         ? 'currentAccount'
         : 'easylinkFacility';
 
+    sessionStorage.setItem('easylinkCurrentView', componentToLoad);
     // Always call even if same component
     this.componentLoaderService.loadComponentOnFacilitySelection(null); // Clear it
     setTimeout(() => {
@@ -325,11 +423,18 @@ export class EasylinkComponent {
   onFrequencyChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('selectedEasylinkSubFacility');
+    clearSession('easylinkDataList');
+    clearSession('easylinkSubfacilityCurrentComponent');
+    clearSession('easylinkCurrentAccountComponent');
+    clearSession('easylinkCurrentComponent');
+    clearSession('easylinkCurrentView');
+
   }
 }

@@ -1,0 +1,43 @@
+{
+  "data": {
+    "loanDetails": {
+      "loanNo": "45",
+      "amountDue": "13934",
+      "nextPayment": "26 Sept 2024",
+      "frequency": "Monthly"
+    },
+    "documentDetails": [
+      {
+        "documentName": "Customer Quote-Basic",
+        "date": "26 OCT 2024",
+        "document": "Screenshot",
+        "docId": "1"
+      },
+      {
+        "documentName": "Payment Shedule",
+        "date": "04 AUG 2024",
+        "document": "Screenshot",
+        "docId": "2"
+      },
+      {
+        "documentName": "Document Name",
+        "date": "14 NOV 2024",
+        "document": "Screenshot",
+        "docId": "3"
+      },
+      {
+        "documentName": "Document name 3",
+        "date": "04 JAN 2024",
+        "document": "Screenshot",
+        "docId": "4"
+      },
+      {
+        "documentName": "Disbursal  Account",
+        "date": "24 OCT 2024",
+        "document": "Screenshot",
+        "docId": "5"
+      }
+    ]
+  }
+}
+ 

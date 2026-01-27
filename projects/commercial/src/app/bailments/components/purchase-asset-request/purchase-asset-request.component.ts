@@ -206,13 +206,13 @@ export class PurchaseAssetRequestComponent {
       });
       this.ref.close();
       if (this.facilityType === FacilityType.FixedFloorPlan_Group) {
-        this.router.navigate(['commercial/fixedfloorplan/payment-request'], {
+        this.router.navigate(['fixedfloorplan/payment-request'], {
           state: { params: params },
         });
       } else {
         // this.bailmentComponentLoaderService.setData(this.filteredAssetsDataList);
         sessionStorage.setItem('filteredAssetsDataList',JSON.stringify(this.filteredAssetsDataList));
-        this.router.navigate(['commercial/bailments/purchase-asset-request'], {
+        this.router.navigate(['bailment/purchase-asset-request'], {
           state: { params: params },
         });
       }

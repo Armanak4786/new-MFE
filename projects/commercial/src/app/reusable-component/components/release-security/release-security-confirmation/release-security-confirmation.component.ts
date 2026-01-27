@@ -302,7 +302,7 @@ export class ReleaseSecurityConfirmationComponent implements OnInit {
         .onClose.subscribe((data: CloseDialogData) => {
           this.ref.close(data);
           this.router.navigate([
-            `commercial/${this.facilityType.toLowerCase()}`,
+            `${this.facilityType.toLowerCase()}`,
           ]);
         });
     } catch (error) {
@@ -333,7 +333,7 @@ export class ReleaseSecurityConfirmationComponent implements OnInit {
         if (data?.data == 'cancel') {
           this.ref.close();
           this.router.navigate([
-            `commercial/${this.facilityType.toLowerCase()}`,
+            `${this.facilityType.toLowerCase()}`,
           ]);
         }
       });

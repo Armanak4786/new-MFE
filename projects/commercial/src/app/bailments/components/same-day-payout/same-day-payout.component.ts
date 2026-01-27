@@ -178,7 +178,7 @@ export class SameDayPayoutComponent {
     if (this.filteredAssetsDataList) {
       // this.bailmentComponentLoaderService.setData(this.filteredAssetsDataList);
       sessionStorage.setItem('filteredAssetsDataList',JSON.stringify(this.filteredAssetsDataList));
-      this.router.navigate(['commercial/bailments/same-day-payout'], {
+      this.router.navigate(['bailment/same-day-payout'], {
         state: { params: params },
       });
 

@@ -51,7 +51,7 @@ import {
   //standalone: true,
   //imports: [],
   templateUrl: './ol-lease-details.component.html',
-  styleUrls: ['./ol-lease-details.component.scss'],
+  styleUrl: './ol-lease-details.component.scss',
 })
 export class OlLeaseDetailsComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -100,7 +100,7 @@ export class OlLeaseDetailsComponent {
     this.leaseData = this.olSetterGetterService.getLeaseData();
     if (!this.leaseData) {
       // If no data found, navigate back
-      this.router.navigate(['commercial/operating-lease']);
+      this.router.navigate(['operating-lease']);
     } else {
       this.facilityType = this.dashSvc.getFacilityTpe();
       //this.partyId = JSON.parse(sessionStorage.getItem('currentParty'));
@@ -311,12 +311,12 @@ export class OlLeaseDetailsComponent {
 
   navigateToOperatingLease() {
     this.olSetterGetterService.navigateToLease = false;
-    this.router.navigate(['commercial/operating-lease']);
+    this.router.navigate(['operating-lease']);
   }
 
   navigateToLoansDashboard() {
     this.olSetterGetterService.navigateToLease = true;
-    this.router.navigate([`commercial/operating-lease`]);
+    this.router.navigate([`operating-lease`]);
   }
 
   // onDocumentClick(event) {

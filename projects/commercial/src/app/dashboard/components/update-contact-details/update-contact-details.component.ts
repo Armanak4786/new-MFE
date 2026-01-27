@@ -12,7 +12,7 @@ import { PartyDetailsAcknowledgementComponent } from '../../../reusable-componen
 @Component({
   selector: 'app-update-contact-details',
   templateUrl: './update-contact-details.component.html',
-  styleUrls: ['./update-contact-details.component.scss'],
+  styleUrl: './update-contact-details.component.scss',
 })
 export class UpdateContactDetailsComponent extends BaseFormClass {
   pageCode: string = 'ReqdropdownComponent';
@@ -217,7 +217,7 @@ export class UpdateContactDetailsComponent extends BaseFormClass {
           width: '50vw',
         })
         .onClose.subscribe(() => {
-          this.svc.router.navigateByUrl('/dashboard/update-party-details');
+          this.router.navigateByUrl('/dashboard/update-party-details');
         });
     }
   }
@@ -234,7 +234,7 @@ export class UpdateContactDetailsComponent extends BaseFormClass {
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-          this.svc.router.navigateByUrl('/dashboard/update-party-details');
+          this.router.navigateByUrl('/dashboard/update-party-details');
         }
       });
   }

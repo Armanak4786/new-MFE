@@ -1,0 +1,19 @@
+{
+    "data":{
+        "contactId":"1",
+        "mobile":"+44342547442390",
+        "phone":"737838368990",
+        "email":"jhonsmithgmail.com",
+        "percentage":"12",
+        "corporateName":"jhonsmith",
+        "date":"2024-08-12",
+        "dropdown":"2",
+        "identification":"hrfps2233q",
+        "name":"jhon smith",
+        "number":"56789",
+        "rate"  : "45",
+        "time":"2024-08-12 12:30",
+        "checkbox":true,
+        "toggle":true
+    }
+}

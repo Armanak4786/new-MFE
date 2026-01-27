@@ -37,7 +37,7 @@ import { notesActions } from '../../../utils/common-header-definition';
   //standalone: true,
   //imports: [],
   templateUrl: './asset-details.component.html',
-  styleUrls: ['./asset-details.component.scss'],
+  styleUrl: './asset-details.component.scss',
 })
 export class AssetDetailsComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -89,9 +89,7 @@ export class AssetDetailsComponent {
       }
     );
 
-    this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-      this.partyId = currentParty?.id;
-    });
+    this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
     this.commonSetterGetterSvc.partyList$.subscribe((partyDetail) => {
       this.partyDetail = partyDetail;
     });
@@ -223,9 +221,9 @@ export class AssetDetailsComponent {
   }
   showDialogViewModule() {
     if (this.currentModule === FacilityType.Bailment_Group) {
-      this.router.navigate([`commercial/bailments`]);
+      this.router.navigate([`bailment`]);
     } else if (this.currentModule === FacilityType.FixedFloorPlan) {
-      this.router.navigate([`commercial/fixedfloorplan`]);
+      this.router.navigate([`fixedfloorplan`]);
     }
   }
 

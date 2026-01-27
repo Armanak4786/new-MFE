@@ -9,7 +9,7 @@ import { Validators } from '@angular/forms';
   // standalone: true,
   // imports: [],
   templateUrl: './drawdown-details.component.html',
-  styleUrls: ['./drawdown-details.component.scss'],
+  styleUrl: './drawdown-details.component.scss',
 })
 export class DrawdownDetailsComponent extends BaseAssetlinkClass {
   facilityType = FacilityType;

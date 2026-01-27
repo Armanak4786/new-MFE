@@ -27,7 +27,7 @@ import { DocumentsComponent } from '../../../reusable-component/components/docum
   //standalone: true,
   //imports: [],
   templateUrl: './fixed-floor-plan-facility.component.html',
-  styleUrls: ['./fixed-floor-plan-facility.component.scss'],
+  styleUrl: './fixed-floor-plan-facility.component.scss',
 })
 export class FixedFloorPlanFacilityComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;

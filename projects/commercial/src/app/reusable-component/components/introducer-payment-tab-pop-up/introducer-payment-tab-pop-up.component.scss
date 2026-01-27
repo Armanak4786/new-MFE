@@ -1,0 +1,35 @@
+.text-row {
+  display: grid;
+  grid-template-columns:
+    1fr        /* Date */
+    1.2fr      /* Transaction */
+    2fr        /* Description */
+    1.3fr      /* Asset */
+    1.2fr        /* Reg */
+    1.2fr      /* Dealer */
+    0.8fr;     /* Amount */
+  gap: 12px;
+  padding: 6px 0;
+  align-items: center;
+  width: 100%;
+}
+
+.text-row2 {
+  display: grid;
+  grid-template-columns:
+    1fr      /* Date */
+    1.2fr      /* Method */
+    1fr        /* Amount */
+    1fr;       /* ID */
+  gap: 12px;
+  padding: 6px 0;
+  align-items: center;
+  width: 100%;
+}
+
+
+.header-text {
+  font-size: 12px;
+  color: #374151;
+}
+

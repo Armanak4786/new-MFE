@@ -377,8 +377,9 @@
  ::ng-deep .p-dropdown-panel {
   top: auto !important;
   bottom: unset !important;
-   transition: all 0.3s ease;
-   margin-top: 5px;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  width: -webkit-fill-available;
 }
 // .customDropdown {
 //   .p-dropdown {
@@ -451,4 +452,9 @@ label.required::after {
 }
 :host ::ng-deep .p-datepicker {
   z-index: 9999;
+}
+
+.btn-uniform {
+  min-width: 160px;
+  text-align: center;
 }

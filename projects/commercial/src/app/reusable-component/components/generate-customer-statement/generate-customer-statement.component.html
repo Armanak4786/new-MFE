@@ -4,6 +4,7 @@
       [labelClass]="'label-xs label-color'"
       [labelType]="'vertical'"
       [label]="'from'"
+      [dateFormat]="'dd/mm/yy'"
       (change)="onFromDateChange($event)"
     ></date>
   </div>
@@ -12,6 +13,8 @@
       [labelClass]="'label-xs label-color'"
       [labelType]="'vertical'"
       [label]="'to'"
+      [dateFormat]="'dd/mm/yy'"
+      [min]="fromDate"
       (change)="onToDateChange($event)"
     ></date>
   </div>

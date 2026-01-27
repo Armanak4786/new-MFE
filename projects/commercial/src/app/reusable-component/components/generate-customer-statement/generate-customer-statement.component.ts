@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CommonApiService } from '../../../services/common-api.service';
 import {
@@ -10,88 +10,113 @@ import { CloseDialogData, CommonService, ToasterService } from 'auro-ui';
 import { AcknowledgmentPopupComponent } from '../acknowledgment-popup/acknowledgment-popup.component';
 import { downloadBase64File } from '../../../utils/common-utils';
 import { GenerateCustomerStatementParams } from '../../../utils/common-enum';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-generate-customer-statement',
   //standalone: true,
   //imports: [],
   templateUrl: './generate-customer-statement.component.html',
-  styleUrls: ['./generate-customer-statement.component.scss'],
+  styleUrl: './generate-customer-statement.component.scss',
 })
-export class GenerateCustomerStatementComponent implements OnInit {
-  contractId;
-  fromDate;
-  toDate;
-  typeOfStatement;
-  scheduleType;
+export class GenerateCustomerStatementComponent implements OnInit, OnDestroy {
+  contractId?: number;  
+  fromDate?: string;
+  toDate?: string;  
+  typeOfStatement?: string;
+  scheduleType?: string;  
+  private destroy$ = new Subject<void>();
 
   constructor(
-    public dynamicDialogConfig: DynamicDialogConfig,
-    public commonapiService: CommonApiService,
-    public toasterService: ToasterService,
-    public svc: CommonService,
-    public ref: DynamicDialogRef
+    private dynamicDialogConfig: DynamicDialogConfig,
+    private commonapiService: CommonApiService,
+    private toasterService: ToasterService,
+    private svc: CommonService,
+    private ref: DynamicDialogRef
   ) {}
 
-  async ngOnInit() {
+  ngOnInit(): void {
     this.contractId = this.dynamicDialogConfig?.data?.contractId;
     this.typeOfStatement = this.dynamicDialogConfig?.data?.typeOfStatement;
   }
-  onFromDateChange(event: any) {
-    this.fromDate = event?.target?.value;
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  onToDateChange(event: any) {
-    this.toDate = event?.target?.value;
+  onFromDateChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.fromDate = inputElement?.value;
   }
 
-  async generateStatement() {
+  onToDateChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.toDate = inputElement?.value;
+  }
+
+  async generateStatement(): Promise<void> {
     try {
-      if (this.typeOfStatement === GenerateCustomerStatementParams.GeneratePrincipalandInterestSchedule) {
-        this.scheduleType = GenerateCustomerStatementParams.GeneratePrincipalandInterestSchedule;
-      } else {
-        this.scheduleType = GenerateCustomerStatementParams.GenerateCustomerStatement;
+      const areDatesSelected = this.fromDate && this.toDate;
+      if (!areDatesSelected) {
+        this.toasterService.showToaster({
+          severity: 'error',
+          detail: 'Please select both From and To dates.',
+        });
+        return;
       }
-      const generateCustomerStatementParams: AssetTransactionParams = {
+
+      const fromDateObj = new Date(this.fromDate);
+      const toDateObj = new Date(this.toDate);
+      const isDateRangeValid = toDateObj >= fromDateObj;
+      
+      if (!isDateRangeValid) {
+        this.toasterService.showToaster({
+          severity: 'error',
+          detail: 'To date cannot be earlier than From date.',
+        });
+        return;
+      }
+      const isPrincipalAndInterestSchedule = 
+        this.typeOfStatement === GenerateCustomerStatementParams.GeneratePrincipalandInterestSchedule;
+      
+      this.scheduleType = isPrincipalAndInterestSchedule
+        ? GenerateCustomerStatementParams.GeneratePrincipalandInterestSchedule
+        : GenerateCustomerStatementParams.GenerateCustomerStatement;
+
+      const requestParams: AssetTransactionParams = {
         ContractId: this.contractId,
       };
 
-      const customerStatementBody: CustomerStatementBody = {
+      const requestBody: CustomerStatementBody = {
         fromDate: this.fromDate,
         toDate: this.toDate,
         scheduleType: this.scheduleType,
       };
 
       const response = await this.commonapiService.generateCustomerStatement(
-        generateCustomerStatementParams,
-        customerStatementBody
+        requestParams,
+        requestBody
       );
-      const message =
-        'Your statement has been successfully generated. You can also view and download it from the Documents tab of your loan.';
-      const params = {
+      if (!response || !response.documentId) {
+        throw new Error('Invalid response from server');
+      }
+      const documentParams: DocumentByIdParams = {
         contractId: this.contractId,
         documentId: response.documentId,
       };
-      const document = await this.fetchDocumentById(params);
-      downloadBase64File(document);
-      this.svc.dialogSvc
-        .show(AcknowledgmentPopupComponent, ' ', {
-          templates: {
-            footer: null,
-          },
-          data: {
-            message: message,
-          },
+      const document = await this.fetchDocumentById(documentParams);
 
-          height: '25vw',
-          width: '35vw',
-          contentStyle: { overflow: 'auto' },
-          styleClass: 'dialogue-scroll',
-          position: 'center',
-        })
-        .onClose.subscribe((data: CloseDialogData) => {
-          this.ref.close(data);
-        });
+      if (!document) {
+        throw new Error('Failed to fetch document');
+      }
+
+      downloadBase64File(document);
+
+      const successMessage =
+        'Your statement has been successfully generated. You can also view and download it from the Documents tab of your loan.';
+      
+      this.showSuccessDialog(successMessage);
     } catch (error) {
       console.error('Error generating customer statement:', error);
       this.toasterService.showToaster({
@@ -102,12 +127,29 @@ export class GenerateCustomerStatementComponent implements OnInit {
     }
   }
 
-  async fetchDocumentById(params: DocumentByIdParams) {
-    try {
-      const document = await this.commonapiService.getDocumentById(params);
-      return document;
-    } catch (error) {
-      console.log('Error while loadding document by Id data', error);
-    }
+  async fetchDocumentById(params: DocumentByIdParams): Promise<any> {
+    const document = await this.commonapiService.getDocumentById(params);
+    return document;
+  }
+
+  private showSuccessDialog(message: string): void {
+    this.svc.dialogSvc
+      .show(AcknowledgmentPopupComponent, ' ', {
+        templates: {
+          footer: null,
+        },
+        data: {
+          message: message,
+        },
+        height: '25vw',
+        width: '35vw',
+        contentStyle: { overflow: 'auto' },
+        styleClass: 'dialogue-scroll',
+        position: 'center',
+      })
+      .onClose.pipe(takeUntil(this.destroy$))
+      .subscribe((data: CloseDialogData) => {
+        this.ref.close(data);
+      });
   }
 }

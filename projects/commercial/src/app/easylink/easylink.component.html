@@ -4,9 +4,11 @@
       <dropdown
         [options]="optionData"
         [value]="facilityTypeDropdown"
+        [clearable]="false"
         [labelType]="'vertical'"
         (change)="onFrequencyChange($event)"
       ></dropdown>
+      <!-- [clearable]="false" -->
       <div class="flex justify-between gap-7">
         <div
           class="chart-container flex align-items-center justify-content-center p-3 pt-3 ml-4"

@@ -37,7 +37,7 @@
       </div>
     </div>
   </div>
-  <div class="mt-4 ml-4">
+  <div class="mt-4 ml-1">
     <amount
       [mode]="'label'"
       [valueClass]="'text-xs font-bold ml-2'"
@@ -46,7 +46,7 @@
       [value]="seletedRecoredData['Amount']"
     ></amount>
   </div>
-  <div class="mt-4 ml-5">
+  <div class="mt-4 ml-3">
     <text
       [mode]="'label'"
       [labelClass]="'text-xs font-bold'"
@@ -55,15 +55,19 @@
     ></text>
   </div>
 
-  <table class="w-full table-auto border-collapse ml-4">
+  <table class="w-full table-auto border-collapse ml-2">
     <thead>
       <tr class="border-b">
-        <th class="text-xs label-color p-2">{{ "id_ref" | translate }}</th>
+        <th class="text-xs label-color p-2">
+          {{ isIntroducer ? "Loan" : ("id_ref" | translate) }}
+        </th>
         <th class="text-xs label-color p-2">{{ "date" | translate }}</th>
         <th class="text-xs label-color p-2">{{ "amount" | translate }}</th>
         <th class="text-xs label-color p-2">{{ "product" | translate }}</th>
         <th class="text-xs label-color p-2">{{ "program" | translate }}</th>
-        <th class="text-xs label-color p-2">{{ "asset_id" | translate }}</th>
+        <th class="text-xs label-color p-2">
+          {{ isIntroducer ? "Transaction" : ("asset_id" | translate) }}
+        </th>
       </tr>
     </thead>
 
@@ -71,14 +75,21 @@
       <tr *ngFor="let detail of purchaseDetails" class="border-b">
         <!-- ID REF + clickable contract -->
         <td class="p-2">
-          <text [mode]="'label'" [valueClass]="'text-xs'"></text>
-
-          <a
-            class="loan-dash-text font-bold text-blue-600 cursor-pointer"
-            (click)="onContractClick(op, detail?.contractId, $event)"
+          <!-- <text [mode]="'label'" [valueClass]="'text-xs'"></text> -->
+          <span
+            *ngIf="isIntroducer; else clickableContract"
+            class="text-xs font-bold"
           >
             {{ detail?.contractId }}
-          </a>
+          </span>
+          <ng-template #clickableContract>
+            <a
+              class="loan-dash-text font-bold text-blue-600 cursor-pointer"
+              (click)="onContractClick(op, detail?.contractId, $event)"
+            >
+              {{ detail?.contractId }}
+            </a>
+          </ng-template>
         </td>
 
         <!-- Date -->
@@ -122,9 +133,14 @@
           <text
             [mode]="'label'"
             [valueClass]="'text-xs'"
-            [value]="detail?.dealerStockNo || detail?.manufacturerStockNo"
+            [value]="
+              isIntroducer
+                ? detail?.flowType
+                : detail?.dealerStockNo || detail?.manufacturerStockNo
+            "
           ></text>
         </td>
+        <!-- [value]="detail?.dealerStockNo || detail?.manufacturerStockNo" -->
       </tr>
     </tbody>
   </table>

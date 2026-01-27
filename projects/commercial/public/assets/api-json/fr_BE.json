@@ -1,0 +1,28 @@
+{
+    "labelData": {
+        "api_start": "*****************DÉBUT*****************",
+        "lbl_msgkey_noslabconfiguredfortransaction": "Aucun palier configuré pour la transaction",
+        "lbl_msgkey_onlymaker": "Seul le créateur peut soumettre ou accepter à nouveau",
+        "lbl_msgkey_userinactive": "L'utilisateur n'est pas actif. Veuillez réessayer plus tard ou contacter la banque",
+        "lbl_msgkey_operationcannotbeperformed": "L'opération ne peut pas être effectuée. Veuillez réessayer plus tard",
+        "lbl_msgkey_singleuserprofile": "Une fois qu'un utilisateur est désactivé, vous ne pouvez traiter/autoriser aucune transaction, à moins qu'un nouvel utilisateur avec le même profil ne soit ajouté",
+        "lbl_msgkey_clearpendingtransactions": "Veuillez effacer toutes les transactions en attente",
+        "lbl_msgkey_contact_preregistered_for_other_user": "Le numéro de téléphone / l'ID e-mail fourni est déjà enregistré dans le système pour un autre utilisateur",
+        "lbl_msgkey_contact_preregistered_for_same_user": "L'ID e-mail et le numéro de téléphone fournis sont déjà enregistrés pour cet utilisateur",
+        "lbl_msgkey_invaliduserhardtoken": "Le numéro de jeton fourni n'est pas lié à l'utilisateur et la demande ne pourra pas être soumise",
+        "lbl_msgkey_invaliduservascotoken": "Le jeton matériel n'est pas activé pour l'utilisateur",
+        "lbl_msgkey_hardtokenisnotlinked": "Le numéro de jeton fourni n'est pas lié à l'utilisateur",
+        "api_ends": "*****************FIN*****************",
+        "digit_start": "*****************DÉBUT*****************",
+        "dig_1": "1",
+        "dig_2": "2",
+        "welcomeToUDCApp": "Bienvenue dans l'application UDC",
+        "Login": "Se connecter",
+        "Help": "Aide",
+        "Dashboard": "Tableau de bord",
+        "quickMenuSearch": "Recherche dans le menu",
+        "Logout": "Se déconnecter",
+        "Hi": "Bonjour",
+        "weAreWorkingOnWebsiteDevelopment": "Nous travaillons sur le développement du site web."
+    }
+}

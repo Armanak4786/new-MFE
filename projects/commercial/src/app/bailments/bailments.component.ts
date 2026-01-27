@@ -120,12 +120,27 @@ export class BailmentsComponent {
     public toasterService: ToasterService,
     public dialogService: DialogService,
     public printSer: PrintService,
-    public translateService: TranslateService
+    public translateService: TranslateService,
   ) {}
 
   // ngOnInit() {
-  //   this.currentComponent = 'FacilitySummary';
+  //   clearSession([
+  //     'assetlinkDataList',
+  //     'easylinkDataList',
+  //     'creditlineDataList',
+  //     'fixedFloorPlanDetails',
+  //     'floatingFloorPlanDetails',
+  //     'selectedEasylinkSubFacility',
+  //     'selectedAssetlinkSubFacility',
+  //     'forecastToDate',
+  //     'forecastFromDate',
+  //     'forecastFrequency',
+  //   ]);
+  //   const current = sessionStorage.getItem('currentComponent');
+  //   this.currentComponent = current ? current : 'FacilitySummary';
+  //   sessionStorage.setItem('currentComponent', this.currentComponent);
   //   this.commonSetterGetterService.setDisableParty(false);
+
   //   const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
   //   if (
   //     roleBased &&
@@ -138,62 +153,37 @@ export class BailmentsComponent {
   //   } else {
   //     this.accessGranted = [];
   //   }
-  //   this.commonSetterGetterService.party$.subscribe((currentParty) => {
-  //     this.partyId = currentParty?.id;
-  //   });
-  //   this.commonSetterGetterService.financial.subscribe((data) => {
-  //     this.bailmentFacilityDataList = data?.bailmentDetails ?? [];
 
-  //     if (!this.bailmentFacilityDataList.length) {
-  //       this.dashboardSetterGetterSvc.financialList$
-  //         .pipe(take(1))
-  //         .subscribe((list) => {
-  //           const details = list?.bailmentDetails ?? [];
-  //           this.bailmentFacilityDataList = generateSummary(details);
-  //           this.updateVisibleData();
-  //         });
-  //     } else {
-  //       this.updateVisibleData();
-  //     }
-  //     this.commonSetterGetterService.setCurrentComponent(
-  //       FacilityType.Bailment_Group
+  //   const partyData = sessionStorage.getItem('currentParty');
+  //   const party = partyData ? JSON.parse(partyData) : null;
+  //   this.partyId = party?.id;
+
+  //   const sessionBailment = sessionStorage.getItem('bailmentDataList');
+  //   const optionsData = sessionStorage.getItem('optionDataFacilities');
+
+  //   if (sessionBailment) {
+  //     this.bailmentFacilityDataList = JSON.parse(sessionBailment);
+  //   } else {
+  //     const sessionFinancial = sessionStorage.getItem('financialSummaryData');
+  //     const financialData = sessionFinancial
+  //       ? JSON.parse(sessionFinancial)
+  //       : null;
+
+  //     const bailmentDetails = financialData?.bailmentDetails ?? [];
+  //     this.bailmentFacilityDataList = generateSummary(bailmentDetails);
+
+  //     sessionStorage.setItem(
+  //       'bailmentDataList',
+  //       JSON.stringify(this.bailmentFacilityDataList)
   //     );
-  //     this.commonSetterGetterService.clearFacilityMap();
-  //     this.commonSetterGetterService.clearContractIdForSettlementQuote();
-  //   });
-
-  //   if (!this.bailmentFacilityDataList.length) {
-  //     this.svc.router.navigateByUrl('commercial');
+  //   }
+  //   if (optionsData) {
+  //     this.optionData = JSON.parse(optionsData);
+  //     this.facilityTypeDropdown = optionDataFacilities['Bailment'];
   //   }
 
-  //   this.subFacilityNameList = this.getNonEmptySubFacilityNames(
-  //     this.bailmentFacilityDataList
-  //   );
-
-  //   this.currencyService.initializeCurrency();
-  //   this.selectedSubFacility = this.bailmentFacilityDataList[0];
-  //   this.initChart();
-  //   this.currentSubFacility = 'bailmentDashboard';
-  //   this.bailmentComponentLoaderService.component$.subscribe(
-  //     (componentName) => {
-  //       this.currentSubFacility = componentName;
-  //     }
-  //   );
-
-  //   this.showFacilitySummary();
-  //   this.commonSetterGetterService.facilityList$.subscribe((list) => {
-  //     this.facilityDataList = list;
-
-  //     this.optionData = this.facilityDataList.map((item) => ({
-  //       label: FacilityTypeDropdown[item.value],
-  //       value:
-  //         optionDataFacilities[item.label as keyof typeof optionDataFacilities],
-  //     }));
-
-  //     this.facilityTypeDropdown = optionDataFacilities['Bailment'];
-  //   });
+  //   this.afterBailmentLoad();
   // }
-
   ngOnInit() {
     clearSession([
       'assetlinkDataList',
@@ -207,9 +197,23 @@ export class BailmentsComponent {
       'forecastFromDate',
       'forecastFrequency',
     ]);
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'FacilitySummary';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
+    // Define valid tabs for Bailments
+    const validTabs = [
+      'FacilitySummary',
+      'FacilityAssets',
+      'Documents',
+      'RequestHistory',
+    ];
+
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+    } else {
+      this.currentComponent = 'FacilitySummary';
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+    }
     this.commonSetterGetterService.setDisableParty(false);
 
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
@@ -219,7 +223,7 @@ export class BailmentsComponent {
       typeof roleBased.functions === 'object'
     ) {
       this.accessGranted = Object.keys(roleBased.functions).map((fn) =>
-        fn.trim()
+        fn.trim(),
       );
     } else {
       this.accessGranted = [];
@@ -230,7 +234,7 @@ export class BailmentsComponent {
     this.partyId = party?.id;
 
     const sessionBailment = sessionStorage.getItem('bailmentDataList');
-    const optionsData = sessionStorage.getItem('optionDataBailment');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionBailment) {
       this.bailmentFacilityDataList = JSON.parse(sessionBailment);
@@ -245,7 +249,7 @@ export class BailmentsComponent {
 
       sessionStorage.setItem(
         'bailmentDataList',
-        JSON.stringify(this.bailmentFacilityDataList)
+        JSON.stringify(this.bailmentFacilityDataList),
       );
     }
     if (optionsData) {
@@ -254,42 +258,78 @@ export class BailmentsComponent {
     }
 
     this.afterBailmentLoad();
+
+    if (this.currentComponent === 'RequestHistory') {
+      this.requestHistory();
+    }
   }
 
   afterBailmentLoad() {
     this.updateVisibleData();
 
     this.commonSetterGetterService.setCurrentComponent(
-      FacilityType.Bailment_Group
+      FacilityType.Bailment_Group,
     );
     sessionStorage.setItem('currentFacilityType', FacilityType.Bailment_Group);
+    const selectedSessionSubFacility = JSON.parse(
+      sessionStorage.getItem('selectedBailmentSubFacility'),
+    );
 
     this.commonSetterGetterService.clearFacilityMap();
     this.commonSetterGetterService.clearContractIdForSettlementQuote();
 
     this.subFacilityNameList = this.getNonEmptySubFacilityNames(
-      this.bailmentFacilityDataList
+      this.bailmentFacilityDataList,
     );
 
     this.currencyService.initializeCurrency();
 
-    this.selectedSubFacility = this.bailmentFacilityDataList[0];
-    sessionStorage.setItem(
-      'selectedBailmentSubFacility',
-      JSON.stringify(this.selectedSubFacility)
-    );
+    // Set selected subfacility
+    if (selectedSessionSubFacility) {
+      this.selectedSubFacility = selectedSessionSubFacility;
+    } else {
+      this.selectedSubFacility = this.bailmentFacilityDataList[0];
+      sessionStorage.setItem(
+        'selectedBailmentSubFacility',
+        JSON.stringify(this.selectedSubFacility),
+      );
+    }
 
     this.initChart();
     this.currentSubFacility = 'bailmentDashboard';
 
+    // Subscribe to component changes with validation
+    const validTabs = [
+      'FacilitySummary',
+      'FacilityAssets',
+      'Documents',
+      'RequestHistory',
+    ];
     this.bailmentComponentLoaderService.component$.subscribe(
       (componentName) => {
-        this.currentSubFacility = componentName;
-      }
+        if (validTabs.includes(componentName)) {
+          this.currentSubFacility = componentName;
+        }
+      },
     );
 
-    this.showFacilitySummary();
-
+    if (this.currentComponent === 'FacilitySummary') {
+      this.showFacilitySummary();
+    } else if (this.currentComponent === 'FacilityAssets') {
+      this.showFacilityAssets();
+    } else if (this.currentComponent === 'Documents') {
+      this.showDocuments();
+    }
+    this.bailmentSubFacilityDataList = [
+      {
+        id: null,
+        contractId: null,
+        facilityName: null,
+        facilityType: null,
+        noOfAssets: null,
+      },
+      selectedSessionSubFacility,
+    ];
     this.commonSetterGetterService.facilityList$.subscribe((list) => {
       if (list?.length) {
         this.facilityDataList = list;
@@ -302,8 +342,8 @@ export class BailmentsComponent {
         }));
 
         sessionStorage.setItem(
-          'optionDataBailment',
-          JSON.stringify(this.optionData)
+          'optionDataFacilities',
+          JSON.stringify(this.optionData),
         );
 
         this.facilityTypeDropdown = optionDataFacilities['Bailment'];
@@ -374,52 +414,52 @@ export class BailmentsComponent {
   requestHistory() {
     this.currentComponent = 'RequestHistory';
     this.componentLoaderService.loadComponent('RequestHistory');
+    sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
   }
 
   async fetchPaymentRequestList(params: PaymentRequestParams) {
     try {
-      this.swapRequestList = await this.commonApiService.getPaymentRequestList(
-        params
-      );
+      this.swapRequestList =
+        await this.commonApiService.getPaymentRequestList(params);
     } catch (error) {
       console.log('Error while loading swap list data', error);
     }
   }
 
   onCellClick(event: any) {
+    if (!event?.cellData || event?.cellData.trim() === '') return;
     const clickedFacility = event.rowData;
-    if (clickedFacility.facilityName) {
-      //workaround
-      this.bailmentSubFacilityDataList = [
-        {
-          id: null,
-          contractId: null,
-          facilityName: null,
-          facilityType: null,
-          noOfAssets: null,
-        },
-        clickedFacility,
-      ];
-      this.selectedSubFacility = { ...clickedFacility };
-      sessionStorage.setItem(
-        'selectedBailmentSubFacility',
-        JSON.stringify(this.selectedSubFacility)
-      );
-      this.commonSetterGetterService.setFacilityMap(
-        this.facilityType,
-        clickedFacility.facilityName
-      );
-      this.commonSetterGetterService.setContractIdForSettlementQuote(
-        event.rowData.id
-      );
-    }
+    // if (clickedFacility.facilityName) {
+    this.bailmentSubFacilityDataList = [
+      {
+        id: null,
+        contractId: null,
+        facilityName: null,
+        facilityType: null,
+        noOfAssets: null,
+      },
+      clickedFacility,
+    ];
+    this.selectedSubFacility = { ...clickedFacility };
+    sessionStorage.setItem(
+      'selectedBailmentSubFacility',
+      JSON.stringify(this.selectedSubFacility),
+    );
+    this.commonSetterGetterService.setFacilityMap(
+      this.facilityType,
+      clickedFacility.facilityName,
+    );
+    this.commonSetterGetterService.setContractIdForSettlementQuote(
+      event.rowData.id,
+    );
+    // }
     this.showFacilitySummary();
   }
 
   onFrequencyChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`commercial/${facilityRoute}`]);
+      this.router.navigate([`${facilityRoute}`]);
     }
   }
 
@@ -431,11 +471,11 @@ export class BailmentsComponent {
     if (this.isCollapsed) {
       this.visibleBailmentDataList = this.bailmentFacilityDataList.slice(
         0,
-        this.visibleItemCount
+        this.visibleItemCount,
       );
       this.dataListRemainingCount = Math.max(
         0,
-        totalItems - this.visibleItemCount
+        totalItems - this.visibleItemCount,
       );
     } else {
       this.visibleBailmentDataList = [...this.bailmentFacilityDataList];
@@ -496,6 +536,7 @@ export class BailmentsComponent {
       }
     });
     this.componentLoaderService.loadBailmentDashboard('FacilityAssets');
+    sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
   }
 
   productTransferRequest() {
@@ -509,8 +550,9 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-         width: '70vw',
+        width: '70vw',
         height: '30vw',
+        contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
   }
@@ -526,8 +568,9 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-         width: '70vw',
+        width: '70vw',
         height: '30vw',
+        contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
     // this.showFacilityAssets();
@@ -545,6 +588,7 @@ export class BailmentsComponent {
         },
         width: '70vw',
         height: '30vw',
+        contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
   }
@@ -560,8 +604,9 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-         width: '70vw',
+        width: '70vw',
         height: '30vw',
+        contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
   }
@@ -571,13 +616,13 @@ export class BailmentsComponent {
     const params = { partyId: this.partyId };
     this.fetchDocuments(params);
     this.componentLoaderService.loadBailmentDashboard('Documents');
+    sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
   }
 
   async fetchDocuments(params: DocumentsParams) {
     try {
-      this.documentsDataList = await this.commonApiService.getDocumentsData(
-        params
-      );
+      this.documentsDataList =
+        await this.commonApiService.getDocumentsData(params);
     } catch (error) {
       console.log('Error while loading documents data', error);
     }
@@ -735,7 +780,7 @@ export class BailmentsComponent {
           columns: dt.todaysActivityColDef,
           dataList: dt.facilitySummaryDatalist.todaysActivity,
           translateService: this.translateService,
-        })
+        }),
       );
     }
 
@@ -746,7 +791,7 @@ export class BailmentsComponent {
           columns: dt.assetSummaryColDef,
           dataList: dt.facilitySummaryDatalist.assetSummary,
           translateService: this.translateService,
-        })
+        }),
       );
     }
 
@@ -769,12 +814,16 @@ export class BailmentsComponent {
         todayActivity,
         assetSummary,
         this.translateService,
-        'portrait'
+        'portrait',
       );
     }
   }
 
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('bailmentDataList');
+    clearSession('selectedBailmentSubFacility');
+    clearSession('currentFacilityType');
   }
 }

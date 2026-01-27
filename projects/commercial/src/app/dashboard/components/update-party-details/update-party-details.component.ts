@@ -7,7 +7,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 @Component({
   selector: 'app-update-party-details',
   templateUrl: './update-party-details.component.html',
-  styleUrls: ['./update-party-details.component.scss'],
+  styleUrl: './update-party-details.component.scss',
 })
 export class UpdatePartyDetailsComponent {
   accordianValue: number = 0;
@@ -123,9 +123,9 @@ export class UpdatePartyDetailsComponent {
   }
   onUpdateClick(event, updateType) {
     if (updateType === 'contact') {
-      this.svc.router.navigateByUrl('/dashboard/update-contact-details');
+      this.router.navigateByUrl('/dashboard/update-contact-details');
     } else {
-      this.svc.router.navigateByUrl('/dashboard/update-address-details');
+      this.router.navigateByUrl('/dashboard/update-address-details');
     }
   }
 }

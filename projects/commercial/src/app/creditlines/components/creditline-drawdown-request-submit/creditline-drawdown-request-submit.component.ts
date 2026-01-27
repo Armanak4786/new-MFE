@@ -6,7 +6,7 @@ import { CreditlineDrawdownRequestSubmitConfirmationComponent } from '../creditl
 @Component({
   selector: 'app-creditline-drawdown-request-submit',
   templateUrl: './creditline-drawdown-request-submit.component.html',
-  styleUrls: ['./creditline-drawdown-request-submit.component.scss']
+  styleUrl: './creditline-drawdown-request-submit.component.scss'
 })
 export class CreditlineDrawdownRequestSubmitComponent {
 constructor(public svc: CommonService,

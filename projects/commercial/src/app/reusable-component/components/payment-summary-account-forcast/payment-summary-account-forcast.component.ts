@@ -24,7 +24,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-payment-summary-account-forcast',
   templateUrl: './payment-summary-account-forcast.component.html',
-  styleUrls: ['./payment-summary-account-forcast.component.scss'],
+  styleUrl: './payment-summary-account-forcast.component.scss',
 })
 export class PaymentSummaryAccountForcastComponent {
   @Input() accountForcastColumnDefs;

@@ -12,7 +12,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-easylink-drawdown-request-card',
   templateUrl: './easylink-drawdown-request-card.component.html',
-  styleUrls: ['./easylink-drawdown-request-card.component.scss'],
+  styleUrl: './easylink-drawdown-request-card.component.scss',
 })
 export class EasylinkDrawdownRequestCardComponent extends BaseEasylinkClass {
   facilityType;

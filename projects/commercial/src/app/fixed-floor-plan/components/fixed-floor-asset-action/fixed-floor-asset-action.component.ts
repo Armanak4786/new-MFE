@@ -16,7 +16,7 @@ import { DashboardSetterGetterService } from '../../../dashboard/services/dashbo
 @Component({
   selector: 'app-fixed-floor-asset-action',
   templateUrl: './fixed-floor-asset-action.component.html',
-  styleUrls: ['./fixed-floor-asset-action.component.scss']
+  styleUrl: './fixed-floor-asset-action.component.scss'
 })
 export class FixedFloorAssetActionComponent {
    filteredAssetsDataList;

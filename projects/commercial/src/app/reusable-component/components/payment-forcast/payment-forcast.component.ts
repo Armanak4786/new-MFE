@@ -20,7 +20,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-payment-forcast',
   templateUrl: './payment-forcast.component.html',
-  styleUrls: ['./payment-forcast.component.scss'],
+  styleUrl: './payment-forcast.component.scss',
 })
 export class PaymentForcastComponent {
   @Input() paymentForcastDataList;

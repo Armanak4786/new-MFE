@@ -45,7 +45,7 @@ import { TranslateService } from '@ngx-translate/core';
   //standalone: true,
   //imports: [],
   templateUrl: './buyback-lease.component.html',
-  styleUrls: ['./buyback-lease.component.scss'],
+  styleUrl: './buyback-lease.component.scss',
 })
 export class BuybackLeaseComponent {
   @ViewChild(DocumentsComponent) documentsComponent: DocumentsComponent;
@@ -95,7 +95,7 @@ export class BuybackLeaseComponent {
       this.partyId = currentParty?.id;
     });
     if (!this.partyId) {
-      this.router.navigate(['commercial/buyback']);
+      this.router.navigate(['buyback']);
       return;
     }
     this.facilityType = this.dashSvc.getFacilityTpe();
@@ -217,12 +217,12 @@ export class BuybackLeaseComponent {
   }
 
   navigateToBuyback() {
-    this.router.navigate(['commercial/buyback']);
+    this.router.navigate(['buyback']);
   }
 
   navigateToLoansDashboard() {
     //this.creditService.navigateToLoan = true;
-    this.router.navigate([`commercial/buyback`]);
+    this.router.navigate([`buyback`]);
   }
 
   // onDocumentClick(event) {

@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
   //standalone: true,
   //imports: [],
   templateUrl: './payment-summary.component.html',
-  styleUrls: ['./payment-summary.component.scss'],
+  styleUrl: './payment-summary.component.scss',
 })
 export class PaymentSummaryComponent {
   @Input() paymentSummaryDataList;

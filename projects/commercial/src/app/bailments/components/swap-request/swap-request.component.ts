@@ -173,7 +173,7 @@ export class SwapRequestComponent {
     if (this.filteredAssetsDataList) {
       // this.bailmentComponentLoaderService.setData(this.filteredAssetsDataList);
       sessionStorage.setItem('filteredAssetsDataList',JSON.stringify(this.filteredAssetsDataList));
-      this.router.navigate(['commercial/bailments/swaps'], {
+      this.router.navigate(['bailment/swaps'], {
         state: { params: params },
       });
       this.ref.close({ data: 'confirm' });

@@ -20,6 +20,16 @@ export const creditlineFacilityColumnDefs = [
 
     format: '#currency',
     width: '20%',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex)
+        ? 'Principal Balance as at the last payment date'
+        : '';
+    },
   },
   {
     field: 'availableFunds',
@@ -27,6 +37,14 @@ export const creditlineFacilityColumnDefs = [
 
     format: '#currency',
     width: '20%',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex) ? 'Limit minus Current Balance' : '';
+    },
   },
 ];
 
@@ -127,6 +145,16 @@ export const nonFacilityLoansColumnDefs = [
 
     format: '#currency',
     width: '20%',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex)
+        ? 'Principal Balance as at the last payment date'
+        : '';
+    },
   },
   {
     field: 'remainingLimit',
@@ -189,12 +217,32 @@ export const assetlinkColumnDefs = [
     headerName: 'current_balance',
     width: '20%',
     format: '#currency',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex)
+        ? 'Principal Balance as at the last payment date'
+        : '';
+    },
   },
   {
     field: 'availableFunds',
     headerName: 'available_funds',
     width: '20%',
     format: '#currency',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex)
+        ? 'The lesser of Security Value or Limit, minus Current Balance.'
+        : '';
+    },
   },
 ];
 
@@ -219,6 +267,16 @@ export const easylinkFacilityColumnDefs = [
 
     format: '#currency',
     width: '20%',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex)
+        ? 'Principal Balance as at the last payment date'
+        : '';
+    },
   },
   {
     field: 'availableFunds',
@@ -226,6 +284,14 @@ export const easylinkFacilityColumnDefs = [
 
     format: '#currency',
     width: '20%',
+    iconRight: (rowData) => {
+      return [0].includes(rowData.__index)
+        ? 'fa-regular fa-circle-info text-primary'
+        : null;
+    },
+    iconTooltip: (value, rowIndex) => {
+      return [0].includes(rowIndex) ? 'Limit minus Current Balance' : '';
+    },
   },
 ];
 

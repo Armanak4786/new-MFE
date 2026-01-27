@@ -53,7 +53,7 @@ import { TranslateService } from '@ngx-translate/core';
   //standalone: true,
   //imports: [],
   templateUrl: './lease.component.html',
-  styleUrls: ['./lease.component.scss'],
+  styleUrl: './lease.component.scss',
 })
 export class LeaseComponent {
   @ViewChild('LeaseSummaryDt') LeaseSummaryDt;
@@ -112,7 +112,7 @@ export class LeaseComponent {
     this.facilityType = this.dashSvc.getFacilityTpe();
     if (!this.facilityType) {
       // If no data found, navigate back
-      this.router.navigate(['commercial/creditlines']);
+      this.router.navigate(['creditlines']);
     }
     this.idParam = this.route.snapshot.paramMap.get('id');
     const param = { partyId: this.partyId, contractId: this.idParam };
@@ -300,9 +300,9 @@ export class LeaseComponent {
 
   navigateToFacility() {
     if (this.facilityType === FacilityType.NonFacilityLoan) {
-      this.router.navigate(['commercial/non-facility-loan']);
+      this.router.navigate(['non-facility-loan']);
     } else if (this.facilityType === FacilityType.CreditLines) {
-      this.router.navigate(['commercial/creditlines']);
+      this.router.navigate(['creditlines']);
     }
   }
 
@@ -317,7 +317,7 @@ export class LeaseComponent {
     const route = routeMap[this.facilityType];
 
     if (route) {
-      this.router.navigate([`commercial/${route}`]);
+      this.router.navigate([`${route}`]);
     } else {
       console.warn('Invalid facility type:', this.facilityType);
     }

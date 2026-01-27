@@ -1,0 +1,44 @@
+{
+    "data": {
+        "loanHeader": {
+            "borrowerInfo": {
+                "name": "Mr. John Smith",
+                "role": "Borrower"
+            },
+            "coBorrowerInfo": {
+                "name": "Mrs. Mary Smith",
+                "role": "Co-Borrower"
+            },
+            "loanDetails": {
+                "loanProgress": {
+                    "currentMonth": "01",
+                    "totalMonths": "60"
+                },
+                "loanAmount": {
+                    "currency": "$",
+                    "amount": 80000.00
+                },
+                "principalOutstanding": {
+                    "currency": "$",
+                    "amount": 78853.00
+                },
+                "frequency": "Monthly",
+                "interestRate": "6.00%"
+            },
+            "paymentInfo": {
+                "nextPayment": {
+                    "amount": 3934.00,
+                    "dueDate": "26 Sept 2024"
+                },
+                "finalPayment": {
+                    "amount": 3934.00,
+                    "dueDate": "26 Sept 2029"
+                }
+            },
+            "footerInfo": {
+                "totalTerm": "60 Months",
+                "vehicleRego": "XYS592YSJSSJ"
+            }
+        }
+    }
+}

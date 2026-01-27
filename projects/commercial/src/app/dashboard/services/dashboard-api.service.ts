@@ -13,7 +13,7 @@ export class DashboardApiService {
     private commonApiService: CommonApiService,
     private dataService: DataService,
     private toasterService: ToasterService
-  ) { }
+  ) {}
   getCustomerDetails(customerNo: string): Promise<any> {
     const params: any = { customerNo: customerNo };
     return new Promise((resolve, reject) => {

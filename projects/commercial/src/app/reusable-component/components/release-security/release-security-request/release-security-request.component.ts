@@ -14,7 +14,7 @@ import { CancelPopupComponent } from '../../cancel-popup/cancel-popup.component'
 @Component({
   selector: 'app-release-security-request',
   templateUrl: './release-security-request.component.html',
-  styleUrls: ['./release-security-request.component.scss'],
+  styleUrl: './release-security-request.component.scss',
 })
 export class ReleaseSecurityRequestComponent
   extends BaseFormClass
@@ -80,7 +80,7 @@ export class ReleaseSecurityRequestComponent
     }
 
     this.setupFormListeners();
-    this.facilityType = window.location.pathname.split('/')[1] ?? '';
+    this.facilityType = window.location.pathname.split('/')[2] ?? '';
   }
 
   private setupFormListeners() {
@@ -168,6 +168,7 @@ export class ReleaseSecurityRequestComponent
       const aasetListToRelease = [];
       const mainForm = [];
       aasetListToRelease.push(this.aasetListToRelease);
+      console.log('aasetListToRelease', this.aasetListToRelease);
       mainForm.push(this.releaseForm.value);
       // Create a mock form object that matches the expected structure
       const mockForm = {
@@ -217,7 +218,7 @@ export class ReleaseSecurityRequestComponent
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-         this.router.navigateByUrl(`/${this.facilityType}`);
+          this.router.navigate([`${this.facilityType}`]);
         }
       });
   }

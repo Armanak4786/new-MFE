@@ -9,7 +9,7 @@ import { FacilityAssetsService } from '../../../assetlink/services/facility-asse
   //standalone: true,
   //imports: [],
   templateUrl: './associated-assets.component.html',
-  styleUrls: ['./associated-assets.component.scss']
+  styleUrl: './associated-assets.component.scss'
 })
 export class AssociatedAssetsComponent {
   facilityType;

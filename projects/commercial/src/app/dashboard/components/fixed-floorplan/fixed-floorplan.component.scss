@@ -10,7 +10,15 @@
   .p-datatable.p-datatable-striped
   .p-datatable-tbody
   > tr:nth-child(1) {
-  .row-class-easylink {
+  .row-class-fixedfloorplan {
     font-weight: 700;
   }
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-fixedfloorplan {
+  pointer-events: none !important;
 }

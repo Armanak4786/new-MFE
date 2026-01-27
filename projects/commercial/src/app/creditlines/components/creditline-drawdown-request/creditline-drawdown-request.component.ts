@@ -18,7 +18,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BaseCreditlineClass } from '../../base/base-creditline.class';
 import { CreditlineDashboardService } from '../../services/creditline-dashboard.service';
 import { debounceTime, merge, of, takeUntil } from 'rxjs';
-import { DrawdownService } from '../../../drawdown.service';
 import {
   convertFileToBase64,
   extractSubjectValue,
@@ -36,6 +35,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 import { DashboardSetterGetterService } from '../../../dashboard/services/dashboard-setter-getter.service';
 import { AcknowledgmentPopupComponent } from '../../../reusable-component/components/acknowledgment-popup/acknowledgment-popup.component';
 import { CancelPopupComponent } from '../../../reusable-component/components/cancel-popup/cancel-popup.component';
+import { DrawdownService } from '../../../drawdown.service';
 
 @Component({
   selector: 'app-creditline-drawdown-request',
@@ -183,12 +183,11 @@ export class CreditlineDrawdownRequestComponent
   }
 
   override async ngOnInit() {
-    this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-      this.partyId = currentParty.id;
-      this.customerName = currentParty.name;
-    });
+    this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
+    this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
     if (this.dynamicDialogConfig?.data) {
-      this.selectedFacility = this.dynamicDialogConfig.data.facilityType;
+      // this.selectedFacility = this.dynamicDialogConfig.data.facilityType;
+      this.selectedFacility = sessionStorage.getItem('currentFacilityType');
       this.selectedSubFacility =
         this.dynamicDialogConfig?.data?.subfacility?.facilityType;
       // this.facilityWiseContractsList =
@@ -247,10 +246,11 @@ export class CreditlineDrawdownRequestComponent
   }
 
   loadFacilityContractsByType(facilityType: string) {
-    this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
+    // this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
+    const financiallist = JSON.parse(sessionStorage.getItem('financialSummaryData')||'[]');
       const facilityMap = {
-        [FacilityType.CreditLines]: list?.creditlineDetails ?? [],
-        [FacilityType.NonFacilityLoan]: list?.nonFacilityLoansDetails ?? [],
+        [FacilityType.CreditLines]: financiallist?.creditlineDetails ?? [],
+        [FacilityType.NonFacilityLoan]: financiallist?.nonFacilityLoansDetails ?? [],
       };
 
       const facilityMapDataList = facilityMap[facilityType];
@@ -269,7 +269,7 @@ export class CreditlineDrawdownRequestComponent
       }));
 
       this.mainForm?.updateList('facility', this.facilityOptions);
-    });
+    // });
   }
 
   onButtonChange(selectedButton: string) {

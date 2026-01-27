@@ -58,6 +58,7 @@ import { WDrawdownViewRequestComponent } from './components/w-drawdown-view-requ
 import { PartyDetailsAcknowledgementComponent } from './components/party-details-acknowledgement/party-details-acknowledgement.component';
 import { AddressNotFoundPopupComponent } from './components/address-not-found-popup/address-not-found-popup.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { IntroducerPaymentTabPopUpComponent } from './components/introducer-payment-tab-pop-up/introducer-payment-tab-pop-up.component';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { NotificationComponent } from './components/notification/notification.co
     PartyDetailsAcknowledgementComponent,
     AddressNotFoundPopupComponent,
     NotificationComponent,
+    IntroducerPaymentTabPopUpComponent,
   ],
   imports: [CommonModule, AuroUiFrameWork, TabViewModule],
   exports: [

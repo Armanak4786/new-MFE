@@ -1,0 +1,15 @@
+{
+    "data": {
+		"makeSumPaymentDetail":
+		{
+            "amount": "1000",
+            "sourceoffunds":"simple text",
+            "proposedPaymentDate":"2024-01-01",
+            "paymentOption":"udc",
+            "whatwouldyouliketoOccur":"rt",
+            "note":"",
+            "preferredContactMethod":"simple text",
+            "preferredContactTime":"ev"
+        }
+    }
+}

@@ -1,0 +1,35 @@
+{
+   "data": [
+      {
+        "id": 1,
+        "label": "Daily",
+        "value": "Payment is made every day."
+      },
+      {
+        "id": 2,
+        "label": "Weekly",
+        "value": "Payment is made once a week."
+      },
+      {
+        "id": 3,
+        "label": "Bi-Weekly",
+        "value": "Payment is made every two weeks."
+      },
+      {
+        "id": 4,
+        "label": "Monthly",
+        "value": "Payment is made once a month."
+      },
+      {
+        "id": 5,
+        "label": "Quarterly",
+        "value": "Payment is made every three months."
+      },
+      {
+        "id": 6,
+        "label": "Annually",
+        "value": "Payment is made once a year."
+      }
+    ]
+  }
+  

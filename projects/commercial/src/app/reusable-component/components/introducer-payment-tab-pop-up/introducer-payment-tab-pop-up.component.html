@@ -1,0 +1,41 @@
+<div *ngIf="isPaymentTab">
+  <div class="text-row header">
+    <span *ngFor="let header of paymentHeaders" class="text-xs font-bold label-color">
+      {{ header }}
+    </span>
+  </div>
+
+  <div class="text-row" *ngFor="let row of records">
+    <span class="text-xs">{{ row?.Date }}</span>
+    <span class="text-xs">{{ row?.Transaction }}</span>
+    <span class="text-xs">{{ row?.Description }}</span>
+    <span class="text-xs">{{ row?.Asset }}</span>
+    <span class="text-xs">{{ row?.Reg }}</span>
+    <span class="text-xs">{{ row?.Dealer }}</span>
+    <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs flex'"
+          [value]="row?.Amount"
+        >
+        </amount>
+  </div>
+</div>
+<div *ngIf="!isPaymentTab">
+  <div class="text-row2 header">
+    <span *ngFor="let header of transactionHeaders" class="text-xs font-bold label-color">
+      {{ header }}
+    </span>
+  </div>
+
+  <div class="text-row2" *ngFor="let row of transactions">
+    <span class="text-xs">{{ row?.date }}</span>
+    <span class="text-xs">{{ row?.method }}</span>
+   <amount
+          [mode]="'label'"
+          [valueClass]="'text-xs flex'"
+          [value]="row?.amount"
+        >
+        </amount>
+    <span class="text-xs">{{ row?.id }}</span>
+  </div>
+</div>

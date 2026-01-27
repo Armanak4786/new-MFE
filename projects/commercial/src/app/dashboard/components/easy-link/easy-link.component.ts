@@ -10,7 +10,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 @Component({
   selector: 'app-easy-link',
   templateUrl: './easy-link.component.html',
-  styleUrls: ['./easy-link.component.scss'],
+  styleUrl: './easy-link.component.scss',
 })
 export class EasyLinkComponent {
   @ViewChild('dt')
@@ -26,12 +26,34 @@ export class EasyLinkComponent {
     public commonSetterGetterService: CommonSetterGetterService
   ) {}
 
+  // ngOnInit() {
+  //   let data;
+  //   this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
+  //     data = list?.easyLinkDetails;
+  //     data &&
+  //       (this.easylinkDataList = updateDataList(
+  //         data,
+  //         FacilityType.Easylink_Group
+  //       ));
+  //   });
+  // }
+
   ngOnChanges(changes) {
     if (changes['financialSummaryData']) {
       this.easylinkDataList = updateDataList(
         this.financialSummaryData?.easyLinkDetails,
         FacilityType.Easylink_Group
       );
+      this.addIndexToDataList();
+    }
+  }
+
+  addIndexToDataList() {
+    if (this.easylinkDataList && Array.isArray(this.easylinkDataList)) {
+      this.easylinkDataList = this.easylinkDataList.map((item, index) => ({
+        ...item,
+        __index: index
+      }));
     }
   }
 
@@ -44,7 +66,7 @@ export class EasyLinkComponent {
       'easylinkDataList',
       JSON.stringify(this.easylinkDataList)
     );
-   this.router.navigateByUrl('/easylink');
+    this.router.navigate(['easylink']);
   }
 
   onHeaderClick(event) {

@@ -2,7 +2,7 @@ export const FacilityType = {
   Assetlink: 'AssetLink',
   Easylink: 'EasyLink',
   CreditLines: 'CreditLines',
-  Bailment: 'Bailments',
+  Bailment: 'Bailment',
   FixedFloorPlan: 'Fixed FloorPlan',
   FixedFloorPlan_Group: 'Fixed Floorplan',
   FloatingFloorPlan: 'Floating FloorPlan',
@@ -37,7 +37,7 @@ export const optionDataFacilities = {
   Assetlink: 'assetlink',
   Easylink: 'easylink',
   CreditLines: 'creditlines',
-  Bailment: 'bailments',
+  Bailment: 'bailment',
   FixedFloorPlan: 'fixedfloorplan',
   FloatingFloorPlan: 'floatingfloorplan',
   Buyback: 'buyback',
@@ -127,7 +127,7 @@ export const ContractNotesDropdown_values = {
 export const FACILITY_TYPE_GROUP_MAP: { [key: string]: any[] } = {
   Bailment: Wholesale_Bailment_Requests,
   'Fixed Floorplan': Wholesale_Fixed_Requests,
-  IntroducerTransactionSummary: wholesale_Introducer_Requests,
+  'Introducer Transaction Summary': wholesale_Introducer_Requests,
 };
 
 export const wholesaale_fixedfloor_RH = 'Fixed Floor';
@@ -359,8 +359,8 @@ export const Payment_Options = [
   { label: 'Nominated Bank Account', value: 'nominated' },
 ];
 export const CUT_OFF_TIME = {
-  hour: 13,   // 1 PM
-  minute: 0
+  hour: 13, // 1 PM
+  minute: 0,
 };
 
 export const ContactUDCDropdown = [
@@ -373,7 +373,7 @@ export const FacilityTypeDropdown = {
   AssetLink: 'Assetlink',
   EasyLink: 'Easylink',
   CreditLines: 'Creditline',
-  Bailments: 'Bailment',
+  Bailment: 'Bailment',
   'Fixed FloorPlan': 'Fixed Floorplan',
   'Floating FloorPlan': 'Floating Floorplan',
   'BuyBack Facility': 'Buyback',
@@ -381,3 +381,19 @@ export const FacilityTypeDropdown = {
   NonFacilityLoan: 'Non-Facility Loan',
   OperatingLease: 'Operating Lease',
 } as const;
+
+export const paymentHeaders = [
+  'Date',
+  'Transaction',
+  'Description',
+  'Asset',
+  'Reg/VIN/Chasis No.',
+  'Dealer',
+  'Amount',
+];
+export const transactionHeaders = [
+  'Date',
+  'Payment Method',
+  'Payment',
+  'Payment Id',
+];

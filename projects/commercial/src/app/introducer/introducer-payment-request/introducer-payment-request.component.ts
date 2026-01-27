@@ -17,7 +17,7 @@ import { CUT_OFF_TIME } from '../../utils/common-enum';
   // standalone: true,
   // imports: [],
   templateUrl: './introducer-payment-request.component.html',
-  styleUrls: ['./introducer-payment-request.component.scss'],
+  styleUrl: './introducer-payment-request.component.scss',
 })
 export class IntroducerPaymentRequestComponent
   extends BaseAssetlinkClass
