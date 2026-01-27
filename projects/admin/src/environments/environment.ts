@@ -1,28 +1,22 @@
 export const environment = {
     production: false,
-    microservices: {
-        userAdmin: 'UserAdmin',
-        reportAdmin: 'ReportAdmin',
-        lookupAdmin: 'LookupAdmin',
-        configAdmin: 'ConfigAdmin',
-    },
-    apiUrl: 'http://testudcportalgateway:444/gateway',
-    authority:
-        'https://login.microsoftonline.com/2c4787bf-22ff-4192-bda2-7055d259e141',
-    revokeAllTokenFIS:
-        'https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me',
-    redirectUrl: window.location.origin + '/authentication',
+    apiUrl: 'https://devportalgateway.aurionpro.com/gateway',
+    clientId: 'AURPRIA.RESTAPI.DEVPORTAL',
+    // OIDC Config
+    authority: 'https://login10.fisglobal.com/idp/aurionpro',
+    revokeAllTokenFIS: 'https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me',
+    revokeSessionUrlEntra: 'https://graph.microsoft.com/v1.0/me/revokeSignInSessions',
+    redirectUrl: window.location.origin + '/authentication/login',
     postLogoutRedirectUri: window.location.origin + '/post-logout',
-    scope: 'openid profile email User.Read',
+    scope: 'openid profile email offline_access',
     autoUserInfo: false,
     responseType: 'code',
     silentRenew: true,
     useRefreshToken: true,
-    secureRoutes: ['https://graph.microsoft.com/'],
+    secureRoutes: [''],
     maxIdTokenIatOffsetAllowedInSeconds: 600,
     FIS: true,
     grant_type: 'client_credentials',
+    ActiveClient: 'UDCDO',
 };
-
-
 

@@ -37,13 +37,13 @@ const routes: Routes = [
       }).then(m => m.CommercialModule)
   },
   {
-    path: 'retail',
+    path: 'admin',
     loadChildren: () =>
       loadRemoteModule({
         type: 'module',
         remoteEntry: 'http://localhost:4203/remoteEntry.js',
         exposedModule: './Module'
-      }).then(m => m.RetailModule)
+      }).then(m => m.AdminModule)
   }
 ];
 

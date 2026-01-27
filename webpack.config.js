@@ -34,11 +34,11 @@ module.exports = {
         new ModuleFederationPlugin({
             library: { type: "module" },
 
-            // Remotes
+            // Remotes - MFE applications
             remotes: {
                 "dealer": "http://localhost:4201/remoteEntry.js",
                 "commercial": "http://localhost:4202/remoteEntry.js",
-                "retail": "http://localhost:4203/remoteEntry.js",
+                "admin": "http://localhost:4203/remoteEntry.js",
             },
 
             shared: share({
