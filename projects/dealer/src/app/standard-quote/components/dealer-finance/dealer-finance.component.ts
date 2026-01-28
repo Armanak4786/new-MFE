@@ -30,7 +30,8 @@ import configure from "../../../../../public/assets/configure.json";
 })
 export class DealerFinanceComponent
   extends BaseStandardQuoteClass
-  implements OnInit {
+  implements OnInit
+{
   dealerFinance: any;
   activeIndex: number | undefined = -1;
   commissionSubsidyAmt: any;
@@ -47,7 +48,7 @@ export class DealerFinanceComponent
   frequencyoptions: any;
 
   isInternalUser: boolean = false;
-
+  
   frequencySortOrder = [
     "Daily",
     "Weekly",
@@ -63,7 +64,7 @@ export class DealerFinanceComponent
     "None",
   ];
   termSortOrder = [12, 24, 36, 48, 60];
-  productCode: any;
+  productCode : any;
 
   // override roleBasedFunctionName = 'dealer_finance';
   constructor(
@@ -76,6 +77,14 @@ export class DealerFinanceComponent
     private toasterService: ToasterService
   ) {
     super(route, svc, baseSvc);
+
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName, this.pageCode);
+    console.log('dealer-finance.component components ts', filteredValidations);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+
+
     this.user_role = JSON.parse(sessionStorage.getItem("user_role"));
     this.baseSvc.formDataCacheableRoute([
       "LookUpServices/lookupsLookupSetName=InstallmentFrequency",
@@ -94,7 +103,7 @@ export class DealerFinanceComponent
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
     this.productCode = sessionStorage.getItem("productCode");
-    this.isInternalUser = (sessionStorage.getItem("externalUserType") == "Internal") ? true : false;
+    this.isInternalUser = (sessionStorage.getItem("externalUserType") == "Internal")?true:false;
     let res = await this.baseSvc.getFormData(
       "LookUpServices/lookups?LookupSetName=InstallmentFrequency",
       function (res) {
@@ -118,16 +127,16 @@ export class DealerFinanceComponent
       let dealerCommission = Math.abs(this.baseFormData?.dealerCommission) || 0;
       let rawDealerSubsidy = this.baseFormData?.dealerSubsidy;
       let dealerSubsidy = rawDealerSubsidy ? -Math.abs(rawDealerSubsidy) : 0;
-
-      if (this.baseFormData?.productCode == "FL") {
+      
+       if (this.baseFormData?.productCode == "FL") {
+      this.estimateCommissions =
+        this.baseFormData?.estimatedCommissionSubsidy;
+       }
+       else{
         this.estimateCommissions =
-          this.baseFormData?.estimatedCommissionSubsidy;
-      }
-      else {
-        this.estimateCommissions =
-          dealerCommission === 0 ? dealerSubsidy : dealerCommission;
+        dealerCommission === 0 ? dealerSubsidy : dealerCommission;
 
-      }
+       }
 
       this.dealerBaseInterestRate = this.baseFormData.baseInterestRate || 0;
       let term = this.baseFormData?.financialAssetLease?.term;
@@ -173,128 +182,143 @@ export class DealerFinanceComponent
   }
 
   showCard: boolean = true;
-  override formConfig: GenericFormConfig = {
+
+// Do not remove below commented code - kept for reference
+  // override formConfig: GenericFormConfig = {
+  //   autoResponsive: true,
+  //   api: ``,
+  //   goBackRoute: "",
+  //   cardType: "non-border",
+  //   cardBgColor: "--primary-lighter-color",
+  //   fields: [
+  //     {
+  //       type: "number",
+  //       label: "Term",
+  //       name: "term",
+  //       inputType: "vertical",
+  //       labelClass: "labels pb-2",
+  //       // cols: 3,
+  //       //suffix: "Months",
+  //       className: "col-fixed w-11rem mr-4 text-left mt-2 ",
+  //       nextLine: false,
+  //       //default : 12
+  //       // disabled: true, //vaidation comment
+  //       // hidden: true,
+  //       // validators: [Validators.required], //validation comment
+  //     },
+  //     // {
+  //     //   type: 'number',
+  //     //   label: 'Term',
+  //     //   name: 'terms',
+  //     //   cols: 3,
+  //     //   maxLength: 3,
+  //     //   disabled: true,
+  //     //   nextLine: false,
+  //     //   validators: [Validators.required],
+  //     // },
+  //     {
+  //       type: "select",
+  //       label: "Frequency",
+  //       name: "frequency",
+  //       alignmentType: "vertical",
+  //       labelClass: "labels pb-2",
+  //       // cols: 3,
+  //       className: "mr-4 col-fixed w-11rem",
+  //       nextLine: false,
+  //       // disabled: true, //vaidation comment
+  //       options: [],
+  //       // list$: 'LookUpServices/lookups?LookupSetName=InstallmentFrequency',
+  //       // idKey: 'lookupValue',
+  //       // idName: 'lookupValue',
+  //       // validators: [Validators.required], //validation comment
+  //     },
+  //     {
+  //       type: "percentage",
+  //       label: "Base Rate",
+  //       name: "baseRate",
+  //       cols: 2,
+  //       className: "col-fixed w-11rem mr-4 text-left mt-2 ",
+  //       labelClass: "labels pb-2",
+  //       nextLine: false,
+  //       default: 0,
+  //       inputType: "vertical",
+  //       hidden: true,
+  //       mode: Mode.view
+  //     },
+  //     {
+  //       type: "percentage",
+  //       label: "Interest Rate",
+  //       name: "interestRate",
+  //       cols: 2,
+  //       className: "col-fixed w-11rem mr-4 text-left mt-2 ",
+  //       labelClass: "labels pb-2",
+  //       nextLine: true,
+  //       default: 0,
+  //       inputType: "vertical",
+
+  //       // suffix: '%',
+  //       // maxFractionDigits: 2,
+  //       // validators: [Validators.required,Validators.max(100),Validators.maxLength(2),//validation comment
+  //       // ],
+  //     },
+  //      {
+  //       type: "amount",
+  //       label: "Assured Future Value",
+  //       name: "assuredFutureValue",
+  //       cols: 3,
+  //       resetOnHidden: true,
+  //       hidden: true,
+  //       inputType: "vertical",
+  //       labelClass: "labels pb-2",
+  //       // cols: 3,
+  //       className: "col-fixed w-11rem mr-4 text-left mt-2 ",
+  //       disabled: true,
+  //       //mode: Mode.view
+  //       // suffix: '%',
+  //       // maxFractionDigits: 2,
+  //       // validators: [Validators.required], //validation comment
+  //     },
+  //      {
+  //       type: "select",
+  //       label: "KM Allowance",
+  //       name: "kmAllowance",
+  //       cols: 3,
+  //       hidden: true,
+  //       resetOnHidden: true,
+  //       alignmentType: "vertical",
+  //       labelClass: "labels pb-2",
+  //       // cols: 3,
+  //       className: "col-fixed w-11rem",
+  //       options: [{ label: "10", value: "10" }],
+  //       // inputType: "vertical",
+  //        //suffix: 'Per Annum',
+  //       // validators: [Validators.required], //validation comment
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Per Annum",
+  //       name: "kmAllowanceAnnum",
+  //       cols: 2,
+  //       className: "mt-5 ml-0",
+
+  //       hidden: true,
+  //     },
+  //   ],
+  // };
+
+  override formConfig: any = {
     autoResponsive: true,
     api: ``,
     goBackRoute: "",
     cardType: "non-border",
     cardBgColor: "--primary-lighter-color",
-    fields: [
-      {
-        type: "number",
-        label: "Term",
-        name: "term",
-        inputType: "vertical",
-        labelClass: "labels pb-2",
-        // cols: 3,
-        //suffix: "Months",
-        className: "col-fixed w-11rem mr-4 text-left mt-2 ",
-        nextLine: false,
-        //default : 12
-        // disabled: true, //vaidation comment
-        // hidden: true,
-        // validators: [Validators.required], //validation comment
-      },
-      // {
-      //   type: 'number',
-      //   label: 'Term',
-      //   name: 'terms',
-      //   cols: 3,
-      //   maxLength: 3,
-      //   disabled: true,
-      //   nextLine: false,
-      //   validators: [Validators.required],
-      // },
-      {
-        type: "select",
-        label: "Frequency",
-        name: "frequency",
-        alignmentType: "vertical",
-        labelClass: "labels pb-2",
-        // cols: 3,
-        className: "mr-4 col-fixed w-11rem",
-        nextLine: false,
-        // disabled: true, //vaidation comment
-        options: [],
-        // list$: 'LookUpServices/lookups?LookupSetName=InstallmentFrequency',
-        // idKey: 'lookupValue',
-        // idName: 'lookupValue',
-        // validators: [Validators.required], //validation comment
-      },
-      {
-        type: "percentage",
-        label: "Base Rate",
-        name: "baseRate",
-        cols: 2,
-        className: "col-fixed w-11rem mr-4 text-left mt-2 ",
-        labelClass: "labels pb-2",
-        nextLine: false,
-        default: 0,
-        inputType: "vertical",
-        hidden: true,
-        mode: Mode.view
-      },
-      {
-        type: "percentage",
-        label: "Interest Rate",
-        name: "interestRate",
-        cols: 2,
-        className: "col-fixed w-11rem mr-4 text-left mt-2 ",
-        labelClass: "labels pb-2",
-        nextLine: true,
-        default: 0,
-        inputType: "vertical",
-
-        // suffix: '%',
-        // maxFractionDigits: 2,
-        // validators: [Validators.required,Validators.max(100),Validators.maxLength(2),//validation comment
-        // ],
-      },
-      {
-        type: "amount",
-        label: "Assured Future Value",
-        name: "assuredFutureValue",
-        cols: 3,
-        resetOnHidden: true,
-        hidden: true,
-        inputType: "vertical",
-        labelClass: "labels pb-2",
-        // cols: 3,
-        className: "col-fixed w-11rem mr-4 text-left mt-2 ",
-        disabled: true,
-        //mode: Mode.view
-        // suffix: '%',
-        // maxFractionDigits: 2,
-        // validators: [Validators.required], //validation comment
-      },
-      {
-        type: "select",
-        label: "KM Allowance",
-        name: "kmAllowance",
-        cols: 3,
-        hidden: true,
-        resetOnHidden: true,
-        alignmentType: "vertical",
-        labelClass: "labels pb-2",
-        // cols: 3,
-        className: "col-fixed w-11rem",
-        options: [{ label: "10", value: "10" }],
-        // inputType: "vertical",
-        //suffix: 'Per Annum',
-        // validators: [Validators.required], //validation comment
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Per Annum",
-        name: "kmAllowanceAnnum",
-        cols: 2,
-        className: "mt-5 ml-0",
-
-        hidden: true,
-      },
-    ],
+    fields: [],
   };
+
+
+
+
   async fetchTermOptions() {
     try {
       const res = await firstValueFrom(this.baseSvc.getBaseDealerFormData());
@@ -656,14 +680,14 @@ export class DealerFinanceComponent
       let rawDealerSubsidy = this.baseFormData?.dealerSubsidy;
       let dealerSubsidy = rawDealerSubsidy ? -Math.abs(rawDealerSubsidy) : 0;
       if (this.baseFormData?.productCode == "FL") {
+      this.estimateCommissions =
+        this.baseFormData?.estimatedCommissionSubsidy;
+       }
+       else{
         this.estimateCommissions =
-          this.baseFormData?.estimatedCommissionSubsidy;
-      }
-      else {
-        this.estimateCommissions =
-          dealerCommission === 0 ? dealerSubsidy : dealerCommission;
+        dealerCommission === 0 ? dealerSubsidy : dealerCommission;
 
-      }
+       }
       // this.estimateCommissions =
       //   dealerCommission === 0 ? dealerSubsidy : dealerCommission;
       this.dealerBaseInterestRate = this.baseFormData.baseInterestRate || 0;
@@ -702,17 +726,17 @@ export class DealerFinanceComponent
     await this.updateValidation("onInit");
     super.onFormReady();
 
-    if ((sessionStorage.getItem("externalUserType") == "Internal")) {
-      this.mainForm.updateHidden({ baseRate: false });
+    if((sessionStorage.getItem("externalUserType") == "Internal" )){
+      this.mainForm.updateHidden({baseRate: false});
     }
   }
 
   override async onBlurEvent(event) {
     // console.log(this.baseFormData);
-
-    if (event.name == "interestRate" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation") {
+    
+    if(event.name == "interestRate" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation"){
       let currentinterestRate = this.mainForm.get("interestRate").value;
-      if (currentinterestRate > this.baseFormData?.apiinterestRate) {
+      if(currentinterestRate > this.baseFormData?.apiinterestRate){        
         this.toasterService.showToaster({
           severity: "error",
           detail: "Interest rate cannot be increased in Ready for Documentation state.",
@@ -787,9 +811,9 @@ export class DealerFinanceComponent
       if (defaultUdcFee > udc) {
         const x = defaultUdcFee - udc;
         return dealer - x;
-      } else {
-        if (udc > defaultUdcFee) {
-          return dealer;
+      }else{
+        if(udc > defaultUdcFee){
+           return dealer;
         }
       }
     }

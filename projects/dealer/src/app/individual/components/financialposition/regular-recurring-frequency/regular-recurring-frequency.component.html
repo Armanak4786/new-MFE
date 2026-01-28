@@ -12,7 +12,7 @@
       >
     </div>
     <form
-      [formGroup]="regularOutgoingForm"
+      [formGroup]="regularOutgoingForm" [class.disabled]="isDisabled()"
       class="regular-recurring-details-form"
     >
       <div formArrayName="regularOutgoingDetails">
@@ -24,7 +24,7 @@
           [formGroupName]="i"
         >
           <div class="grid">
-            <div class="col-4 align-content-center">
+            <div class="col-4 pl-3 align-content-center">
               <!-- <span class="label-text" *ngIf="i <= 0">{{
                 regularOutgoing.get("recurringDescription").value
                 }}<span class="text-red-500">* </span></span>  -->
@@ -36,19 +36,20 @@
               </span>
             </div>
             <div class="col-3 p-fluid">
-              <p-inputNumber
-                [inputStyle]="{ 'text-align': 'right' }"
-                inputId="currency-us"
-                mode="currency"
-                currency="USD"
-                locale="en-US"
-                formControlName="amtRecurring"
-                placeholder="Amount"
-                [fractionDigits]="4"
-                [maxFractionDigits]="4"
-                [minFractionDigits]="0"
-                (ngModelChange)="updateRegularOutgoingDetails(i)"
-              />
+              <amount
+  [inputStyle]="{ 'text-align': 'right' }"
+  formControlName="amtRecurring"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  placeholder="Amount"
+  [fractionDigits]="4"
+  [maxFractionDigits]="4"
+  [minFractionDigits]="0"
+  (ngModelChange)="updateRegularOutgoingDetails(i)"
+  (blur)="onAmountBlur(i)"
+></amount>
+
               <div
                 class="p-error"
                 *ngIf="
@@ -71,7 +72,7 @@
                 >
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="regularOutgoing?.get('amtRecurring').errors?.max">Amount cannot exceed (18,4)</small>
+                <small *ngIf="regularOutgoing?.get('amtRecurring').errors?.max">Amount cannot exceed (18,2)</small>
               </div>
             </div>
             <div class="col-3 p-fluid">
@@ -134,18 +135,17 @@
           ></p-dropdown>
         </div>
         <div class="col-3 p-fluid">
-          <p-inputNumber
-            [inputStyle]="{ 'text-align': 'right' }"
-            inputId="currency-us"
-            mode="currency"
-            currency="USD"
-            locale="en-US"
-            formControlName="amtRecurring"
-            placeholder="Amount"
-          
-            [maxFractionDigits]="4"
-            [minFractionDigits]="2"
-          />
+          <amount
+ 
+  formControlName="amtRecurring"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  placeholder="Amount"
+  fractionDigits="4"
+  (blur)="onAmountBlur()"
+></amount>
+
           <!-- Add error messages for add row amount field -->
           <div
             class="p-error"
@@ -154,7 +154,8 @@
               (regularOutgoingForm.get('amtRecurring')?.touched || regularOutgoingForm.get('amtRecurring')?.dirty)
             "
           >
-            <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.max">Amount cannot exceed (18,4)</small>
+            <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.min">Amount should be greater than 0</small>
+            <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.max">Amount cannot exceed (18,2)</small>
           </div>
         </div>
         <div class="col-3 p-fluid">
@@ -172,6 +173,8 @@
             [btnType]="'bg-btn'"
             [btnIcon]="'pi pi-angle-right text-lg'"
             (click)="addRow()"
+            [disabled]="isAddRowDisabled()"
+            [ngClass]="{'add-row-disabled': isAddRowDisabled()}"
           ></gen-button>
         </div>
       </div>

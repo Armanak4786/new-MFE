@@ -491,7 +491,7 @@
 
 
 
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { BaseIndividualClass } from '../../../base-individual.class';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService, GenericFormConfig } from 'auro-ui';
@@ -530,7 +530,8 @@ export class IndividualLiabilitiesComponent extends BaseIndividualClass {
     public override route: ActivatedRoute,
     public override svc: CommonService,
     override baseSvc: IndividualService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     super(route, svc, baseSvc);
     this.customForm = { form: this.liabilitiesDetailsForm };
@@ -673,6 +674,14 @@ private updateLiabilityVisibility(): void {
   });
   
   this.calculateTotals();
+}
+isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
 }
 
 
@@ -860,11 +869,11 @@ shouldShowError(formGroup: any, fieldName: string): boolean {
   private addLiabilitiesForm(liabilities: any) {
     const incomeGroup = this.fb.group({
       liabilityDescription: [liabilities.liabilityDescription],
-      // Add max validator for amtLiability field
-      amtLiability: [liabilities.amtLiability || 0, [Validators.max(999999999999999999.99)]],
+      // Add min and max validator for amtLiability field - prevent negative values, 18,2 format
+      amtLiability: [liabilities.amtLiability || 0, [Validators.min(0), Validators.max(999999999999999999.99)]],
       liabilityFrequency: [liabilities.liabilityFrequency, Validators.required],
-      // Add max validator for amtBalanceLimit field
-      amtBalanceLimit: [liabilities.amtBalanceLimit || 0, [Validators.max(999999999999999999.99)]],
+      // Add min and max validator for amtBalanceLimit field - prevent negative values, 18,2 format
+      amtBalanceLimit: [liabilities.amtBalanceLimit || 0, [Validators.min(0), Validators.max(999999999999999999.99)]],
       financialPositionLiabilityId: [liabilities.financialPositionLiabilityId || 0],
       financialPositionBaseId: [liabilities.financialPositionBaseId || 0]
     });
@@ -902,20 +911,20 @@ shouldShowError(formGroup: any, fieldName: string): boolean {
       formGroup.get("liabilityFrequency")?.setValidators([Validators.required]);
     } 
     else if (residenceType === "freehold") {
-      // Freehold: All optional (only max validator)
-      formGroup.get("amtLiability")?.setValidators([Validators.max(999999999999999999.99)]);
-      formGroup.get("amtBalanceLimit")?.setValidators([Validators.max(999999999999999999.99)]);
+      // Freehold: All optional (only min(0) and max validator to prevent negative values)
+      formGroup.get("amtLiability")?.setValidators([Validators.min(0), Validators.max(999999999999999999.99)]);
+      formGroup.get("amtBalanceLimit")?.setValidators([Validators.min(0), Validators.max(999999999999999999.99)]);
       formGroup.get("liabilityFrequency")?.setValidators([Validators.required]);
     } 
     else {
       // None, Renting, Living with Parents, Boarding, Living in Caravan Park/Hostel, Unknown
-      // Amount and Frequency are mandatory, Balance/Limit is optional
+      // Amount and Frequency are mandatory, Balance/Limit is optional but cannot be negative
       formGroup.get("amtLiability")?.setValidators([
         Validators.required,
         Validators.min(1),
         Validators.max(999999999999999999.99)
       ]);
-      formGroup.get("amtBalanceLimit")?.setValidators([Validators.max(999999999999999999.99)]);
+      formGroup.get("amtBalanceLimit")?.setValidators([Validators.min(0), Validators.max(999999999999999999.99)]);
       formGroup.get("liabilityFrequency")?.setValidators([Validators.required]);
     }
   }
@@ -929,17 +938,31 @@ shouldShowError(formGroup: any, fieldName: string): boolean {
     }
   }
 
+  onAmountBlur(index: number, fieldName: 'amtBalanceLimit' | 'amtLiability'): void {
+    const liabilitiesGroup = this.liabilitiesDetails.at(index);
+    if (liabilitiesGroup) {
+      const amountControl = liabilitiesGroup.get(fieldName);
+      const currentValue = amountControl?.value;
+      
+      // Set to 0 when field is empty/null/undefined on blur (but allow negative values for validation)
+      if (currentValue === null || currentValue === undefined || currentValue === '') {
+        amountControl?.setValue(0);
+        this.cdr.detectChanges();
+      }
+    }
+  }
+
   private updateFormData() {
     
     this.liabilitiesDetails.controls.forEach((control: FormGroup) => {
       const descriptionId = control.get('liabilityDescription')?.value;
         
       if (!this.shouldShowLiability(descriptionId)) {
-        // This field is hidden - remove all validators except max
-        control.get('amtLiability')?.setValidators([Validators.max(999999999999999999.9999)]);
+        // This field is hidden - remove all validators except min(0) and max to prevent negative values
+        control.get('amtLiability')?.setValidators([Validators.min(0), Validators.max(999999999999999999.9999)]);
         control.get('amtLiability')?.updateValueAndValidity();
         
-        control.get('amtBalanceLimit')?.setValidators([Validators.max(999999999999999999.9999)]);
+        control.get('amtBalanceLimit')?.setValidators([Validators.min(0), Validators.max(999999999999999999.99)]); // 18,2 format
         control.get('amtBalanceLimit')?.updateValueAndValidity();
         
         control.get('liabilityFrequency')?.clearValidators();
@@ -994,76 +1017,229 @@ shouldShowError(formGroup: any, fieldName: string): boolean {
 // Calculate totals correctly for graphs with frequency conversion
 
 calculateTotals(): void {
-  // Check if any Balance/Limit exceeds 18 digits
-  const hasInvalidBalanceLimit = this.liabilitiesDetails.value.some((liability: any) => {
-    if (liability.amtBalanceLimit !== null && liability.amtBalanceLimit !== undefined) {
-      const amtBalanceLimitStr = liability.amtBalanceLimit.toString().replace('.', '');
-      if (amtBalanceLimitStr.length > 18) return true;
-    }
+  // Helper function to check if amount is invalid (>18,2 format OR negative)
+  const isInvalidAmount = (amount: any): boolean => {
+    if (amount === null || amount === undefined) return false;
+    const amountStr = amount.toString();
+    const [integerPart, decimalPart] = amountStr.split('.');
+    
+    // Check if negative
+    if (amount < 0) return true;
+    
+    // Check if integer part exceeds 18 digits
+    if (integerPart && integerPart.length > 18) return true;
+    
+    // Check if decimal part exceeds 2 digits
+    if (decimalPart && decimalPart.length > 2) return true;
+    
+    // Check if total value exceeds the maximum (18,2 format)
+    if (parseFloat(amountStr) > 999999999999999999.99) return true;
+    
     return false;
+  };
+
+  // Filter out null/undefined amounts and get valid amounts
+  const validBalanceLimits = this.liabilitiesDetails.value.filter((liability: any) => {
+    return liability.amtBalanceLimit !== null && liability.amtBalanceLimit !== undefined;
   });
 
-  // Check if any Amount exceeds 18 digits
-  const hasInvalidAmount = this.liabilitiesDetails.value.some((liability: any) => {
-    if (liability.amtLiability !== null && liability.amtLiability !== undefined) {
-      const amtLiabilityStr = liability.amtLiability.toString().replace('.', '');
-      if (amtLiabilityStr.length > 18) return true;
-    }
-    return false;
+  const validAmounts = this.liabilitiesDetails.value.filter((liability: any) => {
+    return liability.amtLiability !== null && liability.amtLiability !== undefined;
+  });
+
+  // Check if any Balance/Limit is invalid
+  const hasInvalidBalanceLimit = validBalanceLimits.some((liability: any) => 
+    isInvalidAmount(liability.amtBalanceLimit)
+  );
+
+  // Check if any Amount is invalid
+  const hasInvalidAmount = validAmounts.some((liability: any) => 
+    isInvalidAmount(liability.amtLiability)
+  );
+
+  // Filter out invalid amounts for calculation
+  const validBalanceLimitsForCalculation = validBalanceLimits.filter((liability: any) => 
+    !isInvalidAmount(liability.amtBalanceLimit)
+  );
+
+  const validAmountsForCalculation = validAmounts.filter((liability: any) => 
+    !isInvalidAmount(liability.amtLiability)
+  );
+
+  // Check if ALL Balance/Limit values are negative or invalid
+  const allNegativeBalanceLimit = validBalanceLimits.length > 0 && validBalanceLimits.every((liability: any) => {
+    return liability.amtBalanceLimit < 0;
+  });
+
+  // Check if ALL Amount values are negative or invalid
+  const allNegativeAmount = validAmounts.length > 0 && validAmounts.every((liability: any) => {
+    return liability.amtLiability < 0;
   });
 
  
   // CALCULATION 1: Balance/Limit Total (for Liabilities Total graph - Category 1)
-  if (hasInvalidBalanceLimit) {
-    this.liabilitiesBalanceLimitTotal = Infinity;
+  if (validBalanceLimits.length === 0) {
+    this.liabilitiesBalanceLimitTotal = 0;
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesBalanceLimit: this.liabilitiesBalanceLimitTotal,
+      hasInvalidBalanceLimitInput: false,
+    });
+  } else if (hasInvalidBalanceLimit) {
+    // Check if ALL amounts are invalid - if so, reset graph to 0
+    const allInvalid = validBalanceLimits.every((liability: any) => 
+      isInvalidAmount(liability.amtBalanceLimit)
+    );
+    
+    if (allInvalid) {
+      // All values are invalid - reset graph to 0
+      this.liabilitiesBalanceLimitTotal = 0;
+    } else {
+      // Some values are invalid - calculate using only valid positive values
+      this.liabilitiesBalanceLimitTotal = validBalanceLimitsForCalculation.reduce(
+        (acc: number, liability: any) => {
+          const balanceLimit = liability.amtBalanceLimit || 0;
+          // Only include positive values
+          return acc + (balanceLimit > 0 ? balanceLimit : 0);
+        },
+        0
+      );
+    }
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesBalanceLimit: this.liabilitiesBalanceLimitTotal,
+      hasInvalidBalanceLimitInput: true,
+    });
+  } else if (allNegativeBalanceLimit) {
+    // Reset graph to 0 when ALL values are negative
+    this.liabilitiesBalanceLimitTotal = 0;
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesBalanceLimit: this.liabilitiesBalanceLimitTotal,
+      hasInvalidBalanceLimitInput: false,
+    });
   } else {
     // Balance/Limit (for Liabilities Total graph) - DIRECT SUM, NO CONVERSION
+    // Only include positive values in the calculation
     this.liabilitiesBalanceLimitTotal = this.liabilitiesDetails.value.reduce(
-      (acc: number, liability: any) => acc + (liability.amtBalanceLimit || 0),
+      (acc: number, liability: any) => {
+        const balanceLimit = liability.amtBalanceLimit || 0;
+        // Only include positive values
+        return acc + (balanceLimit > 0 ? balanceLimit : 0);
+      },
       0
     );
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesBalanceLimit: this.liabilitiesBalanceLimitTotal,
+      hasInvalidBalanceLimitInput: false,
+    });
   }
 
   // CALCULATION 2: Monthly Amount Total (for Expenditure Monthly graph - Category 2)
   let liabilitiesMonthlyTotal = 0;
   
-  if (hasInvalidAmount) {
-    liabilitiesMonthlyTotal = Infinity;
+  if (validAmounts.length === 0) {
+    liabilitiesMonthlyTotal = 0;
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesMonthly: liabilitiesMonthlyTotal,
+      hasInvalidLiabilityAmountInput: false,
+    });
+  } else if (hasInvalidAmount) {
+    // Check if ALL amounts are invalid - if so, reset graph to 0
+    const allInvalid = validAmounts.every((liability: any) => 
+      isInvalidAmount(liability.amtLiability)
+    );
+    
+    if (allInvalid) {
+      // All values are invalid - reset graph to 0
+      liabilitiesMonthlyTotal = 0;
+    } else {
+      // Some values are invalid - calculate using only valid positive values
+      validAmountsForCalculation.forEach((liability: any) => {
+        const amount = liability.amtLiability || 0;
+        
+        // Only process positive values
+        if (amount > 0) {
+          const frequency = liability.liabilityFrequency;
+          
+          // Convert to monthly based on frequency
+          let monthlyAmount = amount;
+          if (amount && amount !== 0) {
+            switch (frequency) {
+              case 3533: 
+                monthlyAmount = amount * 4.3333; 
+                break;   // Weekly
+              case 3534: 
+                monthlyAmount = amount * 2.1667; 
+                break;   // Fortnightly
+              case 3535: 
+                monthlyAmount = amount; 
+                break;          // Monthly
+              case 4017: 
+                monthlyAmount = amount / 3; 
+                break;      // Quarterly
+              default: 
+                monthlyAmount = amount; 
+                break;
+            }
+          }
+          
+          liabilitiesMonthlyTotal += monthlyAmount;
+        }
+      });
+    }
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesMonthly: liabilitiesMonthlyTotal,
+      hasInvalidLiabilityAmountInput: true,
+    });
+  } else if (allNegativeAmount) {
+    // Reset graph to 0 when ALL values are negative
+    liabilitiesMonthlyTotal = 0;
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesMonthly: liabilitiesMonthlyTotal,
+      hasInvalidLiabilityAmountInput: false,
+    });
   } else {
     // Calculate monthly-converted Liabilities Amount for Expenditure graph
+    // Only include positive values in the calculation
     this.liabilitiesDetails.value.forEach((liability: any) => {
       const amount = liability.amtLiability || 0;
-      const frequency = liability.liabilityFrequency;
       
-      // Convert to monthly based on frequency
-      let monthlyAmount = amount;
-      if (amount && amount !== 0) {
-        switch (frequency) {
-          case 3533: 
-            monthlyAmount = amount * 4.33; 
-            break;   // Weekly
-          case 3534: 
-            monthlyAmount = amount * 2.17; 
-            break;   // Fortnightly
-          case 3535: 
-            monthlyAmount = amount; 
-            break;          // Monthly
-          case 4017: 
-            monthlyAmount = amount / 3; 
-            break;      // Quarterly
-          default: 
-            monthlyAmount = amount; 
-            break;
+      // Only process positive values
+      if (amount > 0) {
+        const frequency = liability.liabilityFrequency;
+        
+        // Convert to monthly based on frequency
+        let monthlyAmount = amount;
+        if (amount && amount !== 0) {
+          switch (frequency) {
+            case 3533: 
+              monthlyAmount = amount * 4.3333; 
+              break;   // Weekly
+            case 3534: 
+              monthlyAmount = amount * 2.1667; 
+              break;   // Fortnightly
+            case 3535: 
+              monthlyAmount = amount; 
+              break;          // Monthly
+            case 4017: 
+              monthlyAmount = amount / 3; 
+              break;      // Quarterly
+            default: 
+              monthlyAmount = amount; 
+              break;
+          }
         }
+        
+        liabilitiesMonthlyTotal += monthlyAmount;
       }
-      
-      liabilitiesMonthlyTotal += monthlyAmount;
+    });
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalLiabilitiesMonthly: liabilitiesMonthlyTotal,
+      hasInvalidLiabilityAmountInput: false,
     });
   }
-  this.baseSvc.setBaseDealerFormData({
-    totalLiabilitiesBalanceLimit: this.liabilitiesBalanceLimitTotal,  // For Liabilities (Total) graph
-    totalLiabilitiesMonthly: liabilitiesMonthlyTotal  // For Expenditure (Monthly) graph - NEW!
-  });
 }
 
 

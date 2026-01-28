@@ -11,7 +11,7 @@ import { PhysicalAsset } from "../../models/assetsTrade";
 import { ValidationService } from "auro-ui";
 
 @Component({
-  selector: "app-motocheck-tab",
+  selector: "app-motocheck-search-tab",
   template: `
 <div class="motocheck-tab">
       <base-form
@@ -30,7 +30,7 @@ import { ValidationService } from "auro-ui";
 </div>
   `,
 })
-export class MotocheckTabComponent extends BaseStandardQuoteClass {
+export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
   assetData: any = {};
   param: any;
   searchBy: any;

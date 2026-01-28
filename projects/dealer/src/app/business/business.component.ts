@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, effect, OnDestroy, OnInit } from "@angular/core";
 import { BusinessService } from "./services/business";
-import { map, Subject, takeUntil } from "rxjs";
+import { map, skip, Subject, takeUntil } from "rxjs";
 import { CommonService, MapFunc, Mode, ToasterService } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../standard-quote/services/standard-quote.service";
@@ -33,7 +33,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
   mainForm: any;
   businessCustomerContractRole: any;
   updatedCustomerSummary: any;
-  params: any;
+
   constructor(
     public dashboardService: DashboardService,
     private businessSvc: BusinessService,
@@ -69,9 +69,9 @@ export class BusinessComponent implements OnInit, OnDestroy {
     )
   }
 
+  params: any = this.route.snapshot.params;
 
   async ngOnInit() {
-    this.params = this.route.snapshot.params;
 
     this.businessSvc.iconfirmCheckbox.subscribe((valid: any[]) => {
 
@@ -98,14 +98,14 @@ export class BusinessComponent implements OnInit, OnDestroy {
     });
 
     let sessionStorageCustomerSummary = JSON.parse(sessionStorage?.getItem("updatedCustomerSummary"))
-    if (sessionStorageCustomerSummary) {
+      if(sessionStorageCustomerSummary){
       const updateServiceRole = sessionStorageCustomerSummary?.find(c => c.customerRole == 1 || c.roleName == "Borrower")
-      if (updateServiceRole) {
+      if(updateServiceRole){
         this.businessSvc.role = 1
       }
     }
 
-    if (sessionStorageCustomerSummary?.length > 0) {
+    if(sessionStorageCustomerSummary?.length > 0){
       this.updatedCustomerSummary = sessionStorageCustomerSummary
     }
 
@@ -233,232 +233,101 @@ export class BusinessComponent implements OnInit, OnDestroy {
     //   // }
     // }
 
-    if (params.type === "submit") {
-      const updateCustomerIcon = this.updatedCustomerSummary?.find(
-        (c) => c.customerNo === this.formData.customerNo
-      );
-      if (updateCustomerIcon) {
-        updateCustomerIcon.showInfoIcon = false;
-        updateCustomerIcon.isConfirmed = this.formData?.detailsConfirmation;
-      }
-
-      this.standardQuoteSvc.setBaseDealerFormData({
-        updatedCustomerSummary: this.updatedCustomerSummary,
-      });
-
-      this.businessSvc.setBaseDealerFormData({
-        updatedCustomerSummary: this.updatedCustomerSummary,
-      });
-
-      sessionStorage.setItem(
-        "updatedCustomerSummary",
-        JSON.stringify(this.updatedCustomerSummary)
-      );
-
-      if (this.detailsConfirmation) {
-        this.businessSvc.stepper.next({
-          activeStep: this.activeStep,
-          validate: true,
-        });
-        const statusInvalid =
-          this.businessSvc?.formStatusArr?.includes("INVALID");
-        this.businessSvc.formStatusArr = [];
-        if (!statusInvalid) {
-          this.businessSvc.iconfirmCheckbox.next(null);
-          this.businessSvc.showValidationMessage = false;
-          this.activeStep = params.activeStep;
-          this.standardQuoteSvc.activeStep = 1;
-          this.businessSvc.stepper.next(params);
-          let contactDetailPostResponse = await this.contactDetailPost();
-
-          if (this.mode == "create") {
-            this.standardQuoteSvc.mode = "create";
-            let mode = this.standardQuoteSvc.mode;
-            if (contactDetailPostResponse) {
-              this.commonSvc.router.navigateByUrl(
-                `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
-                }`
-              );
-              this.standardQuoteSvc.activeStep = 1;
-            }
-          } else if (this.mode == "edit" || this.mode == "view") {
-            this.standardQuoteSvc.mode = "edit";
-            let mode = this.standardQuoteSvc.mode;
-            if (contactDetailPostResponse) {
-              this.commonSvc.router.navigateByUrl(
-                `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
-                }`
-              );
-              this.standardQuoteSvc.activeStep = 1;
-            }
-          }
-        }
-      } else {
-        this.toasterService.showToaster({
-          severity: "error",
-          detail: "Please Confirm your details are correct",
-        });
-      }
+  if (params.type === "submit") {
+    const updateCustomerIcon = this.updatedCustomerSummary?.find(
+      (c) => c.customerNo === this.formData.customerNo
+    );
+    if (updateCustomerIcon) {
+      updateCustomerIcon.showInfoIcon = false;
+      updateCustomerIcon.isConfirmed = this.formData?.detailsConfirmation;
     }
 
-    if (params.type === "previous") {
-      this.activeStep = params.activeStep;
-      this.businessSvc.activeStep = this.activeStep;
-      this.businessSvc.stepper.next(params);
-    }
+    this.standardQuoteSvc.setBaseDealerFormData({
+      updatedCustomerSummary: this.updatedCustomerSummary,
+    });
 
-    if (params.type == "next") {
+    this.businessSvc.setBaseDealerFormData({
+      updatedCustomerSummary: this.updatedCustomerSummary,
+    });
+
+    sessionStorage.setItem(
+      "updatedCustomerSummary",
+      JSON.stringify(this.updatedCustomerSummary)
+    );
+
+    if (this.detailsConfirmation) {
       this.businessSvc.stepper.next({
         activeStep: this.activeStep,
         validate: true,
       });
-      // const statusInvalid = this.businessSvc?.formStatusArr?.includes("INVALID");
-      // this.businessSvc.formStatusArr = [];
-      // if (!statusInvalid) {
-
-      if (this.formData?.role && this.formData.role != 0) {
-        let res = null;
-        try {
-          //  CHECK FOR isNetProfitLastYear IN FINANCIAL ACCOUNTS STEP (activeStep === 2)
-          if (this.activeStep === 2) {
-
-            if (this.formData?.isNetProfitLastYear === null || this.formData?.isNetProfitLastYear === undefined) {
-              this.toasterService.showToaster({
-                severity: "error",
-                detail: "Please fill the mandatory field",
-              });
-              return;
-            }
-          }
-
-          if (this.mode == "edit") {
-            const borrowerExists = this.businessSvc?.role === 1;
-            const isAddingExistingCustomer =
-              this.businessSvc?.addingExistingCustomer;
-            const newCustomerIsBorrower = this.formData?.role === 1;
-
-            if (
-              borrowerExists &&
-              isAddingExistingCustomer &&
-              newCustomerIsBorrower
-            ) {
-              this.toasterSvc.showToaster({
-                severity: "error",
-                detail: "Borrower already exists.",
-              });
-              return;
-            } else if (!borrowerExists && !newCustomerIsBorrower) {
-              // Allow this case - No borrower exists and we're adding a borrower
-              // You might want to add your operation code here too
-              this.toasterSvc.showToaster({
-                severity: "error",
-                detail: "Kindly add Borrower first.",
-              });
-              return;
-            } else {
-              // if (borrowerExists && !isAddingExistingCustomer) {
-              if (this.activeStep == 0) {
-                // await this.updateAddressDetails();
-                res = await this.businessDetailUpdate();
-              }
-              if (this.activeStep == 1) {
-                res = await this.updateAddressDetails();
-              }
-              if (this.activeStep == 2) {
-                res = await this.financialAccountUpdate();
-              }
-              if (this.activeStep == 3) {
-                res = await this.contactDetailPost();
-              }
-
-              if (res) {
-                const updateCustomerIsConfirmAsPerApiResponse =
-                  this.updatedCustomerSummary?.find(
-                    (c) => c.customerNo === this.formData?.customerNo
-                  );
-                if (updateCustomerIsConfirmAsPerApiResponse) {
-                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed =
-                    res?.data?.customerContractRole?.isConfirmed;
-                }
-                this.formData.detailsConfirmation =
-                  res?.data?.customerContractRole?.isConfirmed;
-              }
-
-              const updateCustomerIcon = this.updatedCustomerSummary?.find(
-                (c) => c.customerNo === this.formData.customerNo
-              );
-              if (updateCustomerIcon) {
-                updateCustomerIcon.showInfoIcon = false;
-              }
-
-              this.standardQuoteSvc.setBaseDealerFormData({
-                updatedCustomerSummary: this.updatedCustomerSummary,
-              });
-
-              this.businessSvc.setBaseDealerFormData({
-                updatedCustomerSummary: this.updatedCustomerSummary,
-              });
-
-              sessionStorage.setItem(
-                "updatedCustomerSummary",
-                JSON.stringify(this.updatedCustomerSummary)
-              );
-            }
-          }
-
-          if (this.mode == "create") {
-            if (this.activeStep == 0 && !this.formData?.businessCustomerNo) {
-              res = await this.businessDetailPost();
-            } else if (this.activeStep == 1) {
-              res = await this.updateAddressDetails();
-            } else if (this.activeStep == 2) {
-              res = await this.financialAccountUpdate();
-            } else if (this.activeStep == 3) {
-              res = await this.contactDetailPost();
-            } else if (
-              this.activeStep == 0 &&
-              this.formData?.businessCustomerNo
-            ) {
-              //await this.updateAddressDetails();
-              res = await this.businessDetailUpdate();
-            }
-          }
-
-          if (!res?.apiError?.errors.length) {
-            this.activeStep = params.activeStep;
-            this.businessSvc.activeStep = this.activeStep;
-            this.businessSvc.stepper.next(params);
-          }
-        } catch (error) {
-          return;
-        }
-      }
-      // this.activeStep = params.activeStep;
-      // this.businessSvc.activeStep = this.activeStep;
-      // this.businessSvc.stepper.next(params);
-      // }
-      // this.businessSvc.formStatusArr.length = 0;
-      // }
-    }
-
-    if (params.type == "draft") {
-      this.businessSvc.stepper.next({
-        activeStep: this.activeStep,
-        validate: true,
-      });
-      const statusInvalid = this.businessSvc.formStatusArr?.includes("INVALID");
+      const statusInvalid =
+        this.businessSvc?.formStatusArr?.includes("INVALID");
       this.businessSvc.formStatusArr = [];
-      // if (!statusInvalid) {
-      if (this.formData?.role && this.formData.role != 0) {
-        // VALIDATION: CHECK FOR isNetProfitLastYear IN FINANCIAL ACCOUNTS STEP (activeStep === 2)
-        if (this.activeStep === 2) {
+      if (!statusInvalid) {
+        this.businessSvc.iconfirmCheckbox.next(null);
+        this.businessSvc.showValidationMessage = false;
+        this.activeStep = params.activeStep;
+        this.standardQuoteSvc.activeStep = 1;
+        this.businessSvc.stepper.next(params);
+        let contactDetailPostResponse = await this.contactDetailPost();
 
+        if (this.mode == "create") {
+          this.standardQuoteSvc.mode = "create";
+          let mode = this.standardQuoteSvc.mode;
+          if (contactDetailPostResponse) {
+            this.commonSvc.router.navigateByUrl(
+              `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+              }`
+            );
+            this.standardQuoteSvc.activeStep = 1;
+          }
+        } else if (this.mode == "edit" || this.mode == "view") {
+          this.standardQuoteSvc.mode = "edit";
+          let mode = this.standardQuoteSvc.mode;
+          if (contactDetailPostResponse) {
+            this.commonSvc.router.navigateByUrl(
+              `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+              }`
+            );
+            this.standardQuoteSvc.activeStep = 1;
+          }
+        }
+      }
+    } else {
+      this.toasterService.showToaster({
+        severity: "error",
+        detail: "Please Confirm your details are correct",
+      });
+    }
+  }
+
+  if (params.type === "previous") {
+    this.activeStep = params.activeStep;
+    this.businessSvc.activeStep = this.activeStep;
+    this.businessSvc.stepper.next(params);
+  }
+
+  if (params.type == "next") {
+    this.businessSvc.stepper.next({
+      activeStep: this.activeStep,
+      validate: true,
+    });
+    // const statusInvalid = this.businessSvc?.formStatusArr?.includes("INVALID");
+    // this.businessSvc.formStatusArr = [];
+    // if (!statusInvalid) {
+
+    if (this.formData?.role && this.formData.role != 0) {
+      let res = null;
+      try {
+        //  CHECK FOR isNetProfitLastYear IN FINANCIAL ACCOUNTS STEP (activeStep === 2)
+        if (this.activeStep === 2) {
+          
           if (this.formData?.isNetProfitLastYear === null || this.formData?.isNetProfitLastYear === undefined) {
             this.toasterService.showToaster({
               severity: "error",
               detail: "Please fill the mandatory field",
             });
-            return; //BLOCK SAVE
+            return; 
           }
         }
 
@@ -467,7 +336,6 @@ export class BusinessComponent implements OnInit, OnDestroy {
           const isAddingExistingCustomer =
             this.businessSvc?.addingExistingCustomer;
           const newCustomerIsBorrower = this.formData?.role === 1;
-          let res = null;
 
           if (
             borrowerExists &&
@@ -480,26 +348,27 @@ export class BusinessComponent implements OnInit, OnDestroy {
             });
             return;
           } else if (!borrowerExists && !newCustomerIsBorrower) {
-
-
+            // Allow this case - No borrower exists and we're adding a borrower
+              // You might want to add your operation code here too
             this.toasterSvc.showToaster({
               severity: "error",
               detail: "Kindly add Borrower first.",
             });
             return;
           } else {
+            // if (borrowerExists && !isAddingExistingCustomer) {
             if (this.activeStep == 0) {
               // await this.updateAddressDetails();
               res = await this.businessDetailUpdate();
-            }
-            if (this.activeStep == 3) {
-              res = await this.contactDetailPost();
             }
             if (this.activeStep == 1) {
               res = await this.updateAddressDetails();
             }
             if (this.activeStep == 2) {
               res = await this.financialAccountUpdate();
+            }
+            if (this.activeStep == 3) {
+              res = await this.contactDetailPost();
             }
 
             if (res) {
@@ -539,17 +408,148 @@ export class BusinessComponent implements OnInit, OnDestroy {
 
         if (this.mode == "create") {
           if (this.activeStep == 0 && !this.formData?.businessCustomerNo) {
-            await this.businessDetailPost();
+            res = await this.businessDetailPost();
+          } else if (this.activeStep == 1) {
+            res = await this.updateAddressDetails();
+          } else if (this.activeStep == 2) {
+            res = await this.financialAccountUpdate();
+          } else if (this.activeStep == 3) {
+            res = await this.contactDetailPost();
           } else if (
             this.activeStep == 0 &&
             this.formData?.businessCustomerNo
           ) {
-            await this.businessDetailUpdate();
+              //await this.updateAddressDetails();
+            res = await this.businessDetailUpdate();
+          }
+        }
+
+        if (!res?.apiError?.errors.length) {
+          this.activeStep = params.activeStep;
+          this.businessSvc.activeStep = this.activeStep;
+          this.businessSvc.stepper.next(params);
+        }
+      } catch (error) {
+        return;
+      }
+    }
+    // this.activeStep = params.activeStep;
+      // this.businessSvc.activeStep = this.activeStep;
+      // this.businessSvc.stepper.next(params);
+      // }
+      // this.businessSvc.formStatusArr.length = 0;
+    // }
+  }
+
+  if (params.type == "draft") {
+    this.businessSvc.stepper.next({
+      activeStep: this.activeStep,
+      validate: true,
+    });
+    const statusInvalid = this.businessSvc.formStatusArr?.includes("INVALID");
+    this.businessSvc.formStatusArr = [];
+    // if (!statusInvalid) {
+    if (this.formData?.role && this.formData.role != 0) {
+      // VALIDATION: CHECK FOR isNetProfitLastYear IN FINANCIAL ACCOUNTS STEP (activeStep === 2)
+      if (this.activeStep === 2) {
+        
+        if (this.formData?.isNetProfitLastYear === null || this.formData?.isNetProfitLastYear === undefined) {
+          this.toasterService.showToaster({
+            severity: "error",
+            detail: "Please fill the mandatory field",
+          });
+          return; //BLOCK SAVE
+        }
+      }
+
+      if (this.mode == "edit") {
+        const borrowerExists = this.businessSvc?.role === 1;
+        const isAddingExistingCustomer =
+          this.businessSvc?.addingExistingCustomer;
+        const newCustomerIsBorrower = this.formData?.role === 1;
+        let res = null;
+
+        if (
+          borrowerExists &&
+          isAddingExistingCustomer &&
+          newCustomerIsBorrower
+        ) {
+          this.toasterSvc.showToaster({
+            severity: "error",
+            detail: "Borrower already exists.",
+          });
+          return;
+        } else if (!borrowerExists && !newCustomerIsBorrower) {
+
+          
+          this.toasterSvc.showToaster({
+            severity: "error",
+            detail: "Kindly add Borrower first.",
+          });
+          return;
+        } else {
+          if (this.activeStep == 0) {
+            // await this.updateAddressDetails();
+            res = await this.businessDetailUpdate();
+          }
+          if (this.activeStep == 3) {
+            res = await this.contactDetailPost();
+          }
+          if (this.activeStep == 1) {
+            res = await this.updateAddressDetails();
+          }
+          if (this.activeStep == 2) {
+            res = await this.financialAccountUpdate();
           }
 
-          if (this.activeStep == 1 && this.formData?.businessCustomerNo) {
-            await this.updateAddressDetails();
+          if (res) {
+            const updateCustomerIsConfirmAsPerApiResponse =
+              this.updatedCustomerSummary?.find(
+                (c) => c.customerNo === this.formData?.customerNo
+              );
+            if (updateCustomerIsConfirmAsPerApiResponse) {
+              updateCustomerIsConfirmAsPerApiResponse.isConfirmed =
+                res?.data?.customerContractRole?.isConfirmed;
+            }
+            this.formData.detailsConfirmation =
+              res?.data?.customerContractRole?.isConfirmed;
           }
+
+          const updateCustomerIcon = this.updatedCustomerSummary?.find(
+            (c) => c.customerNo === this.formData.customerNo
+          );
+          if (updateCustomerIcon) {
+            updateCustomerIcon.showInfoIcon = false;
+          }
+
+          this.standardQuoteSvc.setBaseDealerFormData({
+            updatedCustomerSummary: this.updatedCustomerSummary,
+          });
+
+          this.businessSvc.setBaseDealerFormData({
+            updatedCustomerSummary: this.updatedCustomerSummary,
+          });
+
+          sessionStorage.setItem(
+            "updatedCustomerSummary",
+            JSON.stringify(this.updatedCustomerSummary)
+          );
+        }
+      }
+
+      if (this.mode == "create") {
+        if (this.activeStep == 0 && !this.formData?.businessCustomerNo) {
+          await this.businessDetailPost();
+        } else if (
+          this.activeStep == 0 &&
+          this.formData?.businessCustomerNo
+        ) {
+          await this.businessDetailUpdate();
+        }
+
+        if (this.activeStep == 1 && this.formData?.businessCustomerNo) {
+          await this.updateAddressDetails();
+        }
           // if (this.activeStep == 0 && this.formData?.businessCustomerNo) {
           //   await this.businessDetailPost();
           // }
@@ -1198,15 +1198,15 @@ export class BusinessComponent implements OnInit, OnDestroy {
       body
     );
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1648,16 +1648,16 @@ export class BusinessComponent implements OnInit, OnDestroy {
       "CustomerDetails/update_customer",
       body
     );
-
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }

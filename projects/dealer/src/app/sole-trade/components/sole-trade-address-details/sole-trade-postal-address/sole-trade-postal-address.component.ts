@@ -360,6 +360,16 @@ export class SoleTradePostalAddressComponent extends BaseSoleTradeClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
     if (this.baseSvc.showValidationMessage) {
       this.mainForm.form.markAllAsTouched();
@@ -961,6 +971,16 @@ override async onFormEvent(event) {
     });
 
   
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     await this.updateValidation("onInit");
   }
     // const isNz = this.baseFormData?.postalCountry === "New Zealand";

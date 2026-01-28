@@ -40,7 +40,7 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
         ],
         alignmentType: 'horizontal',
         labelClass: 'col-5',
-        inputClass: 'col-3',
+        inputClass: 'col-5',
         nextLine: false,
         default: null,
       },
@@ -61,6 +61,16 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit()
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
     if(this.trustSvc.showValidationMessage){
       this.mainForm.form.markAllAsTouched()

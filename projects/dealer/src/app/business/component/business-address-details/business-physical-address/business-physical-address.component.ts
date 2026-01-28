@@ -187,7 +187,7 @@ export class BusinessPhysicalAddressComponent
       },
       {
         type: "text",
-        label: "Floor No",
+        label: "Floor Number",
         name: "physicalFloorNumber",
         //validators: [Validators.pattern(/^[A-Za-z0-9'\-\&\/.]*$/)],
         className: " ",
@@ -412,6 +412,17 @@ override async ngOnInit(): Promise<void> {
       physicalUnitNumber: false,
       physicalStreetArea: true,
     });
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+    
     await this.updateValidation("onInit");
   }
 

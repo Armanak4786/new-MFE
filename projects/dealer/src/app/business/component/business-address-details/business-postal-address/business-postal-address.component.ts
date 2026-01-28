@@ -204,7 +204,7 @@ export class BusinessPostalAddressComponent extends BaseBusinessClass {
       },
       {
         type: "text",
-        label: "Floor No",
+        label: "Floor Number",
         name: "postalFloorNumber",
         inputType: "vertical",
         //validators: [Validators.pattern(/^[A-Za-z0-9'\-\&\/.]*$/)],
@@ -672,6 +672,16 @@ override async ngOnInit(): Promise<void> {
   if (this.baseSvc.showValidationMessage) {
     this.mainForm.form.markAllAsTouched();
   }
+  let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 }
 
 private initializeCopySubscription(): void {
@@ -980,6 +990,17 @@ override async onFormEvent(event): Promise<void> {
         postalNumber: false,
       });
     }
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+    
     await this.updateValidation("onInit");
   }
 

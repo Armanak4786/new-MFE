@@ -4,6 +4,7 @@
     [btnType]="'plus-btn'"
     [btnLabel]="'Add Trustees Details'"
     (onClick)="showReferenceDetailPopup()"
+    [disabled]="isDisabled()"
     class="add-contact-btn full-width-btn"
   ></gen-button>
 </div>
@@ -63,12 +64,14 @@
             [btnType]="'non-bg-btn'"
             [className]="'text-primary-color'"
             (click)="editReference(reference, i)"
+            [disabled]="isDisabled()"
           ></gen-button>
           <gen-button
             [btnIcon]="'fa-regular fa-trash-can text-lg'"
             [btnType]="'non-bg-btn'"
             [className]="'text-danger-color'"
             (click)="removeReference(reference, i)"
+            [disabled]="isDisabled()"
           ></gen-button>
         </div>
       </div>
@@ -81,6 +84,7 @@
     [btnType]="'plus-btn'"
     [btnLabel]="'Add Trustees Details'"
     (onClick)="showReferenceDetailPopup()"
+    [disabled]="isDisabled()"
     class="add-contact-btn"
   ></gen-button>
 </ng-container>

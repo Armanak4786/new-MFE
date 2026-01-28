@@ -372,7 +372,7 @@ override formConfig: GenericFormConfig = {
 
           if (this.addType == "Add Asset") {
           
-            this.svc.router.navigateByUrl("dealer/asset/addAsset/edit");
+            this.svc.router.navigateByUrl("asset/addAsset/edit");
            
           } else {
                       this.svc.router.navigateByUrl("dealer/asset/addTrade/edit");

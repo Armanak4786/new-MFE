@@ -50,7 +50,7 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
         name: "previousEmployer",
         cols: 2,
         nextLine: false,
-        inputClass: "mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         /* //validators: [
            Validators.required,
            Validators.maxLength(30),
@@ -90,11 +90,11 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
       {
         type: "number",
         inputType: "vertical",
-        label: "Time with Previous employer",
+        label: "Time with Previous Employer",
         name: "previousEmployeeYear",
         labelClass: "tce pb-3 white-space-nowrap",
         className: "ml-3 mt-0 py-4 col-fixed w-4rem",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         //validators: [Validators.required, Validators.max(99)],
       },
       {
@@ -111,7 +111,7 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
 
         className:
           "ml-3 py-4 mt-4 col-fixed w-4rem timeInBusinessMonthsClass",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         //validators: [Validators.max(11)],
         errorMessage: "Value should be less than 12",
       },
@@ -137,6 +137,16 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
     
     if(this.baseSvc.showValidationMessage){
@@ -159,7 +169,7 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
         }));
 
         this.mainForm.updateList("previousOccupation", previousOccupationList);
-
+        previousOccupationList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return previousOccupationList;
       }
     );
@@ -178,7 +188,7 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
           "previousEmploymentType",
           previousEmploymentTypeList
         );
-
+        previousEmploymentTypeList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return previousEmploymentTypeList;
       }
     );
@@ -408,8 +418,8 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
         this.baseFormData?.employementDetails[1]?.effectDtTO
       );
 
-      this.mainForm.get("previousEmployeeYear").patchValue(duration.years);
-      this.mainForm.get("previousEmployeeMonth").patchValue(duration.months);
+      this.mainForm.get("previousEmployeeYear").patchValue(this.baseFormData?.previousEmployeeYear || duration.years);
+      this.mainForm.get("previousEmployeeMonth").patchValue(this.baseFormData?.previousEmployeeMonth || duration.months);
 
       // this.mainForm
       //   .get("previousEmployeeYear")
@@ -428,7 +438,12 @@ export class SoleTradePreviousEmploymentComponent extends BaseSoleTradeClass {
       //     )
       //   );
     }
-  }
+        else {
+      this.mainForm.get("previousEmployeeYear").patchValue(this.baseFormData?.previousEmployeeYear || null);
+      this.mainForm.get("previousEmployeeMonth").patchValue(this.baseFormData?.previousEmployeeMonth || null);
+  } 
+}
+  
 }
 override onValueTyped(event: any): void {
     this.updateValidation(event);

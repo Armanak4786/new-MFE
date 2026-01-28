@@ -435,6 +435,17 @@ override formConfig: GenericFormConfig = {
       }
     });
 
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || 
+      (this.baseFormData?.AFworkflowStatus && 
+       this.baseFormData.AFworkflowStatus !== 'Quote')
+    ) {
+      this.mainForm?.form?.disable();
+    } else { 
+      this.mainForm?.form?.enable();
+    }
+    
     
   }
 
@@ -597,6 +608,16 @@ override formConfig: GenericFormConfig = {
       this.tempCity = event?.value;
     }
     await super.onFormEvent(event);
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || 
+      (this.baseFormData?.AFworkflowStatus && 
+       this.baseFormData.AFworkflowStatus !== 'Quote')
+    ) {
+      this.mainForm?.form?.disable();
+    } else { 
+      this.mainForm?.form?.enable();
+    }
   }
 
   override async onFormReady(): Promise<void> {
@@ -633,6 +654,16 @@ override formConfig: GenericFormConfig = {
   }
 
     super.onFormReady();
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || 
+      (this.baseFormData?.AFworkflowStatus && 
+       this.baseFormData.AFworkflowStatus !== 'Quote')
+    ) {
+      this.mainForm?.form?.disable();
+    } else { 
+      this.mainForm?.form?.enable();
+    }
   }
 
   // override onFormDataUpdate(res: any): void {

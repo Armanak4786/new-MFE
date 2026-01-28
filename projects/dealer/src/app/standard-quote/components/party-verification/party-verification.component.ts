@@ -812,6 +812,12 @@ export class PartyVerificationComponent extends BaseStandardQuoteClass {
   // }
 
   updateSessionStorage(newStatus: string): void {
+   
+    if(this.customerData?.roleName == "Third Party"){
+       this.customerData.currentWorkflowStatus = newStatus;
+    this.baseSvc.searchResultForSupplier.set([this.customerData]);
+      return;
+    }
     try {
       const storedData = sessionStorage.getItem("updatedCustomerSummary");
       if (storedData) {

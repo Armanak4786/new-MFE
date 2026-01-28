@@ -141,6 +141,7 @@
                       [btnType]="'non-bg-btn'"
                       (onClick)="removePhone(i)"
                       class="mt-2"
+                      [disabled]="isDisabled()"
                     ></gen-button>
                   </div>
                 </div>
@@ -153,6 +154,7 @@
                 [btnLabel]="'Add Other Number'"
                 [btnType]="'plus-btn'"
                 (onClick)="addOtherPhone()"
+                [disabled]="isDisabled()"
               ></gen-button>
             </div>
           </ng-container>

@@ -6,11 +6,13 @@
 <app-details-confirmation></app-details-confirmation> -->
 
 <div *ngIf="!referenceDetails?.length" class="full-width-add-button col-12">
-  <gen-button
+  <gen-button 
     [btnType]="'plus-btn'"
     [btnLabel]="'Add Contact Details'"
     (onClick)="showReferenceDetailPopup()"
+    [class.disabled]="isDisabled()"
     class="add-contact-btn full-width-btn"
+    [disabled]="isDisabled()"
   ></gen-button>
 </div>
 
@@ -77,12 +79,14 @@
             [btnType]="'non-bg-btn'"
             [className]="'text-primary-color'"
             (click)="editReference(reference, i)"
+            [disabled]="isDisabled()"
           ></gen-button>
           <gen-button
             [btnIcon]="'fa-regular fa-trash-can text-lg'"
             [btnType]="'non-bg-btn'"
             [className]="'text-danger-color'"
             (click)="removeReference(reference, i)"
+            [disabled]="isDisabled()"
           ></gen-button>
         </div>
       </div>
@@ -96,6 +100,7 @@
     [btnLabel]="'Add Contact Details'"
     (onClick)="showReferenceDetailPopup()"
     class="add-contact-btn"
+    
   ></gen-button>
 </ng-container>
 

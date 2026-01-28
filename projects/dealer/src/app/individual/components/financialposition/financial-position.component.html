@@ -24,11 +24,11 @@
                     {{ "Assets (Total) : " | apsTranslate }}
                     <span class="font-bold text-size-12">
                       <!-- {{assetValue |currency}} -->
-                      <ng-container *ngIf="assetValue === Infinity || assetValue >= 1e18; else normalValue">
-                        Infinity
+                      <ng-container *ngIf="hasInvalidAssetInput; else normalValue">
+                        Invalid Input
                       </ng-container>
                       <ng-template #normalValue>
-                        {{ assetValue | currency }}
+                        {{ getDisplayValue(assetValue) | currency }}
                       </ng-template>
                     </span>
                   </label>
@@ -43,11 +43,11 @@
                   <label>
                     {{ "Liabilities (Balance / Limit) : " | apsTranslate }}
                     <span class="font-bold text-size-12">
-                      <ng-container *ngIf="totalLiabilites === Infinity || totalLiabilites >= 1e18; else normalLiabilities">
-                        Infinity
+                      <ng-container *ngIf="hasInvalidLiabilitiesInput; else normalLiabilities">
+                        Invalid Input
                       </ng-container>
                       <ng-template #normalLiabilities>
-                        {{ totalLiabilites | currency }}
+                        {{ getDisplayValue(totalLiabilites) | currency }}
                       </ng-template>
                     </span>
                   </label>
@@ -78,11 +78,11 @@
                   <label>
                     {{ "Income (Monthly) : " | apsTranslate }}
                     <span class="font-bold text-size-12">
-                      <ng-container *ngIf="incomeValue === Infinity || incomeValue >= 1e18; else normalIncome">
-                        Infinity
+                      <ng-container *ngIf="hasInvalidIncomeInput; else normalIncome">
+                        Invalid Input
                       </ng-container>
                       <ng-template #normalIncome>
-                        {{ incomeValue | currency }}
+                        {{ getDisplayValue(incomeValue) | currency }}
                       </ng-template>
                     </span>
                   </label>
@@ -97,11 +97,11 @@
                   <label>
                     {{ "Expenditure (Monthly) : " | apsTranslate }}
                     <span class="font-bold text-size-12">
-                      <ng-container *ngIf="expenditureMonthly  === Infinity || expenditureMonthly >= 1e18; else normalExpenditure">
-                        Infinity
+                      <ng-container *ngIf="hasInvalidExpenditureInput; else normalExpenditure">
+                        Invalid Input
                       </ng-container>
                       <ng-template #normalExpenditure>
-                        {{ expenditureMonthly  | currency }}
+                        {{ getDisplayValue(expenditureMonthly) | currency }}
                       </ng-template>
                     </span>
                   </label>

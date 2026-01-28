@@ -67,8 +67,9 @@
       <div class="footer-buttons">  
         <p-checkbox
           name="selectAll"
-          value="selectAll"
           label="Select All"
+          binary="true"
+          [(ngModel)]="selectAll"
           (onChange)="getAllSelected()"
           class="mr-3 mb-2"
         >

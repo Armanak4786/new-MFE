@@ -149,6 +149,16 @@ private originalInputValues: { [key: string]: string } = {};
     // console.log(' DEBUG - Component initialized');
   // console.log(' DEBUG - Form config:', this.formConfig);
   // console.log(' DEBUG - Show validation message flag:', this.baseSvc.showValidationMessage);
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
   
     if (this.baseSvc.showValidationMessage) {
       this.mainForm.form.markAllAsTouched();

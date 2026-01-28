@@ -241,6 +241,16 @@ export class PersonalDetailsComponent extends BaseIndividualClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     // this.checkStepValidity()
     if (this.baseSvc.showValidationMessage) {
       this.mainForm.form.markAllAsTouched();
@@ -521,7 +531,7 @@ export class PersonalDetailsComponent extends BaseIndividualClass {
         }));
 
         this.mainForm.updateList("title", titleList);
-
+        titleList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return titleList;
       }
     );
@@ -539,7 +549,7 @@ export class PersonalDetailsComponent extends BaseIndividualClass {
           }));
 
         this.mainForm.updateList("gender", genderList);
-
+        genderList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return genderList;
       }
     );
@@ -563,6 +573,7 @@ export class PersonalDetailsComponent extends BaseIndividualClass {
         );
 
         this.mainForm.updateList("maritalStatus", sortedList);
+        sortedList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return sortedList;
       }
     );

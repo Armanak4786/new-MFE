@@ -150,7 +150,7 @@ export class BusinessPreviousAddressComponent extends BaseBusinessClass {
       },
       {
         type: "text",
-        label: "Floor No",
+        label: "Floor Number",
         name: "previousFloorNumber",
         //validators: [Validators.pattern(/^[A-Za-z0-9'\-\&\/.]*$/)],
         className: " ",
@@ -342,6 +342,16 @@ export class BusinessPreviousAddressComponent extends BaseBusinessClass {
   override async onSuccess(data: any) {}
 override async ngOnInit(): Promise<void> {
   await super.ngOnInit();
+  let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     // await this.updateDropdownData();
 
   this.indSvc.updateDropdownData().subscribe((result) => {
@@ -555,6 +565,17 @@ override async onFormEvent(event: any): Promise<void> {
   }
   
   await super.onFormEvent(event);
+
+   let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 }
 
 

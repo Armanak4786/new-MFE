@@ -4,7 +4,8 @@
       <p class="mt-0 mb-2 text-m font-bold">
         <text [mode]="'label'" [label]="'lbl_workflowStatus'"></text>
       </p>
-     <a href="javascript:void(0)" 
+     <a  *ngIf="workFlow?.length > 6"
+         href="javascript:void(0)" 
          class="ml-auto view-toggle flex align-items-center" 
          [class.expanded]="showAll"
          (click)="toggleViewAll()">
@@ -25,11 +26,11 @@
             class="borderunit border-0 border-round-sm p-1"
             style="color: #666666;"
           >
-            {{ data?.label }}
+            {{ data?.wf_status || data?.label }}
           </div>
           <div>
-            <p class="m-0 text-xs font-bold">{{ data?.amount | currency }}</p>
-            <p class="m-0" style="color: #1D1D1B;font-size: 8px;">{{ data?.count }}</p>
+            <p class="m-0 text-xs font-bold">{{ (data?.amount ?? data?.amt) | currency }}</p>
+            <p class="m-0" style="color: #1D1D1B;font-size: 8px;">{{ data?.contract_count || data?.count }}</p>
           </div>
         </div>
       </div>

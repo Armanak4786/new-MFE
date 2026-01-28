@@ -18,7 +18,7 @@ import configure from "../../../../../public/assets/configure.json";
 })
 export class PaymentScheduleComponent extends BaseStandardQuoteClass {
   @Input() customerStatment: any;
-
+  
   hidden: boolean = true;
   productCode?: any;
   isFinanceLease?: boolean = false;
@@ -41,11 +41,11 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
   financeLeaseAllRowData: any[] = [];
   btnStatus: boolean;
   flow;
-
+  
   // Dynamic labels for header text
   summaryLabel: string = 'Payment Summary';
   scheduleLabel: string = 'Payment Schedule';
-
+  
   //End:component variables
 
   constructor(
@@ -102,7 +102,7 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
       field: "paymentAmount",
       headerName: "Payment",
       format: "#currency",
-      class: 'col-end',
+      class: 'col-end', 
     },
   ];
 
@@ -169,20 +169,20 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
       field: "residualGstExcl",
       headerName: "GST Excl",
       format: "#currency",
-      class: 'col-end',
+      class: 'col-end', 
     },
     {
       field: "residualGST",
       headerName: "GST",
       format: "#currency",
-      class: 'col-end',
+      class: 'col-end', 
     },
     {
       field: "residualGstIncl",
       headerName: "GST incl",
       format: "#currency",
       headerClass: "text-center",
-      class: 'col-end',
+      class: 'col-end', 
     },
   ];
 
@@ -228,7 +228,7 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
     this.setupDynamicLabels();
 
     this.loadCustomerStatementData()
-    console.log(this.baseFormData, 'dfg')
+    console.log(this.baseFormData,'dfg')
     if (this.productCode === "FL" && this.paymentSchedule) {
       this.residualValueList = this.paymentSchedule.filter(
         (row) => row.flowName === "Residual Flow"
@@ -242,15 +242,14 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
 
     if (this.productCode === "FL" || this.productCode === "OL") {
       this.columnDefs.push(
-        {
-          field: "paymentScheduleGST", headerName: "GST", format: "#currency",
-          class: 'col-end',
+        { field: "paymentScheduleGST", headerName: "GST", format: "#currency" ,
+          class: 'col-end', 
         },
         {
           field: "paymentScheduleTotal",
           headerName: "Total Payment",
           format: "#currency",
-          class: 'col-end',
+          class: 'col-end', 
         }
       );
     }
@@ -259,7 +258,7 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
   }
 
   override onStatusChange(statusDetails: any): void {
-    if ((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))) {
+    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
       this.isDisable = true
     }
   }
@@ -267,45 +266,45 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
   async loadCustomerStatementData() {
     let res: any;
     try {
-      if (this.baseFormData?.customerStatementData) {
-        const paymentSummary = this.baseFormData?.customerStatementData?.paymentSummary;
-        if (paymentSummary && paymentSummary.length > 0) {
-          this.paymentSchedule = paymentSummary.map((item: any) => ({
-            paymentScheduleDate: item.date,
-            paymentScheduleNumber: item.number,
-            paymentScheduleFrequency: item.frequency,
-            paymentAmount: item.payment,
-
-            ...(this.productCode === "FL" || this.productCode === "OL" ? {
-              paymentScheduleGST: 0, // Add if available in API
-              paymentScheduleTotal: item.payment
-            } : {})
-          }));
-          this.paymentScheduleSvc.paymentScheduleList = paymentSummary.map((item: any) => ({
-            date: item.date,
-            number: item.number,
-            frequency: item.frequency,
-            payment: item.payment
-          }));
-        } else {
-          this.paymentSchedule = [];
-          this.paymentScheduleSvc.paymentScheduleList = [];
-        }
-      }
-    } catch (error) {
-      this.paymentSchedule = [];
-      this.paymentScheduleSvc.paymentScheduleList = [];
-    }
-  }
+     if (this.baseFormData?.customerStatementData) {
+         const paymentSummary = this.baseFormData?.customerStatementData?.paymentSummary;
+       if (paymentSummary && paymentSummary.length > 0) {
+         this.paymentSchedule = paymentSummary.map((item: any) => ({
+           paymentScheduleDate: item.date,
+           paymentScheduleNumber: item.number,
+           paymentScheduleFrequency: item.frequency,
+           paymentAmount: item.payment,
+          
+           ...(this.productCode === "FL" || this.productCode === "OL" ? {
+             paymentScheduleGST: 0, // Add if available in API
+             paymentScheduleTotal: item.payment
+           } : {})
+         }));
+         this.paymentScheduleSvc.paymentScheduleList = paymentSummary.map((item: any) => ({
+           date: item.date,
+           number: item.number,
+           frequency: item.frequency,
+           payment: item.payment
+         }));
+       } else {
+         this.paymentSchedule = [];
+         this.paymentScheduleSvc.paymentScheduleList = [];
+       }
+     } 
+   } catch (error) {
+     this.paymentSchedule = [];
+     this.paymentScheduleSvc.paymentScheduleList = [];
+   }
+ }
 
   renderData() {
     let params: any = this.route.snapshot.params;
     this.mode = this.baseSvc.mode;
 
     this.justifyOptions = [
-      { icon: "pi pi-equals", value: "first" },
-      { icon: "pi pi-bars", value: "second" }
-    ];
+    { icon: "pi pi-equals", value: "first" },
+    { icon: "pi pi-bars", value: "second" }
+  ];
 
     if (this.baseFormData?.totalAmountBorrowed) {
       if (this.baseFormData?.flows) {
@@ -444,29 +443,29 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
 
           ...(this.productCode === "FL" && this.flow
             ? {
-              paymentScheduleGST: this.flow.amtTax,
-              paymentScheduleTotal: this.flow.amtGross,
-              priceSegmentId: ele?.priceSegmentId,
-              priceScheduleId: ele?.priceScheduleId
-            }
+                paymentScheduleGST: this.flow.amtTax,
+                paymentScheduleTotal: this.flow.amtGross,
+                priceSegmentId : ele?.priceSegmentId,
+                priceScheduleId : ele?.priceScheduleId
+              }
             : {}),
-
-          ...(this.productCode === "OL" && this.flow
+          
+            ...(this.productCode === "OL" && this.flow
             ? {
-              paymentScheduleGST: ele?.paymentAmount != 0 ? this.flow.amtTax : 0,
-              paymentScheduleTotal: (ele?.paymentAmount != 0
-                ? Number(ele?.paymentAmount) +
+                paymentScheduleGST: ele?.paymentAmount != 0 ? this.flow.amtTax : 0,
+                paymentScheduleTotal: (ele?.paymentAmount != 0
+              ? Number(ele?.paymentAmount) +
                 Number(this.baseFormData?.actualMaintenanceFee)
-                : ele?.paymentAmount) + (ele?.paymentAmount != 0 ? this.flow.amtTax : 0),
-            }
+              : ele?.paymentAmount) + (ele?.paymentAmount != 0 ? this.flow.amtTax : 0),
+              }
             : {}),
 
           paymentAmount:
-            this.baseFormData?.productCode !== "FL"
-              ? (ele?.paymentAmount != 0
-                ? Number(ele?.paymentAmount) + Number(this.baseFormData?.actualMaintenanceFee ? this.baseFormData?.actualMaintenanceFee : 0)
-                : ele?.paymentAmount)
-              : ele?.paymentSchedulePayment,
+             this.baseFormData?.productCode !== "FL"
+             ? (ele?.paymentAmount != 0
+             ? Number(ele?.paymentAmount) + Number(this.baseFormData?.actualMaintenanceFee ? this.baseFormData?.actualMaintenanceFee : 0)
+             : ele?.paymentAmount)
+             : ele?.paymentSchedulePayment,
           actualMaintenanceFee: this.baseFormData?.actualMaintenanceFee,
           segmentType: ele?.segmentType,
           isCustomised:
@@ -485,16 +484,16 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
             ...(this.productCode === "FL" && {
               paymentScheduleGST: ele?.paymentScheduleGST,
               paymentScheduleTotal: ele?.paymentScheduleTotal,
-              priceSegmentId: ele?.priceSegmentId,
-              priceScheduleId: ele?.priceScheduleId
+              priceSegmentId : ele?.priceSegmentId,
+              priceScheduleId : ele?.priceScheduleId
             }),
             paymentAmount:
               ele?.paymentAmount != 0
                 ? Number(ele?.paymentAmount) +
-                Number(this.baseFormData?.actualMaintenanceFee) +
-                Number(balloonData?.[0]?.amtGross)
+                  Number(this.baseFormData?.actualMaintenanceFee) +
+                  Number(balloonData?.[0]?.amtGross)
                 : Number(ele?.paymentAmount) +
-                Number(balloonData?.[0]?.amtGross),
+                  Number(balloonData?.[0]?.amtGross),
             actualMaintenanceFee: this.baseFormData?.actualMaintenanceFee,
             segmentType: ele?.segmentType,
           });
@@ -509,13 +508,13 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
             ...(this.productCode === "FL" && {
               paymentScheduleGST: ele?.paymentScheduleGST,
               paymentScheduleTotal: ele?.paymentScheduleTotal,
-              priceSegmentId: ele?.priceSegmentId,
-              priceScheduleId: ele?.priceScheduleId
+              priceSegmentId : ele?.priceSegmentId,
+              priceScheduleId : ele?.priceScheduleId
             }),
             paymentAmount:
               ele?.paymentAmount != 0
                 ? Number(ele?.paymentAmount) +
-                Number(this.baseFormData?.actualMaintenanceFee ? this.baseFormData?.actualMaintenanceFee : 0)
+                  Number(this.baseFormData?.actualMaintenanceFee ? this.baseFormData?.actualMaintenanceFee : 0)
                 : ele?.paymentAmount,
             actualMaintenanceFee: this.baseFormData?.actualMaintenanceFee,
             segmentType: ele?.segmentType,
@@ -532,8 +531,8 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
             ...(this.productCode === "FL" && {
               paymentScheduleGST: ele?.paymentScheduleGST,
               paymentScheduleTotal: ele?.paymentScheduleTotal,
-              priceSegmentId: ele?.priceSegmentId,
-              priceScheduleId: ele?.priceScheduleId
+              priceSegmentId : ele?.priceSegmentId,
+              priceScheduleId : ele?.priceScheduleId
             }),
             paymentAmount:
               lastInstallment?.amtGross + (balloonData?.[0]?.amtGross || 0),
@@ -568,10 +567,10 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
       const newItem = {
         paymentScheduleDate: this.paymentSchedule[index]?.paymentScheduleDate,
         paymentScheduleNumber: 1,
-        paymentScheduleFrequency:
-          this.paymentSchedule[index]?.installmentFrequency || this.paymentSchedule[index]?.paymentScheduleFrequency,
-        paymentSchedulePayment:
-          this.paymentSchedule[index]?.paymentSchedulePayment,
+         paymentScheduleFrequency:
+            this.paymentSchedule[index]?.installmentFrequency || this.paymentSchedule[index]?.paymentScheduleFrequency,
+          paymentSchedulePayment:
+            this.paymentSchedule[index]?.paymentSchedulePayment,
         paymentAmount:
           Number(this.paymentSchedule[index].paymentAmount) +
           actualMaintenanceFeeSum,
@@ -579,20 +578,20 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
         segmentType: "Payment Total",
         isCustomised: true,
         ...(this.productCode === "FL" && {
-          paymentScheduleGST: this.paymentSchedule[index]?.paymentScheduleGST,
-          paymentScheduleTotal: this.paymentSchedule[index]?.paymentScheduleTotal,
-          priceSegmentId: this.paymentSchedule[index]?.priceSegmentId,
-          priceScheduleId: this.paymentSchedule[index]?.priceScheduleId
-        }),
+            paymentScheduleGST: this.paymentSchedule[index]?.paymentScheduleGST,
+            paymentScheduleTotal: this.paymentSchedule[index]?.paymentScheduleTotal,
+            priceSegmentId : this.paymentSchedule[index]?.priceSegmentId,
+              priceScheduleId : this.paymentSchedule[index]?.priceScheduleId
+          }),
       };
 
       this.paymentSchedule.splice(index, 0, newItem);
-      this.paymentSchedule[index + 1].paymentScheduleNumber =
-        Number(this.paymentSchedule[index + 1].paymentScheduleNumber) -
+      this.paymentSchedule[index+1].paymentScheduleNumber =
+        Number(this.paymentSchedule[index+1].paymentScheduleNumber) -
         1;
-
-      let paymentDate = filteredInstallments[index + 1]?.calcDt;
-      this.paymentSchedule[index + 1].paymentScheduleDate = paymentDate;
+        
+       let paymentDate= filteredInstallments[index + 1]?.calcDt;
+        this.paymentSchedule[index+1].paymentScheduleDate =paymentDate;
     }
 
     // residual mapping - only for FL
@@ -626,10 +625,10 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
         data: {},
         width: "46vw",
       })
-      .onClose.subscribe((data: any) => { });
+      .onClose.subscribe((data: any) => {});
     this.baseSvc?.forceCalculateBeforeSchedule.next(false);
   }
-
+  
   showDialogEditPaymentLarge() {
     if (this.btnStatus) {
       this.toasterService.showToaster({
@@ -647,7 +646,7 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
           filteredInstallments: this.filteredInstallments,
         },
       })
-      .onClose.subscribe((data: any) => { });
+      .onClose.subscribe((data: any) => {});
   }
 
   pageCode: string = "PaymentScheduleComponent";

@@ -21,6 +21,8 @@ export class AssignSalespersonComponent extends BaseFormClass {
   productList: any[] = []
     programList?: any[];
 
+  salePersonData: any;
+  operatingUnitsList: any[] = [];
   closePopup() {
     this.commonSvc.dialogSvc.ngOnDestroy();
   }
@@ -35,6 +37,8 @@ export class AssignSalespersonComponent extends BaseFormClass {
   ) { super(route, commonSvc); 
      this.stdqSvc.formDataCacheableRoute([
       "Product/get_programs_products",
+      "Contract/contract_party_dealer_details_internal",
+      "CustomerDetails/get_contacts?partyNo=1000000&PageNo=1&PageSize=10",
     ]);
   }
 
@@ -141,6 +145,34 @@ export class AssignSalespersonComponent extends BaseFormClass {
 
   override async ngOnInit() {
     await super.ngOnInit();
+     let accessToken = sessionStorage.getItem("accessToken");
+     let decodedToken = this.service?.decodeToken(accessToken);
+
+      await this.svc?.data
+      ?.get(`CustomerDetails/get_defaultOperatingUnit?userCode=${decodedToken?.sub}`)
+      .subscribe((res: any) => {
+       const response = res?.data?.data?.responseMessage?.[0];
+
+       const operatingUnit = response?.operatingUnit;
+       const allowedUnits = response?.allowedOperatingUnits.filter(
+                            unit => unit.partyId !== operatingUnit?.partyId
+                            ) ?? [];
+
+       this.operatingUnitsList = [
+       ...(operatingUnit ? [{
+        label: operatingUnit.extName,
+        value: operatingUnit.extName
+       }] : []),
+
+      ...allowedUnits.map((unit: any) => ({
+       label: unit.extName,
+       value: unit.extName
+       }))
+      ];
+  
+  });
+    await this.mainForm.updateList("operatingUnit", this.operatingUnitsList);
+
   }
 
   override async onFormReady() {
@@ -151,12 +183,50 @@ export class AssignSalespersonComponent extends BaseFormClass {
 
     this.scenarioType = this.dynamicDialogConfig?.data?.rowData?.originator ? "DealerToDirect" : "DirectToDealer";
     if(this.scenarioType === "DealerToDirect"){
+      const directProducts = this.productProgramList.products?.filter(item => item.businessModel === "Direct");
+      const productList = Array.isArray(directProducts)
+        ? directProducts
+            .map((item) => ({
+              label: item.name,
+              value: item.productId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
+        : [];
+      
+      await this.mainForm.updateList("productId", productList);
+
       this.mainForm?.updateHidden({originatorName: true, originatorNumber: true})
       this.mainForm?.updateProps("programId", {className: " -ml-6 px-6 "});
       this.mainForm?.updateProps("salesperson", {className: " -ml-1 pl-0", cols: 3});
       this.mainForm?.updateProps("operatingUnit", {className: "ml-1 px-0", cols: 2});
       this.mainForm?.updateProps("customerName", {className: " -ml-6 px-6"});
       this.mainForm?.updateProps("assetType", {className: " -ml-6 px-6"});
+
+        let res = await this.stdqSvc?.getFormData(
+        `CustomerDetails/get_contacts?partyNo=1000000&PageNo=1&PageSize=10`
+      );
+      if (res?.data) {
+        let internalSalesPersonList = res.data.map((d: any) => ({
+          label: d.lastName,
+          value: d.customerId,
+        }));
+        this.mainForm?.updateList(
+          "salesperson",
+          internalSalesPersonList
+        );
+      }
+    }else{
+      const assignedProducts = this.productProgramList.products?.filter(item => item.businessModel === "Introduced");
+      const productList = Array.isArray(assignedProducts)
+        ? assignedProducts
+            .map((item) => ({
+              label: item.name,
+              value: item.productId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
+        : [];
+      
+      await this.mainForm.updateList("productId", productList);
     }
   
 
@@ -165,7 +235,6 @@ export class AssignSalespersonComponent extends BaseFormClass {
       this.mainForm?.get("quoteId")?.setValue(this.dynamicDialogConfig?.data?.rowData?.contractId);
       this.mainForm?.get("customerName")?.setValue(this.dynamicDialogConfig?.data?.rowData?.customerName);
       this.mainForm?.get("assetType")?.setValue(this.dynamicDialogConfig?.data?.rowData?.assetType);
-      this.mainForm?.get("productId")?.setValue(productId);
     }
   }
 
@@ -248,11 +317,44 @@ export class AssignSalespersonComponent extends BaseFormClass {
   }
 
  override async onFormEvent(res: any) {
-      console.log("hi event", res);
+      if(sessionStorage.getItem("externalUserType")==="Internal"){
       if(res?.name == "productId" && res?.value){
         this.setProgram(res?.value);
       }
+
+      if(res?.name == "programId" && res?.value){
+        const dealerList = await this.stdqSvc.getDealerForInternalSales(res?.value);
+        await this.mainForm.updateList("originatorName", dealerList || []);
+      }
+
+      if(res?.name == "originatorName" && res?.value){
+        const originatorNumber = await this.stdqSvc.getOriginatorNumberByName(res?.value)
+        await this.mainForm.get("originatorNumber")?.setValue(originatorNumber);
+      }
+
+       if(res?.name == "originatorNumber" && res?.value){
+        const originatorNumber = await this.getsalesPerson(res?.value)
+      }
+    }
   }
+
+   async getsalesPerson(salesPersonId: any) {
+    if (salesPersonId) {
+      this.salePersonData = await this.stdqSvc.getFormData(
+        `CustomerDetails/get_contacts?partyNo=${salesPersonId}&PageNo=1&PageSize=10`
+      );
+      let data = this.salePersonData?.data;
+      let arr = Array.isArray(data)
+        ? data.map((item) => ({
+            label: item.lastName,
+            value: item.customerId,
+          }))
+        : [];
+      this.mainForm.updateList("salesperson", arr);
+      this.mainForm.form.get("salesperson").patchValue(arr[0]?.value);
+    }
+  }
+
   changeAssignee() {
     // this.commonSvc.dialogSvc.ngOnDestroy();
     this.ref.close();

@@ -19,7 +19,7 @@ export class TrustContactDetailsComponent extends BaseTrustClass {
 
   // phoneType = ["PhoneMobile", "PhoneBusiness"];
   phoneType = ["PhoneBusiness", "PhoneHome", "PhoneMobile"];
-  businessLabel = ["Business", "Mobile", "Other"];
+  businessLabel = ["Business Number", "Mobile Number", "Other"];
 
   override formConfig: GenericFormConfig = {
     autoResponsive: true,
@@ -542,6 +542,16 @@ export class TrustContactDetailsComponent extends BaseTrustClass {
 
   override async ngOnInit(): Promise<void> {
   await super.ngOnInit();
+  let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
 
   this.svc.countryCodeOptions.subscribe((data) => {
     this.countryCodeOptionsList = data;
@@ -596,7 +606,21 @@ export class TrustContactDetailsComponent extends BaseTrustClass {
   if (this.trustSvc.showValidationMessage) {
     this.phone.markAllAsTouched();
   }
+
+  // Disable form if workflow status requires it
+  if (this.isDisabled()) {
+    this.phoneForm.disable();
+  }
 }
+
+  isDisabled(): boolean {
+    const baseFormDataStatus = this.baseFormData?.AFworkflowStatus;
+    const sessionStorageStatus = sessionStorage.getItem('workFlowStatus');
+    return !(
+      baseFormDataStatus === 'Quote' ||
+      sessionStorageStatus === 'Open Quote'
+    );
+  }
 
 
   onCountryCodeChange(event: any, index: number) {

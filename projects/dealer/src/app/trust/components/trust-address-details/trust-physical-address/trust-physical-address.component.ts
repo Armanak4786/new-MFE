@@ -375,6 +375,16 @@ export class TrustPhysicalAddressComponent extends BaseTrustClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+   let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     if (this.trustSvc.showValidationMessage) {
       this.mainForm.form.markAllAsTouched();
     }

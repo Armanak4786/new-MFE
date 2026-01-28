@@ -5,6 +5,7 @@
   "SPProgramListExtract": "apportalsp_get_program_list_extract",
   "SPContractCfdLuExtract": "apportalsp_get_contract_cfd_lu_extract",
   "SPPromotionalProgramExtract": "udcsp_get_promotional_program_extract",
+  "SPWorkflowExtract": "udcsp_dashboard_int_graphic_workflow_extract",
   "LoanPurpose": "Personal",
   "LoanPurposeBusiness": "Business",
   "financialPosition": {
@@ -23,7 +24,7 @@
       "Withdrawn",
       "Auto Declined",
       "Declined",
-      "End- Decline",
+      "End-Decline",
       "Contract Activation",
       "ACM Payout Process",
       "Assessment on Hold",
@@ -55,5 +56,6 @@
       "Generate documents",
       "Awaiting Settlement Review"
     ]
-  }
+  },
+  "operatingUnitForWorkflowStatusInternalSales": "AA Money,Business Direct,Auto Direct"
 }

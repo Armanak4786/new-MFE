@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
+  BaseFormClass,
   CommonService,
+  GenericFormConfig,
   Mode,
   ToasterService,
   ValidationService,
@@ -10,9 +12,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 // import { BaseIndividualClass } from "../../../base-individual.class";
 // import { IndividualService } from "../../../services/individual.service";
 // import { StandardQuoteService } from "../../../../standard-quote/services/standard-quote.service";
+import { takeUntil } from "rxjs";
 import { IndividualService } from "../../individual/services/individual.service";
 import { StandardQuoteService } from "../../standard-quote/services/standard-quote.service";
 import { BaseDealerClass } from "../../base/base-dealer.class";
+import { BaseDealerService } from "../../base/base-dealer.service";
 import { Validators } from "@angular/forms";
 import configure from "../../../../public/assets/configure.json";
 
@@ -36,12 +40,12 @@ export class CustomerTypeComponent extends BaseDealerClass {
   baseFormdata: any;
 
   searchType: any = "Individual";
-
-  individualClassificationDisabled: boolean;
+ 
+ individualClassificationDisabled: boolean;
   businessClassificationDisabled: boolean;
 
-  addNewContactCustomerId: any
-  addNewContactcustomerNo: any
+  addNewContactCustomerId:any
+  addNewContactcustomerNo:any
   maxSigningOrder: number = 0;
   controlsToDisable = [
     "individualCustomerName",
@@ -105,234 +109,230 @@ export class CustomerTypeComponent extends BaseDealerClass {
       this.searchType = "Business";
     }
 
-    if (this.parent == "Contact" || this.parent == "Trustees") {
-      if (this.config.data?.editReference) {
-        let dataValue = this.config.data?.editReference;
-        if (
-          dataValue.classification == "Individual" &&
-          this.parent == "Contact"
-        ) {
-          this.businessClassificationDisabled = true;
-          this.individualClassificationDisabled = false;
-          let dob;
-          if (dataValue?.dateofBirth) {
-            dob = new Date(dataValue?.dateofBirth);
-          }
-          this.baseFormData = {
-            classification: dataValue.classification,
-            individualContactType: dataValue.contactType,
-            customerContactId: dataValue.customerContactId,
-            customerId: dataValue.customerId || this.config.data?.customerId,
-            customerNo: dataValue.customerNo || this.config.data?.customerNo,
-            individualFirstName: dataValue.firstName,
-            individualLastName: dataValue.lastName,
-            individualPhoneNumber: dataValue.phoneNo,
-            individualEmail: dataValue.email,
-            individualSignatory: dataValue.isSignatory,
-            contactOwnerRole: this.config.data?.contactOwnerRole || '',
-            // individualesignatoryDetails: dataValue.esignatoryDetails,
-            individualeSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
-            individualSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
-            // individualDateOfBirth : dataValue.dateofBirth,
-            individualDateOfBirth: dob,
-            individualMobile: dataValue.phoneExt,
-            individualAreaCode: dataValue.areaCode,
-            businessContactType: null,
-            businessMobile: null,
-            businessAreaCode: null,
-            businessPhoneNumber: null,
-            businessLegalName: null,
-            businessEmail: null,
-            businessSignatory: null,
-          };
-        } else if (
-          dataValue.classification == "Individual" &&
-          this.parent == "Trustees"
-        ) {
-          this.businessClassificationDisabled = true;
-          this.individualClassificationDisabled = false;
-          let dob;
-          if (dataValue?.dateofBirth) {
-            dob = new Date(dataValue?.dateofBirth);
-          }
-
-          this.baseFormData = {
-            classification: dataValue.classification,
-            TrusteeindividualContactType: dataValue.contactType,
-            TrusteecustomerContactId: dataValue.customerContactId,
-            customerId: dataValue.customerId || this.config.data?.customerId,
-            customerNo: dataValue.customerNo || this.config.data?.customerNo,
-            TrusteeindividualFirstName: dataValue.firstName,
-            TrusteeindividualLastName: dataValue.lastName,
-            TrusteeindividualPhoneNumber: dataValue.phoneNo,
-            TrusteeindividualEmail: dataValue.email,
-            contactOwnerRole: this.config.data?.contactOwnerRole || '',
-            TrusteeindividualSignatory: dataValue.isSignatory,
-            TrusteeindividualeSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
-            TrusteeindividualSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
-            // individualDateOfBirth : dataValue.dateofBirth,
-            TrusteeindividualDateOfBirth: dob,
-            TrusteeindividualMobile: dataValue.phoneExt,
-            TrusteeindividualAreaCode: dataValue.areaCode,
-
-            //Setting Business Fields null
-            TrusteebusinessContactType: null,
-            TrusteebusinessLegalName: null,
-            TrusteebusinessPhoneNumber: null,
-            TrusteebusinessEmail: null,
-            TrusteebusinessSignatory: null,
-            TrusteebusinessMobile: null,
-            TrusteebusinessAreaCode: null,
-          };
-          // this.mainForm.form.get("individualDateOfBirth").patchValue(dob)
-        } else if (
-          dataValue.classification == "Business" &&
-          this.parent == "Contact"
-        ) {
-          this.businessClassificationDisabled = false;
-          this.individualClassificationDisabled = true;
-          this.baseFormData = {
-            classification: dataValue.classification,
-            businessContactType: dataValue.contactType,
-            customerContactId: dataValue.customerContactId,
-            customerId: dataValue.customerId || this.config.data?.customerId,
-            customerNo: dataValue.customerNo || this.config.data?.customerNo,
-            // customerName : dataValue.customerName,
-            businessMobile: dataValue.phoneExt,
-            businessLegalName: dataValue.customerName,
-            businessPhoneNumber: dataValue.phoneNo,
-            businessEmail: dataValue.email,
-            contactOwnerRole: this.config.data?.contactOwnerRole || '',
-            businessSignatory: dataValue.isSignatory,
-            businesseSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
-            businessSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
-            businessAreaCode: dataValue.areaCode,
-            individualContactType: null,
-            individualFirstName: null,
-            individualLastName: null,
-            individualPhoneNumber: null,
-            individualEmail: null,
-            individualSignatory: null,
-            individualDateOfBirth: null,
-            individualMobile: null,
-            individualAreaCode: null,
-          };
-        } else if (
-          dataValue.classification == "Business" &&
-          this.parent == "Trustees"
-        ) {
-          this.businessClassificationDisabled = false;
-          this.individualClassificationDisabled = true;
-          this.baseFormData = {
-            classification: dataValue.classification,
-            TrusteebusinessContactType: dataValue.contactType,
-            TrusteecustomerContactId: dataValue.customerContactId,
-            customerId: dataValue.customerId || this.config.data?.customerId,
-            customerNo: dataValue.customerNo || this.config.data?.customerNo,
-            TrusteebusinessLegalName: dataValue.customerName,
-            TrusteebusinessPhoneNumber: dataValue.phoneNo,
-            TrusteebusinessEmail: dataValue.email,
-            contactOwnerRole: this.config.data?.contactOwnerRole || '',
-            TrusteebusinessSignatory: dataValue.isSignatory,
-            TrusteebusinesseSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
-            TrusteebusinessSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
-            TrusteebusinessMobile: dataValue.phoneExt,
-            TrusteebusinessAreaCode: dataValue.areaCode,
-
-            //Setting Individual Fields Null
-            TrusteeindividualContactType: null,
-            TrusteeindividualFirstName: null,
-            TrusteeindividualLastName: null,
-            TrusteeindividualPhoneNumber: null,
-            TrusteeindividualEmail: null,
-            TrusteeindividualSignatory: null,
-            TrusteeindividualDateOfBirth: null,
-            TrusteeindividualMobile: null,
-            TrusteeindividualAreaCode: null,
-          };
-        }
-      } else {
-        //For clearing data if cancel during Edit
-        this.businessClassificationDisabled = false;
+    if(this.parent == "Contact" || this.parent == "Trustees"){
+    if (this.config.data?.editReference) {
+      let dataValue = this.config.data?.editReference;
+      if (
+        dataValue.classification == "Individual" &&
+        this.parent == "Contact"
+      ) {
+        this.businessClassificationDisabled = true;
         this.individualClassificationDisabled = false;
+        let dob;
+        if (dataValue?.dateofBirth) {
+          dob = new Date(dataValue?.dateofBirth);
+        }
         this.baseFormData = {
-          classification: null,
+          classification: dataValue.classification,
+          individualContactType: dataValue.contactType,
+          customerContactId: dataValue.customerContactId,
+          customerId: dataValue.customerId || this.config.data?.customerId,
+          customerNo: dataValue.customerNo || this.config.data?.customerNo,
+          individualFirstName: dataValue.firstName,
+          individualLastName: dataValue.lastName,
+          individualPhoneNumber: dataValue.phoneNo,
+          individualEmail: dataValue.email,
+          individualSignatory: dataValue.isSignatory,
+          contactOwnerRole: this.config.data?.contactOwnerRole || '',
+          // individualesignatoryDetails: dataValue.esignatoryDetails,
+          individualeSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
+          individualSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
+          // individualDateOfBirth : dataValue.dateofBirth,
+          individualDateOfBirth: dob,
+          individualMobile: dataValue.phoneExt,
+          individualAreaCode: dataValue.areaCode,
+          businessContactType: null,
+          businessMobile: null,
+          businessAreaCode: null,
+          businessPhoneNumber: null,
+          businessLegalName: null,
+          businessEmail: null,
+          businessSignatory: null,
+        };
+      } else if (
+        dataValue.classification == "Individual" &&
+        this.parent == "Trustees"
+      ) {
+          this.businessClassificationDisabled = true;
+        this.individualClassificationDisabled = false;
+        let dob;
+        if (dataValue?.dateofBirth) {
+          dob = new Date(dataValue?.dateofBirth);
+        }
+
+        this.baseFormData = {
+          classification: dataValue.classification,
+          TrusteeindividualContactType: dataValue.contactType,
+          TrusteecustomerContactId: dataValue.customerContactId,
+          customerId: dataValue.customerId || this.config.data?.customerId,
+          customerNo: dataValue.customerNo || this.config.data?.customerNo,
+          TrusteeindividualFirstName: dataValue.firstName,
+          TrusteeindividualLastName: dataValue.lastName,
+          TrusteeindividualPhoneNumber: dataValue.phoneNo,
+          TrusteeindividualEmail: dataValue.email,
+          contactOwnerRole: this.config.data?.contactOwnerRole || '',
+          TrusteeindividualSignatory: dataValue.isSignatory,
+          TrusteeindividualeSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
+          TrusteeindividualSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
+          // individualDateOfBirth : dataValue.dateofBirth,
+          TrusteeindividualDateOfBirth: dob,
+          TrusteeindividualMobile: dataValue.phoneExt,
+          TrusteeindividualAreaCode: dataValue.areaCode,
+
+          //Setting Business Fields null
+          TrusteebusinessContactType: null,
+          TrusteebusinessLegalName: null,
+          TrusteebusinessPhoneNumber: null,
+          TrusteebusinessEmail: null,
+          TrusteebusinessSignatory: null,
+          TrusteebusinessMobile: null,
+          TrusteebusinessAreaCode: null,
+        };
+        // this.mainForm.form.get("individualDateOfBirth").patchValue(dob)
+      } else if (
+        dataValue.classification == "Business" &&
+        this.parent == "Contact"
+      ) {
+          this.businessClassificationDisabled = false;
+        this.individualClassificationDisabled = true;
+        this.baseFormData = {
+          classification: dataValue.classification,
+          businessContactType: dataValue.contactType,
+          customerContactId: dataValue.customerContactId,
+          customerId: dataValue.customerId || this.config.data?.customerId,
+          customerNo: dataValue.customerNo || this.config.data?.customerNo,
+          // customerName : dataValue.customerName,
+          businessMobile: dataValue.phoneExt,
+          businessLegalName: dataValue.customerName,
+          businessPhoneNumber: dataValue.phoneNo,
+          businessEmail: dataValue.email,
+          contactOwnerRole: this.config.data?.contactOwnerRole || '',
+          businessSignatory: dataValue.isSignatory,
+          businesseSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
+          businessSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
+          businessAreaCode: dataValue.areaCode,
           individualContactType: null,
           individualFirstName: null,
           individualLastName: null,
           individualPhoneNumber: null,
           individualEmail: null,
           individualSignatory: null,
-          individualeSignatoryId: 0,
-          individualSigningOrder: -1,
           individualDateOfBirth: null,
-          individualMobile: "+64",
+          individualMobile: null,
           individualAreaCode: null,
-          businessContactType: null,
-          customerContactId: null,
-          customerId: this.config.data?.customerId,
-          customerNo: this.config.data?.customerNo,
-          businessLegalName: null,
-          // businessTradingName : null,
-          businessPhoneNumber: null,
-          businessEmail: null,
-          businessSignatory: null,
-          businesseSignatoryId: 0,
-          businessSigningOrder: -1,
-          // businessDateOfBirth : null,
-          businessMobile: "+64",
-          businessAreaCode: null,
+        };
+      } else if (
+        dataValue.classification == "Business" &&
+        this.parent == "Trustees"
+      ) {
+          this.businessClassificationDisabled = false;
+        this.individualClassificationDisabled = true;
+        this.baseFormData = {
+          classification: dataValue.classification,
+          TrusteebusinessContactType: dataValue.contactType,
+          TrusteecustomerContactId: dataValue.customerContactId,
+          customerId: dataValue.customerId || this.config.data?.customerId,
+          customerNo: dataValue.customerNo || this.config.data?.customerNo,
+          TrusteebusinessLegalName: dataValue.customerName,
+          TrusteebusinessPhoneNumber: dataValue.phoneNo,
+          TrusteebusinessEmail: dataValue.email,
+          contactOwnerRole: this.config.data?.contactOwnerRole || '',
+          TrusteebusinessSignatory: dataValue.isSignatory,
+          TrusteebusinesseSignatoryId: dataValue?.esignatoryDetails?.eSignatoryId,
+          TrusteebusinessSigningOrder: dataValue?.esignatoryDetails?.signingOrder,
+          TrusteebusinessMobile: dataValue.phoneExt,
+          TrusteebusinessAreaCode: dataValue.areaCode,
+
+          //Setting Individual Fields Null
           TrusteeindividualContactType: null,
-          TrusteecustomerContactId: null,
           TrusteeindividualFirstName: null,
           TrusteeindividualLastName: null,
           TrusteeindividualPhoneNumber: null,
           TrusteeindividualEmail: null,
           TrusteeindividualSignatory: null,
-          TrusteeindividualeSignatoryId: 0,
-          TrusteeindividualSigningOrder: -1,
           TrusteeindividualDateOfBirth: null,
-          TrusteeindividualMobile: "+64",
+          TrusteeindividualMobile: null,
           TrusteeindividualAreaCode: null,
-          TrusteebusinessContactType: null,
-          TrusteebusinessLegalName: null,
-          // businessTradingName : null,
-          TrusteebusinessPhoneNumber: null,
-          TrusteebusinessEmail: null,
-          TrusteebusinessSignatory: null,
-          TrusteebusinesseSignatoryId: 0,
-          TrusteebusinessSigningOrder: -1,
-          // businessDateOfBirth : null,
-          TrusteebusinessMobile: "+64",
-          TrusteebusinessAreaCode: null,
         };
       }
+    } else {
+      //For clearing data if cancel during Edit
+        this.businessClassificationDisabled = false;
+        this.individualClassificationDisabled = false;
+      this.baseFormData = {
+        classification: null,
+        individualContactType: null,
+        individualFirstName: null,
+        individualLastName: null,
+        individualPhoneNumber: null,
+        individualEmail: null,
+        individualSignatory: null,
+        individualeSignatoryId: 0,
+        individualSigningOrder: -1,
+        individualDateOfBirth: null,
+        individualMobile: "+64",
+        individualAreaCode: null,
+        businessContactType: null,
+        customerContactId: null,
+        customerId: this.config.data?.customerId,
+        customerNo: this.config.data?.customerNo,
+        businessLegalName: null,
+        // businessTradingName : null,
+        businessPhoneNumber: null,
+        businessEmail: null,
+        businessSignatory: null,
+        businesseSignatoryId: 0,
+        businessSigningOrder: -1,
+        // businessDateOfBirth : null,
+        businessMobile: "+64",
+        businessAreaCode: null,
+        TrusteeindividualContactType: null,
+        TrusteecustomerContactId: null,
+        TrusteeindividualFirstName: null,
+        TrusteeindividualLastName: null,
+        TrusteeindividualPhoneNumber: null,
+        TrusteeindividualEmail: null,
+        TrusteeindividualSignatory: null,
+        TrusteeindividualeSignatoryId: 0,
+        TrusteeindividualSigningOrder: -1,
+        TrusteeindividualDateOfBirth: null,
+        TrusteeindividualMobile: "+64",
+        TrusteeindividualAreaCode: null,
+        TrusteebusinessContactType: null,
+        TrusteebusinessLegalName: null,
+        // businessTradingName : null,
+        TrusteebusinessPhoneNumber: null,
+        TrusteebusinessEmail: null,
+        TrusteebusinessSignatory: null,
+        TrusteebusinesseSignatoryId: 0,
+        TrusteebusinessSigningOrder: -1,
+        // businessDateOfBirth : null,
+        TrusteebusinessMobile: "+64",
+        TrusteebusinessAreaCode: null,
+      };
     }
+  }
     // console.log(this.mainForm, "MainForm", this.baseFormData);
   }
 
-  isDisabled() {
-    if (configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) {
-      return true;
-    }
-    return false;
+  isDisabled(){
+     if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
+    return true;
+  }
+  return false;
   }
 
   override async onFormReady(): Promise<void> {
     // console.log(this.mainForm, "MainForm", this.baseFormData);
 
     if (this.parent == "Contact" || this.parent == "Signatories") {
-      this.mainForm?.updateList(
-        "businessContactType",
-        this.config?.data?.contactType
-      );
-      this.mainForm?.updateList(
-        "individualContactType",
-        this.config?.data?.contactType
-      );
+    const contactTypes = [...(this.config?.data?.contactType || [])];
+    contactTypes.sort((a, b) => a?.label?.localeCompare(b?.label));
+    this.mainForm?.updateList("businessContactType", contactTypes);
+    this.mainForm?.updateList("individualContactType", contactTypes);
     }
 
-    if (this.parent == "Signatories") {
+    if(this.parent == "Signatories"){
       this.individualClassificationDisabled = false;
       this.businessClassificationDisabled = false;
     }
@@ -340,11 +340,11 @@ export class CustomerTypeComponent extends BaseDealerClass {
     if (this.parent == "Signatories" && (this.modalType == "view" || this.modalType == "customerView")) {
       this.updateContactCustomerOptions();
     }
-    else {
+    else{
       this.addNewContactCustomerOptions();
     }
 
-    if (this.parent == "Signatories") {
+    if(this.parent == "Signatories"){
       this.findMaxSigningOrder()
     }
     if (
@@ -374,7 +374,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
       }
 
       if (this.searchType == "Individual") {
-        this.individualClassificationDisabled = false;
+         this.individualClassificationDisabled = false;
         this.businessClassificationDisabled = true;
         this.baseFormData = {
           individualContactType: this.rowData?.contactType || "",
@@ -394,7 +394,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
 
     if (this.parent == "Signatories" && this.modalType == "customerView") {
       if (this.searchType == "Business") {
-        this.individualClassificationDisabled = true;
+         this.individualClassificationDisabled = true;
         this.businessClassificationDisabled = false;
 
         this.baseFormData = {
@@ -415,7 +415,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
       }
 
       if (this.searchType == "Individual") {
-        this.individualClassificationDisabled = false;
+         this.individualClassificationDisabled = false;
         this.businessClassificationDisabled = true;
         this.baseFormData = {
           // individualPartyName: this.rowData?.extName || "",
@@ -454,7 +454,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
         this.mainForm?.updateProps("businessSignatory", {
           mode: Mode.edit,
         });
-        this.mainForm?.updateProps("individualSignatory", {
+         this.mainForm?.updateProps("individualSignatory", {
           mode: Mode.edit,
         });
       } else {
@@ -479,13 +479,13 @@ export class CustomerTypeComponent extends BaseDealerClass {
     super.onFormReady();
   }
 
-  private addNewContactCustomerOptions() {
+  private addNewContactCustomerOptions(){
 
-    this.mainForm?.updateList(
+     this.mainForm?.updateList(
       "individualCustomerName",
       this.getcustomerNameOptions()
     );
-    this.mainForm?.updateList(
+     this.mainForm?.updateList(
       "businessCustomerName",
       this.getcustomerNameOptions()
     );
@@ -500,7 +500,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
     }));
   }
 
-  onCustomerChange(customerId) {
+  onCustomerChange(customerId){
     let selectedCustomer = this.signatoriesData?.find(
       (c) => c.customerId === customerId
     );
@@ -517,13 +517,13 @@ export class CustomerTypeComponent extends BaseDealerClass {
     this.mainForm
       ?.get("individualRole")
       ?.patchValue(selectedCustomer.roleName);
-    this.mainForm
+       this.mainForm
       ?.get("businessRole")
       ?.patchValue(selectedCustomer.roleName);
 
     this.addNewContactCustomerId = selectedCustomer?.customerId
     this.addNewContactcustomerNo = selectedCustomer?.customerNo
-
+    
   }
 
   private updateContactCustomerOptions() {
@@ -567,201 +567,200 @@ export class CustomerTypeComponent extends BaseDealerClass {
   }
 
   findMaxSigningOrder() {
-    this.signatoriesData.forEach(customer => {
-      if (customer.esignatoryDetails?.signingOrder > this.maxSigningOrder) {
-        this.maxSigningOrder = customer.esignatoryDetails.signingOrder;
-      }
-
-      customer.contact?.forEach(contact => {
-        if (contact.esignatoryDetails?.signingOrder > this.maxSigningOrder) {
-          this.maxSigningOrder = contact.esignatoryDetails.signingOrder;
-        }
-      });
+  this.signatoriesData.forEach(customer => {
+  if (customer.esignatoryDetails?.signingOrder > this.maxSigningOrder) {
+    this.maxSigningOrder = customer.esignatoryDetails.signingOrder;
+  }
+  
+  customer.contact?.forEach(contact => {
+    if (contact.esignatoryDetails?.signingOrder > this.maxSigningOrder) {
+      this.maxSigningOrder = contact.esignatoryDetails.signingOrder;
+       }
+     });
     });
   }
 
-  AddContacts() {
-    this.mainForm.form.markAllAsTouched();
-    if (this.mainForm.form.valid) {
-
-
-      // this.searchType = "individual"
-      if (this.searchType == "Individual" && this.parent == "Contact") {
-
-        const IndividualcontactDetails = {
-          customerContactId: this.baseFormData?.customerContactId || 0,
-          // contactPartyNo : this.baseFormData?.contactPartyNo || 0,
-          customerId: this.baseFormData?.customerId || 0,
-          customerNo: this.baseFormData?.customerNo || 0,
-          firstName: this.baseFormData?.individualFirstName || '',
-          lastName: this.baseFormData?.individualLastName || '',
-          customerName: this.baseFormData?.customerName,
-          phoneExt: this.baseFormData?.individualMobile || '',
-          areaCode: this.baseFormData?.individualAreaCode || '',
-          phoneNo: this.baseFormData?.individualPhoneNumber || '',
-          email: this.baseFormData?.individualEmail || '',
-          contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
-          // dateofBirth: this.baseFormData?.individualDateOfBirth || null,
-          ...(this.baseFormData?.individualDateOfBirth && { dateofBirth: this.baseFormData.individualDateOfBirth }),
-          classification: "Individual",
-          contactType: this.baseFormData?.individualContactType,
-          isSignatory: this.baseFormData?.individualSignatory || false,
-          // esignatoryDetails: this.baseFormData?.individualesignatoryDetails || null
-          esignatoryDetails: {
-            eSignatoryId: this.baseFormData?.individualeSignatoryId || 0,
-            signingOrder: this.baseFormData?.individualSigningOrder ? this.baseFormData?.individualSigningOrder : -1,
-            // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
-            // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-          },
-        };
-
-        // this.indSvc.setBaseDealerFormData({
-        //   referenceDetails : IndividualcontactDetails
-        // })
-
-        this.ref.close({
-          action: "editContact",
-          data: IndividualcontactDetails
-        });
-
-        // this.router.navigateByUrl("dealer/asset/addAsset");
-      }
-      if (this.searchType == "Individual" && this.parent == "Trustees") {
-
-        const IndividualcontactDetails = {
-          customerContactId: this.baseFormData?.TrusteecustomerContactId || 0,
-          customerId: this.baseFormData?.customerId || 0,
-          customerNo: this.baseFormData?.customerNo || 0,
-          firstName: this.baseFormData?.TrusteeindividualFirstName || '',
-          lastName: this.baseFormData?.TrusteeindividualLastName || '',
-          customerName: this.baseFormData?.TrusteecustomerName,
-          phoneExt: this.baseFormData?.TrusteeindividualMobile || '',
-          areaCode: this.baseFormData?.TrusteeindividualAreaCode || '',
-          phoneNo: this.baseFormData?.TrusteeindividualPhoneNumber || '',
-          email: this.baseFormData?.TrusteeindividualEmail || '',
-          contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
-          // dateofBirth: this.baseFormData?.TrusteeindividualDateOfBirth,
-          ...(this.baseFormData?.TrusteeindividualDateOfBirth && { dateofBirth: this.baseFormData.TrusteeindividualDateOfBirth }),
-          classification: "Individual",
-          contactType: this.baseFormData?.TrusteeindividualContactType,
-          isSignatory: this.baseFormData?.TrusteeindividualSignatory || false,
-          esignatoryDetails: {
-            eSignatoryId: this.baseFormData?.TrusteeindividualeSignatoryId || 0,
-            signingOrder: this.baseFormData?.TrusteeindividualSigningOrder ? this.baseFormData?.TrusteeindividualSigningOrder : -1,
-            // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
-            // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-          },
-        };
-
-        // this.indSvc.setBaseDealerFormData({
-        //   referenceDetails : IndividualcontactDetails
-        // })
-
-        this.ref.close({
-          action: "editContact",
-          data: IndividualcontactDetails
-        });
-
-      }
-      if (this.searchType == "Business" && this.parent == "Contact") {
-
-        const BusinesscontactDetails = {
-          customerContactId: this.baseFormData?.customerContactId || 0,
-          customerId: this.baseFormData?.customerId || 0,
-          customerNo: this.baseFormData?.customerNo || 0,
-          customerName: this.baseFormData?.businessLegalName || '',
-          phoneExt: this.baseFormData?.businessMobile || '',
-          areaCode: this.baseFormData?.businessAreaCode || '',
-          phoneNo: this.baseFormData?.businessPhoneNumber || '',
-          email: this.baseFormData?.businessEmail || '',
-          classification: "Business",
-          contactType: this.baseFormData?.businessContactType,
-          isSignatory: this.baseFormData?.businessSignatory || false,
-          contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
-          esignatoryDetails: {
-            eSignatoryId: this.baseFormData?.businesseSignatoryId || 0,
-            signingOrder: this.baseFormData?.businessSigningOrder ? this.baseFormData?.businessSigningOrder : -1,
-            // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
-            // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-          },
-        };
-
-        this.ref.close({
-          action: "editContact",
-          data: BusinesscontactDetails
-        });
-
-      }
-      if (this.searchType == "Business" && this.parent == "Trustees") {
-
-        const BusinesscontactDetails = {
-          customerContactId: this.baseFormData?.TrusteecustomerContactId || 0,
-          customerId: this.baseFormData?.customerId || 0,
-          customerNo: this.baseFormData?.customerNo || 0,
-          customerName: this.baseFormData?.TrusteebusinessLegalName || '',
-          phoneExt: this.baseFormData?.TrusteebusinessMobile || '',
-          areaCode: this.baseFormData?.TrusteebusinessAreaCode || '',
-          phoneNo: this.baseFormData?.TrusteebusinessPhoneNumber || '',
-          email: this.baseFormData?.TrusteebusinessEmail || '',
-          classification: "Business",
-          contactType: this.baseFormData?.TrusteebusinessContactType,
-          isSignatory: this.baseFormData?.TrusteebusinessSignatory || false,
-          contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
-          esignatoryDetails: {
-            eSignatoryId: this.baseFormData?.TrusteebusinesseSignatoryId || 0,
-            signingOrder: this.baseFormData?.TrusteebusinessSigningOrder ? this.baseFormData?.TrusteebusinessSigningOrder : -1,
-            // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
-            // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-          },
-        };
-
-        this.ref.close({
-          action: "editContact",
-          data: BusinesscontactDetails
-        });
-
-      }
-
-
-
-      this.baseSvc.setBaseDealerFormData({   //subhashish
-        referenceDetails: null,
-        individualContactType: null,
-        individualFirstName: null,
-        individualLastName: null,
-        individualPhoneNumber: null,
-        individualEmail: null,
-        individualSignatory: null,
-        individualDateOfBirth: null,
-        individualMobile: null,
-        individualAreaCode: null,
-        businessContactType: null,
-        businessLegalName: null,
+AddContacts() {
+  this.mainForm.form.markAllAsTouched();
+  if(this.mainForm.form.valid){
+    
+ 
+    // this.searchType = "individual"
+    if (this.searchType == "Individual" && this.parent == "Contact") {
+ 
+      const IndividualcontactDetails = {
+      customerContactId : this.baseFormData?.customerContactId || 0,
+      // contactPartyNo : this.baseFormData?.contactPartyNo || 0,
+      customerId : this.baseFormData?.customerId || 0,
+      customerNo : this.baseFormData?.customerNo || 0,
+      firstName:  this.baseFormData?.individualFirstName || '',
+      lastName: this.baseFormData?.individualLastName || '',
+      customerName : this.baseFormData?.customerName,
+      phoneExt: this.baseFormData?.individualMobile || '',
+      areaCode: this.baseFormData?.individualAreaCode || '',
+      phoneNo: this.baseFormData?.individualPhoneNumber || '',
+      email: this.baseFormData?.individualEmail || '',
+      contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole ||'',
+      // dateofBirth: this.baseFormData?.individualDateOfBirth || null,
+      ...(this.baseFormData?.individualDateOfBirth && { dateofBirth: this.baseFormData.individualDateOfBirth }),
+      classification : "Individual",
+      contactType: this.baseFormData?.individualContactType,
+      isSignatory: this.baseFormData?.individualSignatory || false,
+      // esignatoryDetails: this.baseFormData?.individualesignatoryDetails || null
+      esignatoryDetails: {
+        eSignatoryId: this.baseFormData?.individualeSignatoryId || 0,
+        signingOrder: this.baseFormData?.individualSigningOrder ? this.baseFormData?.individualSigningOrder : -1 ,
+        // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
+        // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
+      },
+    };
+   
+    // this.indSvc.setBaseDealerFormData({
+    //   referenceDetails : IndividualcontactDetails
+    // })
+ 
+      this.ref.close({
+      action: "editContact",
+      data : IndividualcontactDetails
+    });
+   
+      // this.router.navigateByUrl("dealer/asset/addAsset");
+    }
+    if (this.searchType == "Individual" && this.parent == "Trustees") {
+ 
+      const IndividualcontactDetails = {
+      customerContactId : this.baseFormData?.TrusteecustomerContactId || 0,
+      customerId : this.baseFormData?.customerId || 0,
+      customerNo : this.baseFormData?.customerNo || 0,
+      firstName:  this.baseFormData?.TrusteeindividualFirstName || '',
+      lastName: this.baseFormData?.TrusteeindividualLastName || '',
+      customerName : this.baseFormData?.TrusteecustomerName,
+      phoneExt: this.baseFormData?.TrusteeindividualMobile || '',
+      areaCode: this.baseFormData?.TrusteeindividualAreaCode || '',
+      phoneNo: this.baseFormData?.TrusteeindividualPhoneNumber || '',
+      email: this.mainForm.form.get('TrusteeindividualEmail')?.value || '',
+      contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
+      // dateofBirth: this.baseFormData?.TrusteeindividualDateOfBirth,
+        ...(this.baseFormData?.TrusteeindividualDateOfBirth && { dateofBirth: this.baseFormData.TrusteeindividualDateOfBirth }),
+      classification : "Individual",
+      contactType: this.baseFormData?.TrusteeindividualContactType,
+      isSignatory: this.baseFormData?.TrusteeindividualSignatory || false,
+      esignatoryDetails: {
+        eSignatoryId: this.baseFormData?.TrusteeindividualeSignatoryId || 0,
+        signingOrder: this.baseFormData?.TrusteeindividualSigningOrder ? this.baseFormData?.TrusteeindividualSigningOrder : -1 ,
+        // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
+        // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
+      },
+    };
+   
+    // this.indSvc.setBaseDealerFormData({
+    //   referenceDetails : IndividualcontactDetails
+    // })
+      this.ref.close({
+      action: "editContact",
+      data : IndividualcontactDetails
+    });
+   
+    }
+    if (this.searchType == "Business" && this.parent == "Contact") {
+     
+      const BusinesscontactDetails = {
+      customerContactId : this.baseFormData?.customerContactId || 0,
+      customerId : this.baseFormData?.customerId || 0,
+      customerNo : this.baseFormData?.customerNo || 0,
+      customerName:  this.baseFormData?.businessLegalName || '',
+      phoneExt: this.baseFormData?.businessMobile || '',
+      areaCode: this.baseFormData?.businessAreaCode || '',
+      phoneNo: this.baseFormData?.businessPhoneNumber || '',
+      email: this.baseFormData?.businessEmail || '',
+      classification : "Business",
+      contactType: this.baseFormData?.businessContactType,
+      isSignatory: this.baseFormData?.businessSignatory || false,
+      contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
+      esignatoryDetails: {
+        eSignatoryId: this.baseFormData?.businesseSignatoryId || 0,
+        signingOrder: this.baseFormData?.businessSigningOrder ? this.baseFormData?.businessSigningOrder : -1 ,
+        // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
+        // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
+      },
+    };
+ 
+      this.ref.close({
+      action: "editContact",
+      data : BusinesscontactDetails
+    });
+ 
+    }
+    if (this.searchType == "Business" && this.parent == "Trustees") {
+     
+      const BusinesscontactDetails = {
+      customerContactId : this.baseFormData?.TrusteecustomerContactId || 0,
+      customerId : this.baseFormData?.customerId || 0,
+      customerNo : this.baseFormData?.customerNo || 0,
+      customerName:  this.baseFormData?.TrusteebusinessLegalName || '',
+      phoneExt: this.baseFormData?.TrusteebusinessMobile || '',
+      areaCode: this.baseFormData?.TrusteebusinessAreaCode || '',
+      phoneNo: this.baseFormData?.TrusteebusinessPhoneNumber || '',
+      email: this.baseFormData?.TrusteebusinessEmail || '',
+      classification : "Business",
+      contactType: this.baseFormData?.TrusteebusinessContactType,
+      isSignatory: this.baseFormData?.TrusteebusinessSignatory || false,
+      contactOwnerRole: this.config?.data?.contactOwnerRole || this.baseFormData?.contactOwnerRole || '',
+      esignatoryDetails: {
+        eSignatoryId: this.baseFormData?.TrusteebusinesseSignatoryId || 0,
+        signingOrder: this.baseFormData?.TrusteebusinessSigningOrder ? this.baseFormData?.TrusteebusinessSigningOrder : -1 ,
+        // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
+        // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
+      },
+    };
+ 
+      this.ref.close({
+      action: "editContact",
+      data : BusinesscontactDetails
+    });
+ 
+    }
+ 
+ 
+ 
+    this.baseSvc.setBaseDealerFormData({   //subhashish
+      referenceDetails : null,
+      individualContactType : null,
+        individualFirstName : null,
+        individualLastName : null,
+        individualPhoneNumber : null,
+        individualEmail : null,
+        individualSignatory : null,
+        individualDateOfBirth : null,
+        individualMobile : null,
+        individualAreaCode : null,
+        businessContactType : null,
+        businessLegalName : null,
         // businessTradingName : null,
-        businessPhoneNumber: null,
-        businessEmail: null,
-        businessSignatory: null,
+        businessPhoneNumber : null,
+        businessEmail : null,
+        businessSignatory : null,
         // businessDateOfBirth : null,
-        businessMobile: null,
-        businessAreaCode: null,
-        TrusteeindividualContactType: null,
-        TrusteeindividualFirstName: null,
-        TrusteeindividualLastName: null,
-        TrusteeindividualPhoneNumber: null,
-        TrusteeindividualEmail: null,
-        TrusteeindividualSignatory: null,
-        TrusteeindividualDateOfBirth: null,
-        TrusteeindividualMobile: null,
-        TrusteeindividualAreaCode: null,
-        TrusteebusinessContactType: null,
-        TrusteebusinessLegalName: null,
+        businessMobile : null,
+        businessAreaCode : null,
+        TrusteeindividualContactType : null,
+        TrusteeindividualFirstName : null,
+        TrusteeindividualLastName : null,
+        TrusteeindividualPhoneNumber : null,
+        TrusteeindividualEmail : null,
+        TrusteeindividualSignatory : null,
+        TrusteeindividualDateOfBirth : null,
+        TrusteeindividualMobile : null,
+        TrusteeindividualAreaCode : null,
+        TrusteebusinessContactType : null,
+        TrusteebusinessLegalName : null,
         // businessTradingName : null,
-        TrusteebusinessPhoneNumber: null,
-        TrusteebusinessEmail: null,
-        TrusteebusinessSignatory: null,
+        TrusteebusinessPhoneNumber : null,
+        TrusteebusinessEmail : null,
+        TrusteebusinessSignatory : null,
         // businessDateOfBirth : null,
-        TrusteebusinessMobile: null,
-        TrusteebusinessAreaCode: null,
+        TrusteebusinessMobile : null,
+        TrusteebusinessAreaCode : null,
         individualeSignatoryId: 0,
         individualSigningOrder: -1,
         businesseSignatoryId: 0,
@@ -770,11 +769,11 @@ export class CustomerTypeComponent extends BaseDealerClass {
         TrusteeindividualSigningOrder: -1,
         TrusteebusinesseSignatoryId: 0,
         TrusteebusinessSigningOrder: -1,
-      })
-
-    }
-
+    })
+ 
   }
+ 
+}
 
   closeDialog(btnType: "submit" | "cancel") {
     const isViewMode =
@@ -788,106 +787,106 @@ export class CustomerTypeComponent extends BaseDealerClass {
       this.svc.ui.showOkDialog("Are you sure you want to cancel? Unsaved changes will be lost.",
         "",
         () => {
-
-          this.svc.dialogSvc.ref.close({
-            btnType: btnType,
-          });
-        },
-        () => {
-        }
+     
+        this.svc.dialogSvc.ref.close({
+          btnType: btnType,
+        });
+      },
+       () => {     
+      }
       )
     }
-    else {
-      this.svc.dialogSvc.ref.close({
-        btnType: btnType,
-      });
-    }
+    else{
+    this.svc.dialogSvc.ref.close({
+      btnType: btnType,
+    });
+  }
   }
 
   async AddOrUpdateSignatories() {
-    this.mainForm.form.markAllAsTouched();
+     this.mainForm.form.markAllAsTouched();
 
     if (this.modalType == "view") {
-
+   
       this.creatOrUpdateContact();
     }
-    else if (this.modalType == "customerView") {
+    else if(this.modalType == "customerView"){
       this.updateCustomerSignatory();
     }
-    else {
-
-
-      let updatedFields: any;
+    else{
+ 
+    
+      let updatedFields:any;
       if (this.searchType == "Individual") {
+     
+      updatedFields = {
+        customerContactId: this.rowData?.customerContactId || 0,
+        contactPartyId: this.rowData?.contactPartyId || -1,
+        contactPartyNo: this.rowData?.contactPartyNo || -1,
+        customerId: this.addNewContactCustomerId,
+        customerNo: this.addNewContactcustomerNo,
+        firstName: this.baseFormData?.individualFirstName,
+        lastName: this.baseFormData?.individualLastName,
+        customerName:
+          this.baseFormData?.individualFirstName +
+          " " +
+          this.baseFormData?.individualLastName,
+        phoneExt: this.baseFormData?.individualMobile,
+        areaCode: this.baseFormData?.individualAreaCode,
+        phoneNo: this.baseFormData?.individualPhoneNumber,
+        email: this.baseFormData?.individualEmail,
+        dateofBirth: this.baseFormData?.individualDateOfBirth|| null,
+        classification: this.searchType,
+        contactType: this.baseFormData?.individualContactType,
+        contactOwnerRole: this.baseFormData?.individualRole,
+        isSignatory: this.baseFormData?.individualSignatory || false,
+        esignatoryDetails: {
+          eSignatoryId:  0,
+          signingOrder: this.baseFormData?.individualSigningOrder ? this.baseFormData?.individualSigningOrder : -1 ,
+          // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
+          // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
+        },
+      };
+       }
 
-        updatedFields = {
-          customerContactId: this.rowData?.customerContactId || 0,
-          contactPartyId: this.rowData?.contactPartyId || -1,
-          contactPartyNo: this.rowData?.contactPartyNo || -1,
-          customerId: this.addNewContactCustomerId,
-          customerNo: this.addNewContactcustomerNo,
-          firstName: this.baseFormData?.individualFirstName,
-          lastName: this.baseFormData?.individualLastName,
-          customerName:
-            this.baseFormData?.individualFirstName +
-            " " +
-            this.baseFormData?.individualLastName,
-          phoneExt: this.baseFormData?.individualMobile,
-          areaCode: this.baseFormData?.individualAreaCode,
-          phoneNo: this.baseFormData?.individualPhoneNumber,
-          email: this.baseFormData?.individualEmail,
-          dateofBirth: this.baseFormData?.individualDateOfBirth,
-          classification: this.searchType,
-          contactType: this.baseFormData?.individualContactType,
-          contactOwnerRole: this.baseFormData?.individualRole,
-          isSignatory: this.baseFormData?.individualSignatory || false,
-          esignatoryDetails: {
-            eSignatoryId: 0,
-            signingOrder: this.baseFormData?.individualSigningOrder ? this.baseFormData?.individualSigningOrder : -1,
-            // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
-            // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-          },
-        };
-      }
+      if(this.searchType == "Business"){
 
-      if (this.searchType == "Business") {
+       updatedFields = {
+        customerContactId: this.rowData?.customerContactId || 0,
+        contactPartyId: this.rowData?.contactPartyId || -1,
+        contactPartyNo: this.rowData?.contactPartyNo ||-1,
+        customerId: this.addNewContactCustomerId,
+        customerNo: this.addNewContactcustomerNo,
+        firstName: "",
+        lastName: "",
+        customerName: this.baseFormData?.businessLegalName,
+        phoneExt: this.baseFormData?.businessMobile,
+        areaCode: this.baseFormData?.businessAreaCode,
+        phoneNo: this.baseFormData?.businessPhoneNumber,
+        email: this.baseFormData?.businessEmail,
+        // dateofBirth: "",
+        classification: this.searchType,
+        contactType: this.baseFormData?.businessContactType,
+        contactOwnerRole: this.baseFormData?.businessRole,
+        isSignatory: this.baseFormData?.businessSignatory || false,
+        esignatoryDetails: {
+          eSignatoryId: 0,
+          signingOrder: this.baseFormData?.businessSigningOrder ? this.baseFormData?.businessSigningOrder : -1,
+          // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
+          // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
+        },
+      };
+       }
 
-        updatedFields = {
-          customerContactId: this.rowData?.customerContactId || 0,
-          contactPartyId: this.rowData?.contactPartyId || -1,
-          contactPartyNo: this.rowData?.contactPartyNo || -1,
-          customerId: this.addNewContactCustomerId,
-          customerNo: this.addNewContactcustomerNo,
-          firstName: "",
-          lastName: "",
-          customerName: this.baseFormData?.businessLegalName,
-          phoneExt: this.baseFormData?.businessMobile,
-          areaCode: this.baseFormData?.businessAreaCode,
-          phoneNo: this.baseFormData?.businessPhoneNumber,
-          email: this.baseFormData?.businessEmail,
-          // dateofBirth: "",
-          classification: this.searchType,
-          contactType: this.baseFormData?.businessContactType,
-          contactOwnerRole: this.baseFormData?.businessRole,
-          isSignatory: this.baseFormData?.businessSignatory || false,
-          esignatoryDetails: {
-            eSignatoryId: 0,
-            signingOrder: this.baseFormData?.businessSigningOrder ? this.baseFormData?.businessSigningOrder : -1,
-            // groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
-            // eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-          },
-        };
-      }
-
-      if (this.mainForm?.form?.valid) {
-        this.svc.data.post(`CustomerDetails/add_contactDetails?contractId=${this.signatoriesData[0].contractId} `, updatedFields).subscribe((res) => {
-          this.svc?.dialogSvc?.ref?.close({
-            data: res
-          })
-        })
-      }
+       if(this.mainForm?.form?.valid){
+      this.svc.data.post(`CustomerDetails/add_contactDetails?contractId=${this.signatoriesData[0].contractId} `, updatedFields).subscribe((res)=>{
+      this.svc?.dialogSvc?.ref?.close({
+         data: res
+       })
+     })
     }
-  }
+   }
+ }
 
   creatOrUpdateContact() {
     let updatedFields: any;
@@ -908,26 +907,26 @@ export class CustomerTypeComponent extends BaseDealerClass {
         areaCode: this.baseFormData?.individualAreaCode,
         phoneNo: this.baseFormData?.individualPhoneNumber,
         email: this.baseFormData?.individualEmail,
-        dateofBirth: this.baseFormData?.individualDateOfBirth,
+        dateofBirth: this.baseFormData?.individualDateOfBirth|| null,
         classification: this.searchType,
         contactType: this.baseFormData?.individualContactType,
         contactOwnerRole: this.baseFormData?.individualRole,
         isSignatory: this.baseFormData?.individualSignatory,
         esignatoryDetails: {
           eSignatoryId: this.rowData?.esignatoryDetails?.eSignatoryId,
-          signingOrder: this.baseFormData?.individualSigningOrder ? this.baseFormData?.individualSigningOrder : this.rowData?.signingOrder,
+          signingOrder: this.baseFormData?.individualSigningOrder ? this.baseFormData?.individualSigningOrder : this.rowData?.signingOrder ,
           groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
           eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
         },
       };
-      if (!updatedFields.esignatoryDetails.signingOrder) {
+      if(!updatedFields.esignatoryDetails.signingOrder){
         updatedFields.esignatoryDetails.signingOrder = -1
       }
     }
 
-    if (this.searchType == "Business") {
+    if(this.searchType == "Business"){
 
-      updatedFields = {
+       updatedFields = {
         customerContactId: this.rowData?.customerContactId,
         contactPartyId: this.rowData?.contactPartyId,
         contactPartyNo: this.rowData?.contactPartyNo,
@@ -952,115 +951,115 @@ export class CustomerTypeComponent extends BaseDealerClass {
           eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
         },
       };
-      if (!updatedFields.esignatoryDetails.signingOrder) {
+        if(!updatedFields.esignatoryDetails.signingOrder){
         updatedFields.esignatoryDetails.signingOrder = -1
       }
     }
 
-    if (this.mainForm?.form?.valid) {
-      this.svc.data.update(`CustomerDetails/update_contactDetails?contractId=${this.config?.data?.contractId}`, updatedFields).subscribe((res) => {
-        this.svc?.dialogSvc?.ref?.close({
-          data: res
-        });
-      })
-    }
-
-
+    if(this.mainForm?.form?.valid){
+    this.svc.data.update(`CustomerDetails/update_contactDetails?contractId=${this.config?.data?.contractId}`, updatedFields).subscribe((res)=>{
+      this.svc?.dialogSvc?.ref?.close({
+      data: res
+    });
+    })
+  }
+   
+  
   }
 
-  updateCustomerSignatory() {
-    let updateFields: any
+  updateCustomerSignatory(){
+    let updateFields:any
 
-    if (this.searchType == "Individual") {
-      updateFields = {
-        contractId: this.rowData?.contractId,
-        customerNo: this.rowData?.customerNo,
-        customerId: this.rowData?.customerId,
+    if(this.searchType == "Individual"){
+    updateFields={
+    contractId: this.rowData?.contractId,
+    customerNo: this.rowData?.customerNo,
+    customerId: this.rowData?.customerId,
 
-        customerName: this.rowData?.customerName,
-        customerRole: this.rowData?.customerRole,
-        roleName: this.rowData?.roleName,
-        classification: this.rowData?.classification,
-        contactType: this.rowData?.contactType,
-        firstName: this.rowData?.firstName,
-        lastName: this.rowData?.lastName,
-        dateOfBirth: this.rowData?.dateOfBirth,
-        phoneExt: this.rowData?.phoneExt,
-        areaCode: this.rowData?.areaCode,
-        phoneNo: this.rowData?.phoneNo,
-        email: this.rowData?.email,
-        contact: null,
-        esignatoryDetails: {
+    customerName: this.rowData?.customerName,
+    customerRole: this.rowData?.customerRole,
+    roleName: this.rowData?.roleName,
+    classification: this.rowData?.classification,
+    contactType: this.rowData?.contactType ,
+    firstName: this.rowData?.firstName ,
+    lastName: this.rowData?.lastName,
+    dateOfBirth: this.rowData?.dateOfBirth,
+    phoneExt: this.rowData?.phoneExt ,
+    areaCode: this.rowData?.areaCode,
+    phoneNo: this.rowData?.phoneNo,
+    email: this.rowData?.email,
+    contact: null,
+    esignatoryDetails: {
           eSignatoryId: this.rowData?.esignatoryDetails?.eSignatoryId || 0,
-          signingOrder: this.baseFormData?.individualPartySigningOrder ? this.baseFormData?.individualPartySigningOrder : this.rowData?.esignatoryDetails?.signingOrder,
+          signingOrder: this.baseFormData?.individualPartySigningOrder ? this.baseFormData?.individualPartySigningOrder : this.rowData?.esignatoryDetails?.signingOrder ,
           groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
           eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-        },
-        isCustomerSignatory: this.baseFormData?.individualPartySignatory || false
-
-      }
-      if (!updateFields.esignatoryDetails.signingOrder) {
+      },
+    isCustomerSignatory: this.baseFormData?.individualPartySignatory||false
+    
+  }
+      if(!updateFields.esignatoryDetails.signingOrder){
         updateFields.esignatoryDetails.signingOrder = -1
       }
     }
-    if (this.searchType == "Business") {
-      updateFields = {
-        contractId: this.rowData?.contractId,
-        customerNo: this.rowData?.customerNo,
-        customerId: this.rowData?.customerId,
-
-        customerName: this.rowData?.customerName,
-        customerRole: this.rowData?.customerRole,
-        roleName: this.rowData?.roleName,
-        classification: this.rowData?.classification,
-        contactType: this.rowData?.contactType,
-        firstName: this.rowData?.firstName,
-        lastName: this.rowData?.lastName,
-        // dateOfBirth: this.rowData?.dateOfBirth,
-        phoneExt: this.rowData?.phoneExt,
-        areaCode: this.rowData?.areaCode,
-        phoneNo: this.rowData?.phoneNo,
-        email: this.rowData?.email,
-        contact: null,
-        esignatoryDetails: {
+    if(this.searchType == "Business"){
+    updateFields={
+    contractId: this.rowData?.contractId,
+    customerNo: this.rowData?.customerNo,
+    customerId: this.rowData?.customerId,
+  
+    customerName: this.rowData?.customerName,
+    customerRole: this.rowData?.customerRole,
+    roleName: this.rowData?.roleName,
+    classification: this.rowData?.classification,
+    contactType: this.rowData?.contactType,
+    firstName: this.rowData?.firstName ,
+    lastName: this.rowData?.lastName,
+    // dateOfBirth: this.rowData?.dateOfBirth,
+    phoneExt: this.rowData?.phoneExt ,
+    areaCode: this.rowData?.areaCode,
+    phoneNo: this.rowData?.phoneNo,
+    email: this.rowData?.email,
+    contact: null,
+    esignatoryDetails: {
           eSignatoryId: this.rowData?.esignatoryDetails?.eSignatoryId || 0,
-          signingOrder: this.baseFormData?.businessPartySigningOrder ? this.baseFormData?.businessPartySigningOrder : this.rowData?.esignatoryDetails?.signingOrder,
+          signingOrder: this.baseFormData?.businessPartySigningOrder ? this.baseFormData?.businessPartySigningOrder : this.rowData?.esignatoryDetails?.signingOrder ,
           groupSigningOrder: this.rowData?.esignatoryDetails?.groupSigningOrder,
           eSignatoryRole: this.rowData?.esignatoryDetails?.eSignatoryRole,
-        },
-        isCustomerSignatory: this.baseFormData?.businessPartySignatory || false,
-      }
-      if (!updateFields.esignatoryDetails.signingOrder) {
+    },
+    isCustomerSignatory: this.baseFormData?.businessPartySignatory || false,
+   }
+     if(!updateFields.esignatoryDetails.signingOrder){
         updateFields.esignatoryDetails.signingOrder = -1
       }
-    }
+  }
 
 
-    if (this.mainForm?.form?.valid) {
-      if (!this.rowData?.isCustomerSignatory) {
-        this.svc.data.post(`CustomerDetails/add_customerEsignatory`, updateFields).subscribe((res) => {
-          this.ref.close({
-            // action: "editContact",
-            data: res
-          });
-        })
-      }
+  if(this.mainForm?.form?.valid){
+  if(!this.rowData?.isCustomerSignatory){
+  this.svc.data.post(`CustomerDetails/add_customerEsignatory`, updateFields).subscribe((res)=>{
+        this.ref.close({
+         // action: "editContact",
+         data : res
+        });
+   })
+  }
 
-      else {
+else{
 
-        this.svc.data.update(`CustomerDetails/update_customerEsignatory`, updateFields).subscribe((res) => {
-          this.ref.close({
-            // action: "editContact",
-            data: res
-          });
-        })
-      }
-    }
+  this.svc.data.update(`CustomerDetails/update_customerEsignatory`, updateFields).subscribe((res)=>{
+        this.ref.close({
+         // action: "editContact",
+         data : res
+        });
+       })
+     }
+   }
 
   }
 
   edit() {
-    if (configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) {
+    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
       return;
     }
     this.isEditEnabled = !this.isEditEnabled;
@@ -1108,7 +1107,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
 
   override async onFormEvent(event: any): Promise<void> {
     if (this.parent == "Signatories") {
-
+     
       if (
         event.name == "individualSignatory" ||
         event.name == "businessSignatory" ||
@@ -1128,38 +1127,38 @@ export class CustomerTypeComponent extends BaseDealerClass {
           this.mainForm?.updateProps("businessPartySigningOrder", {
             mode: Mode.edit,
           });
+          
 
+          if(this.rowData?.isCustomerSignatory || this.rowData?.isSignatory){
+              this.mainForm?.get("individualPartySigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder)])
+              this.mainForm?.get("businessPartySigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder)])
+              this.mainForm?.get("individualSigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder)])
+              this.mainForm?.get("businessSigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder)])
+    
+              this.mainForm?.updateProps("individualPartySigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}`})
+              this.mainForm.get("individualPartySigningOrder")?.updateValueAndValidity();
+              this.mainForm?.updateProps("businessPartySigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}`})
+              this.mainForm.get("businessPartySigningOrder")?.updateValueAndValidity();
+              this.mainForm?.updateProps("individualSigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}`})
+              this.mainForm.get("individualSigningOrder")?.updateValueAndValidity();
+              this.mainForm?.updateProps("businessSigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}`})
+              this.mainForm.get("businessSigningOrder")?.updateValueAndValidity();
+           }
+           else{
+              this.mainForm?.get("individualPartySigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder+1)])
+              this.mainForm?.get("businessPartySigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder+1)])
+              this.mainForm?.get("individualSigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder+1)])
+              this.mainForm?.get("businessSigningOrder")?.setValidators([Validators.required,Validators.min(1),Validators.max(this.maxSigningOrder+1)])
 
-          if (this.rowData?.isCustomerSignatory || this.rowData?.isSignatory) {
-            this.mainForm?.get("individualPartySigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder)])
-            this.mainForm?.get("businessPartySigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder)])
-            this.mainForm?.get("individualSigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder)])
-            this.mainForm?.get("businessSigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder)])
-
-            this.mainForm?.updateProps("individualPartySigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}` })
-            this.mainForm.get("individualPartySigningOrder")?.updateValueAndValidity();
-            this.mainForm?.updateProps("businessPartySigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}` })
-            this.mainForm.get("businessPartySigningOrder")?.updateValueAndValidity();
-            this.mainForm?.updateProps("individualSigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}` })
-            this.mainForm.get("individualSigningOrder")?.updateValueAndValidity();
-            this.mainForm?.updateProps("businessSigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder}` })
-            this.mainForm.get("businessSigningOrder")?.updateValueAndValidity();
-          }
-          else {
-            this.mainForm?.get("individualPartySigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder + 1)])
-            this.mainForm?.get("businessPartySigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder + 1)])
-            this.mainForm?.get("individualSigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder + 1)])
-            this.mainForm?.get("businessSigningOrder")?.setValidators([Validators.required, Validators.min(1), Validators.max(this.maxSigningOrder + 1)])
-
-            this.mainForm?.updateProps("individualPartySigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}` })
-            this.mainForm.get("individualPartySigningOrder")?.updateValueAndValidity();
-            this.mainForm?.updateProps("businessPartySigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}` })
-            this.mainForm.get("businessPartySigningOrder")?.updateValueAndValidity();
-            this.mainForm?.updateProps("individualSigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}` })
-            this.mainForm.get("individualSigningOrder")?.updateValueAndValidity();
-            this.mainForm?.updateProps("businessSigningOrder", { errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}` })
-            this.mainForm.get("businessSigningOrder")?.updateValueAndValidity();
-          }
+              this.mainForm?.updateProps("individualPartySigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}`})
+              this.mainForm.get("individualPartySigningOrder")?.updateValueAndValidity();
+              this.mainForm?.updateProps("businessPartySigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}`})
+              this.mainForm.get("businessPartySigningOrder")?.updateValueAndValidity();
+              this.mainForm?.updateProps("individualSigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}`})
+              this.mainForm.get("individualSigningOrder")?.updateValueAndValidity();
+              this.mainForm?.updateProps("businessSigningOrder", {errorMessage: `Signing order must be between 1 and ${this.maxSigningOrder + 1}`})
+              this.mainForm.get("businessSigningOrder")?.updateValueAndValidity();
+            }
         } else {
           this.mainForm?.updateProps("individualSigningOrder", {
             mode: Mode.view,
@@ -1186,22 +1185,22 @@ export class CustomerTypeComponent extends BaseDealerClass {
           this.mainForm?.get("individualSigningOrder")?.clearValidators();
           this.mainForm?.get("businessSigningOrder")?.clearValidators();
         }
-
+         
       }
 
-      if (event.name == "individualCustomerName" || event.name == "businessCustomerName") {
+      if(event.name == "individualCustomerName" || event.name == "businessCustomerName"){
         this.onCustomerChange(event.value);
       }
-
+      
     }
 
     if (
       event?.name == "individualSignatory" ||
       event?.name == "businessSignatory" ||
       event?.name == "TrusteeindividualSignatory" ||
-      event?.name == "TrusteebusinessSignatory" ||
+      event?.name == "TrusteebusinessSignatory"||
       event?.name == "individualPartySignatory" ||
-      event?.name == "businessPartySignatory"
+      event?.name == "businessPartySignatory" 
 
     ) {
       await this.updateValidation("onInit");
@@ -1214,6 +1213,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
     await this.updateValidation("onInit");
   }
 
+
   override async onValueTyped(event: any): Promise<void> {
     await this.updateValidation("onInit");
   }
@@ -1222,13 +1222,12 @@ export class CustomerTypeComponent extends BaseDealerClass {
     await this.updateValidation(event);
   }
 
-  override async onValueChanges(event: any): Promise<void> {
-
+   override async onValueChanges(event: any): Promise<void> {
     //  if(!this.config.data?.editReference && (this.baseFormData?.TrusteeindividualDateOfBirth || this.baseFormData?.individualDateOfBirth)){
     //   this.mainForm.form?.get("individualDateOfBirth")?.patchValue(new Date(this.baseFormData?.individualDateOfBirth))
     //   this.mainForm.form?.get("TrusteeindividualDateOfBirth")?.patchValue(new Date(this.baseFormData?.TrusteeindividualDateOfBirth))
     // }
-
+ 
     // await this.updateValidation("onInit");
   }
 
@@ -1251,13 +1250,13 @@ export class CustomerTypeComponent extends BaseDealerClass {
     if (!responses.status && responses.updatedFields.length) {
       await this.mainForm.applyValidationUpdates(responses);
     }
-
+    
     return responses.status;
   }
 
-  // override onStepChange(stepperDetails: any): void {
-  // this.indSvc.updateComponentStatus("Reference Details", "individualCustomerType", this.mainForm.form.valid)
-  // this.indSvc.updateComponentStatus("Reference Details", "businessCustomerType", this.mainForm.form.valid)
+ // override onStepChange(stepperDetails: any): void {
+ // this.indSvc.updateComponentStatus("Reference Details", "individualCustomerType", this.mainForm.form.valid)
+ // this.indSvc.updateComponentStatus("Reference Details", "businessCustomerType", this.mainForm.form.valid)
 
   //}
 }

@@ -11,7 +11,7 @@
         >Frequency<span class="text-red-500"> * </span></label
       >
     </div>
-    <form [formGroup]="incomeDetailsForm">
+    <form [formGroup]="incomeDetailsForm" [class.disabled]="isDisabled()">
       <div formArrayName="incomeDetails" class="income-details-form">
         <div
           *ngFor="let income of incomeDetails.controls; let i = index"
@@ -34,15 +34,19 @@
               </span>
             </div>
             <div class="col-3 p-fluid">
-              <p-inputNumber
-                [inputStyle]="{ 'text-align': 'right' }"
-                inputId="currency-us"
-                mode="currency"
-                currency="USD"
-                locale="en-US"
-                formControlName="amount"
-                (ngModelChange)="updateAssetDetails(i)"
-              />
+              <amount
+  [inputStyle]="{ 'text-align': 'right' }"
+  formControlName="amount"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  [fractionDigits]="4"              
+  [maxFractionDigits]="4"          
+  [minFractionDigits]="0"          
+  (ngModelChange)="updateAssetDetails(i)"
+  (blur)="onAmountBlur(i)"
+></amount>
+
               <div
                 class="p-error"
                 *ngIf="
@@ -59,12 +63,12 @@
                 <small *ngIf="income?.get('amount').errors?.min && i === 0">
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="income?.get('amount').errors?.max"
-                  >Amount cannot exceed (18,4)</small
-                >
-                <small *ngIf="income?.get('amount').value < 0 && i > 0">
-                  Amount cannot be negative
+                <small *ngIf="income?.get('amount').errors?.min && i > 0">
+                  Amount should be greater than 0
                 </small>
+                <small *ngIf="income?.get('amount').errors?.max"
+                  >Amount cannot exceed (18,2)</small
+                >
               </div>
             </div>
             <div class="col-3 p-fluid">
@@ -114,22 +118,19 @@
             [options]="incomeTypeOptions"
             optionLabel="name"
             optionValue="code"
-            placeholder="Others"
+            placeholder="Other"
           ></p-dropdown>
         </div>
         <div class="col-3 p-fluid">
-          <p-inputNumber
-            [inputStyle]="{ 'text-align': 'right' }"
-            inputId="currency-us"
-            mode="currency"
-            currency="USD"
-            locale="en-US"
-            [minFractionDigits]="2"
-            [maxFractionDigits]="4"
-            [min]="0"
-            formControlName="financialIncomeTypeAmount"
-            placeholder="Amount"
-          />
+         <amount
+  formControlName="financialIncomeTypeAmount"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  placeholder="Amount"
+  (blur)="onAmountBlur()"
+></amount>
+
           <!-- Add validation error display for financialIncomeTypeAmount -->
           <div class="p-error" *ngIf="
               incomeDetailsForm.get('financialIncomeTypeAmount')?.invalid &&
@@ -137,7 +138,7 @@
             ">
             <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.required">Amount is required.</small>
             <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.min">Amount should be greater than 0.</small>
-            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.max">Amount cannot exceed (18,4)</small>
+            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.max">Amount cannot exceed (18,2)</small>
           </div>
         </div>
         <div class="col-3 p-fluid">
@@ -155,6 +156,8 @@
             [btnType]="'bg-btn'"
             [btnIcon]="'pi pi-angle-right text-lg'"
             (click)="addRow()"
+            [disabled]="isAddRowDisabled()"
+            [ngClass]="{'add-row-disabled': isAddRowDisabled()}"
           ></gen-button>
         </div>
       </div>
@@ -185,7 +188,7 @@
               formControlName="isIncomeDecrease"
               (onClick)="isIncomeDecrease($event)"
               inputId="yesOption"
-            ></p-radioButton>
+            ></p-radioButton> 
             <label for="yesOption">Yes</label>
           </div>
           <!-- (ngModelChange)="updateAssetDetails()" -->
@@ -203,7 +206,15 @@
             <!-- (ngModelChange)="updateAssetDetails()" -->
           </div>
         </div>
-
+<div 
+  class="p-error pl-2 pb-2 -mt-3"
+ *ngIf="incomeDetailsForm.get('isIncomeDecrease')?.invalid && 
+       (incomeDetailsForm.get('isIncomeDecrease')?.touched || 
+        incomeDetailsForm.get('isIncomeDecrease')?.dirty || 
+        baseSvc.showValidationMessage)"
+>
+  <small>Household income decrease option is required</small>
+</div>
 
         <div class="flex flex-column gap-1 pl-2">
           <label

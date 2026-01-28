@@ -3,6 +3,7 @@ import { BaseBusinessClass } from '../../../base-business.class';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService, GenericFormConfig, ValidationService } from 'auro-ui';
 import { BusinessService } from '../../../services/business';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-balance-infomartion',
@@ -11,6 +12,7 @@ import { BusinessService } from '../../../services/business';
 })
 export class BalanceInfomartionComponent extends BaseBusinessClass {
   private readonly minDate = '1900-01-01';
+  private turnoverDateSub: Subscription;
   constructor(
     public override route: ActivatedRoute,
     public override svc: CommonService,
@@ -137,6 +139,23 @@ export class BalanceInfomartionComponent extends BaseBusinessClass {
   override async onFormReady(): Promise<void> {
     await this.updateValidation("onInit");
     this.normalizeMinDateFields();
+    this.turnoverDateSub = this.baseSvc.turnoverLatestDate$.subscribe(date => {
+      if (date) {
+        this.populateAllDatesWithTurnoverDate(date);
+      }
+    });
+
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
+
   }
 
   override async onValueEvent(event): Promise<void> {
@@ -174,7 +193,23 @@ export class BalanceInfomartionComponent extends BaseBusinessClass {
     super.renderComponentWithNewData(data);
     this.normalizeMinDateFields();
   }
+private populateAllDatesWithTurnoverDate(turnoverDate: Date): void {
+    const dateFields = [
+      'cashBalLatestYrEndDt',
+      'debtorBalLatestYrEndDt',
+      'creditorBalLatestYrEndDt',
+      'overdraftBalLastYrEndDt'
+    ];
 
+    dateFields.forEach(fieldName => {
+      const control = this.mainForm?.get(fieldName);
+      if (control) {
+        if (!control.value || this.isPlaceholderMinDate(control.value)) {
+          control.patchValue(new Date(turnoverDate), { emitEvent: false });
+        }
+      }
+    });
+  }
   private normalizeMinDateFields(): void {
     const cashBalanceYearEndingCtrl: any = this.mainForm.get('cashBalLatestYrEndDt');
     const debtorBalanceYearEndingCtrl: any = this.mainForm.get('debtorBalLatestYrEndDt');
@@ -234,5 +269,9 @@ export class BalanceInfomartionComponent extends BaseBusinessClass {
 
   private normalizeUiDate(value: any): any {
     return this.isPlaceholderMinDate(value) ? null : value;
+  }
+  override ngOnDestroy(): void {
+    this.turnoverDateSub?.unsubscribe();
+    super.ngOnDestroy();
   }
 }

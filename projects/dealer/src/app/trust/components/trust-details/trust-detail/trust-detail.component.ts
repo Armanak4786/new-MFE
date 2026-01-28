@@ -13,6 +13,7 @@ import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../../../../standard-quote/services/standard-quote.service";
 import configure from "../../../../../../public/assets/configure.json";
 import { BusinessService } from "../../../../business/services/business";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 @Component({
   selector: "app-trust-detail",
@@ -22,7 +23,7 @@ import { BusinessService } from "../../../../business/services/business";
 })
 export class TrustDetailComponent extends BaseTrustClass {
   customerRoleForm: FormGroup;
-  private primaryNatureTrustOptions: any[] = [];
+private primaryNatureTrustOptions: any[] = [];
   customerRoleData: any = [
     { label: "Borrower", value: 1 },
     { label: "Co-Borrower", value: 2 },
@@ -45,7 +46,7 @@ export class TrustDetailComponent extends BaseTrustClass {
         className: "mt-0 mr-2 pt-1",
         //Validators: [Validators.required],
         nextLine: false,
-        options: [],
+        options:[],
         filter: true,
         alignmentType: "vertical",
         labelClass: " mn -mt-3 py-1",
@@ -113,16 +114,16 @@ export class TrustDetailComponent extends BaseTrustClass {
         textAreaType: "border",
         //regexPattern: "/[^.?!]/",
         //Validators: [Validators.required],
-        cols: 4,
+        cols: 2,
         // placeholder: "Enter a brief description of the purpose of the trust",
         // textAreaRows: 2,
         // className: "col col-4 mr-5 ml-1 mt-3 ng-star-inserted ",
-        className: "col-4 mt-2 pr-2",
+        className: "mt-3 pr-2",
         labelClass: "mb-1",
       },
       {
         type: "select",
-        label: "Primary Nature Of Trust",
+        label: "Primary Nature of Trust",
         name: "primaryNatureTrust",
         alignmentType: "vertical",
         filter: true,
@@ -133,21 +134,21 @@ export class TrustDetailComponent extends BaseTrustClass {
         // },
         // idKey: "value_text",
         // idName: "value_text",
-        options: [],
+        options:[],
         //Validators: [Validators.required],
-        cols: 2,
+        cols: 4,
         // className: "col-2 -mx-4 mt-3 px-2 py-3 ng-star-inserted",
         // labelClass: '-mt-3',
-        className: "col-2 px-2 mt-2",
+        className: "primary-nature-of-trust col-2 px-2 mt-2 ml-2",
         labelClass: "mb-1",
       },
 
       {
         type: "select",
-        label: "Source Of Wealth",
+        label: "Source of Wealth",
         name: "sourceOfWealth",
         filter: true,
-        className: "col-2 mt-2 px-2",
+        className: "source-of-wealth col-3 mt-2 px-2 ml-2",
         labelClass: "mb-1",
         list$: "LookUpServices/CustomData",
         apiRequest: {
@@ -166,7 +167,7 @@ export class TrustDetailComponent extends BaseTrustClass {
         name: "totalAssets",
         filter: true,
 
-        className: "col-2 mt-2 px-2",
+        className: "col-3 mt-2 px-2 ml-2",
         labelClass: "mb-1",
         alignmentType: "vertical",
 
@@ -188,9 +189,9 @@ export class TrustDetailComponent extends BaseTrustClass {
         name: "timeInTrustYears",
         // className: "col-fixed w-3rem mt-3 py-0",
         className:
-          "col mt-4 mx-1 px-2 py-0 w-4rem white-space-nowrap ng-star-inserted",
-        inputClass: "mx-2 pb-0 pt-2 mb-1 ng-star-inserted",
-        labelClass: "mr-0 -my-0 required ng-star-inserted",
+          "mt-4 mx-1 px-2 py-0 col-fixed w-5rem white-space-nowrap",
+        inputClass: "mx-2 pb-0 pt-2 mb-1 ",
+        labelClass: "mr-0 -my-0 required ",
 
         //Validators: [Validators.required, Validators.max(99)],
       },
@@ -200,17 +201,17 @@ export class TrustDetailComponent extends BaseTrustClass {
         label: "Years",
         name: "year",
         // className: "-mx-3 col col-fixed mr-1 mt-4 ng-star-inserted pt-3 w-3rem",
-        className: "-mx-1  mr-1 mt-6 ng-star-inserted pt-3 w-3rem",
+        className: "-mx-1  mr-1 mt-6 col-fixed pt-3 w-5rem",
       },
       {
         type: "number",
         inputType: "vertical",
         name: "timeInTrustMonths",
         //Validators: [Validators.max(11), Validators.maxLength(2)],
-        className: "-mx-2 mt-3 p-1 py-0 w-4rem",
-        inputClass: "mx-2 mt-5 pt-2 mb-1 ng-star-inserted",
+        className: "-mx-2 mt-3 p-1 py-0  col-fixed w-5rem",
+        inputClass: "mx-2 mt-5 pt-2 mb-1 ",
         // // labelClass: "mx-2 my-1",
-        labelClass: "mr-0 ng-star-inserted",
+        labelClass: "mr-0 ",
 
         errorMessage: "Value should be less than 12",
       },
@@ -219,7 +220,7 @@ export class TrustDetailComponent extends BaseTrustClass {
         typeOfLabel: "inline",
         label: "Months",
         name: "month",
-        className: "col mt-5 -mx-1 ng-inserted pt-5 w-3rem ng-star-inserted",
+        className: "col mt-5 -mx-1 pt-5 col-fixed w-3rem",
       },
     ],
   };
@@ -248,7 +249,18 @@ export class TrustDetailComponent extends BaseTrustClass {
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
 
-    if (this.trustSvc.showValidationMessage) {
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+    
+    if(this.trustSvc.showValidationMessage){
       this.mainForm.form.markAllAsTouched()
     }
 
@@ -291,7 +303,7 @@ export class TrustDetailComponent extends BaseTrustClass {
           const coBorrowers = this.baseFormData.customerSummary.filter(
             customer => customer.customerRole === 2
           );
-
+          
           if (coBorrowers.length >= 2) {
             // If 2 or more co-borrowers exist, set role to guarantor (3)
             this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 3);
@@ -299,17 +311,17 @@ export class TrustDetailComponent extends BaseTrustClass {
               role: this.baseFormData?.role || 3,
             });
           } else {
-            // If less than 2 co-borrowers, set role to co-borrower (2)
+              // If less than 2 co-borrowers, set role to co-borrower (2)
             this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 2);
             this.baseSvc.setBaseDealerFormData({
-              role: this.baseFormData?.role || 2,
-            });
+            role: this.baseFormData?.role || 2,
+          });
           }
         }
       } else {
         if (!this.baseFormData.role) {
           this.customerRoleData = this.customerRoleData?.filter(
-            (role) => role.value == 1
+            (role)=>role.value == 1
           )
           this.customerRoleForm.controls["role"].setValue(1);
           this.trustSvc.setBaseDealerFormData({
@@ -329,43 +341,43 @@ export class TrustDetailComponent extends BaseTrustClass {
     if (this.mode == "edit") {
 
       if (this.trustSvc.role === 1) {
-
-        // this.customerRoleData = this.customerRoleData;
-
-        // Check if customerSummary exists and is an array
-        if (this.baseFormData?.customerSummary && Array.isArray(this.baseFormData.customerSummary)) {
-          // Count co-borrowers (customerRole = 2)
-          const coBorrowers = this.baseFormData.customerSummary.filter(
-            customer => customer.customerRole === 2
-          );
-
-          if (coBorrowers.length >= 2) {
-            // If 2 or more co-borrowers exist, set role to guarantor (3)
-            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 3);
-            this.baseSvc.setBaseDealerFormData({
-              role: this.baseFormData?.role || 3,
-            });
-          } else {
-            // If less than 2 co-borrowers, set role to co-borrower (2)
-            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 2);
-            this.baseSvc.setBaseDealerFormData({
+         
+          // this.customerRoleData = this.customerRoleData;
+          
+          // Check if customerSummary exists and is an array
+          if (this.baseFormData?.customerSummary && Array.isArray(this.baseFormData.customerSummary)) {
+            // Count co-borrowers (customerRole = 2)
+            const coBorrowers = this.baseFormData.customerSummary.filter(
+              customer => customer.customerRole === 2
+            );
+            
+            if (coBorrowers.length >= 2) {
+              // If 2 or more co-borrowers exist, set role to guarantor (3)
+              this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 3);
+              this.baseSvc.setBaseDealerFormData({
+                role: this.baseFormData?.role || 3,
+              });
+            } else {
+                // If less than 2 co-borrowers, set role to co-borrower (2)
+              this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 2);
+              this.baseSvc.setBaseDealerFormData({
               role: this.baseFormData?.role || 2,
             });
+            }
+          } 
+          // else {
+          //   // If customerSummary doesn't exist or is empty, default to co-borrower
+          //   this.customerRoleForm.controls["role"].setValue(2);
+          // }
+        } else {
+            if (!this.baseFormData.role) {
+              this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 1);
+              this.baseSvc.setBaseDealerFormData({
+                role: this.baseFormData?.role || 1,
+              });
+            }
           }
-        }
-        // else {
-        //   // If customerSummary doesn't exist or is empty, default to co-borrower
-        //   this.customerRoleForm.controls["role"].setValue(2);
-        // }
-      } else {
-        if (!this.baseFormData.role) {
-          this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 1);
-          this.baseSvc.setBaseDealerFormData({
-            role: this.baseFormData?.role || 1,
-          });
-        }
-      }
-
+      
       // if (this.baseFormData?.role) {
       //   this.customerRoleForm.controls["role"].setValue(
       //     this.baseFormData?.role
@@ -382,67 +394,68 @@ export class TrustDetailComponent extends BaseTrustClass {
       //   this.customerRole = null; // or some default value
       // }
 
-      if (this.baseFormData?.tempCustomerNo === this.baseFormData?.customerNo) {
-        if (this.baseFormData?.tempCustomerRole) {
-          this.customerRoleForm.controls["role"].setValue(this.baseFormData?.tempCustomerRole);
-          // this.mainForm.get("role").setValue(this.baseFormData?.tempCustomerRole);
-          this.baseSvc.setBaseDealerFormData({
-            role: this.baseFormData?.tempCustomerRole
-          });
-        }
-      }
-      else {
-        this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role);
-      }
+       if(this.baseFormData?.tempCustomerNo === this.baseFormData?.customerNo ){
+          if(this.baseFormData?.tempCustomerRole){
+            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.tempCustomerRole);
+            // this.mainForm.get("role").setValue(this.baseFormData?.tempCustomerRole);
+            this.baseSvc.setBaseDealerFormData({
+              role: this.baseFormData?.tempCustomerRole
+            });
+          }
+          }
+          else {
+            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role);
+          }
     }
-
+    
     await this.updateList()
   }
 
 
   async updateList() {
-    await this.trustSvc.getFormData(
-      `LookUpServices/lookups?LookupSetName=BusinessEntityType`,
-      (res) => {
-        if (res.data) {
-          const filteredOptions = res.data
-            .filter(
-              (item: any) =>
-                item.lookupValue &&
-                !item.lookupValue.includes("Z – Not Applicable") &&
-                item.lookupValue.includes("Trust -")
-            )
-            .map(({ lookupValue }) => ({
-              label: lookupValue,
-              value: lookupValue,
-            }));
-
-          this.mainForm.updateList("trustType", filteredOptions);
-          return filteredOptions;
-        }
-      }
-    );
-
-    this.svc.data
-      .post("LookUpServices/CustomData", {
-        parameterValues: ["ANZ1993"],
-        procedureName: configure.SPIndustryTypeExtract,
-      })
-      .subscribe((res) => {
-        if (res?.data?.table) {
-          const natureOfTrustList = res.data.table.map((item: any) => ({
-            label: item.value_text,
-            value: item.value_text,
+  await this.trustSvc.getFormData(
+    `LookUpServices/lookups?LookupSetName=BusinessEntityType`,
+    (res) => {
+      if (res.data) {
+        const filteredOptions = res.data
+          .filter(
+            (item: any) =>
+              item.lookupValue &&
+              !item.lookupValue.includes("Z – Not Applicable") &&
+              item.lookupValue.includes("Trust -")
+          )
+          .map(({ lookupValue }) => ({
+            label: lookupValue,
+            value: lookupValue,
           }));
 
-          // Store the options for later use
-          this.primaryNatureTrustOptions = natureOfTrustList;
+        this.mainForm.updateList("trustType", filteredOptions);
+        filteredOptions?.sort((a, b) => a?.label?.localeCompare(b?.label));
+        return filteredOptions;
+      }
+    }
+  );
+  
+  this.svc.data
+    .post("LookUpServices/CustomData", {
+      parameterValues: ["ANZ1993"],
+      procedureName: configure.SPIndustryTypeExtract,
+    })
+    .subscribe((res) => {
+      if (res?.data?.table) {
+        const natureOfTrustList = res.data.table.map((item: any) => ({
+          label: item.value_text,
+          value: item.value_text,
+        }));
 
-          this.mainForm.updateList("primaryNatureTrust", natureOfTrustList);
+        // Store the options for later use
+        this.primaryNatureTrustOptions = natureOfTrustList;
 
-        }
-      });
-  }
+       this.mainForm.updateList("primaryNatureTrust", natureOfTrustList);
+
+      }
+    });
+}
 
 
   decodeHtmlEntities(value: string): string {
@@ -468,11 +481,11 @@ export class TrustDetailComponent extends BaseTrustClass {
     if (stepperDetails?.validate) {
       let formStatus;
       if (this.customerRoleForm) {
-        if (this.customerRoleForm.controls["role"].value === 0) {
+        if(this.customerRoleForm.controls["role"].value === 0){
           this.customerRoleForm.markAllAsTouched()
           formStatus = "INVALID"
         }
-        else {
+        else{
           formStatus = this.proceedEmailForm();
         }
         // formStatus = this.proceedEmailForm();
@@ -483,7 +496,7 @@ export class TrustDetailComponent extends BaseTrustClass {
 
     this.trustSvc.updateComponentStatus("Trust Details", "TrustDetailComponent", (this.mainForm.form.valid && this.customerRoleForm.controls["role"].value !== 0))
 
-    if (this.trustSvc.showValidationMessage) {
+    if(this.trustSvc.showValidationMessage){
       let invalidPages = this.checkStepValidity()
       this.trustSvc.iconfirmCheckbox.next(invalidPages)
     }
@@ -513,38 +526,38 @@ export class TrustDetailComponent extends BaseTrustClass {
   modelName: string = "TrustDetailComponent";
 
   override async onFormReady(): Promise<void> {
-    if (this.customerRoleForm && this.trustSvc.showValidationMessage) {
-      if (this.customerRoleForm.controls["role"].value === 0) {
-        this.customerRoleForm.markAllAsTouched();
+     if (this.customerRoleForm && this.trustSvc.showValidationMessage) {
+        if(this.customerRoleForm.controls["role"].value === 0){
+          this.customerRoleForm.markAllAsTouched();
+        }
       }
-    }
 
-    if (this.baseFormData?.primaryNatureTrust) {
-      const natureOfTrustData = this.decodeHtmlEntities(
-        this.baseFormData?.primaryNatureTrust
-      );
-
-      this.trustSvc.setBaseDealerFormData({
-        primaryNatureTrust: natureOfTrustData,
-      });
-
-      this.mainForm
-        .get("primaryNatureTrust")
-        .patchValue(
-          this.decodeHtmlEntities(this.baseFormData?.primaryNatureTrust)
+       if(this.baseFormData?.primaryNatureTrust){
+        const natureOfTrustData = this.decodeHtmlEntities(
+          this.baseFormData?.primaryNatureTrust
         );
-    }
+
+       this.trustSvc.setBaseDealerFormData({
+          primaryNatureTrust: natureOfTrustData,
+        });
+
+        this.mainForm
+      .get("primaryNatureTrust")
+      .patchValue(
+        this.decodeHtmlEntities(this.baseFormData?.primaryNatureTrust)
+      );
+      }
     await this.updateValidation("onInit");
     // super.onFormReady();
 
     this.mainForm.updateProps("primaryNatureTrust", {
-      errorMessage:
-        "Primary Nature of Trust is required.",
-    });
+          errorMessage:
+            "Primary Nature of Trust is required.",
+        });
   }
 
   override async onBlurEvent(event): Promise<void> {
-
+    
     await this.updateValidation(event);
   }
 
@@ -558,7 +571,7 @@ export class TrustDetailComponent extends BaseTrustClass {
   }
 
   async updateValidation(event) {
-    const value = event?.target?.value ?? event;
+     const value = event?.target?.value ?? event;
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,

@@ -31,6 +31,7 @@
                 className="currency-amount-input"
                 valueClass="text-right"
                 (ngModelChange)="getValue()"
+                [disabled]="isDisabled()"
               ></amount>
             </div>
           </div>
@@ -42,24 +43,21 @@
               <label>Payable to {{ originatorName }}</label>
             </div>
             <div class="col-12 md:col-4 lg:col-4 col-offset-1 ml-6">
-              <!-- <p-inputNumber
+              <!-- <amount
                 mode="currency"
                 currency="USD"
                 locale="en-US"
                 [(ngModel)]="payableToDealer.amount"
                 name="payableToDealer"
-                [inputStyle]="{ 'text-align': 'right', width: '120px' }"
-                maxlength="15"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
                 (onInput)="getValue()"
-              ></p-inputNumber> -->
+              ></amount> -->
               <amount
                 [(ngModel)]="payableToDealer.amount"
                 name="payableToDealer"
                 className="currency-amount-input"
                 valueClass="text-right"
                 (ngModelChange)="getValue()"
+                [disabled]="isDisabled()"
               ></amount>
             </div>
           </div>
@@ -84,13 +82,14 @@
                   (onInput)="getValue()"
                   [minFractionDigits]="2"
                   [maxFractionDigits]="2"
-                ></p-inputNumber> -->
+                ></amount> -->
                 <amount
                   [(ngModel)]="disbursmentData.disrbursmentType[item.lookupName]"
                   name="disrbursmentType_{{ i }}"
                   className="currency-amount-input"
                   valueClass="text-right"
                   (ngModelChange)="getValue()"
+                  [disabled]="isDisabled()"
                 ></amount>
                 <!-- <div
                   *ngIf="errorMessages[item.lookupName]"

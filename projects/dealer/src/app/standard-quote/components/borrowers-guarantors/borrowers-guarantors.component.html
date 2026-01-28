@@ -28,7 +28,8 @@
         </ng-container>
         <ng-container *ngIf="baseSvc.activeStep == 1">
           <gen-button
-            [disabled]="!insuranceBtnDisable || disableState"
+              *ngIf="baseFormData?.purposeofLoan != 'Business'"
+            [disabled]="!isInsuranceDisclosureEnabled || disableState"
             class="float-right"
             [btnType]="'non-bg-btn'"
             [btnLabel]="'lbl_insuranceDisclosure'"

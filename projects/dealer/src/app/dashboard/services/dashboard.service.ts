@@ -53,13 +53,13 @@ export class DashboardService {
   ];
 
   workFlow = [
-    { label: "Quote", amount: 1500, count: 20 },
-    { label: "Assessment", amount: 500, count: 10 },
-    { label: "Approved", amount: 500, count: 12 },
-    { label: "With Customer for Signing", amount: 200, count: 10 },
-    { label: "Verification", amount: 300, count: 15 },
-    { label: "Settlement", amount: 500, count: 10 },
-    { label: "Not Tracked", amount: 500, count: 10 },
+    { label: "Quote", amount: 0, count: 0 },
+    { label: "Assessment", amount: 0, count: 0 },
+    { label: "Approved", amount: 0, count: 0 },
+    { label: "With Customer for Signing", amount: 0, count: 0 },
+    { label: "Verification", amount: 0, count: 0 },
+    { label: "Settlement", amount: 0, count: 0 },
+    { label: "Not Tracked", amount: 0, count: 0 },
   ];
 
   activatedContractListActions = [
@@ -922,8 +922,8 @@ export class DashboardService {
     let decodedToken = this.decodeToken(accessToken);
     let sub = decodedToken?.preferred_username || decodedToken?.sub;
     let introducersData = await this.data
-      .get(`User/get_introducers?userCode=${sub}`)
-      .pipe(
+      ?.get(`User/get_introducers?userCode=${sub}`)
+      ?.pipe(
         map((res) => {
           return res?.data || null;
         })

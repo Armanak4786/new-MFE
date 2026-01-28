@@ -304,6 +304,14 @@ export class PersonalDetailEmailContactComponent extends BaseIndividualClass {
       this.emails.markAllAsTouched()
     }
   }
+isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
   override onStepChange(stepperDetails: any): void {
     if (stepperDetails?.validate) {

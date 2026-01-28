@@ -2,7 +2,7 @@
   <ng-container body>
     <div class="grid p-0 m-0">
       <div class="col-4 mt-0 pt-0 pl-0">
-        <form [formGroup]="phoneForm" >
+        <form [formGroup]="phoneForm" [class.disabled]="isDisabled()">
           <ng-container formArrayName="phone">
             <div *ngFor="let phone of phone.controls; let i = index">
               <div [formGroupName]="i" class="mt-3">
@@ -39,10 +39,11 @@
                     </div>
                   </div>
 
-                  <div class="col-2">
+                  <div class="col-2 w-7rem">
                     <input
                     #areacodeInput
                       type="text"
+                      placeholder="Area code"
                       pInputText
                       formControlName="areacode"
                      (input)="onAreaCodeInputChange($event, i, valueInput)"
@@ -110,7 +111,7 @@
             <div class="pt-3 -ml-3">
               <gen-button
                 *ngIf="this.phone.length < 3"
-                [btnLabel]="'Add Other Mobile'"
+                [btnLabel]="'Add Other Number'"
                 [btnType]="'plus-btn'"
                 (onClick)="addOtherPhone()"
               ></gen-button>

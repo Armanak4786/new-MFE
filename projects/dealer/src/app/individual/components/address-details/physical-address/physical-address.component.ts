@@ -452,6 +452,19 @@ export class PhysicalAddressComponent extends BaseIndividualClass {
       physicalUnitNumber: false,
       physicalStreetArea: true,
     });
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    this.mainForm.mode = 'view';
+    console.log(this.mainForm);
+    }
+    else{ this.mainForm?.form?.enable();}
+
     await this.updateValidation("onInit");
 
     this.searchSvc

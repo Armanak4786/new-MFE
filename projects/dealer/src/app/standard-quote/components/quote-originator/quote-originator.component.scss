@@ -5,6 +5,8 @@
   background-color: var(--primary-color);
   color: var(--background-color-primary) !important;
   border-radius: 20px;
+  position: relative;
+  padding-right: 24px;
   
  
   input {
@@ -23,6 +25,20 @@
   }
   .p-inputgroup-addon {
     display: none;
+  }
+
+  // Down arrow icon (chevron style)
+  &::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-70%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--background-color-primary);
+    border-bottom: 2px solid var(--background-color-primary);
+    pointer-events: none;
   }
   
 }
@@ -266,7 +282,16 @@
   border-bottom: none !important;
   outline: none !important;
 }
-
+::ng-deep {
+  p-dropdown {
+    display: block;
+    padding: 0 !important;
+  }
+  label.col-12.py-0 {
+    margin-bottom: 14px;
+    display: block;
+  }
+}
 
 
 

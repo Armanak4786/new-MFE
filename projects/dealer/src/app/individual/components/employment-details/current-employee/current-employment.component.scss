@@ -1,4 +1,14 @@
-::ng-deep .current_employment .p-error {
+::ng-deep {
+    .current_employment .p-error {
     text-wrap: auto;
-    min-width: 120px;
+    min-width: 110px;
+    }
+    p-dropdown {
+    display: block;
+    padding: 0 !important;
+  }
+  label.col-12.py-0 {
+    margin-bottom: 14px;
+    display: block;
+  }
 }

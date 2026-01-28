@@ -9,7 +9,7 @@
   (formButtonEvent)="onButtonClick($event)"
   (formReady)="onFormReady()"
 ></base-form> -->
-<form [formGroup]="emailForm" #mainForm>
+<form [formGroup]="emailForm" [class.disabled]="isDisabled()"#mainForm>
   <ng-container formArrayName="emails">
     <div *ngFor="let email of emails.controls; let i = index">
       <div [formGroupName]="i" class="mt-2">

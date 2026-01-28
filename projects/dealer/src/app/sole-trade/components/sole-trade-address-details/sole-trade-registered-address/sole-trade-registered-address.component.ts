@@ -156,7 +156,7 @@ export class SoleTradeRegisterAddressComponent extends BaseSoleTradeClass {
       },
       {
         type: "text",
-        label: "Floor No",
+        label: "Floor Number",
         name: "registerFloorNumber",
         // //validators: [Validators.pattern(/^[A-Za-z0-9'\-\&\/.]*$/)],  -- Auro
         className: " ",
@@ -285,7 +285,7 @@ export class SoleTradeRegisterAddressComponent extends BaseSoleTradeClass {
         // idName: "name",
         options: this.cityOptions,
 
-        default: "New Zealand",
+        //default: "New Zealand",
         nextLine: false,
       },
       {
@@ -376,6 +376,16 @@ export class SoleTradeRegisterAddressComponent extends BaseSoleTradeClass {
 override async ngOnInit(): Promise<void> {
   await super.ngOnInit();
 
+   let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
   // Load existing locationId from addressDetails
   const dealerFormData = this.baseSvc.getBaseDealerFormData().value;
   dealerFormData?.addressDetails?.forEach((address) => {
@@ -485,6 +495,17 @@ override async onFormEvent(event: any): Promise<void> {
   
   await this.updateValidation("onInit");
   super.onFormEvent(event);
+   let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+
 }
 
 

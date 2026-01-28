@@ -229,6 +229,8 @@ export class IndividualTabComponent extends BaseStandardQuoteClass {
       this.mainForm.form.get("dateOfBirth")?.setErrors(null);
       this.mainForm.form.get("dateOfBirth")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
     }
+    console.log(this.mainForm.form.valid, "mainForm.form.valid");
+    console.log(this.mainForm.form, "mainForm.form.value");
     if (this.mainForm.form.valid) {
       this.callCustomerSearchAPI();
     } else {

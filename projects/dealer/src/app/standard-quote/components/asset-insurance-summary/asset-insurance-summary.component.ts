@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
-import { CommonService } from "auro-ui";
+import { CloseDialogData, CommonService } from "auro-ui";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { AssetTradeSummaryService } from "./asset-trade.service";
@@ -18,7 +18,6 @@ import configure from "../../../../../public/assets/configure.json";
   styleUrl: "./asset-insurance-summary.component.scss",
 })
 export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
-  activeSteps: any
   constructor(
     public override route: ActivatedRoute,
     public override svc: CommonService,
@@ -34,36 +33,36 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
     super(route, svc, baseSvc);
   }
 
-  AFworkflowStatus: boolean = false;
+  AFworkflowStatus:boolean = false;
 
   override async ngOnInit(): Promise<void> {
-    this.assetList = this.tradeSvc.assetList
-      .map(item => ({
-        ...item,
-        regoOrVin: this.getFirstAvailableField([
-          item.regoNumber,
-          item.vin,
-          item.serialChassisNumber
-        ]) || "-"
-      }));
+   this.assetList = this.tradeSvc.assetList
+.map(item => ({
+  ...item,
+  regoOrVin: this.getFirstAvailableField([
+    item.regoNumber,
+    item.vin, 
+    item.serialChassisNumber
+  ]) || "-"
+}));
 
-    this.tradeList = this.tradeSvc.tradeList.map(item => ({
-      ...item,
-      regoOrVin: this.getFirstAvailableField([
-        item.tradeRegoNo,
-        item.tradeVinNo,
-        item.tradeSerialOrChassisNo
-      ]) || "-"
-    }));
+this.tradeList = this.tradeSvc.tradeList.map(item => ({
+  ...item,
+  regoOrVin: this.getFirstAvailableField([
+    item.tradeRegoNo,
+    item.tradeVinNo, 
+    item.tradeSerialOrChassisNo
+  ]) || "-"
+}));
 
-    this.updateVisibleTradeList()
+        this.updateVisibleTradeList()
 
-
-    // console.log("assetList",this.assetList);
-
+     
+     // console.log("assetList",this.assetList);
+      
     this.insuranceList = this.tradeSvc.insuranceList;
     await super.ngOnInit();
-
+    
     //  if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
     //   this.AFworkflowStatus = true;
     // }
@@ -75,7 +74,7 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
     // { field: "vehicleClassId", headerName: "VId" },
     { field: "number", headerName: "Number", format: "#serialNo" },
     { field: "assetName", headerName: "Asset" },
-    { field: "regoOrVin", headerName: "Rego / VIN" },
+    { field: "regoOrVin", headerName: "Rego / VIN"},
     {
       field: "costOfAsset",
       headerName: "Value ($)",
@@ -89,8 +88,8 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
     },
   ];
 
-  assetList: any[] = [];
-  insuranceList: any[] = [];
+  assetList = this.tradeSvc.assetList;
+  insuranceList = this.tradeSvc.insuranceList;
   columnsTrade = [
     { field: "number", headerName: "Number", format: "#serialNo" },
     { field: "tradeName", headerName: "Asset" },
@@ -110,8 +109,8 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
     },
   ];
 
-  tradeList: any[] = [];
-  visibleTradeList: any[] = [];
+  tradeList = this.tradeSvc.tradeList;
+  visibleTradeList = this.tradeSvc.tradeList;
 
   showAssetSearchPopup(header) {
     this.ref.close({
@@ -119,14 +118,14 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
       submitFor: header,
     });
   }
-  private getFirstAvailableField(fields: (string | null | undefined)[]): string | null {
-    return fields.find(field =>
-      field &&
-      field.trim() &&
-      field.trim() !== "0" &&
-      field.toLowerCase() !== "null"
-    ) || null;
-  }
+private getFirstAvailableField(fields: (string | null | undefined)[]): string | null {
+  return fields.find(field => 
+    field && 
+    field.trim() && 
+    field.trim() !== "0" && 
+    field.toLowerCase() !== "null"
+  ) || null;
+}
 
   async splitAsset(asset, index) {
     if (asset?.assetId > 0) {
@@ -172,36 +171,38 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
 
   onAssetCellClick(event) {
     if (this.accessMode !== "view") {
+      console.log(this.baseFormData, "asset-insurance");
+      
       if (event.actionName == "edit") {
         if (this.baseFormData?.financialAssetInsurance && [event.index]) {
           this.tradeSvc.assetEditIndex = event.index;
 
-          this.baseFormData.physicalAsset[event.index] = {
-            ...this.baseFormData.physicalAsset[event.index],
-            isEdited: true
-          };
-
-          this.tradeSvc.assetEditData = {
-            ...this.baseFormData.physicalAsset[event.index],
-            ...this.baseFormData.financialAssetInsurance[event.index],
-          };
+           this.baseFormData.physicalAsset[event.index] = {
+             ...this.baseFormData.physicalAsset[event.index],
+             isEdited: true
+           };
+         
+           this.tradeSvc.assetEditData = {
+             ...this.baseFormData.physicalAsset[event.index],
+             ...this.baseFormData.financialAssetInsurance[event.index],
+           };
         } else {
-          this.baseFormData.physicalAsset[event.index] = {
+            this.baseFormData.physicalAsset[event.index] = {
             ...this.baseFormData.physicalAsset[event.index],
-            isEdited: true
-          };
-
+             isEdited: true
+            };
+            
           this.tradeSvc.assetEditData = {
             ...this.baseFormData?.physicalAsset[event.index],
           };
         }
-        this.router.navigateByUrl("dealer/asset/addAsset/edit");
+        this.router.navigateByUrl("asset/addAsset/edit");
         this.ref.close();
       } else if (event.actionName == "delete") {
 
-        if ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))) {
-          return;
-        }
+      if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+        return;
+      }
 
         let assetId = this.assetList?.[event.index]?.assetId
         if (assetId) {
@@ -217,9 +218,9 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
       } else if (event.actionName == "copy") {
 
-        if ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))) {
-          return;
-        }
+         if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+            return;
+          }
 
         // if (this.baseFormData?.contractId) {
         //   this.splitAsset(this.assetList[event.index], event.index);
@@ -253,17 +254,17 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
         );
         let assetId = this.assetList?.[event.index]?.assetId
         if (assetId) {
-          // this.assetList[event.index] = {
-          //   ...this.assetList[event.index],
-          //   copyasset: true,
-          // }
+            // this.assetList[event.index] = {
+            //   ...this.assetList[event.index],
+            //   copyasset: true,
+            // }
 
-          this.assetList[event.index + 1] = {
-            ...this.assetList[event.index + 1],
-            copyasset: true,
-          }
+            this.assetList[event.index + 1] = {
+              ...this.assetList[event.index + 1],
+              copyasset: true,
+            }
         }
-
+        
         // const cost = this.assetList?.[event.index]?.costOfAsset;
         // this.assetList[event.index].costOfAsset = cost / 2;
         // this.assetList[event.index + 1].costOfAsset = cost / 2;
@@ -281,9 +282,9 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
 
         //clone data
-        if (this.baseFormData?.financialAssetInsurance && [event.index]) {
-          console.log(this.tradeSvc.assetEditIndex, 'index data')
-          console.log(event.index, 'event index data')
+          if (this.baseFormData?.financialAssetInsurance && [event.index]) {
+          console.log( this.tradeSvc.assetEditIndex,'index data')
+          console.log(event.index,'event index data')
           this.tradeSvc.assetEditIndex = event.index + 1;
 
           this.tradeSvc.assetEditData = {
@@ -295,7 +296,7 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
             ...this.baseFormData?.physicalAsset[event.index + 1],
           };
         }
-        this.router.navigateByUrl("dealer/asset/addAsset/edit");
+        this.router.navigateByUrl("asset/addAsset/edit");
         this.ref.close();
       }
     }
@@ -304,27 +305,27 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
   override onStatusChange(statusDetails: any): void {
     super.onStatusChange(statusDetails);
 
-    if ((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))) {
+    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
       this.isDisable = true;
     }
 
   }
 
-  //   isDisabled() {
-  //   if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
-  //     // this.AFworkflowStatus = true; 
-  //     return true;
-  //   }
-  //   return false;
-  // }
+//   isDisabled() {
+//   if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+//     // this.AFworkflowStatus = true; 
+//     return true;
+//   }
+//   return false;
+// }
 
   onTradeCellClick(event) {
 
     if (this.accessMode !== "view") {
-
+      
       if (event.actionName == "edit") {
-        const itemToEdit = this.visibleTradeList[event.index];
-        const originalIndex = this.tradeList.findIndex(t => t === itemToEdit);
+         const itemToEdit = this.visibleTradeList[event.index]; 
+      const originalIndex = this.tradeList.findIndex(t => t === itemToEdit); 
         this.tradeSvc.tradeEditIndex = originalIndex;
         if (this.baseFormData?.tradeInAssetRequest) {
           this.tradeSvc.tradeEditData = {
@@ -334,18 +335,18 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
         this.router.navigateByUrl("dealer/trade/addTrade/edit");
         this.ref.close();
       } else if (event.actionName == "delete") {
-
-
-
+       
+        
+        
         const itemToDelete = this.visibleTradeList[event.index];
-        const originalIndex = this.tradeList.findIndex(t => t === itemToDelete);
+      const originalIndex = this.tradeList.findIndex(t => t === itemToDelete); 
         //  const itemToDelete = this.tradeList[event.index];
 
-        if (itemToDelete.isExist) {
-          this.tradeList[originalIndex].changeAction = TradeInAssetChangeActions.delete;
-        } else {
-          this.tradeList.splice(originalIndex, 1);
-        }
+              if (itemToDelete.isExist) {
+                this.tradeList[originalIndex].changeAction = TradeInAssetChangeActions.delete;
+              } else {
+                this.tradeList.splice(originalIndex, 1);
+              }
 
         this.tradeSvc.tradeList = this.tradeList;
         this.updateVisibleTradeList()
@@ -358,23 +359,23 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
         // );
         // this.tradeSvc.tradeList = this.tradeList;
         // this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
-        const itemToCopy = this.visibleTradeList[event.index]; // from UI
-        const originalIndex = this.tradeList.findIndex(t => t === itemToCopy);
-        const clonedTrade = cloneDeep(itemToCopy);
-        delete clonedTrade.tradeRegoNo;
-        delete clonedTrade.tradeVinNo;
-        delete clonedTrade.tradeSerialOrChassisNo;
-        delete clonedTrade.regoOrVin;
-        clonedTrade['changeAction'] = TradeInAssetChangeActions.create
-        this.tradeList.splice(originalIndex + 1, 0, clonedTrade);
-        this.tradeSvc.tradeList = this.tradeList;
-        this.updateVisibleTradeList()
-        this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
+      const itemToCopy = this.visibleTradeList[event.index]; // from UI
+      const originalIndex = this.tradeList.findIndex(t => t === itemToCopy);
+      const clonedTrade = cloneDeep(itemToCopy);
+		  delete clonedTrade.tradeRegoNo;
+		  delete clonedTrade.tradeVinNo;
+		  delete clonedTrade.tradeSerialOrChassisNo;
+      delete clonedTrade.regoOrVin;
+        clonedTrade['changeAction']=TradeInAssetChangeActions.create
+		  this.tradeList.splice(originalIndex  + 1, 0, clonedTrade);
+		  this.tradeSvc.tradeList = this.tradeList;
+      this.updateVisibleTradeList()
+		  this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
 
         this.insuranceList.splice(
-          originalIndex + 1,
+          originalIndex  + 1,
           0,
-          cloneDeep(this.insuranceList[originalIndex])
+          cloneDeep(this.insuranceList[originalIndex ])
         );
         this.tradeSvc.insuranceList = this.insuranceList;
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.tradeList);
@@ -383,9 +384,9 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
   }
 
   updateVisibleTradeList(): void {
-    this.visibleTradeList = this.tradeList.filter(t => t.changeAction !== 'delete');
-
-  }
+  this.visibleTradeList = this.tradeList.filter(t => t.changeAction !== 'delete');
+  
+}
   pageCode: string = "";
   modelName: string = "";
 

@@ -11,3 +11,11 @@
     min-width: 100px;
   }
 }
+
+:host ::ng-deep .primary-nature-of-trust.col-4 {
+  width: 36%;
+}
+
+:host ::ng-deep .source-of-wealth.col-3 {
+  width: 20%;
+}

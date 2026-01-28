@@ -26,7 +26,6 @@ import { PaymentSummaryComponent } from './components/payment-summary/payment-su
 import { QuoteOriginatorComponent } from './components/quote-originator/quote-originator.component';
 import { DealerInventoryTabComponent } from './components/search-asset/dealer-inventory-tab.component';
 import { MotocheckTabComponent } from './components/search-asset/motocheck-tab/motocheck-tab.component';
-import { MotocheckTabComponent as MotocheckTabAltComponent } from './components/search-asset/motocheck-tab.component';
 import { SearchAssetComponent } from './components/search-asset/search-asset.component';
 import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
 import { BusinessTabComponent } from './components/search-customer/searchTabs/business-tab.component';
@@ -46,7 +45,6 @@ import { RentalScheduleComponent } from './components/rental-schedule/rental-sch
 import { AccessoriesComponent } from './components/add-on-accessories/component/accessories/accessories.component';
 import { ServicePlanComponent } from './components/add-on-accessories/component/service-plan/service-plan.component';
 import { InsuranceRequirementComponent } from './components/add-on-accessories/component/insurance-requirement/insurance-requirement.component';
-import { InsuranceRequirementComponent as InsuranceRequirementAltComponent } from './components/insurance-requirement/insurance-requirement.component';
 import { ExcessAllowanceComponent } from './components/excess-allowance/excess-allowance.component';
 import { AddNotesComponent } from './components/notes/add-notes.component';
 import { AdditionalFundsComponent } from './components/additional-funds/additional-funds.component';
@@ -76,6 +74,8 @@ import { SupplierSearchResultComponent } from './components/supplier-search-resu
 import { DocumentHistoryComponent } from './components/document-history/document-history.component';
 import { DocumentEsignDetailsComponent } from './components/document-esign-details/document-esign-details.component';
 import { ContractSummeryTabsComponent } from './components/contract-summery-tabs/contract-summery-tabs.component';
+import { MotocheckSearchTabComponent } from './components/search-asset/motocheck-tab.component';
+import { InsuranceRequirementFormComponent } from './components/insurance-requirement/insurance-requirement.component';
 
 @NgModule({
   declarations: [
@@ -134,24 +134,24 @@ import { ContractSummeryTabsComponent } from './components/contract-summery-tabs
     InsuranceFinalPopupComponent,
     FinalConfirmationComponent,
     OriginatorReferenceComponent,
-    SignatoriesComponent,
-    AddExistingContactSignatoriesComponent,
-    MaintenanceRequirementComponent,
-    ChargesAddOtherItemsComponent,
-    CreditConditionComponent,
-    PartyVerificationComponent,
-    AddSupplierComponent,
-    BankStatementVerificationComponent,
-    BankStatementVerificationOptionComponent,
-    SearchSupplierComponent,
-    SupplierIndividualTabComponent,
-    SupplierBusinessTabComponent,
-    SupplierSearchResultComponent,
-    DocumentHistoryComponent,
-    DocumentEsignDetailsComponent,
-    ContractSummeryTabsComponent,
-    MotocheckTabAltComponent,
-    InsuranceRequirementAltComponent
+     SignatoriesComponent,
+     AddExistingContactSignatoriesComponent,
+     MaintenanceRequirementComponent,
+     ChargesAddOtherItemsComponent,
+     CreditConditionComponent,
+     PartyVerificationComponent,
+     AddSupplierComponent,
+     BankStatementVerificationComponent,
+     BankStatementVerificationOptionComponent,
+     SearchSupplierComponent,
+     SupplierIndividualTabComponent,
+     SupplierBusinessTabComponent,
+     SupplierSearchResultComponent,
+     DocumentHistoryComponent,
+     DocumentEsignDetailsComponent,
+     ContractSummeryTabsComponent,
+     MotocheckSearchTabComponent,
+     InsuranceRequirementFormComponent
   ],
   imports: [CommonModule, StandardQuoteRoutingModule, AuroUiFrameWork, IndividualModule],
   exports: [

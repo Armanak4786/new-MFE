@@ -40,10 +40,10 @@ export class IncomeDetailsComponent extends BaseIndividualClass {
     this.incomeDetailsForm = this.fb.group({
       incomeDetails: this.fb.array([]),
       financialIncomeType: [''],
-      financialIncomeTypeAmount: ['', [Validators.max(999999999999999999.9999)]], // Add max validator
+      financialIncomeTypeAmount: ['', [Validators.min(0), Validators.max(999999999999999999.99)]], // Add min and max validator - prevent negative values, 18,2 format
       financialIncomeFrequency: [3533],
       myTextarea: ['', [Validators.maxLength(255)]], // Always have maxLength validator
-      isIncomeDecrease: [],
+      isIncomeDecrease: [null, Validators.required],
       financialPositionIncomeId: [0],
     });
   }
@@ -255,6 +255,14 @@ setTimeout(() => {
     return this.incomeDetailsForm.get('incomeDetails') as FormArray;
   }
 
+  isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
 // Converts income amount to monthly equivalent based on frequency
 
@@ -263,9 +271,9 @@ private convertToMonthly(amount: number, frequency: number): number {
 
   switch (frequency) {
     case 3533: // Weekly
-      return amount * 4.33;
+      return amount * 4.3333;
     case 3534: // Fortnightly
-      return amount * 2.17;
+      return amount * 2.1667;
     case 3535: // Monthly
       return amount;
     case 4017: // Quarterly
@@ -275,6 +283,26 @@ private convertToMonthly(amount: number, frequency: number): number {
   }
 }
 
+
+  /**
+   * Check if the Add Row button should be disabled
+   * Returns true if income type, amount, or frequency is not properly filled
+   */
+  isAddRowDisabled(): boolean {
+    const financialIncomeType = this.incomeDetailsForm.get('financialIncomeType')?.value;
+    const financialIncomeTypeAmount = this.incomeDetailsForm.get('financialIncomeTypeAmount')?.value;
+    const financialIncomeFrequency = this.incomeDetailsForm.get('financialIncomeFrequency')?.value;
+    const amountControl = this.incomeDetailsForm.get('financialIncomeTypeAmount');
+    
+    // Disabled if: no income type selected OR amount is empty/null/undefined/0 OR amount is invalid OR no frequency selected
+    return !financialIncomeType || 
+           financialIncomeTypeAmount === null || 
+           financialIncomeTypeAmount === undefined || 
+           financialIncomeTypeAmount === '' ||
+           financialIncomeTypeAmount === 0 ||
+           (amountControl?.invalid ?? false) ||
+           !financialIncomeFrequency;
+  }
 
   addRow(): void {
     const financialIncomeType = this.incomeDetailsForm.get(
@@ -463,7 +491,7 @@ private convertToMonthly(amount: number, frequency: number): number {
       incomeType: [income.incomeType],
       amount: [
   income.amount || 0,
-  [Validators.max(999999999999999999.99)]  // Add max validator
+  [Validators.min(0), Validators.max(999999999999999999.99)]  // Add min and max validator - prevent negative values, 18,2 format
         // [Validators.required, Validators.min(1)],
       ],
       // frequency: [income.frequency, Validators.required],
@@ -481,12 +509,12 @@ private convertToMonthly(amount: number, frequency: number): number {
       incomeGroup.get('amount')?.setValidators([
         Validators.required,
         Validators.min(1),
-        Validators.max(999999999999999999.99) // Add max validator
+        Validators.max(999999999999999999.99) // Add max validator - 18,2 format
       ]);
     } else {
       incomeGroup.get('amount')?.setValidators([
         Validators.min(0),
-        Validators.max(999999999999999999.9999) // Add max validator
+        Validators.max(999999999999999999.99) // Add max validator - 18,2 format
       ]);
     }
     
@@ -540,7 +568,7 @@ private convertToMonthly(amount: number, frequency: number): number {
   //   }
   //  // console.log("this.incomeDetailsForm.get('isIncomeDecrease')?.value", this.incomeDetailsForm.get('isIncomeDecrease')?.value, this.baseFormData?.isIncomeDecrease);
   // }
-  isIncomeDecrease(event: any): void {
+   isIncomeDecrease(event: any): void {
     const isDecrease = event.value === 'true';
     this.isIncomeDecreaseValue = this.incomeDetailsForm.get('isIncomeDecrease')?.value;
     if (isDecrease) {
@@ -566,23 +594,15 @@ private convertToMonthly(amount: number, frequency: number): number {
 
 
 
+
+
+
 updateAssetDetails(index: number): void {
   const incomeGroup = this.incomeDetails.at(index);
 
 
 
   if (incomeGroup) {
-    // Handle negative values for amount field
-    const amountControl = incomeGroup.get('amount');
-    const currentValue = amountControl?.value;
-  
-    // Convert negative values to 0
-    if (currentValue !== null && currentValue < 0) {
-      amountControl?.setValue(0);
-      return; // Exit early since the value change will trigger another update
-    }
-
-
     const updatedIncome = {
       incomeType: incomeGroup.get('incomeType')?.value,
       amount: incomeGroup.get('amount')?.value,
@@ -615,6 +635,36 @@ updateAssetDetails(index: number): void {
   }
 }
 
+onAmountBlur(index?: number): void {
+  let amountControl;
+  
+  if (index !== undefined && index !== null) {
+    // Handle form array item
+    const incomeGroup = this.incomeDetails.at(index);
+    if (incomeGroup) {
+      amountControl = incomeGroup.get('amount');
+    }
+  } else {
+    // Handle standalone financialIncomeTypeAmount field
+    amountControl = this.incomeDetailsForm.get('financialIncomeTypeAmount');
+  }
+  
+  if (amountControl) {
+    const currentValue = amountControl?.value;
+    
+    // Set to 0 when field is empty/null/undefined on blur (but allow negative values for validation)
+    if (currentValue === null || currentValue === undefined || currentValue === '') {
+      amountControl?.setValue(0);
+      this.cdr.detectChanges();
+      
+      // Recalculate total only for form array items
+      if (index !== undefined && index !== null) {
+        this.calculateTotalIncome();
+      }
+    }
+  }
+}
+
 
 
   
@@ -635,83 +685,153 @@ updateAssetDetails(index: number): void {
 /**
  * Calculates total monthly income by converting all income amounts to monthly equivalents
  * Uses frequency codes to determine conversion factor
+ * Excludes invalid amounts (>18,2 format OR negative) from calculation
+ * Only if ALL amounts are invalid/negative, reset graph to 0
+ * Otherwise, exclude invalid/negative values and use only valid positive values for calculation
  */
 calculateTotalIncome(): void {
-  // Check if any amount exceeds 18 digits
-  const hasInvalidAmount = this.incomeDetails.value.some((income: any) => {
-    if (income.amount === null || income.amount === undefined) return false;
-    const amountStr = income.amount.toString().replace('.', '');
-    return amountStr.length > 18;
+  // Helper function to check if amount is invalid (>18,2 format OR negative)
+  const isInvalidAmount = (amount: any): boolean => {
+    if (amount === null || amount === undefined) return false;
+    const amountStr = amount.toString();
+    const [integerPart, decimalPart] = amountStr.split('.');
+    
+    // Check if negative
+    if (amount < 0) return true;
+    
+    // Check if integer part exceeds 18 digits
+    if (integerPart && integerPart.length > 18) return true;
+    
+    // Check if decimal part exceeds 2 digits
+    if (decimalPart && decimalPart.length > 2) return true;
+    
+    // Check if total value exceeds the maximum (18,2 format)
+    if (parseFloat(amountStr) > 999999999999999999.99) return true;
+    
+    return false;
+  };
+
+  // Filter out null/undefined amounts and get valid amounts
+  const validIncomes = this.incomeDetails.value.filter((income: any) => {
+    return income.amount !== null && income.amount !== undefined;
   });
 
+  // Check if any amount is invalid
+  const hasInvalidAmount = validIncomes.some((income: any) => isInvalidAmount(income.amount));
 
-  if (hasInvalidAmount) {
-    this.totalIncome = Infinity;
+  // Filter out invalid amounts for calculation
+  const validAmountsForCalculation = validIncomes.filter((income: any) => !isInvalidAmount(income.amount));
+
+  if (validIncomes.length === 0) {
+    this.totalIncome = 0;
+    this.baseSvc.setBaseDealerFormData({
+      totalIncome: this.totalIncome,
+      hasInvalidIncomeInput: false,
+    });
+  } else if (hasInvalidAmount) {
+    // Check if ALL amounts are invalid - if so, reset graph to 0
+    const allInvalid = validIncomes.every((income: any) => isInvalidAmount(income.amount));
+    
+    if (allInvalid) {
+      // All values are invalid - reset graph to 0
+      this.totalIncome = 0;
+    } else {
+      // Some values are invalid - calculate using only valid positive values
+      this.totalIncome = validAmountsForCalculation.reduce(
+        (acc: number, income: any) => {
+          const rawAmount = income.amount || 0;
+          
+          // Only process positive values
+          if (rawAmount > 0) {
+            const frequency = income.frequency;
+            
+            // Convert to monthly equivalent based on frequency
+            const monthlyAmount = this.convertToMonthly(rawAmount, frequency);
+            
+            return acc + monthlyAmount;
+          }
+          
+          return acc;
+        },
+        0
+      );
+    }
+    
+    // Set flag to indicate invalid input exists
+    this.baseSvc.setBaseDealerFormData({
+      totalIncome: this.totalIncome,
+      hasInvalidIncomeInput: true,
+    });
   } else {
-    // Convert each income to monthly and sum them up
-    this.totalIncome = this.incomeDetails.value.reduce(
-      (acc: number, income: any) => {
-        const rawAmount = income.amount || 0;
-        const frequency = income.frequency;
-        
-        // Convert to monthly equivalent based on frequency
-        const monthlyAmount = this.convertToMonthly(rawAmount, frequency);
-        
-        return acc + monthlyAmount;
-      },
-      0
-    );
-  }
+    // No invalid amounts - check if ALL amounts are negative
+    const allNegative = validIncomes.every((income: any) => {
+      return income.amount < 0;
+    });
 
-  // Store the monthly-converted total income
-  this.baseSvc.setBaseDealerFormData({
-    totalIncome: this.totalIncome, // Now represents "Income (Monthly)"
-  });
+    if (allNegative) {
+      // Reset graph to 0 when ALL values are negative
+      this.totalIncome = 0;
+    } else {
+      // Convert each income to monthly and sum them up
+      // Only include positive values in the calculation
+      this.totalIncome = this.incomeDetails.value.reduce(
+        (acc: number, income: any) => {
+          const rawAmount = income.amount || 0;
+          
+          // Only process positive values
+          if (rawAmount > 0) {
+            const frequency = income.frequency;
+            
+            // Convert to monthly equivalent based on frequency
+            const monthlyAmount = this.convertToMonthly(rawAmount, frequency);
+            
+            return acc + monthlyAmount;
+          }
+          
+          return acc;
+        },
+        0
+      );
+    }
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalIncome: this.totalIncome,
+      hasInvalidIncomeInput: false,
+    });
+  }
 }
 
 
 
 
   override onStepChange(stepperDetails: any): void {
-
-
-
-    if (stepperDetails?.validate) {
-     // console.log("Income Details Form", this.incomeDetailsForm, this.incomeDetailsForm?.status);
-
-
-
-      this.baseSvc.setBaseDealerFormData({
-        incomeDetailValidator: true
-      });
-
-
-
-      let formStatus;
-
-
-
-      // if (this.incomeDetailsForm) {
-      //   formStatus = this.svc.proceedForm(this.incomeDetailsForm);
-      //   this.baseSvc?.formStatusArr?.push(formStatus);
-      // }
-    }
-    super.onStepChange(stepperDetails);
-
-
-
-    this.baseSvc.updateComponentStatus("Financial Position", "IncomeDetailsComponent", this.incomeDetails.valid)
+  if (stepperDetails?.validate) {
+    this.incomeDetailsForm.markAllAsTouched();
+    this.incomeDetailsForm.get('isIncomeDecrease')?.markAsTouched();
+    this.incomeDetailsForm.get('myTextarea')?.markAsTouched();
     
-    if(this.baseSvc.showValidationMessage){
-      let invalidPages = this.checkStepValidity()
-      this.baseSvc.iconfirmCheckbox.next(invalidPages)
-    }
-
-
-
-    // this.checkStepValidity()
-
-
-
+    this.baseSvc.setBaseDealerFormData({
+      incomeDetailValidator: true
+    });
   }
+  
+  super.onStepChange(stepperDetails);
+  const isFormValid = this.incomeDetailsForm.valid;
+
+  this.baseSvc.updateComponentStatus(
+    "Financial Position", 
+    "IncomeDetailsComponent", 
+    isFormValid  
+  );
+  
+  if(this.baseSvc.showValidationMessage){
+    this.incomeDetailsForm.markAllAsTouched();
+    this.incomeDetailsForm.get('isIncomeDecrease')?.markAsTouched();
+    
+    let invalidPages = this.checkStepValidity();
+    
+    this.baseSvc.iconfirmCheckbox.next(invalidPages);
+  }
+}
+
 }

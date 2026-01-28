@@ -17,7 +17,7 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
   @ViewChild(SoleTradeCitizenshipDetailComponent)
   citizenshipComp!: SoleTradeCitizenshipDetailComponent;
 
-
+  
   optionsdata: any[] = ["aa"];
   privousChecked: any;
   private natureOfBusinessOptions: any[] = [];
@@ -85,7 +85,7 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
         // },
         // idKey: "value_text",
         // idName: "value_text",
-        options: [],
+        options:[],
         //validators: [Validators.required],
         cols: 3,
         className: "mt-4 ml-1",
@@ -130,7 +130,7 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
   constructor(
     public override route: ActivatedRoute,
     public override svc: CommonService,
-    public validationSvc: ValidationService,
+     public validationSvc: ValidationService,
     public soleTradeSvc: SoleTradeService
   ) {
     super(route, svc, soleTradeSvc);
@@ -140,10 +140,10 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
 
-    if (this.baseSvc.showValidationMessage) {
+    if(this.baseSvc.showValidationMessage){
       this.mainForm.form.markAllAsTouched()
     }
-    await this.loadNatureOfBusinessOptions();
+   await this.loadNatureOfBusinessOptions();
   }
 
   async loadNatureOfBusinessOptions(): Promise<void> {
@@ -161,22 +161,22 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
 
           // Store the options
           this.natureOfBusinessOptions = natureOfBusinesslist;
-          this.mainForm?.updateList("natureOfBusiness", natureOfBusinesslist);
+this.mainForm?.updateList("natureOfBusiness", natureOfBusinesslist);
 
         }
       });
   }
-
-
-
-
-
+  
+ 
+  
+  
+  
   override async onFormReady(): Promise<void> {
     this.mainForm?.form?.get("tradingName")?.patchValue(this.baseFormData?.tradingName);
     this.mainForm?.form?.get("timeInBusinessYears")?.patchValue(this.baseFormData?.timeInBusinessYears);
     this.mainForm?.form?.get("timeInBusinessMonths")?.patchValue(this.baseFormData?.timeInBusinessMonths);
-
-    if (this.baseFormData?.natureOfBusiness) {
+    
+    if(this.baseFormData?.natureOfBusiness){
       const natureOfBusinessSoleTrade = this.decodeHtmlEntities(
         this.baseFormData?.natureOfBusiness
       );
@@ -191,19 +191,29 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
     }
     await this.loadNatureOfBusinessOptions();
     await this.updateValidation("onInit");
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
   }
   override onFormEvent(event: any): void {
     super.onFormEvent(event);
   }
   override onStepChange(stepperDetails: any): void {
     super.onStepChange(stepperDetails);
-    this.soleTradeSvc.updateComponentStatus("Business Individual", "SoleTradeBusinessDetailsComponent", this.mainForm?.form?.valid)
+ 	this.soleTradeSvc.updateComponentStatus("Business Individual", "SoleTradeBusinessDetailsComponent", this.mainForm?.form?.valid)
 
-    if (this.baseSvc.showValidationMessage) {
+  if(this.baseSvc.showValidationMessage){
       let invalidPages = this.checkStepValidity()
       this.baseSvc.iconfirmCheckbox.next(invalidPages)
     }
-    // If stepper is validating (submit/next)
+     // If stepper is validating (submit/next)
     if (stepperDetails?.validate) {
       if (this.citizenshipComp) {
         this.citizenshipComp.updateValidation("onSubmit");
@@ -216,11 +226,11 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
     txt.innerHTML = value;
     return txt.value;
   }
-  override async onBlurEvent(event): Promise<void> {
+override async onBlurEvent(event): Promise<void> {
     await this.updateValidation(event);
   }
 
-
+  
 
 
   override async onValueEvent(event): Promise<void> {
@@ -236,7 +246,7 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
   modelName: string = "SoleTradeBusinessDetailComponent";
 
   async updateValidation(event) {
-    const value = event?.target?.value ?? event;
+     const value = event?.target?.value ?? event;
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,
@@ -251,5 +261,4 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
     }
 
     return responses.status;
-  }
-}
+  }}

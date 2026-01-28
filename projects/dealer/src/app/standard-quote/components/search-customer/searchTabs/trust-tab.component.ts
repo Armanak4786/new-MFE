@@ -8,7 +8,7 @@ import { GenericDialogService } from "auro-ui";
 import { ToasterService, ValidationService } from "auro-ui";
 import { IndividualService } from "../../../../individual/services/individual.service";
 import { BusinessService } from "../../../../business/services/business";
-import configure from "../../../../../../public/assets/configure.json"
+import configure  from "../../../../../../public/assets/configure.json"
 
 @Component({
   selector: "app-trust-tab",
@@ -32,7 +32,7 @@ import configure from "../../../../../../public/assets/configure.json"
 })
 export class TrustTabComponent extends BaseStandardQuoteClass {
 
-  override formConfig: GenericFormConfig = {
+    override formConfig: GenericFormConfig = {
     cardType: "non-border",
     autoResponsive: true,
     api: "addAsset",
@@ -49,7 +49,7 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
           { label: "Trust Name", value: "trustName" },
           { label: "UDC Customer Number", value: "udcCustomerNo" },
         ],
-        toolTipPosition: 'top'
+         toolTipPosition:'top'
       },
       {
         type: "text",
@@ -70,7 +70,7 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
         //regexPattern: "[^a-zA-Z ]*",
         resetOnHidden: true,
         // validators : [Validators.required],
-        maxLength: 20,
+        maxLength: 40,
         cols: 5,
         hidden: false,
         className: "-mt-2",
@@ -82,7 +82,7 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
         label: "Search",
         name: "searchBtn",
         submitType: "submit",
-        cols: 2
+        cols:2
       },
       {
         type: "button",
@@ -90,7 +90,7 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
         name: "resetBtn",
         btnType: "border-btn",
         submitType: "internal",
-        cols: 2
+        cols:2
       },
     ],
   };
@@ -104,8 +104,8 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
     public toasterSvc: ToasterService,
     public validationSvc: ValidationService,
     public cdr: ChangeDetectorRef,
-    public individualSvc: IndividualService,
-    public businessSvc: BusinessService
+     public individualSvc : IndividualService,
+    public businessSvc : BusinessService
   ) {
     super(route, svc, baseSvc);
   }
@@ -129,22 +129,22 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
   }
 
   override async onValueTyped(event: any): Promise<void> {
-
-    if (event.data == "udcCustomerNo") {
+   
+      if (event.data == "udcCustomerNo") {
       this.mainForm.updateHidden({ udcCustomerNo: false, trustName: true });
     } else if (event.data == "trustName") {
       this.mainForm.updateHidden({ udcCustomerNo: true, trustName: false });
       this.mainForm.get("udcCustomerNo").reset();
     }
 
-    if (event.name == "trustName") {
+    if( event.name == "trustName") {
       this.baseFormData.udcTrustName = event.data;
     }
     else if (event.name == "udcCustomerNo") {
       this.baseFormData.udcTrustName = null;
     }
-
-    await this.updateValidation(event);
+    
+     await this.updateValidation(event);
   }
 
   callCustomerSearchAPI() {
@@ -170,73 +170,73 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
       trust: trustData,
     };
 
-    this.baseSvc.setBaseDealerFormData({
-      searchCustomerData: payload
-    }
-    )
+     this.baseSvc.setBaseDealerFormData({
+      searchCustomerData : payload
+      }
+      )
 
     this.dataSvc
       .post(`CustomerDetails/search_customer`, payload)
       .subscribe((res) => {
-
-        this.baseSvc.searchCustomerData = res?.data?.customers;
-        this.svc.router.navigateByUrl(
-          "/dealer/standard-quote/borrower-search-result/trust"
-        );
-        this.mainForm.form.reset();
-        this.ref.close();
-
+       
+          this.baseSvc.searchCustomerData = res?.data?.customers;
+          this.svc.router.navigateByUrl(
+            "/dealer/standard-quote/borrower-search-result/trust"
+          );
+          this.mainForm.form.reset();
+          this.ref.close();
+        
       });
   }
 
   override async onButtonClick(event: any): Promise<void> {
 
     if (event?.field?.name == "searchBtn") {
-      if (this.baseFormData?.purposeofLoan == configure?.LoanPurpose && this.individualSvc?.role !== 1 && this.businessSvc?.role !== 1) {
+      if(this.baseFormData?.purposeofLoan == configure?.LoanPurpose && this.individualSvc?.role !== 1 && this.businessSvc?.role !== 1){
         this.toasterSvc.showToaster({
           severity: "error",
           detail: "Please add an individual borrower before adding a Trust as a Guarantor."
         })
         return
       }
-      if (this.mainForm.form.valid) {
+    if (this.mainForm.form.valid ) {
         this.callCustomerSearchAPI();
-      }
-      else {
+      } 
+    else {
         this.toasterSvc.showToaster({
-          severity: "error",
-          detail: "A search criteria field must be completed",
+            severity: "error",
+            detail: "A search criteria field must be completed",
         });
       }
     }
-    if (event?.field?.name == "resetBtn") {
-
-      this.mainForm.form.reset();
-
-
-      this.mainForm.form.markAsUntouched();
-      this.mainForm.form.markAsPristine();
-
-
-      Object.keys(this.mainForm.form.controls).forEach(key => {
+ if (event?.field?.name == "resetBtn") {
+    
+    this.mainForm.form.reset();
+    
+    
+    this.mainForm.form.markAsUntouched();
+    this.mainForm.form.markAsPristine();
+    
+    
+    Object.keys(this.mainForm.form.controls).forEach(key => {
         const control = this.mainForm.form.get(key);
         control?.markAsUntouched();
         control?.markAsPristine();
         control?.setErrors(null);
-      });
-
-
-      this.mainForm.get("searchByTrust")?.patchValue("trustName", { emitEvent: false });
-      this.mainForm.updateHidden({ udcCustomerNo: true, trustName: false });
-    }
+    });
+    
+    
+    this.mainForm.get("searchByTrust")?.patchValue("trustName", { emitEvent: false });
+    this.mainForm.updateHidden({ udcCustomerNo: true, trustName: false });
+}
 
 
   }
 
-  override async onSuccess(data: any) { }
+  override async onSuccess(data: any) {}
   override ngOnDestroy(): void {
     this.mainForm.form.reset();
-
+    
   }
 
   pageCode: string = "SearchCustomerComponent";
@@ -247,24 +247,24 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
     super.onFormReady();
 
     if (this.baseFormData?.searchCustomerData?.trust != null) {
-      const trust = this.baseFormData?.searchCustomerData?.trust;
+        const trust = this.baseFormData?.searchCustomerData?.trust;
 
-
-      if (trust?.udcCustomerNo) {
-        this.mainForm.get("searchByTrust").patchValue("udcCustomerNo");
-        this.mainForm.get("udcCustomerNo").patchValue(trust.udcCustomerNo);
-        this.mainForm.updateHidden({
-          udcCustomerNo: false,
-          trustName: true
-        });
-      } else if (trust?.trustName) {
-        this.mainForm.get("searchByTrust").patchValue("trustName");
-        this.mainForm.get("trustName").patchValue(trust.trustName);
-        this.mainForm.updateHidden({
-          udcCustomerNo: true,
-          trustName: false
-        });
-      }
+        
+        if (trust?.udcCustomerNo) {
+            this.mainForm.get("searchByTrust").patchValue("udcCustomerNo");
+            this.mainForm.get("udcCustomerNo").patchValue(trust.udcCustomerNo);
+            this.mainForm.updateHidden({
+                udcCustomerNo: false,
+                trustName: true
+            });
+        } else if (trust?.trustName) {
+            this.mainForm.get("searchByTrust").patchValue("trustName");
+            this.mainForm.get("trustName").patchValue(trust.trustName);
+            this.mainForm.updateHidden({
+                udcCustomerNo: true,
+                trustName: false
+            });
+        }
     }
   }
 
@@ -277,10 +277,10 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
   }
 
   async updateValidation(event) {
-    if (event?.field?.name == "resetBtn") {
+     if (event?.field?.name == "resetBtn") {
       console.log('in')
-      return { status: true, updatedFields: [] };
-    }
+    return { status: true, updatedFields: [] };
+  }
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,

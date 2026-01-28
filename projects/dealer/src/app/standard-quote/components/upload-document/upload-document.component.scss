@@ -39,7 +39,7 @@
 }
 
 .scrollabel{
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .document-tile {
@@ -56,12 +56,37 @@
 }
 
 .fixed-height-card {
-  max-height: 18rem;
+  margin-top: 7px;
+  max-height: 189px;
   overflow-y: auto;
+  margin-left: -0.5rem;
+  //padding-right: 18px;
 }
+
+
+// .fixed-height-card {
+//   max-height: 18rem;
+//   overflow-y: auto;
+
+//   /* Firefox */
+//   scrollbar-width: none;
+
+//   /* IE & old Edge */
+//   -ms-overflow-style: none;
+// }
+
+// /* Chrome, Edge, Safari */
+// .fixed-height-card::-webkit-scrollbar {
+//   display: none;
+// }
+
 
 ::ng-deep {
   .table-scroll-wrapper {
+    /* make body scrollable */
+     .p-datatable-wrapper {
+        max-height: 250px;       
+    }
     gen-table {
       p-table {
 
@@ -70,20 +95,24 @@
           th:nth-child(1),
           td:nth-child(1) {
             max-width: 30px;
+            padding-right: 1rem !important;
           }
           th:nth-child(2),
           td:nth-child(2) {
             min-width: 300px;
             max-width: 400px;
+            padding-right: 1rem !important;
           }
           th:nth-child(3),
           td:nth-child(3) {
             max-width: 100px;
+            padding-right: 1rem !important;
           }
           th:nth-child(4),
           td:nth-child(4) {
-            min-width: 100px;
+            min-width: 110px;
             max-width: 120px;
+            padding-right: 1rem !important;
         }
         th:nth-child(5),
           td:nth-child(5) {
@@ -100,16 +129,24 @@
     font-weight: 900;
     padding: 0.2rem;
 }
-.table-scroll-wrapper {
-  max-height: 250px;       /* Maximum height for scrolling */
-  overflow-y: auto;        /* Only adds scrollbar if needed */
-}
+// .table-scroll-wrapper {
+//   max-height: 250px;       /* Maximum height for scrolling */
+//   overflow-y: auto;        /* Only adds scrollbar if needed */
+// }
 
 .disabled-upload {
   opacity: 0.5;
   pointer-events: none; /* disables click */
   cursor: not-allowed;
 }
+
+.doc-name {
+  display: block;
+  max-width: 210px;
+  word-break: break-all;
+  white-space: normal;
+}
+
 
 
 

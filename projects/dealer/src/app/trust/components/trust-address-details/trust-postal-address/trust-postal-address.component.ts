@@ -541,6 +541,16 @@ override async ngOnInit(): Promise<void> {
   
   // Trigger change detection to ensure UI updates
   this.cdr.detectChanges();
+   let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 }
 
 
@@ -763,6 +773,16 @@ override async onFormEvent(event: any): Promise<void> {
       this.mainForm.form.get('postalCountry')?.patchValue('New Zealand');
       this.mainForm.form.get('postalCountry')?.disable({ emitEvent: false });
     }
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     await this.updateValidation("onInit");
   }
 

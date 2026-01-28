@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { BaseStandardQuoteClass } from "../../../../base-standard-quote.class";
-import { CommonService } from "auro-ui";
+import { CommonService, GenericFormConfig } from "auro-ui";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../../../../services/standard-quote.service";
 import { ToasterService, ValidationService } from "auro-ui";
 import { cloneDeep } from "lodash";
 import { Subject, takeUntil } from "rxjs";
-import configure from "../../../../../../../../../public/assets/configure.json";
+import configure from "../../../../../../../public/assets/configure.json";
 
 @Component({
   selector: "app-service-plan",
@@ -17,9 +17,9 @@ import configure from "../../../../../../../../../public/assets/configure.json";
 export class ServicePlanComponent extends BaseStandardQuoteClass {
   servicePlanForm: FormGroup;
   sum: any = 0;
-  showMonthsHeader: boolean = true;
+showMonthsHeader :boolean= true;
 
-  showHeader: boolean = true;
+showHeader : boolean = true;
   override destroy$ = new Subject<void>();
   constructor(
     public override route: ActivatedRoute,
@@ -38,9 +38,10 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
           customflowID: [0],
           name: "Registrations",
           amount: [0, [Validators.pattern("^[0-9]{1,7}(\\.[0-9]{1,2})?$")]],
-          months: [],
+          months: [null, [Validators.max(999)]],
           reference: "Registration Fee",
-          changeAction: ""
+          changeAction: "",
+          rowNo: null
         }),
       ]),
       servicePlan: this.fb.array([
@@ -49,9 +50,10 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
           customflowID: [0],
           name: "Service Plan",
           amount: [0, [Validators.pattern("^[0-9]{1,7}(\\.[0-9]{1,2})?$")]],
-          months: [],
+          months: [null, [Validators.max(999)]],
           reference: "Service Plan",
-          changeAction: ""
+          changeAction: "",
+          rowNo: null
         }),
       ]),
       other: this.fb.array([]),
@@ -82,13 +84,14 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
     this.calculationTotal();
 
     this.servicePlanForm.valueChanges.subscribe((changes) => {
-      let sum1 = changes.servicePlan.reduce(
-        (accumulator: number, acc: { amount: number }) => {
-          return accumulator + acc.amount;
-        },
-        0
-      );
-
+      let sum1 = changes.servicePlan
+        .filter((item: any) => item.changeAction !== 'Delete')
+        .reduce(
+          (accumulator: number, acc: { amount: number }) => {
+            return accumulator + acc.amount;
+          },
+          0
+        );
       let sum2 = changes.registrations.reduce(
         (accumulator: number, acc: { amount: number }) => {
           return accumulator + acc.amount;
@@ -126,11 +129,11 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
 
   }
 
-  isDisabled() {
-    if (configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))) {
-      return true;
-    }
-    return false;
+  isDisabled(){
+    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+    return true;
+  }
+  return false;
   }
   override ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -205,9 +208,9 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
 
   onServicePlanChange(event: any, index: number) {
     const selectedValue = event.value;
-    if (selectedValue === 'Other Service Plan') {
+    if(selectedValue === 'Other Service Plan'){
       this.showMonthsHeader = false
-    } else {
+    }else{
       this.showMonthsHeader = true
 
     }
@@ -277,7 +280,8 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
         amount: Math.abs(data[servObj]?.amount),
         months: data[servObj]?.months,
         reference: "Service Plan",
-        changeAction: ""
+        changeAction: "",
+        rowNo: data[servObj]?.rowNo != null ? data[servObj]?.rowNo : null
       });
       data.splice(servObj, 1);
     }
@@ -287,7 +291,7 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
       }
       // console.log( this.servicePlan)
       this.servicePlan.controls[index + 1].patchValue({
-        id: ele?.id,
+        id:ele?.id,
         customflowID: ele?.customflowID,
         // name:  ele?.name?.toLowerCase() === "Other Service Plan" ? "Others" : ele?.name,
         name: ele?.name,
@@ -295,8 +299,8 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
         description: ele?.description,
         months: ele?.months,
         reference: "Other",
-        changeAction: ele?.changeAction,
-        planOtherCost: String(ele?.amount) || 0,
+        changeAction:ele?.changeAction,
+        planOtherCost: String(ele?.amount)|| 0,
         rowNo: ele?.rowNo != null ? ele.rowNo : -1
       });
 
@@ -321,13 +325,14 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
         this.registrations.push(this.createForm("Registration Fee"));
       }
       this.registrations.controls[index].patchValue({
-        id: ele?.id,
+        id:ele?.id,
         customflowID: ele?.customflowID,
         name: "Registrations",
         amount: Math.abs(ele?.amount),
         months: ele?.months,
         reference: "Registration Fee",
-        changeAction: ele?.changeAction
+        changeAction:ele?.changeAction,
+        rowNo: ele?.rowNo != null ? ele.rowNo : null
       });
     });
 
@@ -353,7 +358,7 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
       name: [reference === 'Other' ? 'Other Service Plan' : ''],
       code: [reference === 'Other' ? 'OSP' : ''],
       amount: [0, [Validators.pattern("^[0-9]{1,7}(\\.[0-9]{1,2})?$")]],
-      months: [],
+      months: [null, [Validators.max(999)]],
       description: [''],
       reference: reference,
       changeAction: '',
@@ -424,7 +429,7 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
     const otherId = baseOther?.id ?? 0;
 
     this.showHeader = true
-    this.servicePlan.push(this.createForm("Other", otherId));
+    this.servicePlan.push(this.createForm("Other",otherId));
     const hasOther = this.servicePlan.controls.some(
       acc => acc.get('name')?.value === 'Other Service Plan' && acc.get('changeAction')?.value !== 'Delete'
     );
@@ -468,9 +473,9 @@ export class ServicePlanComponent extends BaseStandardQuoteClass {
     const amount = amountControl.value;
 
     if (amount && amount > 0 && nameControl?.value !== 'Other Service Plan') {
-      monthsControl.setValidators([Validators.required]);
+      monthsControl.setValidators([Validators.required, Validators.max(999)]);
     } else {
-      monthsControl.clearValidators();
+      monthsControl.setValidators([Validators.max(999)]);
     }
 
     monthsControl.updateValueAndValidity({ emitEvent: false });

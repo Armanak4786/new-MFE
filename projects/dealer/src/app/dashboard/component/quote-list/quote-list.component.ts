@@ -52,7 +52,7 @@ export class QuoteListComponent {
     { name: "Quote", code: "internalSalesQuote" },
     { name: "Expired Quote", code: "expiredQuote" },
     { name: "AFV Loans", code: "internalSalesAFVLoan" },
-    { name: "Activated Loans", code: "activatedLoan" },
+    { name: "Active Loans", code: "activatedLoan" },
   ];
 
   selecListData = {
@@ -253,7 +253,7 @@ export class QuoteListComponent {
     //afv product arent allowed to assign salesperson
     if(internalSalesRowData){
       this.commonSvc.dialogSvc
-      .show(AssignSalespersonComponent, "Assignee", {
+      .show(AssignSalespersonComponent, "Assign", {
         templates: {
           footer: null,
         },

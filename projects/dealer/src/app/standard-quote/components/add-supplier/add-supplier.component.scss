@@ -1,0 +1,91 @@
+::ng-deep {
+  .supplierTable {
+    gen-table {
+      p-table {
+        tr {
+      
+          th:nth-child(1){
+           
+            padding-left: 60px !important;
+          }
+          td:nth-child(1) {
+           
+            padding-left: 5px !important;
+          }
+
+   
+          th:nth-child(2){
+            padding-left: 18px !important;
+          }
+          td:nth-child(2) {
+           
+            padding-left: 40px !important;
+            
+          }
+
+          th:nth-child(3){
+            padding-right: 60px !important;
+          }
+          td:nth-child(3) {
+            padding-left: 0px !important;
+
+          }
+
+        
+          th:nth-child(4){
+            padding-right: 74px !important;
+          }
+          td:nth-child(4) {
+           padding-left: 0px !important;
+           padding-right: 0px !important;
+          }
+
+      
+          th:nth-child(5){
+            padding-right: 25px !important;
+          }
+          td:nth-child(5) {
+             min-width: 30px;
+             padding-left: 5px !important;
+          }
+
+       
+          th:nth-child(6),
+          td:nth-child(6){
+            width: 35px;
+            padding-left: 10px !important;
+          }
+          th:nth-child(7),
+          td:nth-child(7) {
+            max-width: 40px;
+          }
+        }
+      }
+    }
+  }
+
+   .status-verified {
+  color: green;
+  }
+
+  .status-start-verification {
+    color: grey;
+  }
+
+  .status-other {
+    color: gold;
+  }
+
+  .bankflow-status-verification-complete {
+    color: green;
+  }
+
+  .bankflow-status-start-verification {
+    color: grey;
+  }
+
+  .bankflow-status-other {
+    color: gold;
+  }
+
+}

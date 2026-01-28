@@ -100,6 +100,16 @@ export class SoleTradeDriverLicenceDetailComponent extends BaseSoleTradeClass {
 
 override async ngOnInit(): Promise<void> {
   await super.ngOnInit();
+  let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
   if (this.baseSvc.showValidationMessage) {
     this.mainForm.form.markAllAsTouched();
@@ -125,14 +135,23 @@ override async ngOnInit(): Promise<void> {
   }
 
     await this.updatedropdowndata();
-    this.indSvc.updateDropdownData().subscribe((result) => {
-      if (result?.country) {
-        // Cache full country list for later filtering
-        this.countryOptions = result.country;
-        this.mainForm.updateList("countryOfIssue", result?.country);
-        this.mainForm?.form?.get("countryOfIssue")?.setValue("New Zealand");
-      }
-    });
+await this.baseSvc.getFormData(
+  `LookUpServices/locations?LocationType=country`,
+  (res) => {
+    const list = res.data || [];
+    const index = list.findIndex(c => c.name === "New Zealand");
+    if (index > -1) {
+      list.unshift(list.splice(index, 1)[0]);
+    }
+    this.countryOptions = list.map(c => ({
+      label: c.name,
+      value: c.name,
+    }));
+    this.mainForm.updateList("countryOfIssue", this.countryOptions);
+    this.mainForm.form.get("countryOfIssue")?.patchValue("New Zealand", { emitEvent: false });
+    return this.countryOptions;
+  }
+);
     await this.handleAllDynamicValidatorsAndValidation("onInit");
   }
 
@@ -366,7 +385,7 @@ override async ngOnInit(): Promise<void> {
       });
       this.mainForm.updateProps("licenceNumber", {
         errorMessage:
-          "Licence No. should start with 2 letters followed by 6 digits",
+          "Licence Number should start with 2 letters followed by 6 digits",
       });
     }
         // --- LICENCE NUMBER VALIDATION BASED ON COUNTRY ---

@@ -1,3 +1,6 @@
 .assetTypelabel {
   color: var(--label-color);
 }
+.disabled {
+  pointer-events: none;
+}

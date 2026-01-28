@@ -5,7 +5,7 @@
   [cardType]="'non-border'"
 >
   <ng-container body>
-    <form [formGroup]="citizenshipForm">
+    <form [formGroup]="citizenshipForm" [class.disabled]="isDisabled()">
       <ng-container formArrayName="citizenships">
         <div *ngFor="let citizenships of citizenships.controls; let i = index">
           <div [formGroupName]="i" class="mt-2">

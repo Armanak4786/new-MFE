@@ -7,7 +7,7 @@ import { BaseAssetClass } from "../../base-asset.class";
 import { AddAssetService } from "../../services/addAsset.service";
 import { ToasterService } from "auro-ui";
 import { StandardQuoteService } from "../../../standard-quote/services/standard-quote.service";
-import { distinctUntilChanged, skip, takeUntil } from "rxjs";
+import { catchError, distinctUntilChanged, map, of, retry, skip, takeUntil } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AssetTradeSummaryService } from "../../../standard-quote/components/asset-insurance-summary/asset-trade.service";
 import configure from "../../../../../public/assets/configure.json";
@@ -18,6 +18,7 @@ import configure from "../../../../../public/assets/configure.json";
   styleUrl: "./asset-details.component.scss",
 })
 export class AssetDetailsComponent extends BaseAssetClass {
+  standardQuoteBaseFormData: any
   addType: any = "";
   countryListData = [];
   lastSelectedAsset: number = 0;
@@ -29,318 +30,329 @@ export class AssetDetailsComponent extends BaseAssetClass {
   countryFirstRegistered: any;
   override title: string = "Quote Originator";
   @ViewChild('assetListbox') assetListbox: any;
-  override formConfig: GenericFormConfig = {
+
+  // Do not remove below commented code - kept for reference
+  // override formConfig: GenericFormConfig = {
+  //   headerTitle: this.addType == "addAsset" ? "Add Asset" : "Add Trade",
+  //   autoResponsive: true,
+  //   api: "",
+  //   goBackRoute: "",
+  //   fields: [
+  //     {
+  //       type: "text-select",
+  //       // placeholder: "Asset Type",
+  //       name: "assetName",
+  //       label: "Asset Type",
+  //       cols: 4,
+  //       className: "mb-2 pr-8 assetType ",
+  //       labelClass: "w-8",
+  //       inputClass: "w-7",
+  //       disabled: false
+  //       // //validators: [Validators.required], // validation Comment
+  //     },
+  //     {
+  //       type: "amount",
+  //       label: "Asset Value",
+  //       name: "costOfAsset",
+  //       cols: 2,
+  //       maxLength: 13,
+  //       placeholder: "Enter asset value",
+  //       // //validators: [Validators.required, Validators.max(9999999)],  // validation Comment
+  //       className: "my-0",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //       labelClass:"b7"
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Condition",
+  //       name: "conditionOfGood",
+  //       cols: 2,
+  //       // list$:
+  //       //   "LookUpServices/custom_lookups?PageNo=1&PageSize=100&LookupSetName=AssetDealType",
+  //       options: [],
+  //       // //validators: [Validators.required], // validation Comment
+  //       nextLine: true,
+  //       className: "px-0 py-1 customLabel",
+  //       alignmentType: "vertical",
+  //       labelClass: "w-8 -my-3 pt-1",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Year",
+  //       name: "year",
+  //       cols: 2,
+  //       inputType: "vertical",
+  //       // //validators: [Validators.required],  // validation Comment
+  //       className: "my-2 pl-3",
+  //       inputClass: "w-8",
+  //       // maxLength:4
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Make",
+  //       name: "make",
+  //       //regexPattern: "[^a-zA-Z0-9 ]*",
+  //       // maxLength: 20,
+  //       inputType: "vertical",
+  //       cols: 2,
+  //       // //validators: [Validators.required],  // validation Comment
+  //       className: "my-2",
+  //       inputClass: "w-8",
+  //       // labelClass:'w-full'
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Model",
+  //       name: "model",
+  //       //regexPattern: "[^a-zA-Z0-9 ]*",
+  //       // maxLength: 20,
+  //       cols: 2,
+  //       className: "my-2",
+  //       // //validators: [Validators.required],  // validation Comment
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Variant",
+  //       //regexPattern: "[^a-zA-Z0-9 ]*",
+  //       // maxLength: 20,
+  //       name: "variant",
+  //       cols: 2,
+  //       // //validators: [Validators.required],  // validation Comment
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Rego No.",
+  //       name: "regoNumber",
+  //       cols: 2,
+  //       //regexPattern: "[^a-zA-Z0-9]*",
+  //       // maxLength: 10,
+  //       // //validators: [Validators.required],  // validation Comment
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "VIN",
+  //       name: "vin",
+  //       //regexPattern: "[^a-zA-Z0-9]*",
+  //       // maxLength: 17,
+  //       cols: 2,
+  //       // //validators: [Validators.required, Validators.minLength(5)],  // validation Comment
+  //       // errorMessage: 'Common ErrorMessage',
+  //       errorMessageMap: {
+  //         minlength: "hello",
+  //         required: "Byree",
+  //       },
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //       // nextLine:true
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "HIN",
+  //       name: "hin",
+  //       cols: 2,
+  //       errorMessageMap: {
+  //         minlength: "hello",
+  //         required: "Byree",
+  //       },
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //       hidden: true,
+  //       nextLine: true,
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Odometer",
+  //       name: "odometer",
+  //       // maxLength: 7,
+  //       //placeholder: "KM",
+  //       // suffix: "KM",
+  //       // errorMessage: "Maximun 4 digits allowed",
+  //       cols: 2,
+  //       className: "my-2 pl-3 odo-wrapper",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Colour",
+  //       name: "colour",
+  //       //regexPattern: "[^a-zA-Z ]*",
+  //       //  maxLength: 30,
+  //       // //validators: [Validators.maxLength(10)],  // validation Comment
+  //       cols: 2,
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Serial / Chassis No.",
+  //       name: "serialChassisNumber",
+  //       //regexPattern: "[^a-zA-Z0-9]*",
+  //       //maxLength: 10,
+  //       cols: 2,
+  //       // //validators: [Validators.required],  // validation Comment
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Engine No",
+  //       name: "engineNumber",
+  //       cols: 2,
+  //       // //regexPattern: "[^a-zA-Z0-9]*",
+  //       maxLength: 30,
+  //       // //validators: [Validators.required], // validation Comment
+  //       className: "my-2",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "CC Rating",
+  //       name: "ccRating",
+  //       // //validators: [Validators.min(0)], // validation Comment
+  //       //  maxLength: 8,
+  //       cols: 2,
+  //       // maxFractionDigits: 2,
+  //       placeholder: "CC",
+  //       className: "my-2 cc-wrapper",
+  //       inputType: "vertical",
+  //       inputClass: "w-8 ",
+  //       //  suffix: "CC"
+  //     },
+
+  //     {
+  //       type: "text",
+  //       name: "assetPath",
+  //       hidden: true,
+  //     },
+  //     {
+  //       type: "text",
+  //       name: "assetTypeId",
+  //       hidden: true,
+  //     },
+  //     {
+  //       type: "text",
+  //       name: "assetCategory",
+  //       hidden: true,
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Motive Power",
+  //       name: "motivePower",
+  //       options: [],
+  //       // list$:
+  //       //   "LookUpServices/custom_lookups?PageNo=1&PageSize=100&LookupSetName=VehicleFuelType",
+
+  //       cols: 2,
+  //       className: "px-0 customLabel",
+  //       alignmentType: "vertical",
+  //       // inputClass:"w-8",
+  //       labelClass: "w-8 -my-2",
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Country First Registered",
+  //       name: "countryFirstRegistered",
+  //       options: [],
+  //       //validators: [Validators.required], // validation Comment
+  //       filter: true,
+  //       cols: 2,
+  //       // className: "my-2",
+  //       hidden: this.addType == "addTrade",
+  //       default: "New Zealand",
+  //       alignmentType: "vertical",
+  //       labelClass: "w-8 -my-2",
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Asset Location of Use",
+  //       name: "assetLocationOfUse",
+  //       list$: "LookUpServices/CustomData",
+  //       // list$:'',
+  //       apiRequest: {
+  //         parameterValues: ["Asset location of use"],
+  //         procedureName: configure.SPAssetHdrCfdLuExtract, // Assuming configure is imported from the correct path,
+  //       },
+  //       idKey: "value_text",
+  //       idName: "value_text",
+  //       cols: 2,
+  //       className: "px-0 customLabel",
+  //       alignmentType: "vertical",
+  //       labelClass: "w-8 -my-2",
+  //       errorMessage: "This field cannot be blank",
+  //     },
+  //     {
+  //       type: "name",
+  //       label: "Supplier Name",
+  //       name: "supplierName",
+  //       // //regexPattern: "[^a-zA-Z ]*",
+  //       maxLength: 15,
+  //       cols: 2,
+  //       className: "mb-2 sname",
+  //       inputType: "vertical",
+  //       inputClass: "w-8",
+  //     },
+  //     {
+  //       type: "toggle",
+  //       label: "Will the asset be leased  ",
+  //       name: "assetLeased",
+  //       cols: 3,
+  //       className: "mt-4",
+  //       offLabel: "Yes",
+  //       onLabel: "No",
+  //       nextLine: true,
+  //     },
+  //     {
+  //       type: "textArea",
+  //       label: "Features",
+  //       name: "features",
+  //       inputType: "vertical",
+  //       // inputClass:"w-11",
+  //       // textAreaRows: 4,
+  //       className: "pl-3 pr-7",
+  //       textAreaType: "border",
+  //       hidden: this.addType == "addTrade",
+
+  //       // cols: 6,
+  //     },
+  //     {
+  //       type: "textArea",
+  //       label: "Description",
+  //       name: "description",
+  //       inputType: "vertical",
+  //       // inputClass:"w-11",
+  //       className: "pl-3 pr-8",
+  //       textAreaType: "border",
+  //       hidden: this.addType == "addTrade",
+
+  //       // textAreaRows: 4,
+  //       // cols: 6,
+  //     },
+  //   ],
+  // };
+
+  override formConfig: any = {
     headerTitle: this.addType == "addAsset" ? "Add Asset" : "Add Trade",
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    fields: [
-      {
-        type: "text-select",
-        // placeholder: "Asset Type",
-        name: "assetName",
-        label: "Asset Type",
-        cols: 4,
-        className: "mb-2 pr-8 assetType ",
-        labelClass: "w-8",
-        inputClass: "w-7",
-        disabled: false
-        // //validators: [Validators.required], // validation Comment
-      },
-      {
-        type: "amount",
-        label: "Asset Value",
-        name: "costOfAsset",
-        cols: 2,
-        maxLength: 13,
-        placeholder: "Enter asset value",
-        // //validators: [Validators.required, Validators.max(9999999)],  // validation Comment
-        className: "my-0",
-        inputType: "vertical",
-        inputClass: "w-8",
-        labelClass: "b7"
-      },
-      {
-        type: "select",
-        label: "Condition",
-        name: "conditionOfGood",
-        cols: 2,
-        // list$:
-        //   "LookUpServices/custom_lookups?PageNo=1&PageSize=100&LookupSetName=AssetDealType",
-        options: [],
-        // //validators: [Validators.required], // validation Comment
-        nextLine: true,
-        className: "px-0 py-1 customLabel",
-        alignmentType: "vertical",
-        labelClass: "w-8 -my-3 pt-1",
-      },
-      {
-        type: "text",
-        label: "Year",
-        name: "year",
-        cols: 2,
-        inputType: "vertical",
-        // //validators: [Validators.required],  // validation Comment
-        className: "my-2 pl-3",
-        inputClass: "w-8",
-        // maxLength:4
-      },
-      {
-        type: "text",
-        label: "Make",
-        name: "make",
-        //regexPattern: "[^a-zA-Z0-9 ]*",
-        // maxLength: 20,
-        inputType: "vertical",
-        cols: 2,
-        // //validators: [Validators.required],  // validation Comment
-        className: "my-2",
-        inputClass: "w-8",
-        // labelClass:'w-full'
-      },
-      {
-        type: "text",
-        label: "Model",
-        name: "model",
-        //regexPattern: "[^a-zA-Z0-9 ]*",
-        // maxLength: 20,
-        cols: 2,
-        className: "my-2",
-        // //validators: [Validators.required],  // validation Comment
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "Variant",
-        //regexPattern: "[^a-zA-Z0-9 ]*",
-        // maxLength: 20,
-        name: "variant",
-        cols: 2,
-        // //validators: [Validators.required],  // validation Comment
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "Rego No.",
-        name: "regoNumber",
-        cols: 2,
-        //regexPattern: "[^a-zA-Z0-9]*",
-        // maxLength: 10,
-        // //validators: [Validators.required],  // validation Comment
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "VIN",
-        name: "vin",
-        //regexPattern: "[^a-zA-Z0-9]*",
-        // maxLength: 17,
-        cols: 2,
-        // //validators: [Validators.required, Validators.minLength(5)],  // validation Comment
-        // errorMessage: 'Common ErrorMessage',
-        errorMessageMap: {
-          minlength: "hello",
-          required: "Byree",
-        },
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-        // nextLine:true
-      },
-      {
-        type: "text",
-        label: "HIN",
-        name: "hin",
-        cols: 2,
-        errorMessageMap: {
-          minlength: "hello",
-          required: "Byree",
-        },
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-        hidden: true,
-        nextLine: true,
-      },
-      {
-        type: "text",
-        label: "Odometer",
-        name: "odometer",
-        // maxLength: 7,
-        //placeholder: "KM",
-        // suffix: "KM",
-        // errorMessage: "Maximun 4 digits allowed",
-        cols: 2,
-        className: "my-2 pl-3 odo-wrapper",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "Colour",
-        name: "colour",
-        //regexPattern: "[^a-zA-Z ]*",
-        //  maxLength: 30,
-        // //validators: [Validators.maxLength(10)],  // validation Comment
-        cols: 2,
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "Serial / Chassis No.",
-        name: "serialChassisNumber",
-        //regexPattern: "[^a-zA-Z0-9]*",
-        //maxLength: 10,
-        cols: 2,
-        // //validators: [Validators.required],  // validation Comment
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "Engine No",
-        name: "engineNumber",
-        cols: 2,
-        // //regexPattern: "[^a-zA-Z0-9]*",
-        maxLength: 30,
-        // //validators: [Validators.required], // validation Comment
-        className: "my-2",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "text",
-        label: "CC Rating",
-        name: "ccRating",
-        // //validators: [Validators.min(0)], // validation Comment
-        //  maxLength: 8,
-        cols: 2,
-        // maxFractionDigits: 2,
-        placeholder: "CC",
-        className: "my-2 cc-wrapper",
-        inputType: "vertical",
-        inputClass: "w-8 ",
-        //  suffix: "CC"
-      },
-
-      {
-        type: "text",
-        name: "assetPath",
-        hidden: true,
-      },
-      {
-        type: "text",
-        name: "assetTypeId",
-        hidden: true,
-      },
-      {
-        type: "text",
-        name: "assetCategory",
-        hidden: true,
-      },
-      {
-        type: "select",
-        label: "Motive Power",
-        name: "motivePower",
-        options: [],
-        // list$:
-        //   "LookUpServices/custom_lookups?PageNo=1&PageSize=100&LookupSetName=VehicleFuelType",
-
-        cols: 2,
-        className: "px-0 customLabel",
-        alignmentType: "vertical",
-        // inputClass:"w-8",
-        labelClass: "w-8 -my-2",
-      },
-      {
-        type: "select",
-        label: "Country First Registered",
-        name: "countryFirstRegistered",
-        options: [],
-        //validators: [Validators.required], // validation Comment
-        filter: true,
-        cols: 2,
-        // className: "my-2",
-        hidden: this.addType == "addTrade",
-        default: "New Zealand",
-        alignmentType: "vertical",
-        labelClass: "w-8 -my-2",
-      },
-      {
-        type: "select",
-        label: "Asset Location of Use",
-        name: "assetLocationOfUse",
-        list$: "LookUpServices/CustomData",
-        // list$:'',
-        apiRequest: {
-          parameterValues: ["Asset location of use"],
-          procedureName: configure.SPAssetHdrCfdLuExtract, // Assuming configure is imported from the correct path,
-        },
-        idKey: "value_text",
-        idName: "value_text",
-        cols: 2,
-        className: "px-0 customLabel",
-        alignmentType: "vertical",
-        labelClass: "w-8 -my-2",
-        errorMessage: "This field cannot be blank",
-      },
-      {
-        type: "name",
-        label: "Supplier Name",
-        name: "supplierName",
-        // //regexPattern: "[^a-zA-Z ]*",
-        maxLength: 15,
-        cols: 2,
-        className: "mb-2 sname",
-        inputType: "vertical",
-        inputClass: "w-8",
-      },
-      {
-        type: "toggle",
-        label: "Will the asset be leased  ",
-        name: "assetLeased",
-        cols: 3,
-        className: "mt-4",
-        offLabel: "Yes",
-        onLabel: "No",
-        nextLine: true,
-      },
-      {
-        type: "textArea",
-        label: "Features",
-        name: "features",
-        inputType: "vertical",
-        // inputClass:"w-11",
-        // textAreaRows: 4,
-        className: "pl-3 pr-7",
-        textAreaType: "border",
-        hidden: this.addType == "addTrade",
-
-        // cols: 6,
-      },
-      {
-        type: "textArea",
-        label: "Description",
-        name: "description",
-        inputType: "vertical",
-        // inputClass:"w-11",
-        className: "pl-3 pr-8",
-        textAreaType: "border",
-        hidden: this.addType == "addTrade",
-
-        // textAreaRows: 4,
-        // cols: 6,
-      },
-    ],
+    fields: [],
   };
+
   selectedAsset: any;
   programId: any;
   AFworkflowStatus: any;
@@ -358,6 +370,14 @@ export class AssetDetailsComponent extends BaseAssetClass {
     public tradeSvc: AssetTradeSummaryService,
   ) {
     super(route, svc, baseSvc);
+
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName,this.pageCode);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    console.log('Asset Details Field : ', filteredValidations);
+
+
     this.baseSvc.formDataCacheableRoute([
       "LookUpServices/locations?LocationType=country",
       "LookUpServices/custom_lookups?PageNo=1&PageSize=100&LookupSetName=VehicleFuelType",
@@ -375,7 +395,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
     // await this.callApi();
     this.assetTypeData = this.standardQuoteSvc.assetTypeData;
     await this.loadAssetTypeData();
-    let params: any = this.route.snapshot.params;
+   let params: any = this.route.snapshot.params;
 
     this.addType = params?.type;
     this.mode = params?.mode || "create";
@@ -383,6 +403,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
       .getBaseDealerFormData()
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
+        this.standardQuoteBaseFormData = res
         this.AFworkflowStatus = res?.AFworkflowStatus,
           //  this.baseFormData = res;
           this.addAssetData = res?.addAssetData;
@@ -391,30 +412,33 @@ export class AssetDetailsComponent extends BaseAssetClass {
         this.programId = res?.programId;
       });
 
-    this.tradeSvc.assetSearchSubject
-      .pipe(
-        takeUntil(this.destroy$),
-        skip(1),
-        distinctUntilChanged((prev, curr) =>
-          JSON.stringify(prev) === JSON.stringify(curr)
-        )
+        this.tradeSvc.assetSearchSubject
+    .pipe(
+      takeUntil(this.destroy$),
+      skip(1), 
+      distinctUntilChanged((prev, curr) => 
+        JSON.stringify(prev) === JSON.stringify(curr)
       )
-      .subscribe((data) => {
-        if (data && Object.keys(data).length > 0 && data.vin) {
-          const assetType = data.assetType || this.baseFormData?.assetType;
-          this.baseSvc.setBaseDealerFormData({
-            ...data,
-            assetType: assetType,
-          });
-          this.mainForm.form.patchValue({
-            ...data,
-            assetTypeId: assetType?.assetTypeId,
-            assetName: assetType?.assetTypeName,
-            assetPath: assetType?.assetTypePath,
-            costOfAsset: data.costOfAsset || this.baseFormData?.costOfAsset,
-          });
-        }
-      });
+    )
+    .subscribe((data) => {
+      if (data && Object.keys(data).length > 0 && data.vin) {
+        const assetType = data.assetType || this.baseFormData?.assetType;
+        this.baseSvc.setBaseDealerFormData({
+          ...data,
+          assetType: assetType,
+        });
+        this.mainForm.form.patchValue({
+          ...data,
+          assetTypeId: assetType?.assetTypeId,
+          assetName: assetType?.assetTypeName,
+          assetPath: assetType?.assetTypePath,
+          costOfAsset: data.costOfAsset || this.baseFormData?.costOfAsset,
+        });
+      }
+    });
+
+    this.dynamicValidationBasedonAssetType(this.assetTypeData, this.baseFormData?.assetType?.assetTypeId || this.assetTypeId);
+
     if (this.addType == "addTrade") {
 
 
@@ -448,8 +472,22 @@ export class AssetDetailsComponent extends BaseAssetClass {
         idKey: "lookupValue",
         idName: "lookupValue",
       });
-      this.mainForm.form.get("assetCategory").patchValue("Other");
-    } else {
+      this.mainForm.form?.get("assetCategory")?.patchValue("Other");
+    }
+    else {
+
+      this.mainForm?.updateHidden({
+        // countryFirstRegistered: false,
+        // assetLocationOfUse: false,
+        // supplierName: false,
+        // assetLeased: false,
+        description: false,
+        features: false,
+        conditionOfGood: false,
+        assetName: false,
+        //assetCategory : false,
+        // hin: false,
+      });
       // this.mainForm.get()
       //this.mainForm.get("odometer").removeValidators;
       // this.mainForm.updateValidators('odometer', [
@@ -460,9 +498,9 @@ export class AssetDetailsComponent extends BaseAssetClass {
       if (this.mode != "edit") {
         this.mainForm.get("conditionOfGood").reset();
       } else {
-        this.mainForm.get("assetTypeId").patchValue(assetType?.assetTypeId);
-        this.mainForm.get("assetName").patchValue(assetType?.assetTypeName);
-        this.mainForm.get("assetPath").patchValue(assetType?.assetTypePath);
+        this.mainForm?.get("assetTypeId")?.patchValue(assetType?.assetTypeId);
+        this.mainForm?.get("assetName")?.patchValue(assetType?.assetTypeName);
+        this.mainForm?.get("assetPath")?.patchValue(assetType?.assetTypePath);
         this.countryFirstRegistered =
           this.baseFormData.countryFirstRegistered ?? "New Zealand";
       }
@@ -475,12 +513,18 @@ export class AssetDetailsComponent extends BaseAssetClass {
         this.updateFields(assetFilterData);
       }
 
-      this.mainForm.updateHidden({
+      this.mainForm?.updateHidden({
         countryFirstRegistered: false,
         assetLocationOfUse: false,
         supplierName: false,
         assetLeased: false,
       });
+
+      if (this.standardQuoteBaseFormData?.purposeofLoan == configure.LoanPurposeBusiness) {
+        this.mainForm?.updateHidden({
+          assetLeased: true,
+        })
+      }
     }
     this.formConfig.headerTitle =
       this.addType == "addAsset" ? "Add Asset" : "Add Trade";
@@ -500,26 +544,62 @@ export class AssetDetailsComponent extends BaseAssetClass {
 
   }
 
-  ngAfterViewInit() {
-    this.mainForm?.textSelectOP?.onHide.subscribe(() => {
-      this.clearSerach();
-    });
+ dynamicValidationBasedonAssetType(assetTypeData : any, assetTypeId: any){
+    //  const assetTypeData = this.standardQuoteSvc.assetTypeData;
+          const assetCategory = assetTypeData.find(
+            (data) => data.assetTypeId === assetTypeId
+          )?.assetCategory;
+          sessionStorage.setItem("assetType", assetCategory || "");
   }
 
-  clearSerach() {
-    setTimeout(() => {
-      if (this.assetListbox) {
-        this.assetListbox.filterValue = '';
-        this.assetListbox._filter(); // reset the filtered list
+  ngAfterViewInit() {
+  this.mainForm?.textSelectOP?.onHide.subscribe(() => {
+    this.clearSerach();
+  });
+}
 
-        // Clear the actual input DOM value (visual)
-        const inputEl = this.assetListbox.el.nativeElement.querySelector('.p-listbox-filter');
-        if (inputEl) inputEl.value = '';
-      }
-    }, 100);
+  clearSerach(){
+      setTimeout(() => {
+    if (this.assetListbox) {
+      this.assetListbox.filterValue = '';
+      this.assetListbox._filter(); // reset the filtered list
+
+      // Clear the actual input DOM value (visual)
+      const inputEl = this.assetListbox.el.nativeElement.querySelector('.p-listbox-filter');
+      if (inputEl) inputEl.value = '';
+    }
+  }, 100);
   }
 
   async updateAssetData() {
+
+    //   this.mainForm?.updateProps("assetLocationOfUse", {
+    //    list$: "LookUpServices/CustomData",
+    //     apiRequest: {
+    //       parameterValues: ["Asset location of use"],
+    //       procedureName: configure.SPAssetHdrCfdLuExtract, // Assuming configure is imported from the correct path,
+    //     },
+    //     idName: "value_text"
+    // })
+
+    await this.svc.data
+      .post("LookUpServices/CustomData", {
+        parameterValues: ["Asset location of use"],
+        procedureName: configure?.SPAssetHdrCfdLuExtract,
+      })
+      .subscribe((res) => {
+        if (res) {
+          const assetLocationOfUse = res?.data?.table.map((item: any) => ({
+            label: item.value_text,
+            value: item.value_text,
+          }));
+
+          this.mainForm.updateList("assetLocationOfUse", assetLocationOfUse);
+          return assetLocationOfUse;
+        }
+      });
+
+
     await this.baseSvc.getFormData(
       `LookUpServices/locations?LocationType=country`,
       (res) => {
@@ -530,7 +610,27 @@ export class AssetDetailsComponent extends BaseAssetClass {
           value: item.name,
         }));
 
-        this.mainForm.updateList(
+        this.mainForm?.updateList(
+          "countryFirstRegistered",
+          countryFirstRegisteredList
+        );
+
+        return countryFirstRegisteredList;
+      }
+    );
+
+
+    await this.baseSvc.getFormData(
+      `LookUpServices/locations?LocationType=country`,
+      (res) => {
+        let list = res.data;
+
+        const countryFirstRegisteredList = list.map((item) => ({
+          label: item.name,
+          value: item.name,
+        }));
+
+        this.mainForm?.updateList(
           "countryFirstRegistered",
           countryFirstRegisteredList
         );
@@ -549,7 +649,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
           value: item.lookupValue,
         }));
 
-        this.mainForm.updateList("motivePower", motivePowerList);
+        this.mainForm?.updateList("motivePower", motivePowerList);
 
         return motivePowerList;
       }
@@ -565,7 +665,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
           value: item.lookupValue,
         }));
 
-        this.mainForm.updateList("conditionOfGood", conditionOfGoodList);
+        this.mainForm?.updateList("conditionOfGood", conditionOfGoodList);
 
         return conditionOfGoodList;
       }
@@ -699,7 +799,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
   }
 
   async updateFields(data) {
-    this.mainForm.updateHidden({
+    this.mainForm?.updateHidden({
       regoNumber: false,
       vin: false,
       odometer: false,
@@ -713,26 +813,26 @@ export class AssetDetailsComponent extends BaseAssetClass {
     // this.mainForm.updateProps("vin", { label: vinLabel });
     this.assetSelectData = data;
     if (data === "Vehicle") {
-      this.mainForm.updateHidden({
+      this.mainForm?.updateHidden({
         features: true,
         hin: true,
       });
     } else if (data === "Plant") {
-      this.mainForm.updateHidden({
+      this.mainForm?.updateHidden({
         regoNumber: true,
         vin: true,
         features: true,
         hin: true,
       });
     } else if (data === "Marine") {
-      this.mainForm.updateHidden({
+      this.mainForm?.updateHidden({
         regoNumber: true,
         features: true,
         vin: true,
         hin: false,
       });
     } else if (data === "EV/Clean Tech") {
-      this.mainForm.updateHidden({
+      this.mainForm?.updateHidden({
         regoNumber: true,
         odometer: true,
         colour: true,
@@ -744,7 +844,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
         vin: true,
       });
     } else {
-      this.mainForm.updateHidden({
+      this.mainForm?.updateHidden({
         regoNumber: false,
         vin: false,
         odometer: false,
@@ -756,12 +856,16 @@ export class AssetDetailsComponent extends BaseAssetClass {
         hin: true,
       });
     }
-    this.mainForm.form.get("assetCategory").patchValue(data);
+    this.mainForm?.form?.get("assetCategory").patchValue(data);
     await this.updateValidation("onInit");
   }
 
   override async onFormEvent(event: any): Promise<void> {
     super.onFormEvent(event);
+
+    if(event?.name == "assetName"){
+      this.dynamicValidationBasedonAssetType(this.assetTypeData, this.baseFormData?.assetType?.assetTypeId || this.assetTypeId);
+    }
     // if (event.name == "conditionOfGood" && event.value == "Used") {
     //   this.mainForm.form.controls["odometer"].setValidators(
     //     Validators.required
@@ -849,7 +953,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
   modelName: string = "AssetDetailsComponent";
 
   override async onFormReady(): Promise<void> {
-    if ((configure?.workflowStatus?.view?.includes(this.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.AFworkflowStatus))) {
+    if( (configure?.workflowStatus?.view?.includes(this.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.AFworkflowStatus))){
 
       this.mainForm?.updateProps("assetName", { disabled: true });
     }
@@ -879,7 +983,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
       this.mainForm
         .get("countryFirstRegistered")
         .patchValue(this.countryFirstRegistered);
-      console.log("bbb", this.baseFormData)
+
       if (this.baseFormData?.costOfAsset) {
         this.mainForm.get("costOfAsset").patchValue(this.baseFormData.costOfAsset, {
           emitEvent: false
@@ -897,9 +1001,9 @@ export class AssetDetailsComponent extends BaseAssetClass {
 
   override async onBlurEvent(event): Promise<void> {
 
-    if (event.name == "costOfAsset" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation") {
+    if(event.name == "costOfAsset" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation"){
       let currentcostOfAsset = this.mainForm.get("costOfAsset").value;
-      if (currentcostOfAsset > this.baseFormData?.costOfAsset) {
+      if(currentcostOfAsset > this.baseFormData?.costOfAsset){        
         this.toasterSvc.showToaster({
           severity: "error",
           detail: "Dealer Origination Fee cannot be increased in Ready for Documentation state.",
@@ -937,9 +1041,9 @@ export class AssetDetailsComponent extends BaseAssetClass {
         }
       }
     }
-    if (event.name != "vin") {
-      await this.updateValidation(event);
-    }
+    // if (event.name != "vin") {
+    await this.updateValidation(event);
+    // }
   }
 
   override async onValueEvent(event): Promise<void> {

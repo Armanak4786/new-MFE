@@ -73,7 +73,7 @@ export class NotesComponent extends BaseStandardQuoteClass {
       `Note/get_all_notes?ContractId=${this.baseData.contractId}`,
       (res) => {
         if (res) {
-          this.notes = res.items.filter(note =>
+          this.notes = res.items.filter(note => 
             note.securityClassification === "General"
           );
         }
@@ -88,11 +88,11 @@ export class NotesComponent extends BaseStandardQuoteClass {
   }
 
   isNotesDisabled() {
-    if (configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) {
-      return true;
-    }
-    return false;
+  if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
+    return true;
   }
+  return false;
+}
 
   filteredContent: any;
   searchNotes?: string;
@@ -119,32 +119,32 @@ export class NotesComponent extends BaseStandardQuoteClass {
   // }
 
   // Add this method
-  ngAfterViewChecked() {
-    this.setHeight();
-  }
+ngAfterViewChecked() {
+  this.setHeight();
+}
 
-  // Update setHeight to use setTimeout
-  setHeight() {
-    setTimeout(() => {
-      if (this.notesCard && this.notesCard.length > 0) {
-        let maxHeight = 0;
-        this.notesCard.forEach((divElement) => {
-          const divHeight = divElement.nativeElement.offsetHeight;
-          if (maxHeight < divHeight) {
-            maxHeight = divHeight;
-          }
-        });
+// Update setHeight to use setTimeout
+setHeight() {
+  setTimeout(() => {
+    if (this.notesCard && this.notesCard.length > 0) {
+      let maxHeight = 0;
+      this.notesCard.forEach((divElement) => {
+        const divHeight = divElement.nativeElement.offsetHeight;
+        if (maxHeight < divHeight) {
+          maxHeight = divHeight;
+        }
+      });
 
-        this.notesCard.forEach((divElement) => {
-          this.renderer.setStyle(
-            divElement.nativeElement,
-            "height",
-            `${maxHeight}px`
-          );
-        });
-      }
-    });
-  }
+      this.notesCard.forEach((divElement) => {
+        this.renderer.setStyle(
+          divElement.nativeElement,
+          "height",
+          `${maxHeight}px`
+        );
+      });
+    }
+  });
+}
 
   expandNotes(index) {
     this.showReadNotes({ ...this.filteredContent[index] });
@@ -175,7 +175,7 @@ export class NotesComponent extends BaseStandardQuoteClass {
         data: note,
         width: "40vw",
       })
-      .onClose.subscribe((data: CloseDialogData) => { });
+      .onClose.subscribe((data: CloseDialogData) => {});
   }
 
   showEditNotes(note) {
@@ -230,7 +230,7 @@ export class NotesComponent extends BaseStandardQuoteClass {
           isManual: false,
           noteId: data.noteId,
           noteType: env.labelData.portalNote,
-          subject: env.labelData.subjectForNotes,
+          subject:env.labelData.subjectForNotes,
           // partyNoteRequest: {
           //   partyId: this.getOriginatorIdByNo(this.originatorNumber),
           //   partyNo: this.originatorNumber,
@@ -285,7 +285,7 @@ export class NotesComponent extends BaseStandardQuoteClass {
           isManual: false,
           noteId: 0,
           noteType: env.labelData.portalNote,
-          subject: env.labelData.subjectForNotes,
+          subject:env.labelData.subjectForNotes,
           // partyNoteRequest: {
           //   partyId: this.getOriginatorIdByNo(this.originatorNumber),
           //   partyNo: this.originatorNumber,

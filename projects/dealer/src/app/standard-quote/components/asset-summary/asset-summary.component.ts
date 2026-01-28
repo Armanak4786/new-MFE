@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   CloseDialogData,
@@ -26,6 +26,7 @@ import { DatePipe } from "@angular/common";
 })
 export class AssetSummaryComponent extends BaseStandardQuoteClass {
   @Input() customerStatment: any;
+  @Output() conditionDDValue = new EventEmitter<any>();
   assetTypeData = [];
   assetTypeModalValues: string;
   assetName: string = "";
@@ -52,92 +53,105 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
     },
   ];
   @ViewChild("assetListbox") assetListbox: any;
-  override formConfig: GenericFormConfig = {
-    autoResponsive: true,
+
+// Do not remove below commented code - kept for reference
+  // override formConfig: GenericFormConfig = {
+  //   autoResponsive: true,
+  //   api: "assetSummary",
+  //   goBackRoute: "",
+  //   cardType: "non-border",
+  //   cardBgColor: "--primary-lighter-color",
+  //   fields: [
+      // {
+      //   type: "label-only",
+      //   typeOfLabel: "inline",
+      //   label: "Asset Type",
+      //   name: "assetType",
+      //   cols: 5,
+
+      //   className: "my-auto",
+      //   isRequired: true,
+      // },
+  //     {
+  //       type: "text-select",
+  //       placeholder: "Asset Type",
+  //       name: "assetTypeDD",
+  //       // hidden: true,
+  //       disabled: false,
+  //       cols: 4,
+  //     },
+      // {
+      //   type: "label-only",
+      //   typeOfLabel: "inline",
+      //   label: "Condition",
+      //   // accessDenied: !this.accessGranted?.["financial_asset"],
+      //   name: "condition",
+      //   cols: 5,
+      //   className: "my-auto",
+      //   isRequired: true,
+      // },
+
+  //     {
+  //       type: "select",
+  //       name: "conditionDD",
+  //       options: [],
+  //       // accessDenied: !this.accessGranted?.["financial_asset"],
+  //       cols: 4,
+  //       hidden: false,
+  //       resetOnHidden: true,
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Useful Life",
+  //       name: "usefulLifeLabel",
+  //       // accessDenied: !this.accessGranted?.["financial_asset"],
+  //       cols: 6,
+  //       className: "my-auto",
+  //       hidden: true,
+  //     },
+
+  //     {
+  //       type: "number",
+  //       name: "usefulLife",
+  //       cols: 3,
+  //       // accessDenied: !this.accessGranted?.["financial_asset"],
+  //       hidden: true,
+  //       resetOnHidden: true,
+  //       className: "-ml-6",
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Months",
+  //       name: "usefulLifeMonths",
+  //       cols: 3,
+  //       className: "my-auto",
+  //       hidden: true,
+  //     },
+  //     {
+  //       type: "text",
+  //       name: "assetTypeModalValues",
+  //       hidden: true,
+  //     },
+  //     {
+  //       type: "text",
+  //       name: "assetTypeId",
+  //       hidden: true,
+  //     },
+  //   ],
+  // };
+
+  override formConfig: any = {
+   autoResponsive: true,
     api: "assetSummary",
     goBackRoute: "",
     cardType: "non-border",
     cardBgColor: "--primary-lighter-color",
-    fields: [
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Asset Type",
-        name: "assetType",
-        cols: 5,
-
-        className: "my-auto",
-        isRequired: true,
-      },
-      {
-        type: "text-select",
-        placeholder: "Asset Type",
-        name: "assetTypeDD",
-        // hidden: true,
-        disabled: false,
-        cols: 4,
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Condition",
-        // accessDenied: !this.accessGranted?.["financial_asset"],
-        name: "condition",
-        cols: 5,
-        className: "my-auto",
-        isRequired: true,
-      },
-
-      {
-        type: "select",
-        name: "conditionDD",
-        options: [],
-        // accessDenied: !this.accessGranted?.["financial_asset"],
-        cols: 4,
-        hidden: false,
-        resetOnHidden: true,
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Useful Life",
-        name: "usefulLifeLabel",
-        // accessDenied: !this.accessGranted?.["financial_asset"],
-        cols: 6,
-        className: "my-auto",
-        hidden: true,
-      },
-
-      {
-        type: "number",
-        name: "usefulLife",
-        cols: 3,
-        // accessDenied: !this.accessGranted?.["financial_asset"],
-        hidden: true,
-        resetOnHidden: true,
-        className: "-ml-6",
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Months",
-        name: "usefulLifeMonths",
-        cols: 3,
-        className: "my-auto",
-        hidden: true,
-      },
-      {
-        type: "text",
-        name: "assetTypeModalValues",
-        hidden: true,
-      },
-      {
-        type: "text",
-        name: "assetTypeId",
-        hidden: true,
-      },
-    ],
+    fields: [],
   };
+
+
   private userModifiedUsefulLife = false;
   activeStepNum: number = 0;
   brands: any;
@@ -166,6 +180,13 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
     private datePipe: DatePipe
   ) {
     super(route, svc, baseSvc);
+
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName,this.pageCode);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    console.log('Asset Summary FormConfig:', filteredValidations);
+
     this.baseSvc.formDataCacheableRoute([
       "LookUpServices/custom_lookups?PageNo=1&PageSize=100&LookupSetName=AssetDealType",
       "AssetType/get_assettype",
@@ -175,9 +196,14 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
   }
 
   override async ngOnInit(): Promise<void> {
-
+    
     this.activeStepNum = this.baseSvc?.activeStep || 0;
     await super.ngOnInit();
+    
+    this.mainForm.updateProps("assetType", { isRequired: true });
+    this.mainForm.updateProps("condition", { isRequired: true });
+
+    this.mainForm.updateProps("assetTypeDD", { labelClassName: "hidden" });
 
     if (this.customerStatment === "Customer Statement") {
       console.log("Customer Statement mode detected in asset-summary");
@@ -235,19 +261,22 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
       this.mapData();
     }
 
+    if(this.mainForm && this.mainForm?.form.get("assetTypeDD").disabled == true){
+      this.mainForm?.updateProps("assetTypeDD", { disabled: true });
+    }
+
     await this.assetCondition();
     await this.updateValidation("onInit");
-
-    if ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))) {
-      this.mainForm?.form?.get('assetTypeDD')?.disable();
-      this.isBrandEditDisabled = true;
-    }
+    // if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+    //   this.isBrandEditDisabled = true;
+    // }
   }
 
   override onStatusChange(statusDetails: any): void {
     super.onStatusChange(statusDetails);
-    if ((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))) {
-      this.mainForm?.updateProps("assetTypeDD", { disabled: true });
+    if ((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
+      this.isBrandEditDisabled = true;
+
     }
   }
 
@@ -263,7 +292,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
         this.extractCustomerStatementFields();
         await this.loadBrandLogoForCustomerStatement();
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async loadBrandLogoForCustomerStatement() {
@@ -349,6 +378,10 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
             this.brands = res?.Data;
 
             this.isBrandEditDisabled = res?.Data?.length <= 1;
+            
+             if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+                this.isBrandEditDisabled = true;
+              }
 
             if (res?.Data?.length == 1) {
               this.baseFormData.defaultAsset = this.brands;
@@ -433,37 +466,37 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
     }
   }
 
-  async getUsefulLife(effectiveDate: any, assetTypeId: number, depreciationRateCurve: any): Promise<void> {
-    try {
-      const formattedDate = this.datePipe.transform(effectiveDate, 'yyyy-MM-dd');
-
-      const payload = {
-        depreciationRateCurve: depreciationRateCurve,
-        effectiveDate: formattedDate,
-        assetTypeId: assetTypeId
-      };
-
-      const response = await this.svc.data
-        .post(`Contract/get_useful_life`, payload)
-        .pipe(map((res: any) => res?.data))
-        .toPromise();
-
-      if (response && response.usefulLife !== undefined) {
-        const usefulLife = Number(response.usefulLife * 12) || null;
-        this.baseSvc.setBaseDealerFormData({ usefulLife: usefulLife });
-
-
-      }
-
-      return null;
-    } catch (error) {
-      this.toasterService.showToaster({
-        severity: 'error',
-        detail: 'Failed to fetch useful life data',
-      });
-      return null;
+async getUsefulLife(effectiveDate: any, assetTypeId: number, depreciationRateCurve: any): Promise<void> {
+  try {
+    const formattedDate = this.datePipe.transform(effectiveDate, 'yyyy-MM-dd');
+    
+    const payload = {
+      depreciationRateCurve: depreciationRateCurve,
+      effectiveDate: formattedDate,
+      assetTypeId: assetTypeId
+    };
+    
+    const response = await this.svc.data
+      .post(`Contract/get_useful_life`, payload)
+      .pipe(map((res: any) => res?.data))
+      .toPromise();
+    
+    if (response && response.usefulLife !== undefined) {
+      const usefulLife = Number(response.usefulLife * 12) || null;
+      this.baseSvc.setBaseDealerFormData({ usefulLife: usefulLife });
+      
+     
     }
+    
+    return null;
+  } catch (error) {
+    this.toasterService.showToaster({
+      severity: 'error',
+      detail: 'Failed to fetch useful life data',
+    });
+    return null;
   }
+}
 
   mapData() {
     let val;
@@ -478,9 +511,9 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
       assetid = this.baseFormData?.financialAssets[0]?.assetType?.assetTypeId;
 
       this.mainForm
-        .get("assetTypeModalValues")
-        .patchValue(this.assetTypeModalValues);
-      this.mainForm.get("assetTypeId").patchValue(assetid);
+        ?.get("assetTypeModalValues")
+        ?.patchValue(this.assetTypeModalValues);
+      this.mainForm?.get("assetTypeId")?.patchValue(assetid);
       cost =
         this.baseFormData?.financialAssets[0]?.cost +
         this.baseFormData?.financialAssets[0]?.taxesAmt;
@@ -505,7 +538,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
         return res.data.asset || null;
       }
     );
-
+    
     this.baseSvc.assetTypeData = this.assetTypeData;
     await this.loadAssetTypeData();
   }
@@ -599,7 +632,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
     if (this.baseFormData.productCode === 'AFV') {
       if (this.baseFormData?.assetTypeId) {
         this.mainForm?.get('programId')?.patchValue(null);
-        this.baseSvc.setBaseDealerFormData({
+        this.baseSvc.setBaseDealerFormData({ 
           programId: null,
           programExtName: null,
           programCode: null
@@ -608,71 +641,71 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
         this.cd.detectChanges();
         const hasProgramsFetched = await this.fetchAfvPrograms();
         this.clearSerach();
-
+        
         return;
       }
     }
     const previewResponse = await this.baseSvc.contractPreview(
-      this.baseFormData,
-      defaults,
+      this.baseFormData, 
+      defaults, 
       "asset"
     );
-
+    
     if (previewResponse && this.productCode === 'OL') {
       const effectiveDate = this.baseFormData.leaseDate || this.baseFormData.loanDate;
       const assetTypeId = this.baseFormData.assetTypeId || 0;
       const depreciationRateCurve = this.baseFormData.depreciationRateCurve || "IRD ful Life Rates";
-
+      
       await this.getUsefulLife(
         effectiveDate,
         assetTypeId,
         depreciationRateCurve
       );
-
+      
       if (this.baseFormData?.usefulLife !== undefined) {
         this.mainForm.get("usefulLife").patchValue(this.baseFormData.usefulLife);
         this.cd.detectChanges();
       }
     }
-
+    
     this.clearSerach();
-  }
+}
 
-  async fetchAfvPrograms(): Promise<boolean> {
-    try {
-      const introducerId = this.baseFormData?.originatorId || sessionStorage.getItem('dealerPartyId');
-      const assetTypesId = this.baseFormData?.assetTypeId;
-
-      if (!introducerId || !assetTypesId) {
-        return false;
-      }
-      const response = await this.svc.data
-        .get(`Product/get_programs_products?introducerId=${introducerId}&AssetId=${assetTypesId}`)
-        .pipe(map((res: any) => res))
-        .toPromise();
-
-      if (response?.data?.programs && response?.data?.programs.length > 0) {
-        const programList = response.data.programs.map((item) => ({
-          label: item.programName || item.extName || item.name,
-          value: item.programId,
-        }));
-        this.baseSvc.setBaseDealerFormData({
-          afvProgramList: programList  // Add this new field
-        });
-
-        this.mainForm.updateList('programId', programList);
-        this.baseSvc.afvProgramsLoaded.next(programList);
-
-        return true;
-      } else {
-        this.baseSvc.afvProgramsLoaded.next([]);
-        return false;
-      }
-    } catch (error) {
+async fetchAfvPrograms(): Promise<boolean> {
+  try {
+    const introducerId = this.baseFormData?.originatorId || sessionStorage.getItem('dealerPartyId');
+    const assetTypesId = this.baseFormData?.assetTypeId;
+    
+    if (!introducerId || !assetTypesId) {
+      return false;
+    }
+    const response = await this.svc.data
+      .get(`Product/get_programs_products?introducerId=${introducerId}&AssetId=${assetTypesId}`)
+      .pipe(map((res: any) => res))
+      .toPromise();
+    
+    if (response?.data?.programs && response?.data?.programs.length > 0) {
+      const programList = response.data.programs.map((item) => ({
+        label: item.programName || item.extName || item.name,
+        value: item.programId,
+      }));
+       this.baseSvc.setBaseDealerFormData({ 
+        afvProgramList: programList  // Add this new field
+      });
+      
+      this.mainForm.updateList('programId', programList);
+      this.baseSvc.afvProgramsLoaded.next(programList);
+      
+      return true;
+    } else {
       this.baseSvc.afvProgramsLoaded.next([]);
       return false;
     }
+  } catch (error) {
+    this.baseSvc.afvProgramsLoaded.next([]);
+    return false;
   }
+}
 
   clearSerach() {
     setTimeout(() => {
@@ -725,6 +758,11 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
   }
 
   override async onFormEvent(event: any): Promise<void> {
+
+    if (event.name == "conditionDD") {
+      this.conditionDDValue.emit(event?.value);
+     }
+
     if (
       event.name == "conditionDD" &&
       (this.baseFormData?.productCode == "CSA" ||
@@ -749,32 +787,34 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
           retailPriceValue: true,
         });
       }
-
-      if (event.name == "assetTypeDD") {
-        if ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))) {
-          this.mainForm?.form?.get('assetTypeDD')?.disable();
-          return;
-        }
-
-        if (this.baseFormData.programId) {
-          const assetDetailsResponse = await firstValueFrom(
-            this.svc.data.post("LookUpServices/CustomData", {
-              parameterValues: [
-                "Asset Type Override",
-                String(this.baseFormData?.programId),
-              ],
-              procedureName: configure.SPProgramListExtract,
-            })
-          );
-          if (assetDetailsResponse?.data?.table?.length == 0) {
-            this.mainForm?.updateProps("assetTypeDD", { disabled: true });
-          } else {
-            this.mainForm?.updateProps("assetTypeDD", { disabled: false });
-          }
-        }
-      }
     }
 
+    if(event.name == "assetTypeDD"){
+      if (this.baseFormData.programId) {
+        const assetDetailsResponse = await firstValueFrom(
+          this.svc.data.post("LookUpServices/CustomData", {
+            parameterValues: [
+              "Asset Type Override",
+              String(this.baseFormData?.programId),
+            ],
+            procedureName: configure.SPProgramListExtract,
+          })
+        );
+             
+        // if(this.baseFormData?.AFworkflowStatus == "Quote" || this.baseFormData?.workflowStatus == "Open Quote"){
+        if (assetDetailsResponse?.data?.table?.length == 0) {
+          this.mainForm?.updateProps("assetTypeDD", { disabled: true });
+        } else {
+          this.mainForm?.updateProps("assetTypeDD", { disabled: false });
+        }
+      // }
+      }
+
+      if(this.mainForm && this.mainForm?.form.get("assetTypeDD").disabled == true){
+        this.mainForm?.updateProps("assetTypeDD", { disabled: true });
+      }
+      
+    }
     super.onFormEvent(event);
   }
 
@@ -849,7 +889,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
 
           width: "55vw",
         })
-        .onClose.subscribe((data: CloseDialogData) => { });
+        .onClose.subscribe((data: CloseDialogData) => {});
     } else {
       this.toasterService.showToaster({
         severity: "error",
@@ -884,6 +924,11 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
   }
 
   async showSelectAssetType() {
+    // Prevent opening dialog if field is disabled
+    if (this.mainForm?.form?.get("assetTypeDD")?.disabled) {
+      return;
+    }
+    
     if (this.baseFormData.productCode === "AFV") {
       this.svc.dialogSvc
         .show(AfvAssetTypesComponent, "Asset Type", {
@@ -909,7 +954,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
               (this.baseFormData.physicalAsset[0].variant =
                 data?.data?.afvVariant);
             let defaults = [];
-
+            
             (this.baseFormData.afvMake = data?.data?.afvMake),
               (this.baseFormData.afvModel = data?.data?.afvModel),
               (this.baseFormData.afvYear = data?.data?.afvYear),
@@ -917,24 +962,24 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
 
             await this.baseSvc.contractPreview(this.baseFormData, defaults, "");
             if (this.baseFormData.assetTypeId) {
-              await this.fetchAfvPrograms();
-            }
-            if (this.productCode === "OL" && this.baseFormData.assetTypeId) {
-              const effectiveDate = this.baseFormData.leaseDate || this.baseFormData.loanDate;
-              const assetTypeId = this.baseFormData.assetTypeId || 0;
-              const depreciationRateCurve =
-                this.baseFormData.depreciationRateCurve || "IRD ful Life Rates";
-
-              const usefulLife = await this.getUsefulLife(
-                effectiveDate,
-                assetTypeId,
-                depreciationRateCurve
-              );
-              if (this.baseFormData?.usefulLife !== undefined) {
-                this.mainForm.get("usefulLife").patchValue(usefulLife);
-              }
-            }
+            await this.fetchAfvPrograms();
           }
+            if (this.productCode === "OL" && this.baseFormData.assetTypeId) {
+            const effectiveDate = this.baseFormData.leaseDate || this.baseFormData.loanDate;
+            const assetTypeId = this.baseFormData.assetTypeId || 0;
+            const depreciationRateCurve = 
+              this.baseFormData.depreciationRateCurve || "IRD ful Life Rates";
+            
+            const usefulLife = await this.getUsefulLife(
+              effectiveDate,
+              assetTypeId,
+              depreciationRateCurve
+            );
+            if (this.baseFormData?.usefulLife !== undefined) {
+              this.mainForm.get("usefulLife").patchValue(usefulLife);
+          }
+        }
+      }
         });
     } else {
       this.svc.dialogSvc
@@ -944,8 +989,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
           },
           data: {
             assetTypeData: this.assetTypeData,
-            assetTypeModalValues: this.mainForm?.get("assetTypeModalValues")
-              .value,
+            assetTypeModalValues: this.mainForm?.get("assetTypeModalValues")?.value,
           },
           width: "60vw",
         })
@@ -977,6 +1021,10 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
 
   override onButtonClick(event: any): void {
     if (event.field.name == "assetTypeDD") {
+      // Check if the field is disabled before opening the dialog
+      if (this.mainForm?.form?.get("assetTypeDD")?.disabled) {
+        return;
+      }
       this.showSelectAssetType();
     }
   }
@@ -999,7 +1047,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
     }
 
 
-
+   
 
 
     // if( this.cashPriceValue!=res?.cashPriceValue&&res?.cashPriceValue){
@@ -1082,8 +1130,8 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
 
   override async onValueEvent(event): Promise<void> {
     if (event.name === 'usefulLife') {
-      this.userModifiedUsefulLife = true;
-    }
+    this.userModifiedUsefulLife = true;  
+  }
     await this.updateValidation(event);
   }
 

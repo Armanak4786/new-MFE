@@ -106,6 +106,20 @@ export class SoleTradeBusinessContactDetailComponent extends BaseSoleTradeClass 
     if (this.baseSvc.showValidationMessage) {
       this.phone.markAllAsTouched();
     }
+
+    // Disable form if workflow status requires it
+    if (this.isDisabled()) {
+      this.phoneForm.disable();
+    }
+  }
+
+  isDisabled(): boolean {
+    const baseFormDataStatus = this.baseFormData?.AFworkflowStatus;
+    const sessionStorageStatus = sessionStorage.getItem('workFlowStatus');
+    return !(
+      baseFormDataStatus === 'Quote' ||
+      sessionStorageStatus === 'Open Quote'
+    );
   }
 
   onCountryCodeChange(event: any, index: number) {

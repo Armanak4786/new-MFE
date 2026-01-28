@@ -9,6 +9,8 @@ import { BehaviorSubject, Subject } from "rxjs";
   providedIn: "root",
 })
 export class BusinessService extends BaseDealerService implements OnInit {
+  private turnoverLatestDateSource = new Subject<Date>();
+  turnoverLatestDate$ = this.turnoverLatestDateSource.asObservable();
   public patchDataOnPreview = new BehaviorSubject<any>(null);
   reusePhysical = new BehaviorSubject<any>(null);
   reusePhysical$ = this.reusePhysical.asObservable();
@@ -78,7 +80,9 @@ export class BusinessService extends BaseDealerService implements OnInit {
     // Check if all components are valid
     const allValid = this.isAllComponentsValid();
   }
-
+ setTurnoverLatestDate(date: Date) {
+    this.turnoverLatestDateSource.next(date);
+  }
   isAllComponentsValid(): boolean {
     for (const componentName in this.componentValidity) {
       const component = this.componentValidity[componentName];

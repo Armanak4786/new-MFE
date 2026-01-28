@@ -215,17 +215,12 @@ export class SupplierBusinessTabComponent extends BaseStandardQuoteClass {
       .subscribe((res)=>{
           suppliersData = res?.data?.customers || [];
   
-          if (!suppliersData.length) {
-            this.toasterSvc.showToaster({
-              severity: "warn",
-              detail: "No suppliers found.",
-            });
-            return;
-          }
-  
       if(suppliersData?.length){
         const mappedData = this.mapApiToSupplierUI(suppliersData, "business")
         this.openSearchResultDialog(mappedData);
+      }
+      else{
+        this.openSearchResultDialog();
       }
       })
   }
@@ -252,7 +247,7 @@ private mapApiToSupplierUI(customers: any[], type: string) {
   });
 }
 
-openSearchResultDialog(supplierData: any[]){
+openSearchResultDialog(supplierData?: any[]){
   this.svc.dialogSvc.show(SupplierSearchResultComponent,"",{
      width: "62vw",
      height: "60vh",

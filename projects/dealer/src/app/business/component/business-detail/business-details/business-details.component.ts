@@ -3,14 +3,16 @@ import { ActivatedRoute } from "@angular/router";
 import {
   CommonService,
   GenericFormConfig,
+  MapFunc,
   Mode,
   ToasterService,
   ValidationService,
 } from "auro-ui";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { BaseBusinessClass } from "../../../base-business.class";
 import { BusinessService } from "../../../services/business";
 import configure from "../../../../../../public/assets/configure.json";
+import { firstValueFrom } from "rxjs";
 
 @Component({
   selector: "app-business-details",
@@ -21,7 +23,7 @@ import configure from "../../../../../../public/assets/configure.json";
 export class BusinessDetailsComponent extends BaseBusinessClass {
   customerRole: any;
   customerRoleForm: FormGroup;
-  private organisationTypeOptions: any[] = [];
+private organisationTypeOptions: any[] = [];
   override formConfig: GenericFormConfig = {
     headerTitle: "Business Details",
     autoResponsive: true,
@@ -79,7 +81,7 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         // validators: [Validators.required],
         cols: 2,
         className: "mt-2 w-2 ml-2 white-space-nowrap",
-        inputClass: "ic customwidth"
+        inputClass:"ic customwidth"
       },
       {
         type: "text",
@@ -90,8 +92,8 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         // maxLength: 15,
         // validators: [Validators.required],
         className: "col-fixed w-2 px-0 mt-2 ml-8",
-        inputClass: "icc",
-        labelClass: "lcc"
+        inputClass:"icc",
+        labelClass:"lcc"
       },
       {
         type: "text",
@@ -103,8 +105,8 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         className: "mt-2 ml-6",
         // validators: [Validators.required],
         cols: 2,
-        labelClass: "gss",
-        inputClass: "gsts",
+        labelClass:"gss",
+        inputClass:"gsts",
         nextLine: true,
       },
       {
@@ -114,11 +116,11 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
 
         //regexPattern: "/[^.?!]/",
         // validators: [Validators.required],
-        cols: 4,
+        cols: 2,
         textAreaRows: 2,
         inputType: "vertical",
         textAreaType: "border",
-        className: "mt-3",
+        className: "mt-5",
         inputClass: "w-100 pl-2",
         labelClass: "pl-2",
       },
@@ -130,8 +132,8 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         alignmentType: "vertical",
         filter: true,
         options: [],
-        cols: 2,
-        className: "px-0 mt-4 ml-4",
+        cols: 4,
+        className: "primary-nature-of-business px-0 mt-4 ml-4 ",
         labelClass: "-mt-3",
       },
 
@@ -140,10 +142,10 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         label: "Source of Wealth",
         name: "sourceOfWealth",
         alignmentType: "vertical",
-        className: "mt-4 ml-4",
+        className: "source-of-wealth mt-4 ml-4",
         filter: true,
         options: [],
-        cols: 2,
+        cols: 3,
         labelClass: "-mt-3",
       },
       {
@@ -152,7 +154,7 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         label: "Time In Business",
         name: "timeInBusinessYears",
         // className: "col-fixed w-4rem py-0 mt-3",
-        className: "ml-6 py-0 mt-5 col-fixed w-4rem white-space-nowrap",
+        className: "ml-4 py-0 mt-5 col-fixed w-4rem white-space-nowrap",
         inputClass: "-m-2 mb-2",
         labelClass: "mt-2",
         // validators: [Validators.required, Validators.max(99)],
@@ -171,7 +173,7 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         // validators: [Validators.max(11), Validators.maxLength(2)],
         // className: "col-fixed mt-3 w-4rem yearmonthClass",
         // className: "col-fixed mt-0 w-4rem yearmonthClass",
-
+      
         className: "ml-3 py-2 mt-5 col-fixed w-4rem white-space-nowrap timeInBusinessMonthsClass",
         labelClass: "hidden",
         // labelClass:"mt-2",
@@ -213,8 +215,18 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
-    if (this.baseSvc.showValidationMessage) {
+    if(this.baseSvc.showValidationMessage){
       this.mainForm.form.markAllAsTouched()
     }
 
@@ -222,15 +234,15 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
     //   this.baseFormData?.natureOfBusiness
     // );
 
-    //     if (natureOfBusinessData) {
-    //   natureOfBusinessData = this.decodeHtmlEntities(natureOfBusinessData);
-    // } else {
-    //   natureOfBusinessData = null; // ensures required validator works
-    // }
+//     if (natureOfBusinessData) {
+//   natureOfBusinessData = this.decodeHtmlEntities(natureOfBusinessData);
+// } else {
+//   natureOfBusinessData = null; // ensures required validator works
+// }
 
-    //     this.baseSvc.setBaseDealerFormData({
-    //       natureOfBusiness: natureOfBusinessData,
-    //     });
+//     this.baseSvc.setBaseDealerFormData({
+//       natureOfBusiness: natureOfBusinessData,
+//     });
 
     let params: any = this.route.snapshot.params;
     this.mode = params.mode || Mode.create;
@@ -253,7 +265,7 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
           const coBorrowers = this.baseFormData.customerSummary.filter(
             customer => customer.customerRole === 2
           );
-
+          
           if (coBorrowers.length >= 2) {
             // If 2 or more co-borrowers exist, set role to guarantor (3)
             this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 3);
@@ -261,18 +273,18 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
               role: this.baseFormData?.role || 3,
             });
           } else {
-            // If less than 2 co-borrowers, set role to co-borrower (2)
+              // If less than 2 co-borrowers, set role to co-borrower (2)
             this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 2);
             this.baseSvc.setBaseDealerFormData({
-              role: this.baseFormData?.role || 2,
-            });
+            role: this.baseFormData?.role || 2,
+          });
           }
         }
 
       } else {
         if (!this.baseFormData.role) {
           this.customerRoleData = this.customerRoleData?.filter(
-            (role) => role.value == 1
+            (role)=>role.value == 1
           )
           this.customerRoleForm.controls["role"].setValue(1);
           this.baseSvc.setBaseDealerFormData({
@@ -291,66 +303,66 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
     // this.getProgramList();
     if (this.mode == "edit") {
 
-      if (this.baseSvc.role === 1) {
-
-        // this.customerRoleData = this.customerRoleData;
-
-        // Check if customerSummary exists and is an array
-        if (this.baseFormData?.customerSummary && Array.isArray(this.baseFormData.customerSummary)) {
-          // Count co-borrowers (customerRole = 2)
-          const coBorrowers = this.baseFormData.customerSummary.filter(
-            customer => customer.customerRole === 2
-          );
-
-          if (coBorrowers.length >= 2) {
-            // If 2 or more co-borrowers exist, set role to guarantor (3)
-            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 3);
-            this.baseSvc.setBaseDealerFormData({
-              role: this.baseFormData?.role || 3,
-            });
-          } else {
-            // If less than 2 co-borrowers, set role to co-borrower (2)
-            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 2);
-            this.baseSvc.setBaseDealerFormData({
+        if (this.baseSvc.role === 1) {
+          
+          // this.customerRoleData = this.customerRoleData;
+          
+          // Check if customerSummary exists and is an array
+          if (this.baseFormData?.customerSummary && Array.isArray(this.baseFormData.customerSummary)) {
+            // Count co-borrowers (customerRole = 2)
+            const coBorrowers = this.baseFormData.customerSummary.filter(
+              customer => customer.customerRole === 2
+            );
+            
+            if (coBorrowers.length >= 2) {
+              // If 2 or more co-borrowers exist, set role to guarantor (3)
+              this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 3);
+              this.baseSvc.setBaseDealerFormData({
+                role: this.baseFormData?.role || 3,
+              });
+            } else {
+                // If less than 2 co-borrowers, set role to co-borrower (2)
+              this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 2);
+              this.baseSvc.setBaseDealerFormData({
               role: this.baseFormData?.role || 2,
             });
+            }
+          } 
+          // else {
+          //   // If customerSummary doesn't exist or is empty, default to co-borrower
+          //   this.customerRoleForm.controls["role"].setValue(2);
+          // }
+        } else {
+            if (!this.baseFormData.role) {
+              this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 1);
+              this.baseSvc.setBaseDealerFormData({
+                role: this.baseFormData?.role || 1,
+              });
+            }
           }
-        }
-        // else {
-        //   // If customerSummary doesn't exist or is empty, default to co-borrower
-        //   this.customerRoleForm.controls["role"].setValue(2);
-        // }
-      } else {
-        if (!this.baseFormData.role) {
-          this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role || 1);
-          this.baseSvc.setBaseDealerFormData({
-            role: this.baseFormData?.role || 1,
-          });
-        }
-      }
 
+    
+       this.mainForm
+          ?.get("natureOfBusiness")
+          .patchValue(this.baseFormData?.business?.natureOfBusiness);
+        this.mainForm
+          ?.get("businessDescription")
+          .patchValue(
+            this.baseFormData?.Business?.business?.businessDescription
+          );
 
-      this.mainForm
-        ?.get("natureOfBusiness")
-        .patchValue(this.baseFormData?.business?.natureOfBusiness);
-      this.mainForm
-        ?.get("businessDescription")
-        .patchValue(
-          this.baseFormData?.Business?.business?.businessDescription
-        );
-
-      if (this.baseFormData?.tempCustomerNo === this.baseFormData?.customerNo) {
-        if (this.baseFormData?.tempCustomerRole) {
-          this.customerRoleForm.controls["role"].setValue(this.baseFormData?.tempCustomerRole);
-          // this.mainForm.get("role").setValue(this.baseFormData?.tempCustomerRole);
-          this.baseSvc.setBaseDealerFormData({
-            role: this.baseFormData?.tempCustomerRole
-          });
-        }
-      }
-      else {
-        this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role);
-      }
+      if(this.baseFormData?.tempCustomerNo === this.baseFormData?.customerNo ){
+          if(this.baseFormData?.tempCustomerRole){
+            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.tempCustomerRole);
+            // this.mainForm.get("role").setValue(this.baseFormData?.tempCustomerRole);
+            this.baseSvc.setBaseDealerFormData({
+              role: this.baseFormData?.tempCustomerRole
+            });
+          }
+          }
+          else {
+            this.customerRoleForm.controls["role"].setValue(this.baseFormData?.role);
+          }
 
       // if (this.baseFormData?.role) {
       //   this.customerRoleForm.controls["role"].setValue(
@@ -368,14 +380,14 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
       //   // Handle the case where customerRoles is not available, e.g., set a default value
       //   this.customerRole = null; // or some default value
       // }
-
+      
     }
 
     this.updateList();
     this.updateValidation("onInit");
     // console.log(this.mainForm, "buseinss detail init")
   }
-
+ 
 
 
   // private setupTimeInBusinessValidation(): void {
@@ -384,7 +396,7 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
   //     const monthsControl = this.mainForm?.get('timeInBusinessMonths');
 
   //     if (yearsControl && monthsControl) {
-
+        
   //       yearsControl.valueChanges.subscribe(() => {
   //         this.validateTimeInBusiness();
   //       });
@@ -393,43 +405,43 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
   //         this.validateTimeInBusiness();
   //       });
 
-
+       
   //       this.validateTimeInBusiness();
   //     }
   //   }, 500);
   // }
 
-
+ 
 
   async updateList() {
-    await this.baseSvc.getFormData(
-      `LookUpServices/lookups?LookupSetName=BusinessEntityType`,
-      (res) => {
-        if (res.data) {
-          const filteredOptions = res.data
-            .filter(
-              (item: any) =>
-                item.lookupValue &&
-                !item.lookupValue.includes("Z – Not Applicable") &&
-                !item.lookupValue.includes("Trust -")
-            )
-            .map(({ lookupValue }) => ({
-              label: lookupValue,
-              value: lookupValue,
-            }))
-            .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
+     await this.baseSvc.getFormData(
+    `LookUpServices/lookups?LookupSetName=BusinessEntityType`,
+    (res) => {
+      if (res.data) {
+        const filteredOptions = res.data
+          .filter(
+            (item: any) =>
+              item.lookupValue &&
+              !item.lookupValue.includes("Z – Not Applicable") &&
+              !item.lookupValue.includes("Trust -")
+          )
+          .map(({ lookupValue }) => ({
+            label: lookupValue,
+            value: lookupValue,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
+
+       
+        this.mainForm.updateList("organisationType", filteredOptions);
 
 
-          this.mainForm.updateList("organisationType", filteredOptions);
+        
+       
 
-
-
-
-
-          return filteredOptions;
-        }
+        return filteredOptions;
       }
-    );
+    }
+  );
 
     await this.svc.data
       .post("LookUpServices/CustomData", {
@@ -448,25 +460,25 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
         }
       });
 
-    this.svc.data
-      .post("LookUpServices/CustomData", {
-        parameterValues: ["ANZ1993"],
-        procedureName: configure?.SPIndustryTypeExtract,
-      })
-      .subscribe((res) => {
-        if (res) {
-          const natureOfBusinesslist = res?.data?.table.map((item: any) => ({
-            label: item.value_text,
-            value: item.value_text,
-          }));
+  this.svc.data
+    .post("LookUpServices/CustomData", {
+      parameterValues: ["ANZ1993"],
+      procedureName: configure?.SPIndustryTypeExtract,
+    })
+    .subscribe((res) => {
+      if (res) {
+        const natureOfBusinesslist = res?.data?.table.map((item: any) => ({
+          label: item.value_text,
+          value: item.value_text,
+        }));
 
+       
+       this.mainForm.updateList("natureOfBusiness", natureOfBusinesslist);
 
-          this.mainForm.updateList("natureOfBusiness", natureOfBusinesslist);
-
-        }
-      });
-  }
-  private natureOfBusinessOptions: any[] = [];
+      }
+    });
+}
+private natureOfBusinessOptions: any[] = [];
 
   decodeHtmlEntities(value: string): string {
     const txt = document.createElement("textarea");
@@ -481,31 +493,31 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
   }
 
   override onStepChange(stepperDetails: any): void {
-
+      
     super.onStepChange(stepperDetails);
     if (stepperDetails?.validate) {
       let formStatus;
       if (this.customerRoleForm) {
-        if (this.customerRoleForm.controls["role"].value === 0) {
+        if(this.customerRoleForm.controls["role"].value === 0){
           this.customerRoleForm.markAllAsTouched()
           formStatus = "INVALID"
         }
-        else {
+        else{
           formStatus = this.proceedEmailForm();
         }
         // formStatus = this.proceedEmailForm();
         this.baseSvc.formStatusArr.push(formStatus);
       }
     }
-
+    
     this.baseSvc.updateComponentStatus("Business Details", "BusinessDetailsComponent", (this.mainForm.form.valid && this?.customerRoleForm?.controls["role"].value !== 0))
 
-    if (this.baseSvc.showValidationMessage) {
+     if(this.baseSvc.showValidationMessage){
       let invalidPages = this.checkStepValidity()
       this.baseSvc.iconfirmCheckbox.next(invalidPages)
     }
   }
-  override onFormDataUpdate(res: any): void { }
+  override onFormDataUpdate(res: any): void {}
   proceedEmailForm() {
     const postData = this.validateEmailData();
     return postData; //valid , invalid
@@ -531,43 +543,43 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
   modelName: string = "BusinessDetailsComponent";
 
   override async onFormEvent(event: any): Promise<void> {
-    await this.updateValidation("onInit");
+      await this.updateValidation("onInit");
     super.onFormEvent(event?.target?.value || event);
   }
 
   override async onFormReady(): Promise<void> {
-
-
+  
+    
     if (this.customerRoleForm && this.baseSvc.showValidationMessage) {
-      if (this.customerRoleForm.controls["role"].value === 0) {
-        this.customerRoleForm.markAllAsTouched();
+        if(this.customerRoleForm.controls["role"].value === 0){
+          this.customerRoleForm.markAllAsTouched();
+        }
       }
-    }
 
-    if (this.baseFormData?.natureOfBusiness) {
-      const natureOfBusinessData = this.decodeHtmlEntities(
-        this.baseFormData?.natureOfBusiness
-      );
+       if(this.baseFormData?.natureOfBusiness){
+        const natureOfBusinessData = this.decodeHtmlEntities(
+          this.baseFormData?.natureOfBusiness
+        );
 
-      this.baseSvc.setBaseDealerFormData({
-        natureOfBusiness: natureOfBusinessData,
-      });
+        this.baseSvc.setBaseDealerFormData({
+          natureOfBusiness: natureOfBusinessData,
+        });
 
-      this.mainForm
-        .get("natureOfBusiness")
-        .patchValue(this.decodeHtmlEntities(this.baseFormData?.natureOfBusiness));
-    }
+        this.mainForm
+          .get("natureOfBusiness")
+          .patchValue(this.decodeHtmlEntities(this.baseFormData?.natureOfBusiness));
+      }
     await this.updateValidation("onInit");
     super.onFormReady();
   }
 
   override async onBlurEvent(event): Promise<void> {
-
+     
     await this.updateValidation(event);
   }
 
   override async onValueEvent(event): Promise<void> {
-
+    
     await this.updateValidation(event?.target?.value || event);
   }
 
@@ -591,7 +603,7 @@ export class BusinessDetailsComponent extends BaseBusinessClass {
     }
 
     this.mainForm.get("tradingName").removeValidators(Validators?.required);
-
+    
 
     return responses.status;
   }

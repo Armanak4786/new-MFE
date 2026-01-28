@@ -1,4 +1,14 @@
 ::ng-deep .sole_trade_previous_employeement .p-error {
   text-wrap: auto;
-  min-width: 120px;
+  min-width: 110px;
+}
+::ng-deep {
+  p-dropdown {
+    display: block;
+    padding: 0 !important;
+  }
+  label.col-12.py-0 {
+    margin-bottom: 14px;
+    display: block;
+  }
 }

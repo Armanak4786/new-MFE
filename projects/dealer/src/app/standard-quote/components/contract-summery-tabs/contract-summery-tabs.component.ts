@@ -1,13 +1,19 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
 import {
   AuthenticationService,
   CommonService,
+  DataService,
+  StatusProgressList,
   ToasterService,
 } from "auro-ui";
+import { cloneDeep } from "lodash";
+import { map, Subscription } from "rxjs";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
+import { CalculationService } from "../payment-summary/calculation.service";
 import { StandardQuoteService } from "../../services/standard-quote.service";
+import { Contract } from "../../../asset/asset.component";
 import { ValidationService } from "auro-ui";
 
 @Component({
@@ -30,6 +36,9 @@ export class ContractSummeryTabsComponent extends BaseStandardQuoteClass {
     public override route: ActivatedRoute,
     public override svc: CommonService,
     override baseSvc: StandardQuoteService,
+    private toasterService: ToasterService,
+    private sanitizer: DomSanitizer,
+    private cd: ChangeDetectorRef,
     public authSvc: AuthenticationService,
     public toasterSvc: ToasterService,
     public validationSvc: ValidationService
@@ -37,7 +46,7 @@ export class ContractSummeryTabsComponent extends BaseStandardQuoteClass {
     super(route, svc, baseSvc);
   }
   responsedData: any;
-  override async ngOnInit(): Promise<void> { }
+  override async ngOnInit(): Promise<void> {}
 
   manageSelectedRow(activeStep) {
     // this.selectedRow = null;
@@ -74,7 +83,7 @@ export class ContractSummeryTabsComponent extends BaseStandardQuoteClass {
     if (!responses.status && responses.updatedFields.length) {
       await this.mainForm.applyValidationUpdates(responses);
     }
-
+ 
     return responses.status;
   }
 

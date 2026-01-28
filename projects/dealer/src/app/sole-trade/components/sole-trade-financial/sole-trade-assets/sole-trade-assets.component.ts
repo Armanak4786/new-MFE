@@ -257,6 +257,15 @@ export class SoleTradeAssetsComponent extends BaseSoleTradeClass {
       );
     }
   
+    isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
+
       // Getter for the assetDetails form array
       get assetDetails(): FormArray {
         return this.assetDetailsForm.get('assetDetails') as FormArray;

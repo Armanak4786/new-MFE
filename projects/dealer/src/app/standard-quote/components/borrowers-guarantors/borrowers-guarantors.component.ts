@@ -1,7 +1,9 @@
 import {
   ChangeDetectorRef,
   Component,
+  effect,
   Input,
+  ViewEncapsulation,
 } from "@angular/core";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import {
@@ -46,7 +48,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
   customerID: Number;
   updateroleData: any;
   dataList: any = [];
-  insuranceBtnDisable: boolean = false;
+  isInsuranceDisclosureEnabled: boolean = false;
   insuranceCustomerNumber: any;
   employmentType: any;
   roleKeys = {
@@ -59,16 +61,16 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
 
   // updatedCustomerSummary: Map<number, any> = new Map();
 
-
-  bankWorkflowDisableStatus: string[] = [
-    "awaiting verification",
-    "verification with customer",
-    "in review",
-    "verification complete",
-    "verification failed",
-    "verification declined",
-    "verification not required",
-  ];
+  
+    bankWorkflowDisableStatus: string[] = [
+      "awaiting verification",
+      "verification with customer",
+      "in review",
+      "verification complete",
+      "verification failed",
+      "verification declined",
+      "verification not required",
+    ];
 
   customerRoleData: any = [
     { label: "Borrower", value: "Borrower" },
@@ -179,7 +181,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       columnHeaderClass: "justify-content-center",
       overlayPanel: PartyVerificationComponent,
       width: "40px",
-      disabled: (row) => this.partyStatusListforIconDisable.includes(row?.currentWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus),
+      disabled : (row) => this.partyStatusListforIconDisable.includes(row?.currentWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus),
       // disabled: (row) => row.currentWorkflowStatus.toLowerCase() === "start verification"
     },
 
@@ -219,7 +221,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       columnHeaderClass: "justify-content-center",
       overlayPanel: BankStatementVerificationComponent,
       // width: "50px"
-      disabled: (row) => this.bankWorkflowDisableStatus.includes(row?.currentBankStatementWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus),
+      disabled : (row) => this.bankWorkflowDisableStatus.includes(row?.currentBankStatementWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus),
     },
     {
       field: "delete",
@@ -480,7 +482,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       headerName: "UDC Number",
       columnHeaderClass: "justify-content-center",
     },
-    { field: "customerType", headerName: "Type", columnHeaderClass: "justify-content-center", width: "80px" },
+    { field: "customerType", headerName: "Type", columnHeaderClass: "justify-content-center", width: "80px"},
     {
       field: "roleName",
       headerName: "Role",
@@ -760,14 +762,17 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
           );
         });
       }
-
+      let nonSupplierCustomers;
       let customerSummary = await this.baseSvc.getFormData(
         `CustomerDetails/get_contractSummery?ContractId=${this.baseFormData?.contractId || this.contractId
         }`,
         (res) => {
           if (res.data && Array.isArray(res.data)) {
             // Only initialize if we don't have stored data
-            res.data.forEach((customer) => {
+              nonSupplierCustomers = res.data.filter(
+               customer => customer.customerRole !== 7
+               );
+            nonSupplierCustomers.forEach((customer) => {
               this.originalRoles.set(customer.customerNo, customer.roleName);
               if (!storedSummary) {
                 this.baseSvc?.updatedCustomerSummary.set(customer.customerNo, {
@@ -786,7 +791,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
           ) {
             sessionStorage.setItem(
               "updatedCustomerSummary",
-              JSON.stringify(res.data)
+              JSON.stringify(nonSupplierCustomers)
             );
           }
 
@@ -804,7 +809,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
 
             // Find items in res.data that don't exist in updatedCustomerSummary
             const newItemsFromRes =
-              res?.data.filter(
+              nonSupplierCustomers.filter(
                 (item) => !existingCustomerNos.has(item.customerNo)
               ) || [];
 
@@ -836,7 +841,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
           if (res.data && Array.isArray(res.data)) {
             res.data.forEach((item) => {
               if (this.roleKeys?.[item.roleName] === 1) {
-                this.insuranceBtnDisable = true;
+                this.isInsuranceDisclosureEnabled = true;
                 this.insuranceCustomerNumber = item.customerNo;
               }
             });
@@ -859,7 +864,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
             const dataToUse =
               this.baseSvc?.updatedCustomerSummary.size > 0
                 ? Array.from(this.baseSvc?.updatedCustomerSummary.values())
-                : res.data;
+                : nonSupplierCustomers;
 
             this.dataList = dataToUse
               .map((item: any) => ({
@@ -885,17 +890,17 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
             // }
           }
 
-          if (this.baseFormData?.purposeofLoan == "Business") {
-            this.insuranceBtnDisable = false;
+          if (this.baseFormData?.purposeofLoan === "Business") {
+            this.isInsuranceDisclosureEnabled = false;
           }
           if (
             (this.baseFormData?.contractMonths > 0 ||
               this.baseFormData?.contractProvider) &&
-            this.baseFormData?.purposeofLoan != "Business"
+            this.baseFormData?.purposeofLoan !== "Business"
           ) {
-            this.insuranceBtnDisable = true;
+            this.isInsuranceDisclosureEnabled = true;
           }
-          return res?.data || null;
+          return nonSupplierCustomers || null;
         }
       );
 
@@ -921,6 +926,55 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
   //filteredCustomerRoleData: any = [
   //{ label: "Guarantor", value: "Guarantor" }
   //]
+
+  private updateInsuranceButtonState(): void {
+    // For Business loans: always disable the Insurance Disclosure button
+    if (this.baseFormData?.purposeofLoan === "Business") {
+      this.isInsuranceDisclosureEnabled = false;
+    }
+    // For Personal loans: enable only if Borrower exists AND at least one insurance product is selected
+    else if (this.baseFormData?.purposeofLoan === "Personal") {
+      const hasBorrower = this.hasBorrowerInCustomerSummary();
+      const hasInsurance = this.hasAnyInsuranceSelected();
+      this.isInsuranceDisclosureEnabled = hasBorrower && hasInsurance;
+    } else {
+      // For unknown/other loan purposes, default to disabled
+      this.isInsuranceDisclosureEnabled = false;
+    }
+  }
+
+  /**
+   * Checks if a Borrower (role = 1) exists in the customer summary from the API.
+   * Uses baseFormData.customerSummary which is populated from res.data after the API call.
+   */
+  private hasBorrowerInCustomerSummary(): boolean {
+    if (this.baseFormData?.customerSummary?.length > 0) {
+      return this.baseFormData.customerSummary.some(
+        (customer: any) => this.roleKeys?.[customer.roleName] === 1
+      );
+    }
+    return false;
+  }
+
+  override onFormDataUpdate(res: any): void {
+    super.onFormDataUpdate(res);
+    if (this.baseFormData?.contractId && (this.baseFormData?.purposeofLoan === "Business" || this.baseFormData?.purposeofLoan === "Personal")) {
+      this.updateInsuranceButtonState();
+    }
+  }
+
+  /**
+   * Checks if at least one of the 5 insurance products is selected.
+   * Returns true as soon as any insurance amount > 0.
+   */
+  private hasAnyInsuranceSelected(): boolean {
+    return (this.baseFormData?.extendedAmount && Number(this.baseFormData.extendedAmount) > 0) ||
+           (this.baseFormData?.mechanicalBreakdownInsuranceAmount && Number(this.baseFormData.mechanicalBreakdownInsuranceAmount) > 0) ||
+           (this.baseFormData?.guaranteedAssetProtectionAmount && Number(this.baseFormData.guaranteedAssetProtectionAmount) > 0) ||
+           (this.baseFormData?.motorVehicalInsuranceAmount && Number(this.baseFormData.motorVehicalInsuranceAmount) > 0) ||
+           (this.baseFormData?.contractAmount && Number(this.baseFormData.contractAmount) > 0);
+  }
+
   async loadCustomerStatementBorrowersData() {
     if (this.isLoadingBorrowers) {
       return;
@@ -1180,7 +1234,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
 
     if (event.colName == "delete" && event.actionName == "delete") {
 
-      if ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))) {
+      if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
         return;
       }
       if (this.mode != "view") {

@@ -37,7 +37,7 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
   selectedOption: any;
   productCode: any;
 
-  balloonValue: any;
+  balloonValue:any;
   constructor(
     public override route: ActivatedRoute,
     public override svc: CommonService,
@@ -79,14 +79,14 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
       this.interestCharges =
         this.paymentSummary?.financialAssetLease?.totalInterest;
       this.loanFee = this.paymentSummary?.apiLoanMaintenceFee,//this.paymentSummary?.loanMaintenanceFee;
-        this.gstFee = this.paymentSummary?.financialAssets?.[0]?.taxesAmt;
+      this.gstFee = this.paymentSummary?.financialAssets?.[0]?.taxesAmt;
       //this.cashPriceValue = this.paymentSummary?.financialAssets?.[0]?.cost;
       this.cashPriceValue = this.paymentSummary?.cashPriceValue
       this.totalBorrowedAmount = this.paymentSummary?.totalAmountBorrowed;
       this.lastPaymentDate = this.getLastCalcDt(this.paymentSummary);
     } else {
       this.paymentSummary = this.formData;
-
+      
       this.calculateAmountToRepay(this.paymentSummary.flows);
       this.interestRate = this.paymentSummary?.interestRate;
       this.loanDate = this.paymentSummary?.loanDate;
@@ -102,9 +102,9 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
         this.paymentSummary?.financialAssetLease?.totalInterest;
 
       this.loanFee = this.paymentSummary?.apiLoanMaintenceFee,//this.paymentSummary?.loanMaintenanceFee;
-        this.gstFee = this.paymentSummary?.financialAssets?.[0]?.taxesAmt;
+      this.gstFee = this.paymentSummary?.financialAssets?.[0]?.taxesAmt;
 
-      // this.cashPriceValue = this.paymentSummary?.financialAssets?.[0]?.cost;
+     // this.cashPriceValue = this.paymentSummary?.financialAssets?.[0]?.cost;
       this.cashPriceValue = this.paymentSummary?.cashPriceValue
       // Total borrowed amount
       this.totalBorrowedAmount = this.paymentSummary?.totalAmountBorrowed;
@@ -155,7 +155,7 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
     this.totalInstallments = totalInstallments;
   }
 
-  onOptionSelect($event) { }
+  onOptionSelect($event) {}
 
   pageCode: string = "StandardQuoteComponent";
   modelName: string = "PaymentSummaryDeatilsComponent";

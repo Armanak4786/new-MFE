@@ -51,6 +51,11 @@ export class SoleDetailsConfirmationComponent extends BaseSoleTradeClass  {
     }
   }
 
+    // Disable checkbox if workflow status requires it
+    if (this.isDisabled()) {
+      this.mainForm?.updateDisable({ "soleTradeConfirmation": true });
+    }
+
     // await this.updateValidation("onInit");
     
   }
@@ -79,5 +84,14 @@ export class SoleDetailsConfirmationComponent extends BaseSoleTradeClass  {
   // super.onValueTyped(event)
   let invalidPages = this.checkStepValidity()
   this.baseSvc.iconfirmCheckbox.next(invalidPages)
+  }
+
+  isDisabled(): boolean {
+    const baseFormDataStatus = this.baseFormData?.AFworkflowStatus;
+    const sessionStorageStatus = sessionStorage.getItem('workFlowStatus');
+    return !(
+      baseFormDataStatus === 'Quote' ||
+      sessionStorageStatus === 'Open Quote'
+    );
   }
 }

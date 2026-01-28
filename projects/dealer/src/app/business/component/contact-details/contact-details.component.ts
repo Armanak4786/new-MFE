@@ -33,6 +33,17 @@ export class ContactDetailsComponent extends BaseBusinessClass{
     }
     override async ngOnInit(): Promise<void> {
       await super.ngOnInit();
+      let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
+
       this.formConfig1 = this.IndividualformConfig;
 
   // Set maxDate on Date of Birth here
@@ -910,7 +921,14 @@ removeReference(reference: any, index: number) {
     pageCode: string = "IndividualComponent";
     modelName: string = "ReferenceDetailsComponent";
   
-    
+    isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
   
     override async onStepChange(quotesDetails: any): Promise<void> {
       super.onStepChange(quotesDetails);

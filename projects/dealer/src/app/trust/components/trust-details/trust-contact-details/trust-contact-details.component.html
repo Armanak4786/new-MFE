@@ -47,7 +47,7 @@
                   </div>
 
                   <!-- Area Code -->
-                  <div class="col-2">
+                  <div class="col-2 w-7rem">
                     <input
                     #areacodeInput
                       type="text"
@@ -97,7 +97,8 @@
                       [btnIcon]="'fa fa-trash'"
                       [btnType]="'non-bg-btn'"
                       (onClick)="removePhone(i)"
-                      class="mt-2">
+                      class="mt-2"
+                      [disabled]="isDisabled()">
                     </gen-button>
                   </div>
                 </div>
@@ -108,9 +109,10 @@
             <div class="pt-3 -ml-3">
               <gen-button
                 *ngIf="this.phone.length < 3"
-                [btnLabel]="'Add Other Mobile'"
+                [btnLabel]="'Add Other Number'"
                 [btnType]="'plus-btn'"
-                (onClick)="addOtherPhone()">
+                (onClick)="addOtherPhone()"
+                [disabled]="isDisabled()">
               </gen-button>
             </div>
           </ng-container>

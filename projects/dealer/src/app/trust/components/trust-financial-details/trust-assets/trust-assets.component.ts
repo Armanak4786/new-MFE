@@ -197,6 +197,14 @@ export class TrustAssetsComponent extends BaseTrustClass {
     });
   }
 
+isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
   getLookUpRes(LookupSetName: string): Promise<any> {
     return this.baseSvc.getFormData(

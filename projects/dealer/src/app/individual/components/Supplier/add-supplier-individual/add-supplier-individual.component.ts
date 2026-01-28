@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { CommonService, ToasterService } from "auro-ui";
+import { CommonService, MapFunc, ToasterService } from "auro-ui";
 import { Subject, firstValueFrom } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { map, takeUntil } from "rxjs/operators";
 import { StandardQuoteService } from "../../../../standard-quote/services/standard-quote.service";
 import { IndividualService } from "../../../services/individual.service";
 
@@ -23,6 +23,7 @@ export class AddSupplierIndividualComponent implements OnDestroy {
   steps = [];
   activeStep = 0;
   formData: any;
+  contractId: any;
   // personalPatched = false;
 
   constructor(
@@ -51,6 +52,7 @@ export class AddSupplierIndividualComponent implements OnDestroy {
  
  async init() {
   const params: any = this.route.snapshot.params;
+  this.contractId = Number(params?.contractId);
 
   if (params?.customerId) {
     const customerUrl = `CustomerDetails/get_customer?customerNo=${params.customerId}&contractId=${params.contractId}`;
@@ -90,7 +92,9 @@ export class AddSupplierIndividualComponent implements OnDestroy {
       middleName: personal?.middleName || "",
       lastName: personal?.lastName || "",
       knownAs: personal?.knownAs || "",
-      individualSupplierEmail:  personal?.emails?.find(e => e.type === "EmailOther")?.value || "",
+      individualSupplierEmail:  personal?.emails?.find(e => e.type === "EmailHome" && e.value)?.value ??
+       personal?.emails?.find(e => e.type === "EmailOther" && e.value)?.value ??
+      "",
       individualSupplierPhoneNumber:individualSupplierPhoneNumber,
       individualSupplierAreaCode: individualSupplierAreaCode ,
       individualSupplierMobile: individualSupplierMobile,
@@ -99,8 +103,9 @@ export class AddSupplierIndividualComponent implements OnDestroy {
     const bank = supplierCustomer?.bankDetails || {};
     const BankDetails = {
       supplierAccountName: bank?.name || "",
-      supplierAccountNumber: bank?.accountNumber || "",
-      supplierBranchCode: bank?.branchCode || "",
+      supplierAccountNumber: bank?.accountNumber?.replace(/-/g, '') || "",
+      supplierBranchCode: bank?.branchCode?.replace(/-/g, '') || "",
+      settlementBankInfoId: bank?.settlementBankInfoId || "",
     };
 
     const physicalAddress = supplierCustomer?.addressDetails?.find(
@@ -174,11 +179,11 @@ getTimeDifference(
 
 
   onBankUpdate(data: any) {
-    const bank = data?.supplierBankDetails ?? data;
+    // const bank = data?.supplierBankDetails ?? data;
     this.bankData = {
-      supplierAccountName: bank?.supplierAccountName || "",
-      supplierAccountNumber: bank?.supplierAccountNumber || "",
-      supplierBranchCode: bank?.supplierBranchCode || "",
+      supplierAccountName: data?.supplierAccountName || "",
+      supplierAccountNumber: data?.supplierAccountNumber || "",
+      supplierBranchCode: data?.supplierBranchCode || "",
     };
     this.baseSvc.setBaseDealerFormData({ ...this.bankData });
   }
@@ -197,6 +202,12 @@ getTimeDifference(
           }
         });
       }
+
+         let requestBody = {
+                nextState: "Start Verification",
+                isForced: true
+              }
+       await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.supplierCustomerNo }&WorkflowName=ID Party Verification`, requestBody);
     }
 
     if (params.type === "previous") {
@@ -211,6 +222,12 @@ getTimeDifference(
       } else if (this.formData?.supplierCustomerId) {
         await this.updateSupplier().subscribe((res) => {
           if (res?.data) {
+            this.formData.settlementBankInfoId = res?.data?.bankDetails?.settlementBankInfoId
+                let requestBody = {
+                nextState: "Start Verification",
+                isForced: true
+              }
+            this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.supplierCustomerNo }&WorkflowName=ID Party Verification`, requestBody);
             this.activeStep = params?.activeStep;
           }
         });
@@ -223,6 +240,7 @@ getTimeDifference(
       } else if (this.formData?.supplierCustomerId) {
         await this.updateSupplier().subscribe((res) => {
           if (res?.data) {
+            this.formData.settlementBankInfoId = res?.data?.bankDetails?.settlementBankInfoId
             this.activeStep = params?.activeStep;
           }
         });
@@ -248,11 +266,26 @@ getTimeDifference(
     );
   }
 
-  createSupplier() {
+   async putFormData(api: string, payload: any, mapFunc?: MapFunc) {
+      return await this.svc.data
+        ?.put(api, payload)
+        .pipe(
+          map((res) => {
+            if (mapFunc) {
+              res = mapFunc(res);
+            }
+  
+            return res; //this.formConfig.data(res);
+          })
+        )
+        .toPromise();
+    }
+
+  async createSupplier() {
     const payload = {
       business: null,
       isConfirmed: false,
-      contractId: this.formData?.contractId,
+      contractId: this.formData.contractId || this.contractId,
       individual: {
         partyType: ["Third Party"],
         addressDetails: null,
@@ -269,7 +302,7 @@ getTimeDifference(
           dependentsAge: "",
           emails: [
             {
-              value: this.formData?.individualSupplierEmail,
+              value: "",
               type: "EmailOther",
               emailChk: false,
             },
@@ -278,7 +311,7 @@ getTimeDifference(
               type: "EmailBusiness",
             },
             {
-              value: "",
+              value: this.formData?.individualSupplierEmail,
               type: "EmailHome",
             },
           ],
@@ -340,28 +373,32 @@ getTimeDifference(
       },
     };
 
-    this.svc?.data
+    await this.svc?.data
       ?.post("CustomerDetails/add_customer", payload)
       .subscribe((res) => {
         if (res?.data) {
           this.formData.supplierCustomerId = res?.data?.customerId;
           this.formData.supplierCustomerNo = res?.data?.customerNo;
+          this.formData.settlementBankInfoId = res?.data?.bankDetails?.settlementBankInfoId
           this.activeStep = 1;
         }
       });
-  }
+  
+}
 
   updateSupplier() {
-    const rawAccNo = this.formData?.supplierAccountNumber || "";
-    const formattedAccNo = rawAccNo.slice(0, 7) + "-" + rawAccNo.slice(7);
-
-    const rawBranchCode = this.formData?.supplierBranchCode || "";
-    const formattedBranchCode =
-      rawBranchCode.slice(0, 2) + "-" + rawBranchCode.slice(2);
+    let rawAccNo = this.formData?.supplierAccountNumber || "";
+    rawAccNo = rawAccNo?.toString()
+    const formattedAccNo = rawAccNo !== "" ? rawAccNo?.slice(0, 7) + "-" + rawAccNo?.slice(7)
+                          : "";
+    let rawBranchCode = this.formData?.supplierBranchCode || "";
+    rawBranchCode = rawBranchCode?.toString()
+    const formattedBranchCode = rawBranchCode !== "" ?
+      rawBranchCode?.slice(0, 2) + "-" + rawBranchCode?.slice(2) : "";
     const payload = {
       business: null,
       isConfirmed: false,
-      contractId: this.formData?.contractId,
+      contractId: this.formData?.contractId || this.contractId,
       individual: {
         partyType: ["Third Party"],
         businessIndividual: "Individual",
@@ -377,7 +414,7 @@ getTimeDifference(
           dependentsAge: "",
           emails: [
             {
-              value: this.formData?.individualSupplierEmail,
+              value: "",
               type: "EmailOther",
               emailChk: false,
             },
@@ -386,7 +423,7 @@ getTimeDifference(
               type: "EmailBusiness",
             },
             {
-              value: "",
+              value: this.formData?.individualSupplierEmail,
               type: "EmailHome",
             },
           ],
@@ -418,7 +455,7 @@ getTimeDifference(
         },
         referenceDetails: null,
         bankDetails: {
-          settlementBankInfoId: 0,
+          settlementBankInfoId: this.formData?.settlementBankInfoId ,
           currency: {
             id: 105,
             name: "New Zealand Dollars",
@@ -439,7 +476,7 @@ getTimeDifference(
             extName: "Bank Not Required",
           },
           name: this.formData?.supplierAccountName,
-          description: "",
+          description: this.formData?.supplierAccountName,
           accountCategory: "None",
           accountNumber: formattedAccNo,
           accountClassification: "Personal",
@@ -523,6 +560,8 @@ getTimeDifference(
     };
 
     return this.svc?.data?.put("CustomerDetails/update_customer", payload);
+
+    
   }
   calculateNewDate(yearsToSubtract, monthsToSubtract) {
     const date = new Date();

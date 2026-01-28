@@ -22,6 +22,11 @@ export class FinancialPositionComponent extends BaseIndividualClass {
   // Dynamic maximum value for progress bars
   dynamicMaxValue: number = 10000; // Default fallback
   expenditureMonthly: any;
+  // Flags to track invalid inputs
+  hasInvalidAssetInput: boolean = false;
+  hasInvalidIncomeInput: boolean = false;
+  hasInvalidLiabilitiesInput: boolean = false;
+  hasInvalidExpenditureInput: boolean = false;
   constructor(
     public override route: ActivatedRoute,
     public override svc: CommonService,
@@ -37,13 +42,28 @@ override async ngOnInit(): Promise<void> {
     .pipe(takeUntil(this.destroy$))
     .subscribe((res) => {
       this.formData = res;
-      this.incomeValue = this.calculateIncomeMonthly();
-      this.assetValue = this.formData?.totalAsset;
+      
+      // Use pre-calculated totalIncome from income-details component (already handles negative values)
+      // If totalIncome is not set yet, calculate it but check for negative values
+      this.incomeValue = this.formData?.totalIncome !== undefined 
+        ? this.formData.totalIncome 
+        : this.calculateIncomeMonthly();
+      
+      // Use pre-calculated totalAsset from asset-details component (already handles negative values)
+      this.assetValue = this.formData?.totalAsset || 0;
+      
       // Use Balance/Limit total for Liabilities graph (from liabilities component)
       this.totalLiabilites = this.formData?.totalLiabilitiesBalanceLimit || 0;
       
       // Expenditure (Monthly) Graph - ONLY expenditure + recurring (NO liabilities)
       this.expenditureMonthly = this.calculateExpenditureMonthly();
+      
+      // Track invalid input flags
+      this.hasInvalidAssetInput = this.formData?.hasInvalidAssetInput || false;
+      this.hasInvalidIncomeInput = this.formData?.hasInvalidIncomeInput || false;
+      this.hasInvalidLiabilitiesInput = this.formData?.hasInvalidBalanceLimitInput || false;
+      this.hasInvalidExpenditureInput = this.formData?.hasInvalidExpenditureInput || 
+                                        this.formData?.hasInvalidRecurringInput || false;
       
       // This condition is for keeping default value as true for IsSharedFinancialPosition instead of undefined
       if (this.formData?.IsSharedFinancialPosition != undefined) {
@@ -72,39 +92,115 @@ override async ngOnInit(): Promise<void> {
   }
 }
 calculateIncomeMonthly(): number {
-  let monthlyTotal = 0;
-  
   // Get income details from formData
   if (this.formData?.incomeDetails && Array.isArray(this.formData.incomeDetails)) {
-    this.formData.incomeDetails.forEach((income: any) => {
-      const amount = income.amount || 0;
-      const frequency = income.frequency;
-      monthlyTotal += this.convertToMonthly(amount, frequency);
+    // Helper function to check if amount is invalid (>18,2 format OR negative)
+    const isInvalidAmount = (amount: any): boolean => {
+      if (amount === null || amount === undefined) return false;
+      const amountStr = amount.toString();
+      const [integerPart, decimalPart] = amountStr.split('.');
+      
+      // Check if negative
+      if (amount < 0) return true;
+      
+      // Check if integer part exceeds 18 digits
+      if (integerPart && integerPart.length > 18) return true;
+      
+      // Check if decimal part exceeds 2 digits
+      if (decimalPart && decimalPart.length > 2) return true;
+      
+      // Check if total value exceeds the maximum (18,2 format)
+      if (parseFloat(amountStr) > 999999999999999999.99) return true;
+      
+      return false;
+    };
+    
+    // Filter out null/undefined amounts and get valid amounts
+    const validIncomes = this.formData.incomeDetails.filter((income: any) => {
+      return income.amount !== null && income.amount !== undefined;
     });
+    
+    if (validIncomes.length === 0) {
+      return 0;
+    }
+    
+    // Check if any amount is invalid
+    const hasInvalidAmount = validIncomes.some((income: any) => isInvalidAmount(income.amount));
+    
+    // Filter out invalid amounts for calculation
+    const validAmountsForCalculation = validIncomes.filter((income: any) => !isInvalidAmount(income.amount));
+    
+    if (hasInvalidAmount) {
+      // Check if ALL amounts are invalid - if so, return 0
+      const allInvalid = validIncomes.every((income: any) => isInvalidAmount(income.amount));
+      
+      if (allInvalid) {
+        return 0; // All values are invalid - reset graph to 0
+      }
+      
+      // Some values are invalid - calculate using only valid positive values
+      let monthlyTotal = 0;
+      validAmountsForCalculation.forEach((income: any) => {
+        const amount = income.amount || 0;
+        // Only include positive values in the calculation
+        if (amount > 0) {
+          const frequency = income.frequency;
+          monthlyTotal += this.convertToMonthly(amount, frequency);
+        }
+      });
+      
+      return monthlyTotal;
+    }
+    
+    // No invalid amounts - check if ALL amounts are negative
+    const allNegative = validIncomes.every((income: any) => {
+      return income.amount < 0;
+    });
+    
+    if (allNegative) {
+      return 0; // Reset graph to 0 when ALL values are negative
+    }
+    
+    // Calculate total using only positive values (exclude negative values)
+    let monthlyTotal = 0;
+    validIncomes.forEach((income: any) => {
+      const amount = income.amount || 0;
+      // Only include positive values in the calculation
+      if (amount > 0) {
+        const frequency = income.frequency;
+        monthlyTotal += this.convertToMonthly(amount, frequency);
+      }
+    });
+    
+    return monthlyTotal;
   }
   
-  return monthlyTotal;
+  return 0;
 }
 
 /**
  * Calculate Expenditure (Monthly) correctly
- * Must include: Expenditure Amount + Regular Recurring Essential Outgoings Amount
+ * Must include: Expenditure Amount + Regular Recurring Essential Outgoings Amount + Liabilities Amount
  * ALL amounts must be converted to monthly values using their frequency
+ * Child components already handle filtering negative values (only gray out if ALL are negative)
+ * So we can use the pre-calculated totals from child components
  */
 calculateExpenditureMonthly(): number {
-  let monthlyTotal = 0;
+  // Use pre-calculated totals from child components
+  // These components already handle the logic: only gray out if ALL values are negative,
+  // otherwise exclude negative values and use only positive values
   
   // 1. Expenditure Section - Get monthly-converted total from child component
   const expenditureMonthly = this.formData?.expenditureTotal || 0;
-  monthlyTotal += expenditureMonthly;
   
   // 2. Regular Recurring Essential Outgoings - Get monthly-converted total from child component
   const recurringMonthly = this.formData?.totalRegularOutgoings || 0;
-  monthlyTotal += recurringMonthly;
   
   // 3. Liabilities Amount (monthly-converted) - Get from liabilities component
   const liabilitiesMonthly = this.formData?.totalLiabilitiesMonthly || 0;
-  monthlyTotal += liabilitiesMonthly;
+  
+  // Sum all three components
+  const monthlyTotal = expenditureMonthly + recurringMonthly + liabilitiesMonthly;
   
   return monthlyTotal;
 }
@@ -114,21 +210,21 @@ private convertToMonthly(amount: number, frequency: number): number {
   if (!amount || amount === 0) return 0;
   
   switch (frequency) {
-    case 3533: return amount * 4.33;  // Weekly
-    case 3534: return amount * 2.17;  // Fortnightly  
+    case 3533: return amount * 4.3333;  // Weekly
+    case 3534: return amount * 2.1667;  // Fortnightly  
     case 3535: return amount;         // Monthly
     case 4017: return amount / 3;     // Quarterly
     default: return amount;
   }
 }
 calculateDynamicMax(): void {
-  // Collect all financial values, filter out invalid ones
+  // Collect all financial values, filter out invalid ones and negative values
   const values = [
     this.assetValue || 0,
     this.totalLiabilites || 0,
     this.incomeValue || 0,
     this.expenditureMonthly || 0  
-  ].filter(val => val !== Infinity && !isNaN(val) && isFinite(val));
+  ].filter(val => val !== Infinity && !isNaN(val) && isFinite(val) && val >= 0);
   
   // If no valid values, use default
   if (values.length === 0) {
@@ -140,8 +236,16 @@ calculateDynamicMax(): void {
   const maxValue = Math.max(...values);
   
   // Round up to nearest 5K as per document requirement
-  // "Round up to a 'clean' readable number closest 5K range"
-  this.dynamicMaxValue = Math.ceil(maxValue / 5000) * 5000;
+  let roundedMax = Math.ceil(maxValue / 5000) * 5000;
+  
+  
+  // This prevents bars from touching the edge
+  if (roundedMax <= maxValue) {
+    roundedMax += 5000; // Add one more 5K increment
+  }
+  
+  // Add additional 10% buffer for visual spacing
+  this.dynamicMaxValue = Math.ceil((roundedMax * 1.1) / 5000) * 5000;
   
   // Ensure minimum scale of 10000 for better visualization
   if (this.dynamicMaxValue < 10000) {
@@ -149,11 +253,24 @@ calculateDynamicMax(): void {
   }
 }
 
+//  method to get display value
+getDisplayValue(value: number): number {
+  if (value === null || value === undefined || isNaN(value) || value < 0) {
+    return 0;
+  }
+  return value;
+}
+
 
   //  Get safe percentage for progress bar
   getProgressPercentage(value: number): number {
     // Handle invalid values
     if (value === null || value === undefined || isNaN(value)) {
+      return 0;
+    }
+    
+    // Handle negative values - return 0 to show grey/empty bar
+    if (value < 0) {
       return 0;
     }
     

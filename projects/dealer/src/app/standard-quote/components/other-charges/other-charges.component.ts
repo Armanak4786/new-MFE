@@ -72,8 +72,8 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
       //     .patchValue(this.baseFormData?.loanMaintenanceFee || 0);
       // }
     }
-
-
+    
+  
     // if (this.baseFormData?.productId != res?.productId) {
     if (
       this.baseFormData.productCode == "FL" ||
@@ -82,7 +82,7 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
       this.hideCard = true;
       this.mainForm?.updateHidden({ loanMaintenceFee: true });
       this.mainForm?.updateHidden({ fixedCheckbox: true });
-    }
+    } 
     // }
 
     await this.updateValidation("onInit");
@@ -107,7 +107,7 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
         inputClass: " font-bold col-3 py-0",
         disabled: true,
       },
-      {
+      { 
         type: "amount",
         mode: Mode.label,
         label: "Incl. GST of",
@@ -152,7 +152,7 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
       {
         type: "checkbox",
         label: "Waive LMF",
-
+        
         name: "fixedCheckbox",
         cols: 3,
         nextLine: false,
@@ -162,23 +162,23 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
     ],
   };
 
-  handleUpdateAmount(amount: any) { }
+  handleUpdateAmount(amount: any) {}
   override onFormEvent(event: any): void {
     if (event.name == "fixedCheckbox") {
       if (event.value) {
         this.mainForm.get("loanMaintenceFee").patchValue(0);
         this.baseFormData.loanMaintenanceFee = 0;
-        this.baseFormData.weiveLMF = "1";
+        this.baseFormData.weiveLMF="1";
       } else {
         this.mainForm.get("loanMaintenceFee").patchValue(this.baseFormData?.apiLoanMaintenceFee);
         this.baseFormData.loanMaintenanceFee = this.baseFormData?.apiLoanMaintenceFee;
-        this.baseFormData.weiveLMF = "0";
+         this.baseFormData.weiveLMF="0";
       }
     }
     super.onFormEvent(event);
   }
 
-  override updateData(postData: any): void { }
+  override updateData(postData: any): void {}
   override onFormDataUpdate(res: any): void {
     // super.onFormDataUpdate(res);
   }
@@ -188,67 +188,75 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
 
   override async onFormReady(): Promise<void> {
 
-    const productCode = sessionStorage.getItem('productCode');
+      const productCode = sessionStorage.getItem('productCode');
 
-    if (productCode == "FL" || productCode == "OL") {
-      this.mainForm.updateProps("totalAmountBorrowed", { label: "Total Cash Cost" });
-      this.mainForm.updateHidden({ includeGst: false });
+      if(productCode == "FL") {
+        this.mainForm.updateProps("totalAmountBorrowed", { inputClass: " font-bold col-3 py-0 pr-5" });
+        this.mainForm.updateProps("includeGst", {inputClass: "col-3 py-0 pr-5"})
+        this.mainForm.updateProps("interestCharges", {inputClass: "col-3 py-0 pr-5"})
+      }
 
-    }
+      if(productCode == "FL" || productCode == "OL") {
+        this.mainForm.updateProps( "totalAmountBorrowed", { label: "Total Cash Cost" } );
+        this.mainForm.updateHidden({ includeGst: false });
+    
+      }
 
-    this.baseSvc.onLoanPurposeChange.subscribe((loanPurpose) => {
-      let showLmf = this.dashboardSvc?.introducers?.find(item =>
-        item.originatorNo == this.baseFormData?.originatorNumber
-      )
-
-      if ((loanPurpose == configure?.LoanPurpose || this.baseFormData?.loanPurpose == configure?.LoanPurpose) && productCode !== "OL") {
+      this.baseSvc.onLoanPurposeChange.subscribe((loanPurpose) => {
+        let showLmf = this.dashboardSvc?.introducers?.find(item => 
+         item.originatorNo == this.baseFormData?.originatorNumber
+      )  
+      
+      if( (loanPurpose == configure?.LoanPurpose || this.baseFormData?.loanPurpose == configure?.LoanPurpose) && productCode !== "OL") {
         this.mainForm.updateHidden({ loanMaintenceFee: false });
-        if (showLmf?.waive == 1) {
-          this.mainForm.updateHidden({ fixedCheckbox: false });
-          if (this.baseFormData.weiveLMF == "1") {
-            this.mainForm.get('fixedCheckbox')?.setValue(true);
-          }
-          else {
-            this.mainForm.get('fixedCheckbox')?.setValue(false);
-          }
+        if(showLmf?.waive == 1) {
+        this.mainForm.updateHidden({ fixedCheckbox: false });
+        if(this.baseFormData.weiveLMF=="1")
+        {
+         this.mainForm.get('fixedCheckbox')?.setValue(true);
         }
-        else {
+        else{
+          this.mainForm.get('fixedCheckbox')?.setValue(false);
+        }
+        }
+        else{
           this.mainForm.updateHidden({ fixedCheckbox: true });
         }
       }
       else {
-
+    
         this.mainForm.updateHidden({ loanMaintenceFee: true });
         this.mainForm.updateHidden({ fixedCheckbox: true });
       }
-
+     
     });
 
-    this.baseSvc.onDealerChange.subscribe((change) => {
-      if (this.baseFormData?.purposeofLoan == configure.LoanPurpose) {
-        let showLmf = this.dashboardSvc?.introducers?.find(item =>
-          item.originatorNo == this.baseFormData?.originatorNumber
-        )
+    this.baseSvc.onDealerChange.subscribe((change)=>{
+      if(this.baseFormData?.purposeofLoan == configure.LoanPurpose) {
+        let showLmf = this.dashboardSvc?.introducers?.find(item => 
+         item.originatorNo == this.baseFormData?.originatorNumber
+        )  
 
-        if (showLmf?.waive == 1) {
+        if(showLmf?.waive == 1 ) {
           this.mainForm.updateHidden({ fixedCheckbox: false });
-          if (this.baseFormData.weiveLMF == "1") {
-            this.mainForm.get('fixedCheckbox')?.setValue(true);
-          }
-          else {
-            this.mainForm.get('fixedCheckbox')?.setValue(false);
-          }
+           if(this.baseFormData.weiveLMF=="1")
+        {
+         this.mainForm.get('fixedCheckbox')?.setValue(true);
         }
-        else {
+        else{
+          this.mainForm.get('fixedCheckbox')?.setValue(false);
+        }
+        }
+        else{
           this.mainForm.updateHidden({ fixedCheckbox: true });
         }
       }
-      else {
+      else{
         this.mainForm.updateHidden({ fixedCheckbox: true });
       }
-
+      
     })
-
+    
     await this.updateValidation("onInit");
     super.onFormReady();
   }
@@ -262,8 +270,8 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
   }
 
   override onValueTyped(event: any): void {
-    if (event?.name === "fixedCheckbox") {
-      this.baseSvc.forceToClickCalculate.next(true);
+    if(event?.name === "fixedCheckbox"){
+       this.baseSvc.forceToClickCalculate.next(true);
     }
   }
   async updateValidation(event) {

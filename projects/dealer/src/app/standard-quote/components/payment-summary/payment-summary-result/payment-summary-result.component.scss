@@ -81,5 +81,36 @@
         text-align: left !important;
       }
     }
+
+    .text-left-label-only {
+      .p-inputtext {
+        text-align: right !important;
+      }
+
+      label {
+        text-align: left !important;
+      }
+    }
+
+    .left-padding-0 {
+      label {
+        padding-left: 0 !important;
+      }
+    }
+
+    label {
+      margin-left: 0 !important;
+    }
+
+    .last-payment-AFV {
+      width: 75px !important;
+      .p-inputtext {
+        text-align: right !important;
+      }
+
+      label {
+        text-align: left !important;
+      }
+    }
   }
 }

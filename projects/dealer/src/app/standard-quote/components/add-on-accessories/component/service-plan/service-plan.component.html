@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <form [formGroup]="servicePlanForm" #mainForm>
+<form [formGroup]="servicePlanForm" [class.disabled]="isDisabled()" #mainForm >
       <div class="grid">
         <ng-container formArrayName="registrations" *ngIf="this.baseFormData?.registrations?.length > 0">
           <div
@@ -90,9 +90,11 @@
                     type="text"
                     pInputText
                     regexPattern="[^0-9]*"
-                    maxlength="3"
                     formControlName="months"
                   />
+                  <div *ngIf="acc.get('months')?.dirty && acc.get('months')?.hasError('max')">
+                    <small class="p-error">Months must be less than 999</small>
+                  </div>
                 </div>
                    <!-- <div class="col-3 p-fluid" *ngIf="acc.get('name').value === 'Others'">
                   <text
@@ -163,11 +165,13 @@
                     pInputText
                     regexPattern="[^0-9]*"
                     formControlName="months"
-                    maxlength="3"
                   />
                 <div *ngIf="acc.get('months').hasError('required')">
                   <small class="p-error">Month is required</small>
                 </div>
+                <div *ngIf="acc.get('months')?.dirty && acc.get('months')?.hasError('max')">
+                <small class="p-error">Months must be less than 999</small>
+              </div>
                   <!-- <text [mode]="'edit'" [label]="'lbl_months'"  [pattern]="'^[0-9]*'" [labelType]="'vertical'"  formControlName="months"
 ></text> -->
                 </div>

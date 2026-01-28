@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
     <div class="flex-column cursor-pointer ">
        @if (!userRole?.functions?.includes('generate_settlement_quote')) {
       <div
-        class="py-1 flex justify-content-center action-item p-2 "
+        class="py-1 flex justify-content-center text-center action-item p-2 "
         (click)="createSettlementQuote($event)"
       >
         Create Settlement Quote

@@ -47,7 +47,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         name: "previousEmployer",
         cols: 2,
         nextLine: false,
-        inputClass: "mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         /* //validators: [
           Validators.required,
           Validators.maxLength(30),
@@ -91,7 +91,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         name: "previousEmployeeYear",
         labelClass: "tce pb-3",
         className: "ml-3 mt-0 py-4 col-fixed w-4rem white-space-nowrap",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         //validators: [Validators.required, Validators.max(99)],
       },
       {
@@ -108,7 +108,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
 
         className:
           "ml-3 py-4 mt-4 col-fixed w-4rem white-space-nowrap timeInBusinessMonthsClass",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         //validators: [Validators.max(11)],
         errorMessage: "Value should be less than 12",
       },
@@ -139,6 +139,16 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
 
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     
     let params: any = this.route.snapshot.params;
 
@@ -228,7 +238,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         }));
 
         this.mainForm.updateList("previousOccupation", previousOccupationList);
-
+        previousOccupationList.sort((a, b) => a.label.localeCompare(b.label));
         return previousOccupationList;
       }
     );
@@ -247,7 +257,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
           "previousEmploymentType",
           previousEmploymentTypeList
         );
-
+        previousEmploymentTypeList.sort((a, b) => a.label.localeCompare(b.label));
         return previousEmploymentTypeList;
       }
     );
