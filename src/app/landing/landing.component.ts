@@ -28,21 +28,21 @@ export class LandingComponent {
         {
             title: 'Customer Information Portal',
             icon: 'assets/images/building.svg',
-            route: 'commercial',
+            route: 'http://localhost:4202',
             color: '#B7C200',
             size: 'large'
         },
         {
             title: 'Quotes & Applications',
             icon: 'assets/images/Quotes&Applications.svg',
-            route: 'dealer',
+            route: 'http://localhost:4201',
             color: '#B7C200',
             size: 'small'
         },
         {
             title: 'Admin',
             icon: 'assets/images/setting-2.svg',
-            route: 'admin',
+            route: 'http://localhost:4203',
             color: '#B7C200',
             size: 'small'
         }
