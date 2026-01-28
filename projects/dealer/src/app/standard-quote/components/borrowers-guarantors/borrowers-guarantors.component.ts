@@ -1202,7 +1202,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.individualService.activeStep = 3;
         this.router.navigateByUrl(
-          `dealer/individual/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `individual/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       } else if (
         // event.rowData.financialPosition == "Financial Position" &&

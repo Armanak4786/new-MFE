@@ -182,7 +182,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
 
   // addCustomer(customerNumber: any) {
   //   this.commonSvc.router.navigateByUrl(
-  //     `dealer/${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
+  //     `${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
   //   );
   // }
 
@@ -205,7 +205,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
 
     // Only navigate if no match
     this.commonSvc.router.navigateByUrl(
-      `dealer/${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
+      `${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
     );
 
     if(this.searchType === "individual") {
@@ -233,7 +233,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
       this.searchType = path;
     }
     
-    this.commonSvc.router.navigateByUrl(`/dealer/${this.searchType}`);
+    this.commonSvc.router.navigateByUrl(`/${this.searchType}`);
     this.individualSvc.resetBaseDealerFormData();
     this.businessSvc.resetBaseDealerFormData();
     this.trustSvc.resetBaseDealerFormData();
@@ -289,7 +289,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
 
   redirectToHome() {
     this.baseSvc.activeStep = 1;
-    this.svc.router.navigateByUrl("/dealer/standard-quote");
+    this.svc.router.navigateByUrl("/standard-quote");
 
     this.svc.dialogSvc
           .show(SearchCustomerComponent, "Search Customer", {
@@ -476,7 +476,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
     customerStatementData: customerStatementData,
   });
     this.svc.router.navigate(
-      ["/dealer/customer-statement", loanNo],
+      ["/customer-statement", loanNo],
       { queryParams: { productCode: this.productCode } }
     );
   }
