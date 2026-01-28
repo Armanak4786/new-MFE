@@ -11,8 +11,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import {
   BaseFormClass,
   CommonService,
-  GenericFormConfig,
-  MapFunc,
   Mode,
   ToasterService,
   ValidationService,
@@ -20,10 +18,10 @@ import {
 import { StandardQuoteService } from "../../../standard-quote/services/standard-quote.service";
 import { QuickQuoteService } from "../../services/quick-quote.service";
 import { AssetTypesComponent } from "../../../components/asset-types/asset-types.component";
-import { firstValueFrom, map, Subject } from "rxjs";
+import { firstValueFrom, map,  Subject } from "rxjs";
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
 import configure from "../../../../../public/assets/configure.json";
-import { MessageService } from "primeng/api";
+import {  MessageService } from "primeng/api";
 import { AfvAssetTypesComponent } from "../../../components/afv-asset-types/afv-asset-types.component";
 
 @Component({
@@ -465,7 +463,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
   //   ],
   // };
 
-  override formConfig: any = {
+    override formConfig: any = {
     autoResponsive: true,
     api: 'quickQuote',
     goBackRoute: 'dashboard',
@@ -582,6 +580,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
 
       if (sessionStorage.getItem("externalUserType") == "Internal") {
         this.mainForm.updateList("productId", this.baseSvc.productList);
+        this.mainForm.updateList("dealerId", this.baseSvc.internalSalesDealerList);
         this.mainForm?.form
           ?.get("dealerId")
           ?.setValue(this.baseSvc?.quickQuoteData[this.ind]?.dealerId || 0);
@@ -807,6 +806,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       });
       this.mainForm.updateProps("cashPriceValue", {
         mode: Mode.edit,
+        className: "",
       });
       this.mainForm.updateProps("balloonPct", {
         mode: Mode.edit,
@@ -982,10 +982,6 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         isFixed: true,
       });
 
-      this.mainForm.updateValidators("depositPct", [
-        Validators.max(100),
-        Validators.required,
-      ]);
       this.mainForm?.updateClass(
         { kmAllowance: "col-offset-2 col-4" },
         "inputClass"
@@ -1024,7 +1020,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         // firstLeasePayment: false,
       });
 
-      this.mainForm.removeValidators("depositPct", Validators.required);
+
       this.mainForm?.updateClass(
         { pctResidualValue: "col-offset-1 col-4" },
         "inputClass"
@@ -1047,7 +1043,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       );
     } else {
       this.mainForm.get("pctResidualValue").clearValidators();
-      this.mainForm.updateValidators("depositPct", Validators.required);
+     
     }
   }
   override async onButtonClick(event: any): Promise<void> {
@@ -1291,20 +1287,20 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     }
   }
 
-  async getProductProgramForInternalSales() {
-    await this.baseSvc.getFormData(
-      `Product/get_programs_products?introducerId=${0}`,
-      (res) => {
-        this.baseSvc.productProgramList = res.data;
-        let productdata = res.data?.products;
+ async getProductProgramForInternalSales() {
+     await this.baseSvc.getFormData(
+        `Product/get_programs_products?introducerId=${0}`,
+        (res) => {
+          this.baseSvc.productProgramList = res.data;
+          let productdata = res.data?.products;
 
         this.baseSvc.productList = Array.isArray(productdata)
           ? productdata
-            .map((item) => ({
-              label: item.name,
-              value: item.productId,
-            }))
-            .sort((a, b) => a.label.localeCompare(b.label))
+              .map((item) => ({
+                label: item.name,
+                value: item.productId,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
           : [];
 
         this.mainForm.updateList("productId", this.baseSvc.productList);
@@ -1403,10 +1399,14 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
           this.mainForm
             ?.get("programId")
             ?.patchValue(programOptions[0]?.programId);
-
-          if (sessionStorage?.getItem("externalUserType") === "Internal") {
-            const dealerList = await this.stdSvc.getDealerForInternalSales(programOptions[0]?.programId)
-            this.mainForm.updateList('dealerId', dealerList);
+          
+          if(sessionStorage?.getItem("externalUserType")==="Internal"){
+              let product = this.baseSvc?.productProgramList?.products?.find(
+              (p) => p?.productId === event?.data
+              );
+            this.stdSvc.productBusinessModel = product?.businessModel;
+            this.baseSvc.internalSalesDealerList = await this.stdSvc.getDealerForInternalSales(programOptions[0]?.programId)
+            this.mainForm.updateList('dealerId', this.baseSvc.internalSalesDealerList);
           }
           let defaulting = {};
           let dataMapped = await this.baseSvc.contractPreview(
@@ -1453,18 +1453,18 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         }
       }
 
-      if (sessionStorage?.getItem("externalUserType") === "Internal") {
-        const product = this.baseSvc?.productProgramList?.products?.
-          find(product => product.productId === event?.data);
-        if (product?.businessModel === "Direct") {
-          this.mainForm?.updateDisable({ 'dealerId': true });
-          this.mainForm?.updateProps("dealerId", { className: "disable-dealer-dropdown" });
-        }
-        else if (product?.businessModel === "Introduced") {
-          this.mainForm?.updateDisable({ 'dealerId': false });
-          this.mainForm?.updateProps("dealerId", { className: "" });
-        }
-      }
+    if(sessionStorage?.getItem("externalUserType")==="Internal"){
+       const product = this.baseSvc?.productProgramList?.products?.
+                       find(product => product.productId === event?.data);
+    if(product?.businessModel === "Direct"){
+      this.mainForm?.updateDisable({'dealerId': true});
+      this.mainForm?.updateProps("dealerId", {className: "disable-dealer-dropdown"});
+    }
+    else if(product?.businessModel === "Introduced"){
+       this.mainForm?.updateDisable({'dealerId': false});
+      this.mainForm?.updateProps("dealerId", {className: ""});
+    }
+  }
 
     }
 
@@ -1502,7 +1502,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
 
         try {
           this?.setTermDropDown(event?.data);
-        } catch (error) { }
+        } catch (error) {}
 
         if (!this?.mainForm?.get("calculateFor")?.value && this.index == 0) {
           this?.mainForm?.get("calculateFor")?.patchValue("Payment");
@@ -1511,9 +1511,9 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         this.mainForm.get("calculateFor").disable();
       }
 
-      if (sessionStorage?.getItem("externalUserType") === "Internal") {
-        const dealerList = await this.stdSvc.getDealerForInternalSales(event?.data)
-        this.mainForm.updateList('dealerId', dealerList);
+      if(sessionStorage?.getItem("externalUserType")==="Internal"){
+          this.baseSvc.internalSalesDealerList = await this.stdSvc.getDealerForInternalSales( event?.data)
+          this.mainForm.updateList('dealerId', this.baseSvc.internalSalesDealerList);
       }
     }
     if (event.name == "calculateFor") {
@@ -1557,13 +1557,13 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       this.convertPctToAmount("balloonAmount", event.data, "ballon");
     }
 
-    if (event.name == "dealerId" && sessionStorage?.getItem("externalUserType") === "Internal") {
-      const originatorNumber = await this.stdSvc.getOriginatorNumberByName(event?.data)
-      this.stdSvc.setBaseDealerFormData({
-        originatorNumber: originatorNumber || ''
-      });
-    }
-
+     if(event.name == "dealerId" && sessionStorage?.getItem("externalUserType")==="Internal"){
+    const originatorNumber = await this.stdSvc.getOriginatorNumberByName(event?.data)
+    this.stdSvc.setBaseDealerFormData({
+      originatorNumber: originatorNumber || ''
+    });
+  }
+  
     if (
       (event.name == "deposit" ||
         event.name == "depositPct" ||
@@ -1671,7 +1671,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         // firstLeasePayment: false,
       });
 
-      this.mainForm.removeValidators("depositPct", Validators.required);
+     
       this.mainForm?.updateClass(
         { pctResidualValue: "col-offset-1 col-4" },
         "inputClass"
@@ -1712,12 +1712,6 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         // Validators.min(1),
         Validators.min(0),
       ]);
-    } else {
-      this.mainForm.get("pctResidualValue").clearValidators();
-      this.mainForm.updateValidators("depositPct", [
-        Validators.required,
-        Validators.max(100),
-      ]);
     }
     if (this.mainForm.form.valid) {
       this.mainForm.updateProps("submit", { disabled: false });
@@ -1728,7 +1722,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       this.mainForm.get("calculateFor").disable();
     }
 
-    await this.updateValidation("onInit");
+    await this.updateValidation(event);
   }
 
   override async onFormEvent(event: any) {
@@ -1943,7 +1937,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     this.stdSvc.forceToClickCalculate.next(true);
     this.stdSvc.setBaseDealerFormData(data);
     this.stdSvc.showResult = false;
-    this.router.navigateByUrl("/dealer/standard-quote");
+    this.router.navigateByUrl("/standard-quote");
   }
 
   async selectAsset() {
@@ -2143,9 +2137,6 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
   pageCode: string = "QuickQuoteComponent"; // need to check
   modelName: string = "CreateQuickQuoteComponent";
 
-  override async onBlurEvent(event) {
-    await this.updateValidation(event);
-  }
 
   override async onValueEvent(event) {
     await this.updateValidation(event);
@@ -2215,11 +2206,11 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
 
           this.baseSvc.productList = Array.isArray(productdata)
             ? productdata
-              .map((item) => ({
-                label: item.name,
-                value: item.productId,
-              }))
-              .sort((a, b) => a.label.localeCompare(b.label))
+                .map((item) => ({
+                  label: item.name,
+                  value: item.productId,
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label))
             : [];
 
           this.mainForm.updateList("productId", this.baseSvc.productList);
@@ -2300,11 +2291,11 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
           );
           let programJson = Array.isArray(programOptions)
             ? programOptions
-              ?.map((item) => ({
-                label: item.name,
-                value: item.programId,
-              }))
-              .sort((a, b) => a.label.localeCompare(b.label))
+                ?.map((item) => ({
+                  label: item.name,
+                  value: item.programId,
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label))
             : [];
           this.mainForm.updateList("programId", programJson);
           if (this.dashboardSvc.isDealerCalculated) {

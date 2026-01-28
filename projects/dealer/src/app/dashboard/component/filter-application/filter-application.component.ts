@@ -48,7 +48,9 @@ export class FilterApplicationComponent extends BaseFormClass {
     const response = res?.data?.data?.responseMessage?.[0];
 
     const operatingUnit = response?.operatingUnit;
-    const allowedUnits = response?.allowedOperatingUnits || [];
+    const allowedUnits = response?.allowedOperatingUnits.filter(
+                         unit => unit.partyId !== operatingUnit?.partyId
+                        ) ?? [];
 
    
     const operatingUnitEntry = operatingUnit
@@ -113,7 +115,6 @@ toggleShowAll() {
 
 
  getAllSelected(){
-  this.selectAll = !this.selectAll;
   if(this.selectAll){
   this.fields.forEach(field => field.checked = true);
   }
@@ -129,6 +130,7 @@ toggleShowAll() {
  }
 
 clearFilters() {
+  this.selectAll = false;
     this.fields.forEach(f => (f.checked = false));
     // this.allSelected = false;
     this.showAll = false;

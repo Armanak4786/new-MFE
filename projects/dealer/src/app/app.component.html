@@ -1,4 +1,9 @@
+
+
 <div class="layout-wrapper" [ngClass]="containerClass">
+    <ng-container *ngIf="isloading">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="5" />
+      </ng-container>
     <app-topbar></app-topbar>
     <app-sidemenu></app-sidemenu>
 
@@ -18,3 +23,6 @@
     <app-footer></app-footer>
     <div class="layout-mask"></div>
 </div>
+<toaster></toaster>
+<p-confirmPopup key="globalConfirm"></p-confirmPopup>
+<p-confirmDialog />

@@ -224,7 +224,7 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
             ...matchedAsset,
           };
           this.baseSvc.isAssetSearch = true;
-          this.svc.router.navigateByUrl("dealer/asset/addAsset/edit");
+          this.svc.router.navigateByUrl("asset/addAsset/edit");
         }
       })
       )

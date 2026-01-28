@@ -530,6 +530,17 @@ override formConfig: GenericFormConfig = {
       this?.mainForm?.get("previousCountry")?.patchValue("New Zealand");
       this.baseFormData.previousCountry = "New Zealand";
     }
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || (
+        this.baseFormData?.AFworkflowStatus &&
+        this.baseFormData.AFworkflowStatus !== 'Quote'
+      )
+    ) {
+      this.mainForm?.form?.disable();
+    } else { 
+      this.mainForm?.form?.enable();
+    }
   }
   // async updateDropdownData() {
   //   await this.baseSvc.getFormData(
@@ -708,6 +719,17 @@ override formConfig: GenericFormConfig = {
       this.mainForm?.form.get("previousSearchValue")?.patchValue("", { emitEvent: false });
     }
     super.onFormReady();
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || (
+        this.baseFormData?.AFworkflowStatus &&
+        this.baseFormData.AFworkflowStatus !== 'Quote'
+      )
+    ) {
+      this.mainForm?.form?.disable();
+    } else { 
+      this.mainForm?.form?.enable();
+    }
   }
 
   tempCity = null;
@@ -731,6 +753,17 @@ override formConfig: GenericFormConfig = {
         this.getCities();
       }
       this.tempCity = event?.value;
+    }
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+    if (
+      (portalWorkflowStatus != 'Open Quote') || (
+        this.baseFormData?.AFworkflowStatus &&
+        this.baseFormData.AFworkflowStatus !== 'Quote'
+      )
+    ) {
+      this.mainForm?.form?.disable();
+    } else { 
+      this.mainForm?.form?.enable();
     }
 
     super.onFormEvent(event);
@@ -851,6 +884,15 @@ override formConfig: GenericFormConfig = {
         
         // Step 4: DISABLE the search address field
         this.mainForm.form.get("previousSearchValue")?.disable({ emitEvent: false });
+               // Changing "City" dropdown to text input field
+        this.mainForm.updateProps("previousCity", {
+          type:'text',
+          inputType:'vertical',
+          inputClass: "w-8",
+          cols: 2,
+          labelClass:"",
+          className:''
+        });
         
       } else {
         // Step 2: When toggle is set to "No" (false) - NZ Address     
@@ -868,6 +910,18 @@ override formConfig: GenericFormConfig = {
         this.baseSvc.setBaseDealerFormData({
           previousCountry: "New Zealand",
         });
+            // Changing "City" text input field back to dropdown
+      this.mainForm.updateProps("previousCity", {
+        type: "select",
+        label: "City",
+        labelClass: "w-8 -my-3",
+        alignmentType: "vertical",
+        name: "previousCity",
+        className: "px-0 customLabel",
+        options: this.cityOptions,
+        cols: 2,
+        nextLine: false,
+      });
       }
     }
 
@@ -994,10 +1048,10 @@ override formConfig: GenericFormConfig = {
         previousStreetNumber: true,
         previousUnitNumber: true,
         previousResidenceType: true,
-        previousYear: true,
-        previousMonth: true,
-        year: true,
-        month: true,
+        previousYear: false,
+        previousMonth: false,
+        year: false,
+        month: false,
         // previousSearchValue: true
       });
 

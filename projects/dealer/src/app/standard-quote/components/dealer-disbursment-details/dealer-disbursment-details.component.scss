@@ -49,4 +49,7 @@
     color: var(--label-color) !important;
     font-weight: bold;
   }
+}amount ::ng-deep input {
+  text-align: right !important;
+  width:120px !important;
 }

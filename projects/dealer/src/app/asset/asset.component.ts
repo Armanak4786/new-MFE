@@ -15,7 +15,7 @@ import { ToasterService, ValidationService } from "auro-ui";
 import { SearchAssetComponent } from "../standard-quote/components/search-asset/search-asset.component";
 import { AssetInsuranceSummaryComponent } from "../standard-quote/components/asset-insurance-summary/asset-insurance-summary.component";
 import { DashboardService } from "../dashboard/services/dashboard.service";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "../../../public/assets/configure.json";
 
 
 export class Vehicle {
@@ -154,21 +154,22 @@ export class AssetComponent implements OnInit {
     public toasterSvc: ToasterService,
     public validationSvc: ValidationService,
     public cdr: ChangeDetectorRef,
-    public dashboardService: DashboardService
+    public dashboardService : DashboardService
   ) {
 
     effect(() => {
-
-      if (this.dashboardService.isDealerCalculated) {
-        this.toasterSvc.showToaster({
-          severity: "error",
-          detail: "err_calculateMsg",
-        });
+  
+    if(this.dashboardService.isDealerCalculated)
+      {
+              this.toasterSvc.showToaster({
+                severity: "error",
+                detail:"err_calculateMsg",
+              });
       }
-
+        
     });
 
-  }
+   }
 
   standardQuoteData: any;
 
@@ -178,32 +179,32 @@ export class AssetComponent implements OnInit {
     this.addType = params?.type;
     this.mode = params?.mode || "create";
     if (this.mode == "edit" && this.addType == "addAsset") {
-      let policyExpiryDate = null;
-
-      if (this.tradeSvc?.assetEditData?.policyExpiryDate) {
-        const dateValue = new Date(this.tradeSvc.assetEditData.policyExpiryDate);
-
-        if (!isNaN(dateValue.getTime())) {
-          policyExpiryDate = dateValue;
-        }
+     let policyExpiryDate = null;
+    
+    if (this.tradeSvc?.assetEditData?.policyExpiryDate) {
+      const dateValue = new Date(this.tradeSvc.assetEditData.policyExpiryDate);
+      
+      if (!isNaN(dateValue.getTime())) {
+        policyExpiryDate = dateValue;
       }
+    }
       let hin = this.tradeSvc?.assetEditData?.vin
-
+      
       this.baseSvc.setBaseDealerFormData({
         ...this.tradeSvc.assetEditData,
         policyExpiryDate: policyExpiryDate,
         hin: hin,
-        assetType: {
-          assetTypeId: this.tradeSvc.assetEditData?.assetType?.assetTypeId || this.tradeSvc.assetEditData?.assetTypeId,
-          assetTypeName: this.tradeSvc.assetEditData?.assetType?.assetTypeName || this.tradeSvc.assetEditData?.assetName,
-          assetTypePath: this.tradeSvc.assetEditData?.assetType?.assetTypePath || this.tradeSvc.assetEditData?.assetPath,
-        }
+          assetType: {
+      assetTypeId: this.tradeSvc.assetEditData?.assetType?.assetTypeId || this.tradeSvc.assetEditData?.assetTypeId,
+      assetTypeName: this.tradeSvc.assetEditData?.assetType?.assetTypeName || this.tradeSvc.assetEditData?.assetName,
+      assetTypePath: this.tradeSvc.assetEditData?.assetType?.assetTypePath || this.tradeSvc.assetEditData?.assetPath,
+    }
 
       });
     }
     if (this.mode == "edit" && this.addType == "addTrade") {
       let data = {
-        assetId: this.tradeSvc.tradeEditData?.tradeId,
+        assetId : this.tradeSvc.tradeEditData?.tradeId,
         // assetName: this.tradeSvc?.tradeEditData?.tradeName,
         // assetType: {
         //     //////
@@ -228,9 +229,9 @@ export class AssetComponent implements OnInit {
         ccRating: this.tradeSvc?.tradeEditData?.tradeCCNo,
         assetPath: this.tradeSvc?.tradeEditData?.tradePath,
         motivePower: this.tradeSvc?.tradeEditData?.tradeMotivePower,
-        supplierName: this.tradeSvc?.tradeEditData?.tradeSupplierName,
-        isExist: this.tradeSvc?.tradeEditData?.isExist,
-        rowNo: this.tradeSvc?.tradeEditData?.rowNo
+        supplierName : this.tradeSvc?.tradeEditData?.tradeSupplierName,
+        isExist : this.tradeSvc?.tradeEditData?.isExist,
+        rowNo : this.tradeSvc?.tradeEditData?.rowNo
 
       };
       this.baseSvc.setBaseDealerFormData({ ...data });
@@ -249,24 +250,24 @@ export class AssetComponent implements OnInit {
       .subscribe((res) => {
         this.formData = res;
       });
-    //  this.dashboardService?.onOriginatorChange.pipe(takeUntil(this.destroy$),skip(1)).subscribe(async (dealer) => {
-    //                   if(this.dashboardService.isDealerCalculated)
-    //                     {
-    //                             this.toasterSvc.showToaster({
-    //                               severity: "error",
-    //                               detail:"err_calculateMsg",
-    //                             });
-    //                     }
-
-    //       })
+      //  this.dashboardService?.onOriginatorChange.pipe(takeUntil(this.destroy$),skip(1)).subscribe(async (dealer) => {
+      //                   if(this.dashboardService.isDealerCalculated)
+      //                     {
+      //                             this.toasterSvc.showToaster({
+      //                               severity: "error",
+      //                               detail:"err_calculateMsg",
+      //                             });
+      //                     }
+        
+      //       })
   }
 
 
-  isDisabled() {
-    if (configure?.workflowStatus?.view?.includes(this.standardQuoteData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.standardQuoteData?.AFworkflowStatus))) {
-      return true;
-    }
-    return false;
+  isDisabled(){
+    if(configure?.workflowStatus?.view?.includes(this.standardQuoteData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.standardQuoteData?.AFworkflowStatus))){
+    return true;
+  }
+  return false;
   }
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -286,10 +287,11 @@ export class AssetComponent implements OnInit {
             `/dealer/standard-quote/edit/${this.standardQuoteData?.contractId}`
           );
         } else {
-          this.svc?.router?.navigateByUrl("/dealer/standard-quote");
+          this.svc?.router?.navigateByUrl("/standard-quote");
         }
       }
     ); // Ensure the event is passed here
+    //this.svc?.router?.navigateByUrl("/standard-quote");
   }
 
   async redirectToAssetDetails() {
@@ -354,9 +356,9 @@ export class AssetComponent implements OnInit {
         if (!validateAsset) {
           return;
         }
-        const vin = this.formData?.assetCategory === 'Marine'
-          ? String(this.formData?.hin) || ""
-          : String(this.formData?.vin) || "";
+    const vin = this.formData?.assetCategory === 'Marine'
+                        ? String(this.formData?.hin) || ""
+                        : String(this.formData?.vin) || "";
         let asset: PhysicalAsset = {
           id: 0,
           assetId: this.formData?.assetId || 0,
@@ -408,16 +410,16 @@ export class AssetComponent implements OnInit {
           broker: this.formData?.broker || "",
           sumInsured: this.formData?.sumInsured || 0,
           policyNumber: String(this.formData?.policyNumber || 0),
-          policyExpiryDate: this.formData?.policyExpiryDate &&
-            !isNaN(new Date(this.formData.policyExpiryDate).getTime())
-            ? String(this.formData.policyExpiryDate)
-            : null,
-          email: this.formData?.email || '',
-          localNumber: this.formData?.localNumber || '',
+        policyExpiryDate: this.formData?.policyExpiryDate && 
+                        !isNaN(new Date(this.formData.policyExpiryDate).getTime())
+                        ? String(this.formData.policyExpiryDate) 
+                        : null,
+          email:this.formData?.email || '',
+          localNumber:this.formData?.localNumber || '',
           phoneCode: this.formData?.phoneCode || '',
-          partyId: this.formData?.partyNo,
-          partyNo: this.formData?.partyNo,
-          assetHdrInsuranceId: this.formData?.assetHdrInsuranceId,
+          partyId: this.formData?.partyNo ,
+          partyNo :this.formData?.partyNo,
+          assetHdrInsuranceId:this.formData?.assetHdrInsuranceId,
           amtNetAnnualPremium: this.formData?.amtNetAnnualPremium || 0,
           amtTaxOnAnnualPremium: this.formData?.amtTaxOnAnnualPremium || 0,
           grossAnnualPremium: this.formData?.grossAnnualPremium || 0,
@@ -428,7 +430,7 @@ export class AssetComponent implements OnInit {
           },
         };
         if (this.mode != "edit") {
-
+         
           this.tradeSvc.assetList.push({
             ...asset,
             actions: this.tradeSvc?.actions,
@@ -440,7 +442,7 @@ export class AssetComponent implements OnInit {
         }
 
         if (this.mode == "edit" && !this.standardQuoteSvc.isAssetSearch) {
-
+          
           this.tradeSvc.assetList[this.tradeSvc.assetEditIndex] = {
             ...asset,
             actions: this.tradeSvc?.actions,
@@ -449,9 +451,9 @@ export class AssetComponent implements OnInit {
             ...insurance,
           };
         }
-        else if (this.mode == "edit" && this.standardQuoteSvc.isAssetSearch) {
-
-          this.tradeSvc.assetList.push({
+         else if (this.mode == "edit" && this.standardQuoteSvc.isAssetSearch) {
+           
+           this.tradeSvc.assetList.push({
             ...asset,
             actions: this.tradeSvc?.actions,
           });
@@ -461,7 +463,7 @@ export class AssetComponent implements OnInit {
           });
         }
         else if (this.standardQuoteSvc.isAssetSearch) {
-
+        
           this.tradeSvc.assetList.push({
             ...asset,
             actions: this.tradeSvc?.actions,
@@ -472,7 +474,7 @@ export class AssetComponent implements OnInit {
           });
         }
         this.tradeSvc.assetListSubject.next(this.tradeSvc.assetList);
-
+        
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
         this.redirectToAssetSummery();
       }
@@ -488,9 +490,9 @@ export class AssetComponent implements OnInit {
           return;
         }
         let trade: TradeAsset = {
-          id: 0,
+           id: 0,
           tradeId: this.formData.assetId || 0,
-          tradeName: `${this.formData?.year || '-'} ${this.formData?.make || '-'} ${this.formData?.model || '-'} ${this.formData?.variant || '-'}`.trim(),
+          tradeName:  `${this.formData?.year || '-'} ${this.formData?.make || '-'} ${this.formData?.model || '-'} ${this.formData?.variant || '-'}`.trim(),
           tradePath: this.formData?.assetPath || "",
           // tradeType: {
           //   //////
@@ -514,13 +516,13 @@ export class AssetComponent implements OnInit {
           tradeVariant: this.formData?.variant || "",
           tradeVinNo: String(this.formData?.vin || ""),
           tradeYear: String(this.formData?.year || ""),
-          tradeSupplierName: this.formData?.supplierName || "",
+          tradeSupplierName :this.formData?.supplierName || "",
           changeAction: this.mode === "edit" && !this.standardQuoteSvc.isAssetSearch
-            ? TradeInAssetChangeActions.update : this.mode == "edit" && this.standardQuoteSvc.isAssetSearch ? TradeInAssetChangeActions.create
-              : TradeInAssetChangeActions.create,
-          isExist: this.formData?.isExist ?? false,
-          rowNo: this.formData?.rowNo ?? -1
-        };
+                ? TradeInAssetChangeActions.update : this.mode == "edit" && this.standardQuoteSvc.isAssetSearch ?   TradeInAssetChangeActions.create 
+                : TradeInAssetChangeActions.create,
+          isExist : this.formData?.isExist  ?? false, 
+          rowNo : this.formData?.rowNo ?? -1        
+                };
 
         if (this.mode != "edit") {
           this.tradeSvc.tradeList.push({
@@ -532,28 +534,28 @@ export class AssetComponent implements OnInit {
             ...trade,
             actions: this.tradeSvc?.actions,
           }
-            ;
-        } else if (this.standardQuoteSvc.isAssetSearch) {
+;
+        }else if (this.standardQuoteSvc.isAssetSearch) {
           this.tradeSvc.tradeList.push({
             ...trade,
             actions: this.tradeSvc?.actions,
           });
         }
-        this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
+      this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
 
       }
       this.standardQuoteSvc.isFinancialAssetPriceValueDetails = true
       this.standardQuoteSvc.isAssetSubmit = true;
       this.baseSvc.resetBaseDealerFormData();
-      this.svc.router.navigateByUrl("/dealer/standard-quote");
+      this.svc.router.navigateByUrl("/standard-quote");
     }
   }
 
   validate(rego, vin, chassis, type) {
     if (type == "trade") {
       let existingTrades = [...this.tradeSvc.tradeList.filter(
-        t => t.changeAction !== 'delete'
-      )];
+  t => t.changeAction !== 'delete'
+        )];
       if (this.mode == "edit") {
         existingTrades.splice(this.tradeSvc.tradeEditIndex, 1);
       }
@@ -771,33 +773,33 @@ export class AssetComponent implements OnInit {
 
   redirectToAssetSummery() {
     this.svc.router.navigateByUrl('/dealer/standard-quote');
-    this.svc.dialogSvc
-      .show(AssetInsuranceSummaryComponent, "Asset & Insurance Summary", {
-        templates: {
-          footer: null,
-        },
-        width: "60vw",
-      })
-      .onClose.subscribe((data: any) => {
+   this.svc.dialogSvc
+         .show(AssetInsuranceSummaryComponent, "Asset & Insurance Summary", {
+           templates: {
+             footer: null,
+           },
+           width: "60vw",
+         })
+   .onClose.subscribe((data: any) => {
         if (data?.submitType == "submit") {
           console.log("submit data mainform", this.mainForm);
-          this.svc.dialogSvc
-            .show(SearchAssetComponent, data.submitFor, {
-              templates: {
-                footer: null,
-              },
-              data: {
-                modalType: data?.submitFor,
-              },
-              width: "55vw",
-            })
-            .onClose.subscribe((data) => {
-              if (data?.action != "closeAssetInsuranceSummaryTable") {
-                this.redirectToAssetSummery();
-              }
-            });
+            this.svc.dialogSvc
+              .show(SearchAssetComponent, data.submitFor, {
+                templates: {
+                  footer: null,
+                },
+                data: {
+                  modalType: data?.submitFor,
+                },
+                width: "55vw",
+              })
+              .onClose.subscribe((data) => {
+                if (data?.action != "closeAssetInsuranceSummaryTable") {
+                  this.redirectToAssetSummery();
+                }
+              });
         }
       });
-  }
+    }
 
 }

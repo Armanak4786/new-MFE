@@ -139,6 +139,16 @@ export class SoleTradeEmailContactDetailComponent extends BaseSoleTradeClass {
     super.onFormEvent(event);
    
   }
+
+  isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
+
   // override async ngOnInit(): Promise<void> {
   //   this.customForm = { form: this.emailForm };
 

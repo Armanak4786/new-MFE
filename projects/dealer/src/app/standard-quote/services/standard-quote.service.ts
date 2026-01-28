@@ -6,7 +6,7 @@ import { cloneDeep } from "lodash";
 import { AssetTradeSummaryService } from "../components/asset-insurance-summary/asset-trade.service";
 import { DataService, StorageService, ToasterService } from "auro-ui";
 import { DatePipe } from "@angular/common";
-import configure from "../../../../../../public/assets/configure.json";
+import configure from "../../../../public/assets/configure.json";
 
 @Injectable({
   providedIn: "root",
@@ -51,8 +51,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
   updateIndividualCustomerWarning: boolean = false;
   contractId: any;
   isProgramChanged = false;
-  productBusinessModel: any;
-  internalSalesDealers: any;
+  productBusinessModel:any;
+  internalSalesDealers:any;
   loanDateSignal = signal<Date | null>(null);
 
   constructor(
@@ -208,8 +208,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
     let internalSalesPerson;
 
 
-    if ((sessionStorage.getItem("externalUserType") == "Internal")) {
-      internalSalesPerson = contractData?.contractPartyRoles?.find(role => role.partyRole === "Salesperson")
+  if((sessionStorage.getItem("externalUserType") == "Internal" )){
+    internalSalesPerson = contractData?.contractPartyRoles?.find(role=>role.partyRole === "Salesperson")
     }
 
     let DataMapper = {
@@ -299,10 +299,10 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         contractData?.financialAssetLease?.additionalFund?.customFlowID,
       /// Adds On Accessories
       accessories: contractData?.financialAssetLease?.accessories,
-      servicePlan: combinedData || contractData?.financialAssetLease?.servicePlan,
-      other: contractData?.financialAssetLease?.others,
+      servicePlan:combinedData || contractData?.financialAssetLease?.servicePlan,
+      other:contractData?.financialAssetLease?.others ,
       registrations: contractData?.financialAssetLease?.registrations,
-      financialAssetPriceSegments: contractData?.financialAssetLease?.financialAssetPriceSegments,
+      financialAssetPriceSegments:contractData?.financialAssetLease?.financialAssetPriceSegments,
       financialAssetPriceSegmentsUpdatedId: contractData?.financialAssetLease || null,
       extended:
         contractData?.financialAssetLease?.extendedWarranty == null
@@ -458,14 +458,14 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         : 0,
       netTradeAmount: Math.abs(contractData?.tradeAmount || 0),
       // apinetTradeAmount: Math.abs(contractData?.tradeAmount || 0),
-
+      apitradeAmount: Math.abs(contractData?.tradeAmount || 0),
       totalMaintenanceHdrId: contractData?.totalMaintenanceHdrId,
       // totalMaintenanceAmount: contractData?.maintainanceCost,
-      maintainanceCost: contractData?.maintainanceCost,           // Changed key as per formConfig
+      maintainanceCost: contractData?.totalMaintenanceAmount,           // Changed key as per formConfig
       apimaintainanceCost: contractData?.maintainanceCost,        // To store updated, api values for increase decrease validations
       financedMaintenanceHdrId: contractData?.financedMaintenanceHdrId,
       // financedMaintenanceAmount: contractData?.financedMaintainanceCharge,
-      financedMaintainanceCharge: contractData?.financedMaintainanceCharge,
+      financedMaintainanceCharge: contractData?.financedMaintenanceAmount,
       apifinancedMaintainanceCharge: contractData?.financedMaintainanceCharge,
       tracksorTyres: contractData?.tracksorTyres,
       serviceAgent: contractData?.serviceAgent,
@@ -809,6 +809,12 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       id: firstOtherId
     }));
 
+    const newRegistration = formData?.registrations?.map((reg: any) => ({
+      ...reg,
+      name: "Registration"
+    })) || [];
+
+
     if (formData?.contractId) {
       this.defautltUDCEstablishmentFee = {
         defaultudcEstablishmentFee: Math.abs(
@@ -867,7 +873,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
           dealerOriginationFee: formData?.dealerOriginationFee || 0,
           establishmentFeeShare: 0,
           estimatedCommissionSubsidy: 0,
-          accessories: formData?.accessories || [],
+          accessories:  formData?.accessories || [],
           consumerCreditInsurance:
             formData?.contractAmount && formData?.contractId
               ? {
@@ -938,8 +944,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
                 customFlowID: formData?.motorVehicalInsuranceId,
                 changeAction: formData?.motorVehicalInsuranceChangeAction,
               },
-          servicePlan: servicePlanItems || [],
-          registrations: formData?.registrations || [],
+          servicePlan: servicePlanItems|| [],
+          registrations: newRegistration || [],
           other: other || [],
           fixed: formData?.fixed || false,
           isFixed: formData?.fixed || false,
@@ -978,7 +984,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
                       "preview",
                       formData?.financialAssetPriceSegments,
                       //formData?.contractId ? formData?.financialAssetLease ?.financialAssetPriceSegments : null,
-                      formData?.contractId ? formData?.financialAssetPriceSegmentsUpdatedId?.financialAssetPriceSegments : null,
+                      formData?.contractId ? formData?.financialAssetPriceSegmentsUpdatedId?.financialAssetPriceSegments:null,
                       formData
                     ),
             }
@@ -1375,8 +1381,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
             formData?.financialAssetInsurance[0]?.insurer == null ? null
               : {
                 assetHdrInsuranceId:
-                  formData?.physicalAsset[0]?.insuranceDetails?.assetHdrInsuranceId || formData?.financialAssetInsurance?.[0]
-                    ?.assetHdrInsuranceId || 0,
+                  formData?.physicalAsset[0]?.insuranceDetails?.assetHdrInsuranceId ||formData?.financialAssetInsurance?.[0]
+                    ?.assetHdrInsuranceId|| 0,
                 insuranceParty: {
                   partyNo:
                     formData?.financialAssetInsurance?.[0]?.partyId || 0,
@@ -1594,7 +1600,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
 
       /// Adds On Accessories
 
-      financialAssetPriceSegments: contractData?.financialAssetLease?.financialAssetPriceSegments,
+      financialAssetPriceSegments:contractData?.financialAssetLease?.financialAssetPriceSegments,
       residualValue: contractData?.financialAssetLease?.residualValue || 0,
       afvModel: contractData?.financialAssets[0]?.physicalAsset?.model,
       afvMake: contractData?.financialAssets[0]?.physicalAsset?.make,
@@ -1641,7 +1647,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       // ppsrPercentage: Math.abs(contractData?.ppsrPercentage || 0),
       paymentScheduleGST: contractData?.financialAssets[0]?.taxesAmt,
       paymentScheduleTotal: contractData?.financialAssets[0]?.amtFinancedTotal,
-      weiveLMF: contractData?.weiveLMF
+      weiveLMF:contractData?.weiveLMF
     };
 
     if (onChange == "program" || onChange == "asset") {
@@ -1661,8 +1667,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         registrations: contractData?.financialAssetLease?.registrations,
         /// Adds On Accessories
         accessories: contractData?.financialAssetLease?.accessories,
-        servicePlan: combinedData || contractData?.financialAssetLease?.servicePlan,
-        other: contractData?.financialAssetLease?.others,
+        servicePlan:combinedData || contractData?.financialAssetLease?.servicePlan,
+        other:contractData?.financialAssetLease?.others ,
         financialAssetPriceSegments: [],
         extended:
           contractData?.financialAssetLease?.extendedWarranty?.months ||
@@ -1767,7 +1773,6 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         term: contractData?.financialAssetLease?.term,
       };
     }
-
     return DataMapper;
   }
   async getUsefulLife(effectiveDate: any, assetTypeId: number, depreciationRateCurve: any): Promise<void> {
@@ -1787,7 +1792,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
     console.log('Useful Life Response:', response);
     if (response) {
       const usefulLife = response?.usefulLife
-      this.setBaseDealerFormData({ usefulLife: Number(usefulLife) || null });
+      this.setBaseDealerFormData({ usefulLife:  Number(usefulLife) || null });
     }
 
   }
@@ -2134,7 +2139,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
 
   // ----------------------------------------------------------------------------------------------------
 
-  async contractModification(formData: any, isDraft: any, activeStep?: any, isDataModified?: any) {
+  async contractModification(formData: any, isDraft: any, activeStep?: any, isDataModified?:any) {
     if (formData?.physicalAsset?.length == 1 && formData?.physicalAsset[0]?.costOfAsset == 0 && isDataModified == true) {
       return this.toasterService.showToaster({
         severity: "error",
@@ -2195,22 +2200,10 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       ...item,
       id: firstOtherId
     }));
-    if (other?.length > 0) {
-      const definedRowNos = other
-        .map((o) => (o?.rowNo != null && !isNaN(Number(o.rowNo)) ? Number(o.rowNo) : null))
-        .filter((n) => n !== null) as number[];
-
-      let maxRow = definedRowNos.length ? Math.max(...definedRowNos) : -1;
-
-      other.forEach((o) => {
-        if (o?.rowNo == null || o?.rowNo === "") {
-          maxRow++;
-          o.rowNo = maxRow;
-        } else {
-          o.rowNo = Number(o.rowNo);
-        }
-      });
-    }
+    const newRegistration = formData?.registrations?.map((reg: any) => ({
+      ...reg,
+      name: "Registration"
+    }));
     let request = {
       contractpartyRoles: formData?.salePersonDetails,
       contractEtag: this.stoteSvc.getItem("contractEtag"),
@@ -2364,7 +2357,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         netTradeAmount: 0,
         // paymentAmount: formData?.paymentAmount || 0,
         // paymentSchedule: 0,
-        registrations: formData?.registrations || [],
+        registrations: newRegistration || [],
         residualValue: formData?.residualValue || 0,
         pctResidualValue: formData?.pctResidualValue || 0,
         //servicePlan: formData?.servicePlan || [],
@@ -2398,7 +2391,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
             formData?.financialAssetLease?.additionalFund ||
             formData?.additionalFund,
         }),
-        privateSale: formData?.privateSales,
+        privateSale: Boolean(formData?.privateSales && formData?.privateSales !== '0') || false,
       },
       frequency: formData?.frequency || "",
       inclOfGST: 0,
@@ -2517,12 +2510,12 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       serviceAgent: formData?.serviceAgent,
       maintenanceRequirement: formData?.maintenanceRequirement,
 
-      internalSalespersonParty: (sessionStorage.getItem("externalUserType") == "Internal") ? {
-        contractPartyId: 0,
-        customerId: formData?.internalSalesperson,
-        customerNo: 0,
-        customerRole: "Salesperson"
-      } : null,
+    internalSalespersonParty: (sessionStorage.getItem("externalUserType") == "Internal")?{
+		  contractPartyId: 0,
+      customerId: formData?.internalSalesperson, 
+      customerNo: 0,
+      customerRole: "Salesperson"
+	    }:null,
     };
 
     let resp: any = await this.data
@@ -3274,7 +3267,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       console.error("Error calling get_ppsrrate_fee API:", error);
     }
   }
-  async getDealerForInternalSales(programId: any) {
+  async getDealerForInternalSales(programId: any){
     const request = {
       parameterValues: ["Dealer Availability", String(programId)],
       procedureName: configure.SPProgramListExtract,
@@ -3286,10 +3279,19 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       label: d?.value_text,
       value: d?.value_text,
     }));
+    if(!response?.data?.table?.length){
+      // let dealerResponseData = await this.getFormData(
+      //   "Contract/contract_party_dealer_details_internal"
+      // );
+      // this.internalSalesDealersList = dealerResponseData?.data?.dealers?.map((d: any) => ({
+      //   label: d?.extName,
+      //   value: d?.extName,
+      // }));
+    }
     return this.internalSalesDealersList;
   }
 
-  async getOriginatorNumberByName(partyName: any) {
+  async getOriginatorNumberByName(partyName: any){
     let response = await this.getFormData(`CustomerDetails/get_partiesdetail?ExteName=${partyName}`);
     return response?.data?.partyNo;
   }

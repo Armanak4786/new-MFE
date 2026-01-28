@@ -23,7 +23,7 @@
         <tr>
           <td *ngFor="let customer of customersToDisplay">
            <p-dropdown class="small-dropdown" [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
-                  optionLabel="label" optionValue="value"  [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[0]?.id].declarationResponse"></p-dropdown>
+                  optionLabel="label" optionValue="value"   [disabled]="isDisabled()"> [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[0]?.id].declarationResponse"></p-dropdown>
            </td>
         </tr>
 
@@ -33,7 +33,7 @@
           </td>
           <td *ngFor="let customer of customersToDisplay">
             <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
-                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[1]?.id].declarationResponse"></p-dropdown>
+                        optionLabel="label" optionValue="value" [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[1]?.id].declarationResponse"></p-dropdown>
           </td>
         
         </tr>
@@ -44,7 +44,7 @@
           </td>
           <td *ngFor="let customer of customersToDisplay">
             <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
-                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[2]?.id].declarationResponse"></p-dropdown>
+                        optionLabel="label" optionValue="value" [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[2]?.id].declarationResponse"></p-dropdown>
           </td>
          
         </tr>
@@ -55,7 +55,7 @@
           </td>
           <td *ngFor="let customer of customersToDisplay">
             <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
-                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[3]?.id].declarationResponse"></p-dropdown>
+                        optionLabel="label" optionValue="value" [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[3]?.id].declarationResponse"></p-dropdown>
           </td>
         
           
@@ -67,7 +67,7 @@
           </td>
           <td *ngFor="let customer of customersToDisplay">
             <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'Not Financed', value: 'Not Financed' }]"
-                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[4]?.id].declarationResponse"></p-dropdown>
+                        optionLabel="label" optionValue="value" [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[4]?.id].declarationResponse"></p-dropdown>
           </td>
           
         </tr>
@@ -78,7 +78,7 @@
           </td>
           <td *ngFor="let customer of customersToDisplay">
             <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'Not Financed', value: 'Not Financed' }]"
-                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[5]?.id].declarationResponse"></p-dropdown>
+                        optionLabel="label" optionValue="value" [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[5]?.id].declarationResponse"></p-dropdown>
           </td>
           
         </tr>
@@ -90,7 +90,7 @@
           <td *ngFor="let customer of customersToDisplay">
             <span class="employmentType">{{customer.employmentStatus}}</span>
             <p-dropdown [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }, { label: 'Not Financed', value: 'Not Financed' }]"
-                        optionLabel="label" optionValue="value" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[6]?.id].declarationResponse"></p-dropdown>
+                        optionLabel="label" optionValue="value" [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[6]?.id].declarationResponse"></p-dropdown>
           </td>
         
         </tr>
@@ -104,7 +104,7 @@
     <gen-button [btnType]="'border-btn'"[btnLabel]="'Cancel'" (onClick)="close()"></gen-button>
     </div>
      <div class="col-6 text-right pr-0">
-    <gen-button [btnLabel]="'Submit'" (onClick)="submitForm()"></gen-button>
+    <gen-button [btnLabel]="'Submit'" [disabled]="isDisabled()" (onClick)="submitForm()"></gen-button>
     </div>
   </div>
   

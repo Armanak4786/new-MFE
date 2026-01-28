@@ -21,11 +21,9 @@
   <div class="col-12 py-0">
     <app-current-employment [checkPreviousEmployees]="checkPreviousEmployees" (employementYearChange)="onEmployementYearChange($event)"></app-current-employment>
 
-    <ng-container
-      *ngIf="isEnable && baseFormData?.customerNo"
-    >
       <br />
+        <div [ngClass]="isEnable && baseFormData?.customerNo ? 'block' : 'hidden'">
       <app-previous-employee></app-previous-employee>
-    </ng-container>
+  </div>
   </div>
 </div>

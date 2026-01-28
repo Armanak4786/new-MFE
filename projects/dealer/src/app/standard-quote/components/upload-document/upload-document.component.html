@@ -25,51 +25,73 @@
     </div>
 
 
-    <div class="sm:col-12 md:col-6 lg:col-6 fixed-height-card">
-      <div class="ml-2" style="height: 10%" *ngIf="uiUploadedDocs?.length > 0">
-        <div class="ml-2" style="height: 8%">
-          <div *ngFor="let doc of uiUploadedDocs; let i = index" class="document-tile mb-2 -mt-2 relative">
-            <div class="absolute top-0 right-0 p-1">
-              <div class="flex justify-content-end p-0 m-0" style="height: fit-content">
-                <gen-button class="p-0 m-0 bg-transparent border-none text-black text-xs" (click)="deleteFile(i, doc)"
-                  [btnType]="'non-bg-btn'" [btnIcon]="'fas fa-times'" aria-label="Delete document"
-                  style="line-height: 1"></gen-button>
-              </div>
-            </div>
+<div class="sm:col-12 md:col-6 lg:col-6 fixed-height-card">
+  <div class="ml-2" style="height: 10%" *ngIf="uiUploadedDocs?.length > 0">
+    <div class="ml-2" style="height: 8%">
+      <div *ngFor="let doc of uiUploadedDocs; let i = index"
+           class="document-tile mb-2 -mt-2 relative">
 
-            <div class="p-1">
-              <div class="flex align-items-center mb-2">
-                <i [ngClass]="getDocumentIcon(doc.type)" class="mr-2 text-lg mb-1" style="min-width: 20px"></i>
-                <text [mode]="'label'" class="text-xs" [value]="doc.name" valueClass="'text-xs'"></text>
-              </div>
-
-              <div class="flex items-center mb-2 ml-4">
-                <span class="text-xs">
-                  {{ formatSize(doc.uploadedSize) }} of {{ formatSize(doc.totalSize) }}
-                </span>
-
-                <div class="flex items-center ml-2">
-                  <ng-container *ngIf="doc.isUploading && doc.uploadedSize < doc.totalSize; else uploadComplete">
-                    <!-- <i class="fas fa-circle-notch fa-spin text-gray-500"></i> -->
-                    <span class="text-xs ml-1 text-gray-600">Uploading...</span>
-                  </ng-container>
-                  <ng-template #uploadComplete>
-                    <i class="fas fa-check-circle text-green-500"></i>
-                    <span class="text-xs ml-1 text-green-600">Upload complete</span>
-                  </ng-template>
-                </div>
-              </div>
-
-              <p-progressBar [value]="doc.progress" [showValue]="true" [style]="{ height: '4px' }"></p-progressBar>
-            </div>
+        <div class="absolute top-0 right-0 p-1">
+          <div class="flex justify-content-end p-0 m-0" style="height: fit-content">
+            <gen-button
+              class="p-0 m-0 bg-transparent border-none text-black text-xs"
+              (click)="deleteFile(i, doc)"
+              [btnType]="'non-bg-btn'"
+              [btnIcon]="'fas fa-times'"
+              aria-label="Delete document"
+              style="line-height: 1">
+            </gen-button>
           </div>
         </div>
+
+        <div class="p-1">
+          <div class="flex align-items-center mb-2">
+            <i
+              [ngClass]="getDocumentIcon(doc.type)"
+              class="mr-2 text-lg mb-1"
+              style="min-width: 20px">
+            </i>
+
+            <!-- filename with wrapping -->
+            <div class="doc-name text-xs">
+              <text
+                [mode]="'label'"
+                [value]="truncateName(doc.name)"
+                valueClass="'text-xs'">
+              </text>
+            </div>
+          </div>
+
+          <div class="flex items-center mb-2 ml-4">
+            <span class="text-xs">
+              {{ formatSize(doc.uploadedSize) }} of {{ formatSize(doc.totalSize) }}
+            </span>
+
+            <div class="flex items-center ml-2">
+              <ng-container *ngIf="doc.isUploading && doc.uploadedSize < doc.totalSize; else uploadComplete">
+                <span class="text-xs ml-1 text-gray-600">Uploading...</span>
+              </ng-container>
+              <ng-template #uploadComplete>
+                <i class="fas fa-check-circle text-green-500"></i>
+                <span class="text-xs ml-1 text-green-600">Upload complete</span>
+              </ng-template>
+            </div>
+          </div>
+
+          <p-progressBar
+            [value]="doc.progress"
+            [showValue]="true"
+            [style]="{ height: '4px' }">
+          </p-progressBar>
+        </div>
+
       </div>
     </div>
-
-
-
   </div>
+</div>
+
+</div>  
+
 
 </ng-container>
 @if(documents.length > 0) {
@@ -79,7 +101,7 @@
 
     <gen-table [columns]="docsColumns" [dataList]="documents" [rowHeight]="12" [sortable]="'true'"
       [headingClass]="'font-medium text-500 px-0'" [bodyClass]="'px-0 py-2'" (onCellClick)="onCellClick($event)"
-      [isScrollable]="'true'" [defaultRows]="5"></gen-table>
+      [isScrollable]="'true'" [defaultRows]="5" [tableStyle]="'stripped-rows'"></gen-table>
   </div>
 
   <div class="full-width-divider"></div>

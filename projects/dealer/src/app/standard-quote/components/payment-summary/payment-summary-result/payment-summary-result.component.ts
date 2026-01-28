@@ -160,9 +160,9 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
         type: "amount",
         label: "Payment Amount",
         labelClass: "col-fixed pr-0 m-0",
-        className: "text-right p-0 m-0 col-fixed w-9rem pr-2 rightAlignText",
+        className: "text-right col-fixed w-8rem m-0 p-0 ml-0 rightAlignText left-padding-0",
         name: "paymentAmountRes",
-        inputClass: "text-right",
+        inputClass: "text-right pr-2",
         inputType: "vertical",
         disabled: true,
         hidden: false,
@@ -192,12 +192,12 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
       {
         type: "number",
         styleType: "labelType",
-        label: "Number Of Payments",
+        label: "Total Number of Payments",
         labelClass: "col-fixed pr-0 m-0",
         name: "numberofFlows",
         cols: 3,
         inputType: "vertical",
-        className: "col-fixed w-11rem text-right pr-0 pt-0 pl-0",
+        className: "col-fixed w-13rem text-right pr-2 pt-0 pl-0 ",
         inputClass: "text-right",
         disabled: true,
       },
@@ -216,12 +216,12 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
         label: "Assured Future Value",
         disabled: true,
         hidden: true,
-        cols: 2,
+        cols: 1,
         default: 0,
         labelClass: "col-fixed pr-0 m-0",
         inputType: "vertical",
-        className: "col-fixed w-10rem text-right p-0 m-0",
-        inputClass: "text-right",
+        className: "col-fixed w-10rem text-left-label-only pl-2 p-0 ml-0 m-0",
+        inputClass: "pr-3",
       },
       {
         type: "amount",
@@ -276,9 +276,9 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
     super.onFormReady();
     const productCode = sessionStorage.getItem("productCode");
     if (productCode === "OL") {
-      this.mainForm.updateProps("numberofFlows", {
-        label: "Total Number Of Payments",
-      });
+      // this.mainForm.updateProps("numberofFlows", {
+      //   label: "Total Number of Payments",
+      // });
       this.mainForm.updateHidden({
         totalCostRes: true,
         advancePaymentAmountRes: false,
@@ -292,21 +292,24 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
       this.mainForm.form.get("afvaPaymentSummaryAmount").patchValue(0);
       this.mainForm.updateProps("totalCostRes", {
         cols: 2,
-        className: "text-right p-0 m-0 col-fixed w-11rem pr-0",
+        className: "text-right p-0 m-0 col-fixed w-10rem pr-0 mr-2",
       });
       this.mainForm.updateProps("paymentAmountRes", {
         cols: 1,
-        className: "text-right col-fixed p-0 m-0 w-8rem",
+        className: "col-fixed p-0 pr-2 m-0 w-8rem",
+        
       });
       this.mainForm.updateProps("numberofFlows", {
         cols: 1,
-        className: "col-fixed w-10rem text-right pr-0 pt-0 pl-0",
+        className: "col-fixed w-12rem text-right pt-0 pl-0",
       });
       this.mainForm.updateProps("lastPaymentDateValue", {
         cols: 1,
         className:
-          "col-fixed m-0 p-0 pl-3 w-7rem ng-star-inserted rightAlignText",
-        inputClass: "pr-1",
+          "col-fixed m-0 p-0 pl-0 ng-star-inserted last-payment-AFV",
+        // inputClass: "pr-1",
+                // className: "col-fixed p-0 pr-2 m-0 w-8rem rightAlignText text-right"
+
       });
     }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { BaseIndividualClass } from '../../../base-individual.class';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService, GenericFormConfig } from 'auro-ui';
@@ -23,7 +23,8 @@ export class RegularRecurringFrequencyComponent extends BaseIndividualClass {
     public override route: ActivatedRoute,
     public override svc: CommonService,
     override baseSvc: IndividualService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     super(route, svc, baseSvc);
     this.customForm = { form: this.regularOutgoingForm };
@@ -31,7 +32,7 @@ export class RegularRecurringFrequencyComponent extends BaseIndividualClass {
     this.regularOutgoingForm = this.fb.group({
       regularOutgoingDetails: this.fb.array([]), // Initialize form array
       recurringDescription: [''], // Temporary field for adding new label
-      amtRecurring: ['', [Validators.max(99999999999999.9999)]], // Add max validator for (18,4) format
+      amtRecurring: ['', [Validators.min(0), Validators.max(999999999999999999.99)]], // Add min and max validator - prevent negative values, 18,2 format
       recurringFrequency: [3533], // Temporary field for adding recurringFrequency
     });
   }
@@ -89,50 +90,162 @@ override async ngOnInit(): Promise<void> {
     financialPositionRegularRecurring: this.regularOutgoingDetails.value
   });
 }
+isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
 calculateTotalRegularOutgoings(): void {
-  // Check if any amount exceeds 18 digits
-  const hasInvalidAmount = this.regularOutgoingDetails.value.some((outgoing: any) => {
-    if (outgoing.amtRecurring === null || outgoing.amtRecurring === undefined) return false;
-    const amountStr = outgoing.amtRecurring.toString().replace('.', '');
-    return amountStr.length > 18;
+  // Helper function to check if amount is invalid (>18,2 format OR negative)
+  const isInvalidAmount = (amount: any): boolean => {
+    if (amount === null || amount === undefined) return false;
+    const amountStr = amount.toString();
+    const [integerPart, decimalPart] = amountStr.split('.');
+    
+    // Check if negative
+    if (amount < 0) return true;
+    
+    // Check if integer part exceeds 18 digits
+    if (integerPart && integerPart.length > 18) return true;
+    
+    // Check if decimal part exceeds 2 digits
+    if (decimalPart && decimalPart.length > 2) return true;
+    
+    // Check if total value exceeds the maximum (18,2 format)
+    if (parseFloat(amountStr) > 999999999999999999.99) return true;
+    
+    return false;
+  };
+
+  // Filter out null/undefined amounts and get valid amounts
+  const validOutgoings = this.regularOutgoingDetails.value.filter((outgoing: any) => {
+    return outgoing.amtRecurring !== null && 
+           outgoing.amtRecurring !== undefined;
   });
+
+  // Check if any amount is invalid
+  const hasInvalidAmount = validOutgoings.some((outgoing: any) => isInvalidAmount(outgoing.amtRecurring));
+
+  // Filter out invalid amounts for calculation
+  const validAmountsForCalculation = validOutgoings.filter((outgoing: any) => !isInvalidAmount(outgoing.amtRecurring));
 
   let totalRegularOutgoings: number;
 
-  if (hasInvalidAmount) {
-    totalRegularOutgoings = Infinity;
-  } else {
-    // Calculate monthly-converted total
+  if (validOutgoings.length === 0) {
     totalRegularOutgoings = 0;
-    this.regularOutgoingDetails.value.forEach((outgoing: any) => {
-      const amount = outgoing.amtRecurring || 0;
-      const frequency = outgoing.recurringFrequency;
-      
-      // Convert to monthly based on frequency
-      let monthlyAmount = amount;
-      if (amount && amount !== 0) {
-        switch (frequency) {
-          case 3533: monthlyAmount = amount * 4.33; break;   // Weekly
-          case 3534: monthlyAmount = amount * 2.17; break;   // Fortnightly
-          case 3535: monthlyAmount = amount; break;          // Monthly
-          case 4017: monthlyAmount = amount / 3; break;      // Quarterly
-          default: monthlyAmount = amount; break;
+    this.baseSvc.setBaseDealerFormData({
+      totalRegularOutgoings: totalRegularOutgoings,
+      hasInvalidRecurringInput: false,
+    });
+  } else if (hasInvalidAmount) {
+    // Check if ALL amounts are invalid - if so, reset graph to 0
+    const allInvalid = validOutgoings.every((outgoing: any) => isInvalidAmount(outgoing.amtRecurring));
+
+    if (allInvalid) {
+      // All values are invalid - reset graph to 0
+      totalRegularOutgoings = 0;
+    } else {
+      // Some values are invalid - calculate using only valid positive values
+      totalRegularOutgoings = 0;
+      validAmountsForCalculation.forEach((outgoing: any) => {
+        const amount = outgoing.amtRecurring || 0;
+        
+        // Only process positive values
+        if (amount > 0) {
+          const frequency = outgoing.recurringFrequency;
+          
+          // Convert to monthly based on frequency
+          let monthlyAmount = amount;
+          if (amount && amount !== 0) {
+            switch (frequency) {
+              case 3533: monthlyAmount = amount * 4.3333; break;   // Weekly
+              case 3534: monthlyAmount = amount * 2.1667; break;   // Fortnightly
+              case 3535: monthlyAmount = amount; break;          // Monthly
+              case 4017: monthlyAmount = amount / 3; break;      // Quarterly
+              default: monthlyAmount = amount; break;
+            }
+          }
+          
+          totalRegularOutgoings += monthlyAmount;
         }
-      }
-      
-      totalRegularOutgoings += monthlyAmount;
+      });
+    }
+    
+    // Set flag to indicate invalid input exists
+    this.baseSvc.setBaseDealerFormData({
+      totalRegularOutgoings: totalRegularOutgoings,
+      hasInvalidRecurringInput: true,
+    });
+  } else {
+    // No invalid amounts - check if ALL amounts are negative
+    const allNegative = validOutgoings.every((outgoing: any) => {
+      return outgoing.amtRecurring < 0;
+    });
+
+    if (allNegative) {
+      // Reset graph to 0 when ALL values are negative
+      totalRegularOutgoings = 0;
+    } else {
+      // Calculate monthly-converted total
+      // Only include positive values in the calculation
+      totalRegularOutgoings = 0;
+      this.regularOutgoingDetails.value.forEach((outgoing: any) => {
+        const amount = outgoing.amtRecurring || 0;
+        
+        // Only process positive values
+        if (amount > 0) {
+          const frequency = outgoing.recurringFrequency;
+          
+          // Convert to monthly based on frequency
+          let monthlyAmount = amount;
+          if (amount && amount !== 0) {
+            switch (frequency) {
+              case 3533: monthlyAmount = amount * 4.3333; break;   // Weekly
+              case 3534: monthlyAmount = amount * 2.1667; break;   // Fortnightly
+              case 3535: monthlyAmount = amount; break;          // Monthly
+              case 4017: monthlyAmount = amount / 3; break;      // Quarterly
+              default: monthlyAmount = amount; break;
+            }
+          }
+          
+          totalRegularOutgoings += monthlyAmount;
+        }
+      });
+    }
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalRegularOutgoings: totalRegularOutgoings,
+      hasInvalidRecurringInput: false,
     });
   }
-
-  // Send to service
-  this.baseSvc.setBaseDealerFormData({
-    totalRegularOutgoings: totalRegularOutgoings
-  });
 }
 
   get regularOutgoingDetails(): FormArray {
     return this.regularOutgoingForm.get('regularOutgoingDetails') as FormArray;
+  }
+
+  /**
+   * Check if the Add Row button should be disabled
+   * Returns true if outgoing type, amount, or frequency is not properly filled
+   */
+  isAddRowDisabled(): boolean {
+    const recurringDescription = this.regularOutgoingForm.get('recurringDescription')?.value;
+    const amtRecurring = this.regularOutgoingForm.get('amtRecurring')?.value;
+    const recurringFrequency = this.regularOutgoingForm.get('recurringFrequency')?.value;
+    const amountControl = this.regularOutgoingForm.get('amtRecurring');
+    
+    // Disabled if: no outgoing type selected OR amount is empty/null/undefined/0 OR amount is invalid OR no frequency selected
+    return !recurringDescription || 
+           amtRecurring === null || 
+           amtRecurring === undefined || 
+           amtRecurring === '' ||
+           amtRecurring === 0 ||
+           (amountControl?.invalid ?? false) ||
+           !recurringFrequency;
   }
 
   addRow(): void {
@@ -146,9 +259,10 @@ calculateTotalRegularOutgoings(): void {
       'recurringFrequency'
     )?.value;
 
-    // Handle negative values for the add row amount field
-    if (regularOutgoingTypeAmount !== null && regularOutgoingTypeAmount < 0) {
-      this.regularOutgoingForm.get('amtRecurring')?.setValue(0);
+    // Check if amount field is valid before proceeding
+    const amountControl = this.regularOutgoingForm.get('amtRecurring');
+    if (amountControl?.invalid) {
+      amountControl.markAsTouched();
       return;
     }
 
@@ -200,7 +314,7 @@ calculateTotalRegularOutgoings(): void {
       ],
       amtRecurring: [
         regularOutgoing.amtRecurring,
-        [Validators.max(99999999999999.9999)] // Add max validator for (18,4) format
+        [Validators.min(0), Validators.max(999999999999999999.99)] // Add min and max validator - prevent negative values, 18,2 format
         // [Validators.required, Validators.min(1)],
       ],
       recurringFrequency: [
@@ -217,25 +331,40 @@ calculateTotalRegularOutgoings(): void {
     });
   }
 
-  // Add new method to handle regular outgoing field updates with negative value validation
+  // Add  method to handle regular outgoing field updates
 updateRegularOutgoingDetails(index: number): void {
   const regularOutgoingGroup = this.regularOutgoingDetails.at(index);
   if (regularOutgoingGroup) {
-      // Handle negative values for amount field
-    const amountControl = regularOutgoingGroup.get('amtRecurring');
-    const currentValue = amountControl?.value;
-  
-      // Convert negative values to 0
-    if (currentValue !== null && currentValue < 0) {
-      amountControl?.setValue(0);
-        return; // Exit early since the value change will trigger another update
-    }
-
     this.baseSvc.setBaseDealerFormData({
       regularOutgoingDetails: this.regularOutgoingDetails.value,
     });
     // Recalculate total
     this.calculateTotalRegularOutgoings();
+  }
+}
+
+onAmountBlur(index?: number): void {
+  let amountControl;
+  
+  if (index !== undefined && index !== null) {
+    // Handle form array item
+    const regularOutgoingGroup = this.regularOutgoingDetails.at(index);
+    if (regularOutgoingGroup) {
+      amountControl = regularOutgoingGroup.get('amtRecurring');
+    }
+  } else {
+    // Handle standalone amtRecurring field
+    amountControl = this.regularOutgoingForm.get('amtRecurring');
+  }
+  
+  if (amountControl) {
+    const currentValue = amountControl?.value;
+    
+      // Set to 0 when field is empty/null/undefined on blur (but allow negative values for validation)
+      if (currentValue === null || currentValue === undefined || currentValue === '') {
+        amountControl?.setValue(0);
+        this.cdr.detectChanges();
+      }
   }
 }
 

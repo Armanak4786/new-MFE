@@ -37,7 +37,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
       //   // validators: [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],  --Auro
       // },
       {
-        type: "name",
+        type: "text",
         className: "mt-3 mr-2 ",
         inputType: "vertical",
         label: "Employer Name",
@@ -45,7 +45,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         labelClass: "ba pb-5 -mb-3",
         cols: 2,
         nextLine: false,
-        inputClass: "mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         // maxLength: 30,
         // validators: [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],  --Auro
       },
@@ -90,11 +90,11 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
       {
         type: "number",
         inputType: "vertical",
-        label: "Time with current employer",
+        label: "Time with Current Employer",
         name: "currentEmployeeYear",
         labelClass: "tce pb-3",
         className: "ml-3 mt-0 py-4 col-fixed w-4rem white-space-nowrap",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         // validators: [Validators.required, Validators.max(99)],   --Auro
       },
       {
@@ -112,7 +112,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         // validators: [Validators.max(11)],   --Auro
         className:
           "ml-3 py-4 mt-4 col-fixed w-4rem white-space-nowrap timeInBusinessMonthsClass",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         errorMessage: "Value should be less than 12",
       },
       {
@@ -142,6 +142,16 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
     if(this.baseSvc.showValidationMessage){
       this.mainForm.form.markAllAsTouched()
     }
@@ -177,8 +187,8 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         this.baseFormData?.employementDetails[0]?.effectDtTO
       );
 
-      this.mainForm.get("currentEmployeeYear").patchValue(this.baseFormData?.currentEmployeeYear || duration.years);
-      this.mainForm.get("currentEmployeeMonth").patchValue(this.baseFormData?.currentEmployeeMonth || duration.months);
+      this.mainForm.get("currentEmployeeYear").patchValue(this.baseFormData?.currentEmployeeYear ?? duration.years ?? null);
+      this.mainForm.get("currentEmployeeMonth").patchValue(this.baseFormData?.currentEmployeeMonth ?? duration.months ?? null);
 
       // this.mainForm
       //   .get("currentEmployeeYear")
@@ -421,4 +431,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
   override onBlurEvent(event: any): void {
     this.updateValidation(event);
   }
+  override async onValueEvent(event: any): Promise<void> {
+  await this.updateValidation(event);
+}
 }

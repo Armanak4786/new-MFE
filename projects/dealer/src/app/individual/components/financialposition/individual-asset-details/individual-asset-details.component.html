@@ -8,7 +8,7 @@
       <label class="assetTypelabel col-6 text-size-12 pl-3 mr-1">Asset Type</label>
       <label class="assetTypelabel col-5 text-size-12 text-center">Amount</label>
     </div>
-    <form [formGroup]="assetDetailsForm">
+    <form [formGroup]="assetDetailsForm" [class.disabled]="isDisabled()">
       <!-- (onChange)="updateAssetDetails(i)" -->
       <div formArrayName="assetDetails" class="asset-details-form">
         <div
@@ -19,7 +19,12 @@
             <div class="col-6 align-content-center">
               <div class="grid">
                 <div class="col-6 pl-3">
-                  <span class="label-text" *ngIf="i <= 2"
+                  <!-- Static label for Home Ownership Type -->
+                  <span class="label-text" *ngIf="i === 0"
+                    style="color: var(--label-color)">Home Ownership Type
+                    <!-- <span class="text-red-500">* </span> -->
+                  </span>
+                  <span class="label-text" *ngIf="i > 0 && i <= 2"
                     style="color: var(--label-color)">{{ asset.get("assestType").value }}
                     <!-- <span class="text-red-500">* </span> -->
                   </span>
@@ -72,6 +77,7 @@
                 [fractionDigits]="4"
                 [maxFractionDigits]="4"
                 (ngModelChange)="updateAssetDetails(i)"
+                (blur)="onAmountBlur(i)"
               ></amount>
 
               <div
@@ -88,7 +94,7 @@
                   >Amount should be greater than 0.</small
                 >
                 <small *ngIf="asset.get('amount').errors?.max"
-                  >Amount cannot exceed (18,4)</small
+                  >Amount cannot exceed (18,2)</small
                 >
                 <!-- <small *ngIf="asset.get('amount').errors?.pattern">Must have up to 18 digits before and 2 after the decimal.</small> -->
               </div>
@@ -119,17 +125,14 @@
           ></p-dropdown>
         </div>
         <div class="col-5 p-fluid">
-          <p-inputNumber
-            [inputStyle]="{ 'text-align': 'right' }"
-            inputId="currency-us"
-            mode="currency"
-            currency="USD"
-            [minFractionDigits]="2"
-            [maxFractionDigits]="4"
-            [min]="0"
-            locale="en-US"
-            formControlName="financialAssetTypeAmount"
-          />
+       <amount
+  formControlName="financialAssetTypeAmount"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  (blur)="onAmountBlur()"
+></amount>
+
 
           <!-- Add validation error display for financialAssetTypeAmount -->
           <div
@@ -149,7 +152,7 @@
             >
             <small
               *ngIf="assetDetailsForm.get('financialAssetTypeAmount').errors?.max"
-              >Amount cannot exceed (18,4)</small
+              >Amount cannot exceed (18,2)</small
             >
           </div>
         </div>
@@ -158,6 +161,8 @@
             [btnType]="'bg-btn'"
             [btnIcon]="'pi pi-angle-right text-lg'"
             (click)="addRow()"
+            [disabled]="isAddRowDisabled()"
+            [ngClass]="{'add-row-disabled': isAddRowDisabled()}"
           ></gen-button>
         </div>
       </div>

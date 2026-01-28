@@ -123,6 +123,16 @@ export class PersonalDriverLicenceDetailComponent extends BaseIndividualClass {
     this.updateDropdownData();
 
     await this.handleAllDynamicValidatorsAndValidation("onInit");
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
   }
 
   // private emitFormValidity(): void {
@@ -150,17 +160,21 @@ export class PersonalDriverLicenceDetailComponent extends BaseIndividualClass {
     await this.baseSvc.getFormData(
       "LookUpServices/locations?LocationType=country",
       (res) => {
-        let list = res.data;
-        const countryList = list.map((item) => ({
-          label: item.name,
-          value: item.name,
-        }));
-
+    const list = res.data || [];
+    const index = list.findIndex(c => c.name === "New Zealand");
+    if (index > -1) {
+      list.unshift(list.splice(index, 1)[0]);
+    }
+    this.countryOptions = list.map(c => ({
+      label: c.name,
+      value: c.name,
+    }));
         // Cache full country list and set dropdown
-        this.countryOptions = countryList;
-        this.mainForm.updateList("countryOfIssue", countryList);
-
-        return countryList;
+        //this.countryOptions = countryList;
+        //this.mainForm.updateList("countryOfIssue", countryList);
+        this.mainForm.updateList("countryOfIssue", this.countryOptions);
+        this.mainForm.form.get("countryOfIssue")?.patchValue("New Zealand", { emitEvent: false });
+        return this.countryOptions;
       }
     );
   }

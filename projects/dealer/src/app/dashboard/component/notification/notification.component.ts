@@ -54,7 +54,7 @@ export class NotificationComponent implements OnInit {
     private indiSvc: IndividualService,
     private dashboardSvc: DashboardService,
     private toasterSvc: ToasterService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.userRole = JSON.parse(sessionStorage.getItem("user_role") || "{}");
@@ -81,14 +81,14 @@ export class NotificationComponent implements OnInit {
     this.activeSlide = Number(event.page);
   }
   OnClickRedirect(data: any) {
-    const isExternalUser = sessionStorage.getItem('externalUserType');
-    if (isExternalUser?.includes('External')) {
-      if (!this.dashboardSvc.userSelectedOption) {
+   const isExternalUser = sessionStorage.getItem('externalUserType');
+      if (isExternalUser?.includes('External')) {
+         if (!this.dashboardSvc.userSelectedOption) {
         this.dashboardSvc.dealerAnimate = true;
         setTimeout(() => {
           this.dashboardSvc.dealerAnimate = false;
         }, 5000);
-
+   
         this.toasterSvc.showToaster({
           detail: 'Please select a dealer.',
         });
@@ -114,14 +114,14 @@ export class NotificationComponent implements OnInit {
     this.standardQuoteSvc.calculatedOnce = false;
   }
   quickquote(data: any) {
-    const isExternalUser = sessionStorage.getItem('externalUserType');
-    if (isExternalUser?.includes('External')) {
-      if (!this.dashboardSvc.userSelectedOption) {
+     const isExternalUser = sessionStorage.getItem('externalUserType');
+      if (isExternalUser?.includes('External')) {
+         if (!this.dashboardSvc.userSelectedOption) {
         this.dashboardSvc.dealerAnimate = true;
         setTimeout(() => {
           this.dashboardSvc.dealerAnimate = false;
         }, 5000);
-
+   
         this.toasterSvc.showToaster({
           detail: 'Please select a dealer.',
         });

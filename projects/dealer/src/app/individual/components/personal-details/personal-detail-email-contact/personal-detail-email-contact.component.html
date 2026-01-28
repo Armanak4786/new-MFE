@@ -1,4 +1,4 @@
-<form [formGroup]="emailForm" #mainForm>
+<form [formGroup]="emailForm" [class.disabled]="isDisabled()" #mainForm>
   <ng-container formArrayName="emails">
     <div *ngFor="let email of emails.controls; let i = index">
       <div [formGroupName]="i" class="mt-2">
@@ -19,7 +19,7 @@
               formControlName="value"
               (input)="getvalue()"
             />
-            <div *ngIf="(email.dirty || email.touched) && email.invalid">
+            <div *ngIf="(email.touched) && email.invalid">
               <ng-container *ngIf="email.get('value').errors as errors">
                 <small class="p-error" *ngIf="errors.pattern">
                   Email is in an incorrect format

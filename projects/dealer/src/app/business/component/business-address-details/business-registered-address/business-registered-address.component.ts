@@ -165,7 +165,7 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
       },
       {
         type: "text",
-        label: "Floor No",
+        label: "Floor Number",
         name: "registerFloorNumber",
         // //validators: [Validators.pattern(/^[A-Za-z0-9'\-\&\/.]*$/)],  -- Auro
         className: " ",
@@ -354,6 +354,16 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
       this.mainForm.form.markAllAsTouched();
     }
     await this.getCities();
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+       this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
   }
   private enforceCountryState(): void {
   const countryControl = this.mainForm?.form?.get('registerCountry');
@@ -669,6 +679,16 @@ override async onFormEvent(event: any): Promise<void> {
   
   await this.updateValidation("onInit");
   super.onFormEvent(event);
+  let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+       this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
 }
 
   // UPDATED METHOD: Enhanced place selection with street type auto-population

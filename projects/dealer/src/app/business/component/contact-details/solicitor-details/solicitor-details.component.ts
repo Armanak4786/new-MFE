@@ -15,8 +15,8 @@ import { Validators } from "@angular/forms";
   templateUrl: "./solicitor-details.component.html",
 })
 export class SolicitorDetailsComponent extends BaseBusinessClass {
-  override data: any = {};
-  override mode: any = '';
+  override data: any;
+  override mode;
 
   constructor(
     public override route: ActivatedRoute,
@@ -354,7 +354,7 @@ export class SolicitorDetailsComponent extends BaseBusinessClass {
     ],
   };
 
-  override async onSuccess(data: any) { }
+  override async onSuccess(data: any) {}
 
   pageCode: string = "ContactDetailsComponent";
   modelName: string = "SolicitorDetailsComponent";

@@ -24,10 +24,9 @@
 
     <app-sole-trade-current-employment [checkPreviousEmployees]="checkPreviousEmployees" (employementYearChange)="onEmployementYearChange($event)" ></app-sole-trade-current-employment>
        <br />
-      <ng-container  *ngIf="isEnable && baseFormData?.customerNo" >
-       
+      <div [ngClass]="isEnable && baseFormData?.customerNo ? 'block' : 'hidden'">       
       <app-sole-trade-previous-employee></app-sole-trade-previous-employee>
-      </ng-container>
+      </div>
     </div>
  
  </div>

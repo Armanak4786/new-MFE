@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  input,
   Output,
 } from "@angular/core";
 import { Validators } from "@angular/forms";
@@ -73,295 +74,16 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
   //   // this.defaultTodayDate = this.calculationSvc?.getDefaultDate();
   //   this.formConfig.createData.loanDate = new Date();
   // }
-  paymentStructureOptions: any = [];
-
-  previousDate: any = null;
-  currentDate: any = null;
-  // loanDatePopup() {}
-  program: any;
-
-  override formConfig: GenericFormConfig = {
-    autoResponsive: true,
-    cardType: "non-border",
-    api: "",
-    goBackRoute: "",
-    createData: {
-      // loanDate: this.loanDate,
-    },
-    fields: [
-      {
-        type: "date",
-        label: "Loan Date",
-        name: "loanDate",
-        // validators: [this.calculationSvc.pastDateValidator()],
-        // cols: 3,
-        className: "ml-2 mr-3 col-fixed w-11rem",
-        nextLine: false,
-
-        // errorMessage: "Loan date must not be in past",
-        hidden: false,
-        inputType: "vertical",
-        // dateFormat: 'mm/dd/yy',
-        minDate: new Date(),
-      },
-      {
-        type: "date",
-        label: "Lease Date",
-        name: "leaseDate",
-
-        // cols: 3,
-        className: "mr-4 col-fixed w-11rem",
-        nextLine: false,
-        errorMessage: "Lease date must not be in past",
-        inputType: "vertical",
-        hidden: true,
-      },
-      {
-        type: "date",
-        label: "First Payment",
-        name: "firstPaymentDate",
-        //  validators: [Validators.required,this.calculationSvc.firstPaymentAfterLoanDateValidator('loanDate'),//  validation comment
-        // ],
-        // cols: 3,
-        className: "mr-4 col-fixed w-11rem",
-        inputType: "vertical",
-        // errorMessage: "First Payment Date must be after Loan Date ",
-        nextLine: false,
-        // disabled: true,
-        // mode: Mode.view,
-      },
-      {
-        type: "amount",
-        label: "Initial Lease Amount",
-        name: "initialLeasePayment",
-        // cols: 3,
-        className: "mr-4 col-fixed w-11rem",
-        nextLine: false,
-        hidden: true,
-        inputType: "vertical",
-        // dateFormat: 'MM.dd.yy',
-      },
-      {
-        type: "number",
-        label: "No. of Rentals in Advance",
-        name: "noOfRentalsInAdvance",
-        // validators: [Validators.max(11), Validators.min(0)], //  validation comment
-        cols: 4,
-        hidden: true,
-        inputType: "vertical",
-      },
-      {
-        type: "button",
-        label: "Calculate",
-        submitType: "internal",
-        name: "paymentCalculatebtn",
-        // disabled: this.baseSvc.accessMode == "view",
-
-        btnType: "border-btn",
-        className: "col-2",
-        nextLine: true,
-        isVibrate: false,
-      },
-      {
-        type: "select",
-        label: "Payment Structure",
-        name: "paymentStructure",
-        alignmentType: "vertical",
-        cols: 3,
-        className: "mr-3",
-        // list$: "LookUpServices/lookups?LookupSetName=PaymentStructure",\
-        options: this.paymentStructureOptions,
-      },
-      {
-        type: "amount",
-        label: "Balloon Amount",
-        name: "balloonAmount",
-        maxLength: 12,
-        className: "mt-2 balloonInput col-fixed w-11rem",
-        labelClass: " blnInput -mt-3 py-2 ",
-        disabled: true,
-        inputType: "vertical",
-        default: 0,
-        // validators: [Validators.required],//  validation comment
-      },
-      {
-        type: "label-only",
-        name: "orLabel",
-        typeOfLabel: "inline",
-        label: "OR",
-
-        className: "mt-6 text-center col-fixed w-2rem",
-      },
-      {
-        type: "percentage",
-        name: "balloonPct",
-        cols: 2,
-        className: "mt-5 balloonInput col-fixed w-6rem ml-3",
-        labelClass: "labels pb-8",
-        default: 0,
-        // suffix: '%',
-        // maxFractionDigits: 2,
-        disabled: true,
-        // validators: [Validators.max(99), Validators.maxLength(2)], //  validation comment
-      },
-
-      {
-        type: "checkbox",
-        label: "Fixed",
-        name: "fixed",
-        cols: 3,
-        className: "mt-6",
-        // disabled :true,
-        mode: Mode.view,
-      },
-
-      //start:hidden variables
-      {
-        type: "currency-label",
-        className: "text-right",
-        typeOfLabel: "inline",
-        label: "0",
-        name: "readOnlyPaymentAmount",
-        hidden: true,
-        // cols: 3,
-      },
-      {
-        type: "currency-label",
-        className: "text-right",
-        typeOfLabel: "inline",
-        label: "0",
-        name: "readOnlyLastPayment",
-        hidden: true,
-        // cols: 3,
-      },
-
-      {
-        type: "currency-label",
-        className: "text-right",
-        typeOfLabel: "inline",
-        label: "0",
-        name: "readOnlytotalAmountToRepay",
-        hidden: true,
-        // cols: 3,
-      },
-      {
-        type: "number",
-        className: "text-right",
-        label: "0",
-        name: "readOnlyTotalNumberOfPayments",
-        hidden: true,
-        // cols: 3,
-      },
-      {
-        type: "number",
-        className: "text-right",
-        label: "0",
-        name: "readOnlyfirstLeasePayment",
-        hidden: true,
-        // cols: 3,
-      },
-      {
-        type: "date",
-        label: "0",
-        name: "readOnlylastPaymentDate",
-        hidden: true,
-        // cols: 3,
-      },
-      //end:hidden variables
-    ],
-  };
-  constructor(
-    public override route: ActivatedRoute,
-    public override svc: CommonService,
-    override baseSvc: StandardQuoteService,
-    public cdr: ChangeDetectorRef,
-    public calculationSvc: CalculationService,
-    public toasterSvc: ToasterService,
-    private validationSvc: ValidationService,
-    private dashBoardSvc: DashboardService,
-    private router: Router,
-    public tradeSvc: AssetTradeSummaryService,
-    public indSvc: IndividualService,
-    public businessSvc: BusinessService,
-    public trustSvc: TrustService,
-    public soleTradeSvc: SoleTradeService,
-    public quickquoteService: QuickQuoteService
-  ) {
-    super(route, svc, baseSvc);
-    this.minDate = new Date();
-    this.minDate.setHours(0, 0, 0, 0);
-    this.formConfig.createData.loanDate = new Date();
-    effect(() => {
-      const triggeredLoanDate = this.baseSvc.loanDateSignal();
-      if (!triggeredLoanDate || !this.mainForm) return;
-
-      const updatedLoanDate = new Date(triggeredLoanDate);
-
-      const currentLoanDate = this.mainForm.get("loanDate")?.value;
-      const currentFirstPayment = this.mainForm.get("firstPaymentDate")?.value;
-
-      let dayGap = 0;
-
-      if (currentLoanDate && currentFirstPayment) {
-        dayGap = Math.floor(
-          (new Date(currentFirstPayment).getTime() -
-            new Date(currentLoanDate).getTime()) /
-          (24 * 60 * 60 * 1000)
-        );
-      }
-
-      const newFirstPaymentDate = new Date(updatedLoanDate);
-      newFirstPaymentDate.setDate(newFirstPaymentDate.getDate() + dayGap);
-
-      const maxFirstPaymentDate = new Date(updatedLoanDate);
-      maxFirstPaymentDate.setDate(maxFirstPaymentDate.getDate() + 42);
-
-      this.mainForm.updateProps("firstPaymentDate", {
-        minDate: updatedLoanDate,
-        maxDate: maxFirstPaymentDate
-      });
-
-      this.mainForm.get("loanDate")?.patchValue(updatedLoanDate);
-
-      const fpControl = this.mainForm.get("firstPaymentDate");
-      fpControl?.patchValue(null);
-      this.cdr.detectChanges();
-      fpControl?.patchValue(newFirstPaymentDate);
-
-      this.baseFormData.loanDate = this.baseSvc.createDateFormat(updatedLoanDate);
-      this.baseFormData.firstPaymentDate = this.baseSvc.createDateFormat(newFirstPaymentDate);
-
-      this.baseSvc.setBaseDealerFormData({
-        loanDate: this.baseSvc.createDateFormat(updatedLoanDate),
-        firstPaymentDate: this.baseSvc.createDateFormat(newFirstPaymentDate),
-        financialAssetPriceSegments: []
-      });
-
-      (async () => {
-        await this.onButtonClick({ field: { name: "paymentCalculatebtn" } });
-
-        if (this.baseFormData?.contractId && this.baseFormData?.AFworkflowStatus == 'Quote') {
-          // await this.baseSvc.contractModification(this.baseFormData, false);
-
-          await this.getDeclaration()
-        }
-      })();
-
-      this.baseSvc.loanDateSignal.set(null);
-    }, { allowSignalWrites: true });
-  }
-
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
-    this.mainForm.updateProps("paymentCalculatebtn", {
-      disabled: this.baseSvc.accessMode == "view",
-    });
+
     if (this.mode === Mode.create) {
       this.mainForm?.get("balloonAmount").patchValue(0);
     }
     this.mainForm?.updateProps("loanDate", { minDate: this.minDate });
-    this.mainForm?.updateProps("firstPaymentDate", { minDate: this.minDate });
+    this.mainForm?.updateProps("firstPaymentDate", { minDate: this.minDate, 
+            maxDate: new Date(new Date().setDate(new Date().getDate() + 42)) });
     // this.mainForm?.updateProps("firstPaymentDate", {
     //   maxDate: this.allowedDate,
     // });
@@ -477,9 +199,13 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
       this.mainForm
         .get("leaseDate")
         .setValidators(this.calculationSvc.pastDateValidator());
-      this.mainForm.updateProps("noOfRentalsInAdvance", {
+        this.mainForm.updateProps("noOfRentalsInAdvance", {
         label: "No. of Payment in Advance",
-      });
+         cols: 3,
+        className: 'mt-1',
+        labelClass: 'mb-0 mt-1',
+      })
+      this.mainForm.updateProps("paymentCalculatebtn", { className: "mt-2 ml-4"});
     } else if (this.baseFormData?.productCode == "AFV") {
       this.mainForm?.updateHidden({
         paymentStructure: true,
@@ -510,7 +236,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
   override onStatusChange(statusDetails: any): void {
     super.onStatusChange(statusDetails);
 
-    if ((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))) {
+    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
       this.isDisable = true;
     }
     if (this.isDisable) {
@@ -519,76 +245,375 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
       this.mainForm?.updateDisable({ paymentCalculatebtn: false });
     }
   }
+  paymentStructureOptions: any = [];
+// Do not remove below commented code - kept for reference
+  // override formConfig: GenericFormConfig = {
+  //   autoResponsive: true,
+  //   cardType: "non-border",
+  //   api: "",
+  //   goBackRoute: "",
+  //   createData: {
+  //     // loanDate: this.loanDate,
+  //   },
+  //   fields: [
+  //     {
+  //       type: "date",
+  //       label: "Loan Date",
+  //       name: "loanDate",
+  //       // validators: [this.calculationSvc.pastDateValidator()],
+  //       // cols: 3,
+  //       className: "ml-2 mr-3 col-fixed w-11rem",
+  //       nextLine: false,
+  //       inputClass:"mt-3",
+  //       // errorMessage: "Loan date must not be in past",
+  //       hidden: false,
+  //       inputType: "vertical",
+  //       // dateFormat: 'mm/dd/yy',
+  //       minDate: new Date(),
+  //     },
+  //     {
+  //       type: "date",
+  //       label: "Lease Date",
+  //       name: "leaseDate",
+
+  //       // cols: 3,
+  //       className: "mr-4 col-fixed w-11rem",
+  //       nextLine: false,
+  //       errorMessage: "Lease date must not be in past",
+  //       inputType: "vertical",
+  //       inputClass:"mt-3",
+  //       hidden: true,
+  //     },
+  //     {
+  //       type: "date",
+  //       label: "First Payment",
+  //       name: "firstPaymentDate",
+  //       //  validators: [Validators.required,this.calculationSvc.firstPaymentAfterLoanDateValidator('loanDate'),//  validation comment
+  //       // ],
+  //       // cols: 3,
+  //       className: "mr-4 col-fixed w-11rem",
+  //       inputClass:"mt-3",
+  //       inputType: "vertical",
+  //       // errorMessage: "First Payment Date must be after Loan Date ",
+  //       nextLine: false,
+  //       // disabled: true,
+  //       // mode: Mode.view,
+  //     },
+  //     {
+  //       type: "amount",
+  //       label: "Initial Lease Amount",
+  //       name: "initialLeasePayment",
+  //       // cols: 3,
+  //       className: "mr-4 col-fixed w-11rem",
+  //       nextLine: false,
+  //       hidden: true,
+  //       inputType: "vertical",
+  //       // dateFormat: 'MM.dd.yy',
+  //     },
+  //     {
+  //       type: "number",
+  //       label: "No. of Rentals in Advance",
+  //       name: "noOfRentalsInAdvance",
+  //       // validators: [Validators.max(11), Validators.min(0)], //  validation comment
+  //       cols: 4,
+  //       hidden: true,
+  //       inputType: "vertical",
+  //     },
+  //     {
+  //       type: "button",
+  //       label: "Calculate",
+  //       submitType: "internal",
+  //       name: "paymentCalculatebtn",
+  //       disabled: this.baseSvc.accessMode == "view",
+       
+  //       btnType: "border-btn",
+  //       className: "col-2",
+  //       nextLine: true,
+  //       isVibrate: false,
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Payment Structure",
+  //       name: "paymentStructure",
+  //       alignmentType: "vertical",
+  //       cols: 3,
+  //       className: "mr-3",
+  //       inputClass:"mt-3",
+  //       // list$: "LookUpServices/lookups?LookupSetName=PaymentStructure",\
+  //       options: this.paymentStructureOptions,
+  //     },
+  //     {
+  //       type: "amount",
+  //       label: "Balloon Amount",
+  //       name: "balloonAmount",
+  //       maxLength: 12,
+  //       className: "mt-2 balloonInput col-fixed w-11rem",
+  //       labelClass: " blnInput -mt-3 py-2 ",
+  //       disabled: true,
+  //       inputType: "vertical",
+  //       inputClass:"mt-2",
+  //       default: 0,
+  //       // validators: [Validators.required],//  validation comment
+  //     },
+  //     {
+  //       type: "label-only",
+  //       name: "orLabel",
+  //       typeOfLabel: "inline",
+  //       label: "OR",
+
+  //       className: "mt-6 text-center col-fixed w-2rem",
+  //     },
+  //     {
+  //       type: "percentage",
+  //       name: "balloonPct",
+  //       cols: 2,
+  //       className: "mt-5 balloonInput col-fixed w-6rem ml-3",
+  //       labelClass: "labels pb-8",
+  //       default: 0,
+  //       // suffix: '%',
+  //       // maxFractionDigits: 2,
+  //       disabled: true,
+  //       // validators: [Validators.max(99), Validators.maxLength(2)], //  validation comment
+  //     },
+
+  //     {
+  //       type: "checkbox",
+  //       label: "Fixed",
+  //       name: "fixed",
+  //       cols: 3,
+  //       className: "mt-6",
+  //       // disabled :true,
+  //       mode: Mode.view,
+  //     },
+
+  //     //start:hidden variables
+  //     {
+  //       type: "currency-label",
+  //       className: "text-right",
+  //       typeOfLabel: "inline",
+  //       label: "0",
+  //       name: "readOnlyPaymentAmount",
+  //       hidden: true,
+  //       // cols: 3,
+  //     },
+  //     {
+  //       type: "currency-label",
+  //       className: "text-right",
+  //       typeOfLabel: "inline",
+  //       label: "0",
+  //       name: "readOnlyLastPayment",
+  //       hidden: true,
+  //       // cols: 3,
+  //     },
+
+  //     {
+  //       type: "currency-label",
+  //       className: "text-right",
+  //       typeOfLabel: "inline",
+  //       label: "0",
+  //       name: "readOnlytotalAmountToRepay",
+  //       hidden: true,
+  //       // cols: 3,
+  //     },
+  //     {
+  //       type: "number",
+  //       className: "text-right",
+  //       label: "0",
+  //       name: "readOnlyTotalNumberOfPayments",
+  //       hidden: true,
+  //       // cols: 3,
+  //     },
+  //     {
+  //       type: "number",
+  //       className: "text-right",
+  //       label: "0",
+  //       name: "readOnlyfirstLeasePayment",
+  //       hidden: true,
+  //       // cols: 3,
+  //     },
+  //     {
+  //       type: "date",
+  //       label: "0",
+  //       name: "readOnlylastPaymentDate",
+  //       hidden: true,
+  //       // cols: 3,
+  //     },
+  //     //end:hidden variables
+  //   ],
+  // };
+
+   override formConfig: any = {
+    autoResponsive: true,
+    cardType: "non-border",
+    api: "",
+    goBackRoute: "",
+    createData: {
+    },
+    fields: [],
+  }
+  
+  constructor(
+    public override route: ActivatedRoute,
+    public override svc: CommonService,
+    override baseSvc: StandardQuoteService,
+    public cdr: ChangeDetectorRef,
+    public calculationSvc: CalculationService,
+    public toasterSvc: ToasterService,
+    private validationSvc: ValidationService,
+    private dashBoardSvc: DashboardService,
+    private router: Router,
+    public tradeSvc: AssetTradeSummaryService,
+    public indSvc : IndividualService,
+    public businessSvc : BusinessService,
+    public trustSvc : TrustService,
+    public soleTradeSvc : SoleTradeService,
+    public quickquoteService : QuickQuoteService
+  ) {
+    super(route, svc, baseSvc);
+
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName, this.pageCode);
+    console.log('payment-summary.component ts', filteredValidations);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
 
 
-  async getDeclaration() {
-    // todo
+    this.minDate = new Date();
+    this.minDate.setHours(0, 0, 0, 0);
+    this.formConfig.createData.loanDate = new Date();
+effect(() => {
+  const triggeredLoanDate = this.baseSvc.loanDateSignal();
+  if (!triggeredLoanDate || !this.mainForm) return;
 
-    let params: any = this.route.snapshot.params;
-    let additionalData: any = await this.svc.data
-      .get(
-        `WorkFlows/get_workflowstate?ContractId=${this.baseFormData?.contractId}&workflowName=Application`
-      )
-      .pipe(
-        map((res) => {
-          return res?.items;
-        })
-      )
-      .toPromise();
+  const updatedLoanDate = new Date(triggeredLoanDate);
 
-    if (additionalData.length > 0) {
-      let customerSummaryData;
-      customerSummaryData = this.baseFormData?.customerSummary?.find((ele) => {
-        return ele?.customerRole == 1;
-      });
+  const currentLoanDate = this.mainForm.get("loanDate")?.value;
+  const currentFirstPayment = this.mainForm.get("firstPaymentDate")?.value;
 
-      if (!customerSummaryData) {
-        this.toasterSvc.showToaster({
-          severity: "error",
-          detail: "At least one Borrower must have been added to the quote.",
-        });
-        return;
-      }
+  let dayGap = 0;
 
-      let todoObj = additionalData.find((ele) => {
-        return ele?.mandetory && !ele.status;
-      });
+  if (currentLoanDate && currentFirstPayment) {
+    dayGap = Math.floor(
+      (new Date(currentFirstPayment).getTime() -
+        new Date(currentLoanDate).getTime()) /
+        (24 * 60 * 60 * 1000)
+    );
+  }
 
-      if (todoObj) {
-        this.toasterSvc.showToaster({
-          severity: "error",
-          detail: "Please Complete the To-Dos",
-        });
-        return;
-      }
+  const newFirstPaymentDate = new Date(updatedLoanDate);
+  newFirstPaymentDate.setDate(newFirstPaymentDate.getDate() + dayGap);
+
+  const maxFirstPaymentDate = new Date(updatedLoanDate);
+  maxFirstPaymentDate.setDate(maxFirstPaymentDate.getDate() + 42);
+
+  this.mainForm.updateProps("firstPaymentDate", {
+    minDate: updatedLoanDate,
+    maxDate: maxFirstPaymentDate
+  });
+
+  this.mainForm.get("loanDate")?.patchValue(updatedLoanDate);
+
+  const fpControl = this.mainForm.get("firstPaymentDate");
+  fpControl?.patchValue(null);
+  this.cdr.detectChanges();
+  fpControl?.patchValue(newFirstPaymentDate);
+
+  this.baseFormData.loanDate = this.baseSvc.createDateFormat(updatedLoanDate);
+  this.baseFormData.firstPaymentDate = this.baseSvc.createDateFormat(newFirstPaymentDate);
+
+  this.baseSvc.setBaseDealerFormData({
+    loanDate: this.baseSvc.createDateFormat(updatedLoanDate),
+    firstPaymentDate: this.baseSvc.createDateFormat(newFirstPaymentDate),
+    financialAssetPriceSegments: []
+  });
+
+  (async () => {
+    await this.onButtonClick({ field: { name: "paymentCalculatebtn" } });
+
+    if (this.baseFormData?.contractId && this.baseFormData?.AFworkflowStatus == 'Quote') {
+      // await this.baseSvc.contractModification(this.baseFormData, false);
+
+      await this.getDeclaration()
     }
+  })();
 
-    if (
-      this.baseFormData?.workFlowStatus == "Open Quote" ||
-      this.baseFormData?.AFworkflowStatus == "Quote"
-    ) {
-      this.svc.dialogSvc
-        .show(DealerUdcDeclarationComponent, "Originator Declaration", {
-          templates: {
-            footer: null,
-          },
-          data: {
-            // okBtnLabel: 'Proceed',
-            // cancelBtnLabel: 'Cancel',
-          },
-          width: "80vw",
-        })
-        ?.onClose.subscribe(async (data: CloseDialogData) => {
-          if (data?.btnType == "submit") {
+  this.baseSvc.loanDateSignal.set(null);
+}, { allowSignalWrites: true });
+  }
+
+  previousDate: any = null;
+  currentDate: any = null;
+  // loanDatePopup() {}
+  program: any;
+
+   async getDeclaration() {
+      // todo
+  
+      let params: any = this.route.snapshot.params;
+      let additionalData: any = await this.svc.data
+        .get(
+          `WorkFlows/get_workflowstate?ContractId=${this.baseFormData?.contractId}&workflowName=Application`
+        )
+        .pipe(
+          map((res) => {
+            return res?.items;
+          })
+        )
+        .toPromise();
+  
+      if (additionalData.length > 0) {
+        let customerSummaryData;
+        customerSummaryData = this.baseFormData?.customerSummary?.find((ele) => {
+          return ele?.customerRole == 1;
+        });
+  
+        if (!customerSummaryData) {
+          this.toasterSvc.showToaster({
+            severity: "error",
+            detail: "At least one Borrower must have been added to the quote.",
+          });
+          return;
+        }
+  
+        let todoObj = additionalData.find((ele) => {
+          return ele?.mandetory && !ele.status;
+        });
+  
+        if (todoObj) {
+          this.toasterSvc.showToaster({
+            severity: "error",
+            detail: "Please Complete the To-Dos",
+          });
+          return;
+        }
+      }
+  
+      if (
+        this.baseFormData?.workFlowStatus == "Open Quote" ||
+        this.baseFormData?.AFworkflowStatus == "Quote"
+        ) {
+        this.svc.dialogSvc
+          .show(DealerUdcDeclarationComponent, "Originator Declaration", {
+            templates: {
+              footer: null,
+            },
+            data: {
+              // okBtnLabel: 'Proceed',
+              // cancelBtnLabel: 'Cancel',
+            },
+            width: "80vw",
+          })
+          ?.onClose.subscribe(async (data: CloseDialogData) => {
+            if (data?.btnType == "submit") {
             let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-            if (updateContractRes?.apiError || updateContractRes?.Error?.Message) {
+          
+            if(updateContractRes?.apiError || updateContractRes?.Error?.Message){
               return;
             }
 
             else {
 
-              let updateWorkflow = await this.updateState("Submitted");
+               let updateWorkflow = await this.updateState("Submitted");
 
               if (
                 updateWorkflow !== false &&
@@ -617,7 +642,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
                       this.baseSvc.activeStep = 0;
                     }
                   });
-              }
+              } 
               else if (data?.btnType == "submit" && this.baseFormData.contractId) {
 
                 await this.baseSvc.contractModification(this.baseFormData, false);
@@ -647,101 +672,101 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
                 // alert('Declaration form is unchecked!');
               }
             }
-            //  else if (!(data?.btnType == "cancel") && !this.id) {
-            //   // this.toasterService.showToaster({
-            //   //   severity: 'error',
-            //   //   detail: 'Quote Id Not Found',
-            //   // });
-            // }
-            // else {
-            //   this.toasterService.showToaster({
-            //     severity: 'error',
-            //     detail: 'Quote Id Not Found',
-            //   });
-            // }
-          }
-        });
-    } else {
-      this.router.navigateByUrl("/dealer");
+              //  else if (!(data?.btnType == "cancel") && !this.id) {
+              //   // this.toasterService.showToaster({
+              //   //   severity: 'error',
+              //   //   detail: 'Quote Id Not Found',
+              //   // });
+              // }
+              // else {
+              //   this.toasterService.showToaster({
+              //     severity: 'error',
+              //     detail: 'Quote Id Not Found',
+              //   });
+              // }
+            }
+          });
+      } else {
+        this.router.navigateByUrl("/dealer");
+      }
     }
-  }
 
-  //  async updateState(nextState) {
-  //       let request = {
-  //         nextState: nextState,
-  //         isForced: false,
-  //       };
-  //       let state = await this.svc.data
-  //         .put(
-  //           `WorkFlows/update_workflowstate?contractId=${this.baseFormData?.contractId}&workflowName=Application&WorkFlowId=${this.baseFormData?.AFworkflowId}`,
-  //           request
-  //         )
-  //         .pipe(
-  //           map((res) => {
-  //             if(res?.data?.data){
-  //             return res?.data?.data;
-  //           }
-  //           else if(res?.apiError?.errors.length > 0){
-
-  //             let errors = res?.apiError?.errors
-
-  //              const messages: Message[] = errors.map((err) => ({
-  //                 severity: "error",
-  //                 detail: err?.message,
-  //               }));
-  //               this.toasterSvc.showMultiple(messages);
-  //               return;
-  //           }
-  //           })
-  //         )
-  //         .toPromise();
-
-  //         if(state){
-  //         this.baseSvc?.appStatus?.next({
-  //           currentState: state?.currentState?.name,
-  //           nextState: state?.defaultNextState?.name,
-  //         });
-  //       }
-  //     }
-  async updateState(nextState): Promise<any | false> {
-    try {
-      const request = {
-        nextState: nextState,
-        isForced: false,
-      };
-
-      const response = await this.svc.data
-        .put(
-          `WorkFlows/update_workflowstate?contractId=${this.baseFormData?.contractId}&workflowName=Application&WorkFlowId=${this.baseFormData?.AFworkflowId}`,
-          request
-        )
-        .pipe(
-          catchError(() => of(null)) // Convert errors to null
-        )
-        .toPromise();
-
-      // Check for API-level errors
-      if ((response?.apiError?.errors?.length > 0) || (response?.Error?.Message)) {
+    //  async updateState(nextState) {
+    //       let request = {
+    //         nextState: nextState,
+    //         isForced: false,
+    //       };
+    //       let state = await this.svc.data
+    //         .put(
+    //           `WorkFlows/update_workflowstate?contractId=${this.baseFormData?.contractId}&workflowName=Application&WorkFlowId=${this.baseFormData?.AFworkflowId}`,
+    //           request
+    //         )
+    //         .pipe(
+    //           map((res) => {
+    //             if(res?.data?.data){
+    //             return res?.data?.data;
+    //           }
+    //           else if(res?.apiError?.errors.length > 0){
+    
+    //             let errors = res?.apiError?.errors
+    
+    //              const messages: Message[] = errors.map((err) => ({
+    //                 severity: "error",
+    //                 detail: err?.message,
+    //               }));
+    //               this.toasterSvc.showMultiple(messages);
+    //               return;
+    //           }
+    //           })
+    //         )
+    //         .toPromise();
+    
+    //         if(state){
+    //         this.baseSvc?.appStatus?.next({
+    //           currentState: state?.currentState?.name,
+    //           nextState: state?.defaultNextState?.name,
+    //         });
+    //       }
+    //     }
+      async updateState(nextState): Promise<any | false> {
+      try {
+        const request = {
+          nextState: nextState,
+          isForced: false,
+        };
+        
+        const response = await this.svc.data
+          .put(
+            `WorkFlows/update_workflowstate?contractId=${this.baseFormData?.contractId}&workflowName=Application&WorkFlowId=${this.baseFormData?.AFworkflowId}`,
+            request
+          )
+          .pipe(
+            catchError(() => of(null)) // Convert errors to null
+          )
+          .toPromise();
+    
+        // Check for API-level errors
+        if ((response?.apiError?.errors?.length > 0 ) || (response?.Error?.Message )) {
+          return false;
+        }
+        
+        const stateData = response?.data?.data;
+        
+        // If successful response with data
+        if (stateData) {
+          this.baseSvc?.appStatus?.next({
+            currentState: stateData?.currentState?.name,
+            nextState: stateData?.defaultNextState?.name,
+          });
+          return stateData;
+        }
+        
+        return false;
+        
+      } catch (error) {
         return false;
       }
-
-      const stateData = response?.data?.data;
-
-      // If successful response with data
-      if (stateData) {
-        this.baseSvc?.appStatus?.next({
-          currentState: stateData?.currentState?.name,
-          nextState: stateData?.defaultNextState?.name,
-        });
-        return stateData;
-      }
-
-      return false;
-
-    } catch (error) {
-      return false;
     }
-  }
 
   override async onFormDataUpdate(res: any): Promise<void> {
     if (res?.programId && this.program !== res?.programId) {
@@ -750,20 +775,20 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
     }
 
     const paymentStructureValue =
-      this.mainForm?.get("paymentStructure")?.value ?? res?.paymentStructure;
+    this.mainForm?.get("paymentStructure")?.value ?? res?.paymentStructure;
 
-    if (paymentStructureValue === "None") {
-      this.mainForm.get("balloonAmount")?.enable();
-      this.mainForm.get("balloonPct")?.enable();
-      this.mainForm.get("fixed")?.enable();
-    } else {
-      this.mainForm.get("balloonAmount")?.disable();
-      this.mainForm.get("balloonPct")?.disable();
-      this.mainForm.get("fixed")?.disable();
-      this.mainForm.get("balloonAmount")?.patchValue(0);
-      this.mainForm.get("balloonPct")?.patchValue(0);
-      this.mainForm.get("fixed")?.patchValue(false);
-    }
+  if (paymentStructureValue === "None" && this.baseFormData?.workFlowStatus == 'Open Quote') {
+    this.mainForm?.get("balloonAmount")?.enable();
+    this.mainForm?.get("balloonPct")?.enable();
+    this.mainForm?.get("fixed")?.enable();
+  } else {
+    this.mainForm?.get("balloonAmount")?.disable();
+    this.mainForm?.get("balloonPct")?.disable();
+    this.mainForm?.get("fixed")?.disable();
+    this.mainForm?.get("balloonAmount")?.patchValue(0);
+    this.mainForm?.get("balloonPct")?.patchValue(0);
+    this.mainForm?.get("fixed")?.patchValue(false);
+  }
     // if (res?.productCode === "FL") {
     //   setTimeout(() => {
     //     const leaseDate = this.mainForm.form.get("leaseDate")?.value;
@@ -804,14 +829,14 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
 
     if (res?.productCode === "FL") {
       this.mainForm.get("firstPaymentDate").disable()
-      const leaseDate = this.mainForm.form.get("leaseDate")?.value;
-      if (leaseDate) {
-        this.mainForm.form.patchValue(
-          { firstPaymentDate: leaseDate },
-        );
-      }
+        const leaseDate = this.mainForm.form.get("leaseDate")?.value;
+        if (leaseDate) {
+          this.mainForm.form.patchValue(
+            { firstPaymentDate: leaseDate },
+          );
+        }
     }
-
+    
     if (
       this.baseFormData?.loanDate !== res?.loanDate &&
       res?.loanDate &&
@@ -903,7 +928,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
       this.cashPrice = res?.cashPriceValue;
       this.convertPctToAmount(
         "balloonAmount",
-        this.mainForm.get("balloonPct").value
+        this.mainForm?.get("balloonPct")?.value
       );
       // this.convertAmountToPct("balloonPct", event.data.value);
     }
@@ -913,7 +938,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
       this.mainForm.form.get("balloonPct").disabled;
     }
     this.isKeyInfo = true;
-
+    
 
     //  if (this.paymentStructureOptions.length === 1 &&  this.paymentStructureOptions[0].value === "None") 
     //   {        
@@ -922,80 +947,41 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
     //    }
   }
 
-  async setTermOverride(res) {
-    await this.svc.data
-      .post("LookUpServices/CustomData", {
-        parameterValues: ["Payment Structure Override", String(res.programId)],
-        procedureName: configure.SPProgramListExtract,
-      })
-      .pipe(
-        map(
-          async (response) => {
-            if (response?.data?.table && Array.isArray(response?.data?.table)) {
-              if (
-                response?.data?.table?.length === 1 &&
-                response?.data?.table[0]?.value_text === "None"
-              ) {
-                // Using await to wait for the response
-                const lookupRes = await lastValueFrom(
-                  this.svc.data.get(
-                    "LookUpServices/lookups?LookupSetName=PaymentStructure"
-                  )
-                );
+async setTermOverride(res) {
+  await this.svc.data
+    .post("LookUpServices/CustomData", {
+      parameterValues: ["Payment Structure Override", String(res.programId)],
+      procedureName: configure.SPProgramListExtract,
+    })
+    .pipe(
+      map(
+        async (response) => {
+          if (response?.data?.table && Array.isArray(response?.data?.table)) {
+            if (
+              response?.data?.table?.length === 1 &&
+              response?.data?.table[0]?.value_text === "None"
+            ) {
+              // Using await to wait for the response
+              const lookupRes = await lastValueFrom(
+                this.svc.data.get(
+                  "LookUpServices/lookups?LookupSetName=PaymentStructure"
+                )
+              );
 
-                if (lookupRes?.data && Array.isArray(lookupRes.data)) {
-                  this.paymentStructureOptions = lookupRes.data.map((item) => ({
-                    label: item.lookupValue,
-                    value: item.lookupValue,
-                  }));
+              if (lookupRes?.data && Array.isArray(lookupRes.data)) {
+                this.paymentStructureOptions = lookupRes.data.map((item) => ({
+                  label: item.lookupValue,
+                  value: item.lookupValue,
+                }));
 
-                  this.mainForm.updateList(
-                    "paymentStructure",
-                    this.paymentStructureOptions
-                  );
-
-                  // Disable dropdown if only "None" option exists
-                  if (this.paymentStructureOptions.length === 1 &&
-                    this.paymentStructureOptions[0].value === "None") {
-                    setTimeout(() => {
-                      this.mainForm.form.get('paymentStructure')?.disable();
-                      this.mainForm.updateProps('paymentStructure', {
-                        readOnly: true,
-                        mode: Mode.view
-                      });
-                    });
-                  }
-
-                  this.cdr.detectChanges();
-                }
-              } else if (response?.data?.table?.length >= 1) {
-                // Map the response data to options
-                // this.mainForm.updateProps("term", { type: "select" });
-                this.paymentStructureOptions = response?.data?.table.map(
-                  (item) => ({
-                    label: item.value_text,
-                    value: item.value_text,
-                  })
-                );
-
-                let obj = this.paymentStructureOptions?.find(
-                  (ele) => ele?.value == "None"
-                );
-                if (!obj) {
-                  this.paymentStructureOptions?.push({
-                    label: "None",
-                    value: "None",
-                  });
-                }
-
-                this.mainForm?.updateList(
+                this.mainForm.updateList(
                   "paymentStructure",
                   this.paymentStructureOptions
                 );
-
+                
                 // Disable dropdown if only "None" option exists
-                if (this.paymentStructureOptions.length === 1 &&
-                  this.paymentStructureOptions[0].value === "None") {
+                if (this.paymentStructureOptions.length === 1 && 
+                    this.paymentStructureOptions[0].value === "None") {
                   setTimeout(() => {
                     this.mainForm.form.get('paymentStructure')?.disable();
                     this.mainForm.updateProps('paymentStructure', {
@@ -1003,30 +989,38 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
                       mode: Mode.view
                     });
                   });
-                } else {
-                  // Enable dropdown if multiple options exist
-                  setTimeout(() => {
-                    this.mainForm.form.get('paymentStructure')?.enable();
-                    this.mainForm.updateProps('paymentStructure', {
-                      readOnly: false,
-                      mode: Mode.edit
-                    });
-                  });
                 }
+                
+                this.cdr.detectChanges();
+              }
+            } else if (response?.data?.table?.length >= 1) {
+              // Map the response data to options
+              // this.mainForm.updateProps("term", { type: "select" });
+              this.paymentStructureOptions = response?.data?.table.map(
+                (item) => ({
+                  label: item.value_text,
+                  value: item.value_text,
+                })
+              );
+              
+              let obj = this.paymentStructureOptions?.find(
+                (ele) => ele?.value == "None"
+              );
+              if (!obj) {
+                this.paymentStructureOptions?.push({
+                  label: "None",
+                  value: "None",
+                });
+              }
 
-              } else if (response?.data?.table?.length === 0) {
-                this.paymentStructureOptions = [
-                  {
-                    label: "None",
-                    value: "None",
-                  },
-                ];
-                this.mainForm.updateList(
-                  "paymentStructure",
-                  this.paymentStructureOptions
-                );
-
-                // Disable since only "None" option exists
+              this.mainForm?.updateList(
+                "paymentStructure",
+                this.paymentStructureOptions
+              );
+              
+              // Disable dropdown if only "None" option exists
+              if (this.paymentStructureOptions.length === 1 && 
+                  this.paymentStructureOptions[0].value === "None") {
                 setTimeout(() => {
                   this.mainForm.form.get('paymentStructure')?.disable();
                   this.mainForm.updateProps('paymentStructure', {
@@ -1034,18 +1028,49 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
                     mode: Mode.view
                   });
                 });
-
-                this.cdr.detectChanges();
+              } else {
+                // Enable dropdown if multiple options exist
+                setTimeout(() => {
+                  this.mainForm.form.get('paymentStructure')?.enable();
+                  this.mainForm.updateProps('paymentStructure', {
+                    readOnly: false,
+                    mode: Mode.edit
+                  });
+                });
               }
+              
+            } else if (response?.data?.table?.length === 0) {
+              this.paymentStructureOptions = [
+                {
+                  label: "None",
+                  value: "None",
+                },
+              ];
+              this.mainForm?.updateList(
+                "paymentStructure",
+                this.paymentStructureOptions
+              );
+              
+              // Disable since only "None" option exists
+              setTimeout(() => {
+                this.mainForm.form.get('paymentStructure')?.disable();
+                this.mainForm.updateProps('paymentStructure', {
+                  readOnly: true,
+                  mode: Mode.view
+                });
+              });
+              
+              this.cdr.detectChanges();
             }
-          },
-          (error) => {
-            // console.error('Error fetching term options:', error);
           }
-        )
+        },
+        (error) => {
+          // console.error('Error fetching term options:', error);
+        }
       )
-      .toPromise();
-  }
+    )
+    .toPromise();
+}
 
 
 
@@ -1155,7 +1180,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
 
   override async onButtonClick(event: any): Promise<void> {
     if (event?.field?.name == "paymentCalculatebtn") {
-      if (this.isDisable || ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus)))) {
+      if(this.isDisable || ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus)))){
         return;
       }
       if (!(this.baseFormData?.productId && this.baseFormData?.programId)) {
@@ -1241,57 +1266,57 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
         // }
 
         //check for the trad in amount check
-        if (
-          this.baseFormData?.tradeInAssetRequest?.length == 0 &&
-          this.baseFormData?.tradeAmountPrice > 0
-        ) {
-          this.toasterSvc.showToaster({
-            severity: "error",
-            detail: `Please add asset in trade-in!`,
-          });
-          return;
-        }
+        // if (
+        //   this.baseFormData?.tradeInAssetRequest?.length == 0 &&
+        //   this.baseFormData?.tradeAmountPrice > 0
+        // ) {
+        //   this.toasterSvc.showToaster({
+        //     severity: "error",
+        //     detail: `Please add asset in trade-in!`,
+        //   });
+        //   return;
+        // }
 
         //Increase Decreasew Validations:
 
-        if (this.baseFormData?.AFworkflowStatus === "Ready for Documentation") {
-
+        if(this.baseFormData?.AFworkflowStatus === "Ready for Documentation") {
+      
           const errors = [];
-
-          if (this.baseFormData?.cashPriceValue > this.baseFormData?.apicashPriceValue) {
+    
+          if(this.baseFormData?.cashPriceValue > this.baseFormData?.apicashPriceValue) {
             errors.push("Cash Price cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.udcEstablishmentFee > this.baseFormData?.apiudcEstablishmentFee) {
+          if(this.baseFormData?.udcEstablishmentFee > this.baseFormData?.apiudcEstablishmentFee) {
             errors.push("UDC Establishment Fee cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.dealerOriginationFee > this.baseFormData?.apidealerOriginationFee) {
+          if(this.baseFormData?.dealerOriginationFee > this.baseFormData?.apidealerOriginationFee) {
             errors.push("Dealer Origination Fee cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.tradeAmount < this.baseFormData?.apitradeAmount) {
+         if (this.baseFormData?.tradeAmountPrice < this.baseFormData?.apitradeAmount) {
             errors.push("Trade-in Amount cannot decrease in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.settlementAmount > this.baseFormData?.apisettlementAmount) {
+          if(this.baseFormData?.settlementAmount > this.baseFormData?.apisettlementAmount) {
             errors.push("Settlement Amount cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.interestRate > this.baseFormData?.apiinterestRate) {
+          if(this.baseFormData?.interestRate > this.baseFormData?.apiinterestRate) {
             errors.push("Interest Rate cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.deposit < this.baseFormData?.apideposit) {
+          if(this.baseFormData?.deposit < this.baseFormData?.apideposit){
             errors.push("Deposit cannot decrease in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.depositPct < this.baseFormData?.apidepositPct) {
+          if(this.baseFormData?.depositPct < this.baseFormData?.apidepositPct){
             errors.push("Deposit % cannot decrease in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.ppsrCount > this.baseFormData?.apippsrCount && this.baseFormData?.productCode == "AFV") {
+          if(this.baseFormData?.ppsrCount > this.baseFormData?.apippsrCount && this.baseFormData?.productCode == "AFV"){
             errors.push("PPSR Count cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.maintainanceCost > this.baseFormData?.apimaintainanceCost && this.baseFormData?.productCode == "OL") {
+          if(this.baseFormData?.maintainanceCost > this.baseFormData?.apimaintainanceCost && this.baseFormData?.productCode == "OL"){
             errors.push("Maintenance Cost cannot increase in Ready for Documentation stage.");
           }
-          if (this.baseFormData?.financedMaintainanceCharge > this.baseFormData?.apifinancedMaintainanceCharge && this.baseFormData?.productCode == "OL") {
+          if(this.baseFormData?.financedMaintainanceCharge > this.baseFormData?.apifinancedMaintainanceCharge && this.baseFormData?.productCode == "OL"){
             errors.push("Financed Maintenance Charge cannot increase in Ready for Documentation stage.");
           }
-
+    
           if (errors.length) {
             const messages: Message[] = errors.map((err) => ({
               severity: "error",
@@ -1303,15 +1328,15 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
         }
 
 
-        const firstPaymentDateValue = this.mainForm?.form?.get('firstPaymentDate')?.value;
-        this.baseFormData.firstPaymentDate = firstPaymentDateValue
-          ? this.baseSvc.createDateFormat(firstPaymentDateValue)
-          : null;
-        await this.baseSvc.contractPreview(this.baseFormData, defaults);
-        this.baseFormData.firstPaymentDate = firstPaymentDateValue;
-        if (firstPaymentDateValue) {
-          this.mainForm?.form?.get('firstPaymentDate')?.patchValue(firstPaymentDateValue, { emitEvent: false });
-        }
+const firstPaymentDateValue = this.mainForm?.form?.get('firstPaymentDate')?.value;
+this.baseFormData.firstPaymentDate = firstPaymentDateValue
+  ? this.baseSvc.createDateFormat(firstPaymentDateValue)
+  : null;
+await this.baseSvc.contractPreview(this.baseFormData, defaults);
+this.baseFormData.firstPaymentDate = firstPaymentDateValue;
+if (firstPaymentDateValue) {
+  this.mainForm?.form?.get('firstPaymentDate')?.patchValue(firstPaymentDateValue, { emitEvent: false });
+}
         this.baseSvc.udcAndDealerFeeChanged.next({
           udcEstablishmentFee: this.baseFormData?.udcEstablishmentFee,
           dealerOriginationFee: this.baseFormData?.dealerOriginationFee,
@@ -1671,7 +1696,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
     return date.toLocaleString("en-IN", options);
   }
 
-  override onValueTyped(event) {
+  override onValueTyped(event) { 
     if (event.name === "paymentStructure") {
       const isNone = event.data === "None";
       if (isNone) {
@@ -1710,7 +1735,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
     //   this.mainForm.get("balloonAmount").patchValue(0);
     //   this.mainForm.get("balloonPct").patchValue(0);
     //   this.mainForm.get("fixed").patchValue(false);
-
+    
     //   this.baseSvc.changedDefaults = {
     //     ...this.baseSvc.changedDefaults,
     //     paymentStructure: true,
@@ -1749,26 +1774,26 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
       this.mainForm?.get("firstPaymentDate")?.reset();
 
       let newPaymentDate = new Date(newLoanDate)
-      newPaymentDate.setDate(newPaymentDate.getDate() + 42);
-
+        newPaymentDate.setDate(newPaymentDate.getDate() + 42);
+      
       this.mainForm?.updateProps("firstPaymentDate", {
         minDate: new Date(event.data),
         maxDate: newPaymentDate,
       });
     }
     if (event.name == "leaseDate") {
-      const leaseControl = this.mainForm.get("leaseDate");
+  const leaseControl = this.mainForm.get("leaseDate");
 
-      leaseControl.setValidators(this.calculationSvc.pastDateValidator());
-      leaseControl.updateValueAndValidity(); // force validation immediately
+  leaseControl.setValidators(this.calculationSvc.pastDateValidator());
+  leaseControl.updateValueAndValidity(); // force validation immediately
 
-      if (leaseControl.value) {
-        const leaseDate = new Date(leaseControl.value);
-        this.mainForm.get("firstPaymentDate").patchValue(leaseDate);
-      }
-    }
+  if (leaseControl.value) {
+    const leaseDate = new Date(leaseControl.value);
+    this.mainForm.get("firstPaymentDate").patchValue(leaseDate);
+  }
+}
 
-
+    
     //changes not commented
     //   if (event.name == "loanDate") {
     //   let newLoanDate = new Date(event.data);
@@ -1792,10 +1817,10 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
     // }
 
     if (event.name == "balloonPct" && this.cashPrice > 0) {
-      this.convertPctToAmount("balloonAmount", event.data.value);
+      this.convertPctToAmount("balloonAmount", event?.data?.value);
     }
     if (event.name == "balloonAmount") {
-      this.convertAmountToPct("balloonPct", event.data);
+      this.convertAmountToPct("balloonPct", event?.data);
     }
   }
 
@@ -1824,10 +1849,10 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
   override async onFormReady(): Promise<void> {
     await this.updateValidation("onInit");
 
-
-    // this.mainForm?.get("balloonAmount")?.disable();
-    // this.mainForm?.get("balloonPct")?.disable();
-    // this.mainForm?.get("fixed")?.disable();
+    
+  // this.mainForm?.get("balloonAmount")?.disable();
+  // this.mainForm?.get("balloonPct")?.disable();
+  // this.mainForm?.get("fixed")?.disable();
     super.onFormReady();
   }
 

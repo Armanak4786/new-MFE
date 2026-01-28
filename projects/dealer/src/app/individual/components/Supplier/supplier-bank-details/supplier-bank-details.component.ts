@@ -17,52 +17,64 @@ export class SupplierBankDetailsComponent extends BaseIndividualClass {
 
   @Output() bankUpdate = new EventEmitter<any>();
 
+  modelName: "SupplierBankDetailsComponent"
+  pageCode: "AddSupplierIndividualComponent"
 
-  customerRoleData: any = [{ label: "Supplier", value: 1 }];
+  selectedCustomerRole: string = "Supplier";
 
+// Do not remove below commented code - kept for reference
+  // override formConfig: GenericFormConfig = {
+  //    headerTitle: "Bank Details",
+  //   autoResponsive: true,
+  //   api: "",
+  //   goBackRoute: "",
+  //   cardBgColor: "--background-color-secondary",
+  //   cardType: "non-border",
 
-  override formConfig: GenericFormConfig = {
-     headerTitle: "Bank Details",
+  //   fields: [
+  //       {
+  //      type: "text",
+  //      label: "Account Name",
+  //      name: "supplierAccountName",
+  //      cols: 3,
+  //      inputType: "vertical",
+  //      maxLength: 50,
+  //      className: "mr-6",
+  
+  //    },
+  // {
+  //   type: "text",
+  //   label: "Branch Code",
+  //   name: "supplierBranchCode",
+  //   cols: 3,
+  //   inputType: "vertical",
+  //   maxLength: 20,
+  //   className: "mt-0 ml-8",
+   
+  // },
+  //    {
+  //      type: "text",
+  //      label: "Account Number",
+  //      name: "supplierAccountNumber",
+  //      cols: 3,
+  //      inputType: "vertical",
+  //      maxLength: 30,
+  //     className: "ml-6",
+ 
+  //    },
+    
+  //   ],
+
+  // };
+
+  override formConfig: any = {
+    headerTitle: "Bank Details",
     autoResponsive: true,
     api: "",
     goBackRoute: "",
     cardBgColor: "--background-color-secondary",
     cardType: "non-border",
-
-    fields: [
-        {
-       type: "text",
-       label: "Account Name",
-       name: "supplierAccountName",
-       cols: 3,
-       inputType: "vertical",
-       maxLength: 50,
-       className: "mr-6",
-  
-     },
-  {
-    type: "text",
-    label: "Branch Code",
-    name: "supplierBranchCode",
-    cols: 3,
-    inputType: "vertical",
-    maxLength: 20,
-    className: "mt-0 ml-8",
-   
-  },
-     {
-       type: "text",
-       label: "Account Number",
-       name: "supplierAccountNumber",
-       cols: 3,
-       inputType: "vertical",
-       maxLength: 30,
-      className: "ml-6",
- 
-     },
-    
-    ],
-
+    fields: [],
   };
 
   constructor(
@@ -74,41 +86,62 @@ export class SupplierBankDetailsComponent extends BaseIndividualClass {
     public cdr: ChangeDetectorRef
   ) {
     super(route, svc, baseSvc);
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config, 'SupplierBankDetailsComponent' , 'AddSupplierIndividualComponent');
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    console.log('Filtered Validations quote originator reference:', filteredValidations);
   }
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
-    // await this.updateValidation("onInit");
   }
 
    override async onFormReady(): Promise<void> {
+     await this.updateValidation("onInit");
      super.onFormReady();
    }
   
-override onValueChanges(event: any) {
+  override onValueChanges(event: any) {
     super.onValueChanges(event);
-    this.bankUpdate.emit(event);
-}
+    // this.bankUpdate.emit(event);
+    this.bankUpdate.emit(this.mainForm?.form.value);
+  }
 
-  override onFormEvent(event: any) {
-    console.log("event",event,this.baseFormData);
+   override async onValueTyped(event: any): Promise<void> {
+    await this.updateValidation("onInit");
+  }
+
+    override async onValueEvent(event): Promise<void> {
+    await this.updateValidation(event);
+  }
+
+  override async onFormEvent(event: any) {
+    await this.updateValidation("onInit");
+  }
+
+   override async onBlurEvent(event): Promise<void> {
+    await this.updateValidation("onInit");
   }
 
   override onButtonClick(event: any) {}
 
-  // async updateValidation(event: string) {
-  //   const req = {
-  //     form: this.mainForm?.form,
-  //     formConfig: this.formConfig,
-  //     event,
-  //     modelName: "SupplierBankDetailsComponent",
-  //     pageCode: "SupplierBankDetailsComponent",
-  //   };
 
-  //   const responses = await this.validationSvc.updateValidation(req);
-  //   if (!responses.status && responses.updatedFields.length) {
-  //     await this.mainForm.applyValidationUpdates(responses);
-  //   }
-  //   return responses.status;
-  // }
+
+  async updateValidation(event: string) {
+    const req = {
+      form: this.mainForm?.form,
+      formConfig: this.formConfig,
+      event,
+      modelName: "SupplierBankDetailsComponent",
+      pageCode: "AddSupplierIndividualComponent"
+    };
+
+    const responses = await this.validationSvc.updateValidation(req);
+      if (!responses.status && responses.updatedFields.length) {
+      await this.mainForm.applyValidationUpdates(responses);
+    }
+    
+    return responses.status;
+  }
 }

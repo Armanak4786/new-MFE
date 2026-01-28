@@ -69,6 +69,17 @@ export class TrusteeDetailsComponent extends BaseTrustClass {
     }
     override async ngOnInit(): Promise<void> {
       await super.ngOnInit();
+      let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
+
        this.formConfig1 = this.IndividualformConfig;
 
   // Set maxDate on Date of Birth here
@@ -974,7 +985,12 @@ export class TrusteeDetailsComponent extends BaseTrustClass {
       }
     }
 
-  
-
-  
+  isDisabled(): boolean {
+    const baseFormDataStatus = this.baseFormData?.AFworkflowStatus;
+    const sessionStorageStatus = sessionStorage.getItem('workFlowStatus');
+    return !(
+      baseFormDataStatus === 'Quote' ||
+      sessionStorageStatus === 'Open Quote'
+    );
+  }
 }

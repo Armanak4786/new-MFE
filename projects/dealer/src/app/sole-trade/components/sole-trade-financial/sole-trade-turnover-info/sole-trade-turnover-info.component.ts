@@ -97,6 +97,16 @@ export class SoleTradeTurnoverInfoComponent extends BaseSoleTradeClass {
   override onFormReady(): void {
     super.onFormReady();
     this.normalizeMinDateFields();
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
   }
 
   private normalizeMinDateFields(): void {

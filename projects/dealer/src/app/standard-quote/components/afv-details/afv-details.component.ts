@@ -21,136 +21,153 @@ export class AfvDetailsComponent extends BaseStandardQuoteClass {
     public cdr: ChangeDetectorRef
   ) {
     super(route, svc, baseSvc);
+
+    const config = this.validationSvc.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName,this.pageCode);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    console.log('AFV Details field:', filteredValidations);
+
   }
-  override formConfig: GenericFormConfig = {
+// Do not remove below commented code - kept for reference
+  // override formConfig: GenericFormConfig = {
+  //   cardType: "non-border",
+  //   autoResponsive: true,
+  //   api: "afvDetails",
+  //   goBackRoute: "afvDetails",
+  //   cardBgColor: "--primary-lighter-color",
+  //   fields: [
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Make",
+  //       name: "makeLabel",
+  //       cols: 4,
+  //       className: "my-auto",
+  //     },
+  //     {
+  //       type: "text",
+  //       placeholder: "Select",
+  //       name: "afvMake",
+  //       // options: [{ label: "Mazda", value: "Mazda" }],
+  //       cols: 5,
+  //       mode: Mode.view
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Model",
+  //       name: "afvModelLabel",
+  //       cols: 4,
+  //       className: "my-auto",
+  //     },
+  //     {
+  //       type: "text",
+  //       // placeholder: "Select",
+  //       name: "afvModel",
+  //       // options: [{ label: "Mazda 3", value: "Mazda3" }],
+  //       cols: 5,
+  //       mode: Mode.view
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Variant",
+  //       name: "afvVariantLabel",
+  //       cols: 4,
+  //       className: "my-auto",
+  //     },
+  //     {
+  //       type: "text",
+  //       placeholder: "Select",
+  //       name: "afvVariant",
+  //       // options: [
+  //       //   {
+  //       //     label: "Mazda CX-8 GSX DSL 2.2DT/4WD",
+  //       //     value: "Mazda CX-8 GSX DSL 2.2DT/4WD",
+  //       //   },
+  //       // ],
+  //       cols: 5,
+  //       mode: Mode.view
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Year",
+  //       name: "afvYearLabel",
+  //       cols: 4,
+  //       className: "my-auto",
+  //     },
+  //     {
+  //       type: "text",
+  //       name: "afvYear",
+  //       cols: 5,
+  //       // options: [
+  //       //   { label: 2025, value: 2025 },
+  //       //   { label: 2024, value: 2024 },
+  //       //   { label: 2023, value: 2023 },
+  //       //   { label: 2022, value: 2022 },
+  //       //   { label: 2021, value: 2021 },
+  //       //   { label: 2020, value: 2020 },
+  //       //   { label: 2019, value: 2019 },
+  //       //   { label: 2018, value: 2018 },
+  //       //   { label: 2017, value: 2017 },
+  //       //   { label: 2016, value: 2016 },
+  //       //   { label: 2015, value: 2015 },
+  //       //   { label: 2014, value: 2014 },
+  //       //   { label: 2013, value: 2013 },
+  //       //   { label: 2012, value: 2012 },
+  //       //   { label: 2011, value: 2011 },
+  //       //   { label: 2010, value: 2010 },
+  //       //   { label: 2009, value: 2009 },
+  //       //   { label: 2008, value: 2008 },
+  //       //   { label: 2007, value: 2007 },
+  //       //   { label: 2006, value: 2006 },
+  //       //   { label: 2005, value: 2005 },
+  //       //   { label: 2004, value: 2004 },
+  //       //   { label: 2003, value: 2003 },
+  //       //   { label: 2002, value: 2002 },
+  //       //   { label: 2001, value: 2001 },
+  //       //   { label: 2000, value: 2000 },
+  //       //   { label: 1999, value: 1999 },
+  //       //   { label: 1998, value: 1998 },
+  //       //   { label: 1997, value: 1997 },
+  //       //   { label: 1996, value: 1996 },
+  //       //   { label: 1995, value: 1995 },
+  //       //   { label: 1994, value: 1994 },
+  //       //   { label: 1993, value: 1993 },
+  //       //   { label: 1992, value: 1992 },
+  //       //   { label: 1991, value: 1991 },
+  //       //   { label: 1990, value: 1990 },
+  //       // ],
+  //       className: "my-auto",
+  //       mode: Mode.view
+  //     },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       label: "Provider",
+  //       name: "afvProviderLabel",
+  //       cols: 4,
+  //       className: "my-auto",
+  //     },
+  //     {
+  //       type: "text",
+  //       placeholder: "Select",
+  //       name: "afvProvider",
+  //       // options: [{ label: "UDC Finance Ltd.", value: "UDC Finance Ltd." }],
+  //       cols: 5,
+  //     },
+  //   ],
+  // };
+
+  override formConfig: any = {
     cardType: "non-border",
     autoResponsive: true,
     api: "afvDetails",
     goBackRoute: "afvDetails",
     cardBgColor: "--primary-lighter-color",
-    fields: [
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Make",
-        name: "makeLabel",
-        cols: 4,
-        className: "my-auto",
-      },
-      {
-        type: "text",
-        placeholder: "Select",
-        name: "afvMake",
-        // options: [{ label: "Mazda", value: "Mazda" }],
-        cols: 5,
-        mode: Mode.view
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Model",
-        name: "afvModelLabel",
-        cols: 4,
-        className: "my-auto",
-      },
-      {
-        type: "text",
-        // placeholder: "Select",
-        name: "afvModel",
-        // options: [{ label: "Mazda 3", value: "Mazda3" }],
-        cols: 5,
-        mode: Mode.view
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Variant",
-        name: "afvVariantLabel",
-        cols: 4,
-        className: "my-auto",
-      },
-      {
-        type: "text",
-        placeholder: "Select",
-        name: "afvVariant",
-        // options: [
-        //   {
-        //     label: "Mazda CX-8 GSX DSL 2.2DT/4WD",
-        //     value: "Mazda CX-8 GSX DSL 2.2DT/4WD",
-        //   },
-        // ],
-        cols: 5,
-        mode: Mode.view
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Year",
-        name: "afvYearLabel",
-        cols: 4,
-        className: "my-auto",
-      },
-      {
-        type: "text",
-        name: "afvYear",
-        cols: 5,
-        // options: [
-        //   { label: 2025, value: 2025 },
-        //   { label: 2024, value: 2024 },
-        //   { label: 2023, value: 2023 },
-        //   { label: 2022, value: 2022 },
-        //   { label: 2021, value: 2021 },
-        //   { label: 2020, value: 2020 },
-        //   { label: 2019, value: 2019 },
-        //   { label: 2018, value: 2018 },
-        //   { label: 2017, value: 2017 },
-        //   { label: 2016, value: 2016 },
-        //   { label: 2015, value: 2015 },
-        //   { label: 2014, value: 2014 },
-        //   { label: 2013, value: 2013 },
-        //   { label: 2012, value: 2012 },
-        //   { label: 2011, value: 2011 },
-        //   { label: 2010, value: 2010 },
-        //   { label: 2009, value: 2009 },
-        //   { label: 2008, value: 2008 },
-        //   { label: 2007, value: 2007 },
-        //   { label: 2006, value: 2006 },
-        //   { label: 2005, value: 2005 },
-        //   { label: 2004, value: 2004 },
-        //   { label: 2003, value: 2003 },
-        //   { label: 2002, value: 2002 },
-        //   { label: 2001, value: 2001 },
-        //   { label: 2000, value: 2000 },
-        //   { label: 1999, value: 1999 },
-        //   { label: 1998, value: 1998 },
-        //   { label: 1997, value: 1997 },
-        //   { label: 1996, value: 1996 },
-        //   { label: 1995, value: 1995 },
-        //   { label: 1994, value: 1994 },
-        //   { label: 1993, value: 1993 },
-        //   { label: 1992, value: 1992 },
-        //   { label: 1991, value: 1991 },
-        //   { label: 1990, value: 1990 },
-        // ],
-        className: "my-auto",
-        mode: Mode.view
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Provider",
-        name: "afvProviderLabel",
-        cols: 4,
-        className: "my-auto",
-      },
-      {
-        type: "text",
-        placeholder: "Select",
-        name: "afvProvider",
-        // options: [{ label: "UDC Finance Ltd.", value: "UDC Finance Ltd." }],
-        cols: 5,
-      },
-    ],
+    fields: [],
   };
 
   override async ngOnInit(): Promise<void> {
@@ -208,8 +225,8 @@ export class AfvDetailsComponent extends BaseStandardQuoteClass {
     // }
   }
 
-  pageCode: string = "";
-  modelName: string = "";
+  pageCode: string = "StandardQuoteComponent";
+  modelName: string = "AfvDetailsComponent";
 
   override async onFormReady(): Promise<void> {
   //  await this.updateValidation("onInit");

@@ -18,12 +18,12 @@
       <div class=" hlf sm:col-12 md:col-6 lg:col-5">
         <gen-card >
           <ng-container body>
-            <app-asset-summary></app-asset-summary> @if (activeStep == 0){ @if
+            <app-asset-summary (conditionDDValue)="conditionDDValue = $event"></app-asset-summary> @if (activeStep == 0){ @if
             (formData?.productCode == 'AFV'){
             <app-afv-details></app-afv-details>
             }
             <app-finance-lease></app-finance-lease>
-           <app-quote-details></app-quote-details> @if (formData?.productCode == 'TL'){
+           <app-quote-details [conditionDDValue]="conditionDDValue"></app-quote-details> @if (formData?.productCode == 'TL'){
             <app-additional-funds></app-additional-funds>}
             @if(!(formData?.productCode ==
             'FL'||formData?.productCode == 'OL')){<app-less-deposit
@@ -65,9 +65,9 @@
         <div class="mt-3">
           <app-payment-schedule></app-payment-schedule>
         </div>
-        <ng-container>
+        <!-- <ng-container>
           <app-payment-method class="mt-2"></app-payment-method>
-        </ng-container>
+        </ng-container> -->
         <app-rental-schedule></app-rental-schedule>
         } @if (activeStep == 1){ <app-borrowers-guarantors
         ></app-borrowers-guarantors>

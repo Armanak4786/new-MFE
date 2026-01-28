@@ -40,7 +40,7 @@ export class TotalPaymentAmountComponent extends BaseSoleTradeClass {
         name: 'totalPaymentAmount',
         cols: 3,
         className: 'font-bold',
-        mode: Mode.view,
+        mode: Mode.label,
 
       },
     ],

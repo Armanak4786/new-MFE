@@ -1,4 +1,4 @@
-import { Component, Inject, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 import { LayoutService } from 'shared-lib';
@@ -8,6 +8,7 @@ import { SidemenuService } from './layout/services/sidemenu.service';
 import { SidebarComponent } from './layout/components/sidebar/sidebar.component';
 import { ActivatedRoute } from "@angular/router";
 import { isPlatformBrowser } from '@angular/common';
+import { DataService } from 'auro-ui';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AppComponent {
   title = 'dealer';
-
+  isloading: Boolean;
   overlayMenuOpenSubscription: Subscription;
   menuOutsideClickListener: any;
   profileMenuOutsideClickListener: any;
@@ -31,6 +32,8 @@ export class AppComponent {
     @Inject(PLATFORM_ID) private platformId: Object,
     private sidemenuService: SidemenuService,
     private ActivatedRoute: ActivatedRoute,
+    public dataService: DataService,
+    private cdr: ChangeDetectorRef,
   ) {
     // Set default language and use it
     this.translate.setDefaultLang('en');
@@ -101,6 +104,11 @@ export class AppComponent {
   isSidemenuLocked: boolean = false;
 
   ngOnInit() {
+    this.dataService?.loading$.subscribe((isloading: boolean) => {
+      this.isloading = isloading;
+      this.cdr?.detectChanges();
+    });
+
     this.sidemenuService.sidemenuExpanded$.subscribe((expanded: boolean) => {
       //Sidemenu expansion check.
       this.isSidemenuLocked = expanded;

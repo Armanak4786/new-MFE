@@ -17,7 +17,7 @@
       <label class="assetTypelabel mb-3 col-6 text-size-12" style="color: var(--label-color)">Asset Type</label>
       <label class="assetTypelabel col-5 text-size-12 text-center" style="color: var(--label-color)">Amount</label>
     </div>
-    <form [formGroup]="assetDetailsForm" class="sole-trade-asset-details-form">
+    <form [formGroup]="assetDetailsForm" [class.disabled]="isDisabled()" class="sole-trade-asset-details-form">
       <div formArrayName="assetDetails">
         <div *ngFor="let asset of assetDetails.controls; let i = index" [formGroupName]="i">
           <div class="grid">

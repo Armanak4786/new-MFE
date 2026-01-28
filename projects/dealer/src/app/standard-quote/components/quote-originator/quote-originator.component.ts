@@ -48,13 +48,224 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
   oldLoanPurpose: any;
   showWithdrawDialog: boolean = false;
 
-  workflowOptions: any[] = [];
+  workflowOptions : any[] = [];
   selectedAsset: any;
   selectedAssetOption: any = null;
   showLoanPastDialog = false;
   selectedPastLoanDate?: Date;
-  clickCalculateError: boolean;
+  clickCalculateError : boolean;
   private promotionalCheckDone: boolean = false;
+  private cachedPromotionalPrograms: any[] = [];
+  private cachedProductIdForPromo: number | null = null;
+  private promotionalProgramsPromise: Promise<any[]> | null = null; // Prevents concurrent API calls
+
+  // override formConfig: GenericFormConfig = {
+  //   cardType: "non-border",
+  //   headerTitle: "",
+  //   cardBgColor: "--surface-a",
+  //   autoResponsive: true,
+  //   api: "quoteOriginator",
+  //   goBackRoute: "quoteOriginator",
+
+  //  fields: [
+  //     {
+  //       type: "checkbox",
+  //       label: "Promotion Quote",
+  //       name: "promotionQuote",
+  //       cols: 2,
+  //       className: "mr-auto",
+  //     },
+  //     {
+  //       type: "checkbox",
+  //       label: "Private Sales",
+  //       name: "privateSales",
+  //       cols: 3,
+  //       className: "-ml-8 mr-auto",
+  //       hidden: true,
+  //       default: false,
+  //     },
+  //     {
+  //       type: "phone",
+  //       label: "Quote ID: ",
+  //       name: "contractId",
+  //       className: "lg:col-offset pb-0 -ml-4 width-9",
+  //       // cols: 2,
+  //       inputType: "horizontal",
+  //       labelClass: "col text-right mr-0 px-0",
+  //       styleType: "labelType",
+  //       inputClass: "mr-1 -my-1 col-1 pl-0",
+  //       hidden: true,
+  //       mode: Mode.view,
+  //     },
+  //     // {
+  //     //   type: "text",
+  //     //   label: "Status : ",
+  //     //   name: "workFlowStatus",
+  //     //   cols: 2,
+  //     //   inputType: "horizontal",
+  //     //   labelClass: "col-4 mt-2 pl-2 text-center pr-0 pb-0 text-white",
+  //     //   inputClass: "col pr-2 pl-0 pb-0 text-white",
+  //     //   className: "status pt-0 pb-2",
+  //     //   // default: 'Open',
+  //     //   disabled: true,
+  //     //   nextLine: true,
+  //     // },
+
+  //     // {
+  //     //   type: "text",
+  //     //   label: "Status : ",
+  //     //   name: "workFlowStatus",
+  //     //   cols: 2,
+  //     //   inputType: "horizontal",
+  //     //   labelClass: "col-4 pl-2 pr-0 text-center  text-white",
+  //     //   inputClass: "col-8 pr-2 pl-0 text-white text-center",
+  //     //   className: "status",
+  //     //   // default: 'Open',
+  //     //   mode: Mode.label,
+  //     //   disabled: true,
+  //     //   nextLine: true,
+  //     // },
+  //     // {
+  //     //   type: "text-select",
+  //     //   // placeholder: "Asset Type",
+  //     //   name: "workFlowStatus",
+  //     //   label: "Status :",
+  //     //   cols: 2,
+  //     //   nextLine: true,
+  //     //   // className: "",
+  //     //   // labelClass: "w-8",
+  //     //   // inputClass: "w-7",
+  //     //   // //validators: [Validators.required], // validation Comment
+  //     // },
+  //     {
+  //       type: "label-only",
+  //       typeOfLabel: "inline",
+  //       name: "statusLabel",
+  //       label: "Status:",
+  //       cols: 1,
+  //       className: "w-5rem mt-1 pl-2",
+  //     },
+ 
+  //     {
+  //       type: "text-select",
+  //       name: "workFlowStatus",
+  //       className: "status w-10rem",
+  //       nextLine: true,
+  //       cols: 2,
+  //       disabled: false,
+  //     },
+  //     // {
+  //     //   type: 'text',
+  //     //   label: 'Product',
+  //     //   name: 'extName',
+  //     //   //validators: [validators.required, validators.pattern('^[a-zA-Z ]*$')],
+  //     //   className: ' ',
+  //     //   disabled: true,
+  //     //   hidden: false,
+  //     // },
+  //     {
+  //       type: "select",
+  //       label: "Product",
+  //       name: "productId",
+  //       alignmentType: "vertical",
+  //       className: " w-1 mt-2",
+  //       options: [],
+  //       //  idKey: "productId",
+  //       filter: true,
+  //       // hidden: false,
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Program",
+  //       name: "programId",
+  //       alignmentType: "vertical",
+  //       // list$: "Program/get_programs",
+  //       // //validators: [validators.required],
+  //       className: "w-1 mt-2 ",
+  //       options: [],
+  //       // idKey: "programId",
+  //       filter: true,
+  //       // disabled: true,
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Loan Purpose",
+  //       inputType: "vertical",
+  //       name: "purposeofLoan",
+  //       inputClass: "mr-2 loan-purpose-status",
+  //       labelClass: "lc pb-2",
+  //       // //regexPattern: "[^a-zA-Z ]*",
+  //       maxLength: 20,
+  //       // //validators: [validators.required],
+  //       className: "w-1 mt-3",
+  //       disabled: true,
+  //     },
+  //     // {
+  //     //   type: "select",
+  //     //   label: "Originator Name",
+  //     //   name: "originatorName",
+  //     //   options: [],
+  //     //   className: "w-1 mt-2 ",
+  //     //   // //validators: [validators.required],
+  //     // },
+  //     {
+  //       type: "text",
+  //       label: "Originator Name",
+  //       inputType: "vertical",
+  //       inputClass: "mr-2",
+  //       labelClass: "ld pb-2",
+  //       name: "originatorName",
+  //       className: "w-1 mt-3 ",
+  //       // disabled: true,
+  //       mode: Mode.view,
+
+  //       // //validators: [validators.required],
+  //     },
+  //     {
+  //       type: "phone",
+  //       label: "Originator Number",
+  //       inputType: "vertical",
+  //       labelClass: "le pb-2",
+  //       name: "originatorNumber",
+  //       className: " w-1 mt-3 ",
+  //       disabled: true,
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Salesperson",
+  //       name: "salesPerson",
+  //       alignmentType: "vertical",
+  //       // options: [
+  //       //   { label: "Sophie Kihm", value: "Sophie Kihm" },
+  //       //   { label: "John Peter", value: "John Peter" },
+  //       // ],
+  //       options: [],
+  //       // //validators: [validators.required],
+  //       className: "w-1 mt-2",
+  //     },
+  //     {
+  //       type: "text",
+  //       label: "Originator Reference",
+  //       name: "originatorReference",
+  //       inputType: "vertical",
+  //       labelClass: "lf pb-2",
+  //       // //regexPattern: "[^a-zA-Z]*",
+  //       maxLength: 20,
+  //       // //validators: [validators.required],
+  //       className: "w-1 mt-3",
+  //     },
+  //     {
+  //       type: "select",
+  //       label: "Sales Person",
+  //       name: "internalSalesperson",
+  //       alignmentType: "vertical",
+  //       options: [],
+  //       // //validators: [validators.required],
+  //       className: "w-1 mt-2",
+  //       hidden: true,
+  //     },
+  //   ],
+  // };
 
   override formConfig: GenericFormConfig = {
     cardType: "non-border",
@@ -64,204 +275,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     api: "quoteOriginator",
     goBackRoute: "quoteOriginator",
 
-    fields: [
-      {
-        type: "checkbox",
-        label: "Promotion Quote",
-        name: "promotionQuote",
-        cols: 2,
-        className: "mr-auto",
-      },
-      {
-        type: "checkbox",
-        label: "Private Sales",
-        name: "privateSales",
-        cols: 3,
-        className: "-ml-8 mr-auto",
-        hidden: true,
-        default: false,
-      },
-      {
-        type: "phone",
-        label: "Quote ID: ",
-        name: "contractId",
-        className: "lg:col-offset pb-0 ml-auto width-9",
-        // cols: 2,
-        inputType: "horizontal",
-        labelClass: "col text-right mr-0 px-0",
-        styleType: "labelType",
-        inputClass: "mr-1 -my-1 col-1 pl-0",
-        hidden: true,
-        mode: Mode.view,
-      },
-      // {
-      //   type: "text",
-      //   label: "Status : ",
-      //   name: "workFlowStatus",
-      //   cols: 2,
-      //   inputType: "horizontal",
-      //   labelClass: "col-4 mt-2 pl-2 text-center pr-0 pb-0 text-white",
-      //   inputClass: "col pr-2 pl-0 pb-0 text-white",
-      //   className: "status pt-0 pb-2",
-      //   // default: 'Open',
-      //   disabled: true,
-      //   nextLine: true,
-      // },
-
-      // {
-      //   type: "text",
-      //   label: "Status : ",
-      //   name: "workFlowStatus",
-      //   cols: 2,
-      //   inputType: "horizontal",
-      //   labelClass: "col-4 pl-2 pr-0 text-center  text-white",
-      //   inputClass: "col-8 pr-2 pl-0 text-white text-center",
-      //   className: "status",
-      //   // default: 'Open',
-      //   mode: Mode.label,
-      //   disabled: true,
-      //   nextLine: true,
-      // },
-      // {
-      //   type: "text-select",
-      //   // placeholder: "Asset Type",
-      //   name: "workFlowStatus",
-      //   label: "Status :",
-      //   cols: 2,
-      //   nextLine: true,
-      //   // className: "",
-      //   // labelClass: "w-8",
-      //   // inputClass: "w-7",
-      //   // //validators: [Validators.required], // validation Comment
-      // },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        name: "statusLabel",
-        label: "Status:",
-        cols: 1,
-        className: "w-5rem mt-1 pl-2",
-      },
-
-      {
-        type: "text-select",
-        name: "workFlowStatus",
-        className: "status w-10rem",
-        nextLine: true,
-        cols: 2,
-        disabled: false,
-      },
-      // {
-      //   type: 'text',
-      //   label: 'Product',
-      //   name: 'extName',
-      //   //validators: [validators.required, validators.pattern('^[a-zA-Z ]*$')],
-      //   className: ' ',
-      //   disabled: true,
-      //   hidden: false,
-      // },
-      {
-        type: "select",
-        label: "Product",
-        name: "productId",
-        alignmentType: "vertical",
-        className: " w-1 mt-2",
-        options: [],
-        //  idKey: "productId",
-        filter: true,
-        // hidden: false,
-      },
-      {
-        type: "select",
-        label: "Program",
-        name: "programId",
-        alignmentType: "vertical",
-        // list$: "Program/get_programs",
-        // //validators: [validators.required],
-        className: "w-1 mt-2 ",
-        options: [],
-        // idKey: "programId",
-        filter: true,
-        // disabled: true,
-      },
-      {
-        type: "text",
-        label: "Loan Purpose",
-        inputType: "vertical",
-        name: "purposeofLoan",
-        inputClass: "mr-2 loan-purpose-status",
-        labelClass: "lc pb-2",
-        // //regexPattern: "[^a-zA-Z ]*",
-        maxLength: 20,
-        // //validators: [validators.required],
-        className: "w-1 mt-3",
-        disabled: true,
-      },
-      // {
-      //   type: "select",
-      //   label: "Originator Name",
-      //   name: "originatorName",
-      //   options: [],
-      //   className: "w-1 mt-2 ",
-      //   // //validators: [validators.required],
-      // },
-      {
-        type: "text",
-        label: "Originator Name",
-        inputType: "vertical",
-        inputClass: "mr-2",
-        labelClass: "ld pb-2",
-        name: "originatorName",
-        className: "w-1 mt-3 ",
-        // disabled: true,
-        mode: Mode.view,
-
-        // //validators: [validators.required],
-      },
-      {
-        type: "phone",
-        label: "Originator Number",
-        inputType: "vertical",
-        labelClass: "le pb-2",
-        name: "originatorNumber",
-        className: " w-1 mt-3 ",
-        disabled: true,
-      },
-      {
-        type: "select",
-        label: "Salesperson",
-        name: "salesPerson",
-        alignmentType: "vertical",
-        // options: [
-        //   { label: "Sophie Kihm", value: "Sophie Kihm" },
-        //   { label: "John Peter", value: "John Peter" },
-        // ],
-        options: [],
-        // //validators: [validators.required],
-        className: "w-1 mt-2",
-      },
-      {
-        type: "text",
-        label: "Originator Reference",
-        name: "originatorReference",
-        inputType: "vertical",
-        labelClass: "lf pb-2",
-        // //regexPattern: "[^a-zA-Z]*",
-        maxLength: 20,
-        // //validators: [validators.required],
-        className: "w-1 mt-3",
-      },
-      {
-        type: "select",
-        label: "Sales Person",
-        name: "internalSalesperson",
-        alignmentType: "vertical",
-        options: [],
-        // //validators: [validators.required],
-        className: "w-1 mt-2",
-        hidden: true,
-      },
-    ],
+   fields: [],
   };
 
   constructor(
@@ -277,16 +291,24 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     private toasterSvc: ToasterService,
     private quickquoteService: QuickQuoteService,
     public tradeSvc: AssetTradeSummaryService,
-    public indSvc: IndividualService,
-    public businessSvc: BusinessService,
-    public trustSvc: TrustService,
-    public soleTradeSvc: SoleTradeService,
-    public dataSvc: DataService
-  ) {
+    public indSvc : IndividualService,
+    public businessSvc : BusinessService,
+    public trustSvc : TrustService,
+    public soleTradeSvc : SoleTradeService,
+    public dataSvc : DataService
+    ) {
     super(route, svc, baseSvc);
+
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName,this.pageCode);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    console.log('Filtered Validations quote originator reference:', filteredValidations);
+
     this.baseSvc.formDataCacheableRoute([
       "Product/get_programs_products",
       "CustomerDetails/get_contacts?partyNo=1000000&PageNo=1&PageSize=10",
+      "Contract/contract_party_dealer_details_internal"
     ]);
 
     effect(
@@ -302,7 +324,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
           this.standardService.setBaseDealerFormData({
             originatorName: dealer?.name,
             originatorNumber: dealer?.num,
-
+          
           });
 
           if (!this.baseSvc.contractId) {
@@ -322,13 +344,13 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
           if (
             currentRoute !== "/dealer/quick-quote" &&
             currentRoute !== "/dealer" &&
-            (sessionStorage.getItem("externalUserType") !== "Internal" && sessionStorage.getItem("directSales") !== 'Direct Sales')
+            (sessionStorage.getItem("externalUserType") !== "Internal" &&   sessionStorage.getItem("directSales") !== 'Direct Sales')
           ) {
             await this.getProductProgram();
             await this.checkProductProgram();
           }
         }
-
+        
       },
       { allowSignalWrites: true }
     );
@@ -337,37 +359,69 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     this.promotionalCheckDone = false;
     this.sessionProductCode = sessionStorage.getItem("productCode");
     await super.ngOnInit();
+    // this.mainForm.updateProps("promotionQuote", {
+    //   disabled: true,
+    //   // mode: Mode.view,
+    // });
+    
+    
+    if(this.baseFormData?.workFlowStatus == "Open Quote" || !this.baseFormData?.contractId){
+    this.mainForm.updateClass( {workFlowStatus : "status w-10rem" }, "className"  )
+    }
+    
+    if(!this.baseFormData?.contractId){
+      this.mainForm.get("workFlowStatus").disable();
+    }
+
     let params: any = this.route?.snapshot?.params;
     this.mode = params?.mode;
 
-    if ((sessionStorage.getItem("externalUserType") == "Internal")) {
-      this.mainForm.updateProps("originatorName", {
+    if ((sessionStorage.getItem("externalUserType") == "Internal" )) {
+      if(this.baseSvc.productBusinessModel === "Direct"){
+        this.mainForm.updateHidden({ originatorName: true });
+        this.mainForm.updateHidden({ originatorNumber: true });
+        this.mainForm.updateHidden({ salesPerson: true });
+      }
+      this.mainForm?.updateProps("originatorName", {
         type: "select",
         options: [],
         alignmentType: "vertical",
         mode: Mode.edit,
         className: "w-1 mt-2",
       });
-
-
-      if (params?.mode === 'edit' || params?.mode === 'create') {
-        this.getProductProgramForInternalSales();
-        const dealerList = await this.standardService.getDealerForInternalSales(this.baseFormData?.program?.programId);
-        await this.mainForm.updateList("originatorName", dealerList);
+  
+     
+      if(params?.mode === 'edit' || params?.mode === 'create'){
+        await this.getProductProgramForInternalSales();
+         let selectedProduct = this.productProgramList?.products?.find(
+          (product) => product.productId === this.baseFormData?.productId
+         );
+         if(selectedProduct?.businessModel === 'Direct'){
+             this.mainForm.updateHidden({ originatorName: true });
+             this.mainForm.updateHidden({ originatorNumber: true });
+             this.mainForm.updateHidden({ salesPerson: true });
+         }
+        // const dealerList = await this.standardService.getDealerForInternalSales(this.baseFormData?.program?.programId);
+        // await this.mainForm.updateList("originatorName", dealerList);
+        await this.mainForm?.updateList("originatorName", this.baseSvc?.internalSalesDealersList);
         this.mainForm?.get("originatorName")?.setValue(this.baseFormData?.originatorName);
+        if(this.baseFormData?.originatorNumber){
         await this.getsalesPerson(this.baseFormData?.originatorNumber);
+        }
         this.mainForm?.get("salesPerson")?.patchValue(this.baseFormData?.salesPerson);
       }
 
       if (this.baseFormData?.programId && !(params?.mode === 'edit' || params?.mode === 'create')) {
-        const dealerList = await this.standardService.getDealerForInternalSales(this.baseFormData?.programId);
+        const dealerList  = await this.standardService.getDealerForInternalSales(this.baseFormData?.programId);
         this.mainForm.updateList("originatorName", dealerList);
         this.mainForm?.get("originatorName")?.patchValue(this.baseFormData?.dealerId);
+        if(this.baseFormData?.originatorNumber){
         this.getsalesPerson(this.baseFormData?.originatorNumber);
-      }
+        }
+      } 
     }
 
-    this.standardService.forceToClickCalculate.pipe(takeUntil(this.destroy$)).subscribe((status) => {
+     this.standardService.forceToClickCalculate.pipe(takeUntil(this.destroy$)).subscribe((status) => {
       this.clickCalculateError = status;
     });
 
@@ -458,35 +512,35 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
 
     const originatorNumber = sessionStorage.getItem("dealerPartyNumber");
 
-    if (originatorNumber) {
+    if (originatorNumber && originatorNumber !== 'null') {
       this.getsalesPerson(originatorNumber);
     }
-    if (this.sessionProductCode === "AFV") {
-      if (this.baseFormData?.afvProgramList && this.baseFormData.afvProgramList.length > 0) {
-
-
-        this.mainForm.updateList('programId', this.baseFormData.afvProgramList);
-
-
-        if (this.baseFormData.programId) {
-          this.mainForm.get('programId')?.patchValue(this.baseFormData.programId);
-
-        }
+   if (this.sessionProductCode === "AFV") {
+    if (this.baseFormData?.afvProgramList && this.baseFormData.afvProgramList.length > 0) {
+      
+      
+      this.mainForm.updateList('programId', this.baseFormData.afvProgramList);
+      
+      
+      if (this.baseFormData.programId) {
+        this.mainForm.get('programId')?.patchValue(this.baseFormData.programId);
+        
       }
     }
-    if (this.sessionProductCode === "AFV") {
-      this.baseSvc.afvProgramsLoaded.pipe(takeUntil(this.destroy$)).subscribe((programList: any[]) => {
-        this.mainForm?.get('programId')?.patchValue(null);
-        this.mainForm.get('programId')?.clearValidators();
-        this.mainForm.get('programId')?.updateValueAndValidity();
-        if (programList && programList.length > 0) {
-          this.mainForm.updateList('programId', programList);
-        } else {
-          this.mainForm.updateList('programId', []);
-
-        }
-      });
+  }
+if(this.sessionProductCode === "AFV"){
+  this.baseSvc.afvProgramsLoaded.pipe(takeUntil(this.destroy$)).subscribe((programList:any[])=>{
+    this.mainForm?.get('programId')?.patchValue(null);
+    this.mainForm.get('programId')?.clearValidators();
+    this.mainForm.get('programId')?.updateValueAndValidity();
+    if(programList && programList.length >0){
+        this.mainForm.updateList('programId',programList);
+    }else{
+      this.mainForm.updateList('programId',[]);
+      
     }
+});
+}
 
     // await this.getProductProgram();
     // await this.updateValidation("onInit");
@@ -494,16 +548,16 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
 
   override async onFormReady(): Promise<void> {
     this.productCode = this.baseFormData?.productCode;
-    await this.updateValidation("onInit");
+    // await this.updateValidation("onInit");
     super.onFormReady();
-    if (this.sessionProductCode === "AFV") {
-      if (this.baseFormData?.programId) {
-
-      } else {
-        // Only clear if no program is selected (new quote scenario)
-        this.mainForm.updateList('programId', []);
-      }
+if(this.sessionProductCode === "AFV"){
+       if (this.baseFormData?.programId) {
+     
+    } else {
+      // Only clear if no program is selected (new quote scenario)
+      this.mainForm.updateList('programId',[]);
     }
+  }
     if ((sessionStorage.getItem("externalUserType") == "Internal")) {
       await this.getProductProgramForInternalSales();
       this.mainForm.updateHidden({ internalSalesperson: false });
@@ -550,9 +604,10 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       .patchValue(
         this.baseFormData?.loanPurpose || this.baseFormData?.purposeofLoan
       );
-    if (this.baseFormData?.contractId && this.baseFormData?.programId) {
-      await this.checkIfProgramIsPromotional(this.baseFormData.programId);
-    }
+      if (this.baseFormData?.contractId && this.baseFormData?.programId) {
+        await this.checkIfProgramIsPromotional(this.baseFormData.programId);
+      }
+    await this.updateValidation("onInit");
   }
 
   introObj = {};
@@ -575,15 +630,15 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     }
     let jsonArray = Array.isArray(data)
       ? data
-        .map((item) => ({
-          label: item.originatorName,
-          value: {
+          .map((item) => ({
+            label: item.originatorName,
+            value: {
             originatorNo: item.originatorNo,
             originatorId: item.originatorId,
             originatorName: item.originatorName
           }
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label))
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
       : [];
     this.mainForm.updateList("originatorName", jsonArray);
   }
@@ -700,10 +755,14 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
   override async onValueTyped(event: any): Promise<void> {
     if (event.name == "productId") {
       if (event.data) {
-        // Reset promotional quote checkbox when product changes
-        this.promotionQuote = false;
-        this.mainForm.get("promotionQuote")?.setValue(false, { emitEvent: false });
-        this.promotionalCheckDone = false; // Reset the guard flag
+         // Only reset promotional quote if product actually changed
+        const previousProductId = this.baseFormData?.productId;
+        if (previousProductId && previousProductId !== event.data) {
+          this.promotionQuote = false;
+          this.mainForm.get("promotionQuote")?.setValue(false, { emitEvent: false });
+          this.promotionalCheckDone = false; // Reset the guard flag
+          this.clearPromotionalCache(); // Clear cache when product changes
+        }
         this.resetInsuranceValues();
         this.resetServicePlanForm();
         this.loanPurpose = await this.baseSvc.getFormData(
@@ -738,7 +797,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
                 this.baseSvc.updateIndividualCustomerWarning = true;
               } else if (
                 this.baseFormData?.purposeofLoan ==
-                configure.LoanPurposeBusiness &&
+                  configure.LoanPurposeBusiness &&
                 this.baseFormData?.customerSummary?.find((type) => {
                   return (
                     type?.customerType == "Individual" &&
@@ -776,6 +835,18 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
           (p) => p?.productId === event?.data
         );
         this.baseSvc.productBusinessModel = product?.businessModel;
+
+        if(sessionStorage.getItem("externalUserType") === "Internal" && this.baseSvc.productBusinessModel === "Direct"){
+          this.mainForm.updateHidden({ originatorName: true });
+          this.mainForm.updateHidden({ originatorNumber: true });
+          this.mainForm.updateHidden({ salesPerson: true });
+        }
+        else if(sessionStorage.getItem("externalUserType") === "Internal" && this.baseSvc.productBusinessModel === "Introduced"){
+          this.mainForm.updateHidden({ originatorName: false });
+          this.mainForm.updateHidden({ originatorNumber: false });
+          this.mainForm.updateHidden({ salesPerson: false });
+          this.updateValidation("onInit");
+        }
       }
       // this.baseSvc.forceToClickCalculate.next(true);
       // this.baseSvc.changedDefaults = {
@@ -825,21 +896,21 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
           "program"
         );
         if (sessionStorage.getItem('productCode') === 'OL' && this.baseFormData) {
+          
+    const effectiveDate = this.baseFormData.leaseDate || this.baseFormData.loanDate;
+    const assetTypeId = this.baseFormData.assetTypeId || 0;
+    const depreciationRateCurve = this.baseFormData.depreciationRateCurve || "IRD ful Life Rates";
 
-          const effectiveDate = this.baseFormData.leaseDate || this.baseFormData.loanDate;
-          const assetTypeId = this.baseFormData.assetTypeId || 0;
-          const depreciationRateCurve = this.baseFormData.depreciationRateCurve || "IRD ful Life Rates";
+      await this.baseSvc.getUsefulLife(effectiveDate, assetTypeId, depreciationRateCurve);
 
-          await this.baseSvc.getUsefulLife(effectiveDate, assetTypeId, depreciationRateCurve);
-
-        }
+  }
         this.baseSvc.defautltUDCEstablishmentFee = {
           defaultudcEstablishmentFee: this.baseFormData?.udcEstablishmentFee,
           defaultDealerOriginationFee: this.baseFormData?.dealerOriginationFee,
         };
         this.baseSvc.changedProgram.next(event?.data);
         this.baseSvc.showResult = false;
-        if (sessionStorage.getItem("externalUserType") === "Internal") {
+        if(sessionStorage.getItem("externalUserType") === "Internal" && this.baseSvc.productBusinessModel === "Introduced"){
           const dealerList = await this.standardService.getDealerForInternalSales(event?.data);
           this.mainForm.updateList("originatorName", dealerList);
         }
@@ -847,19 +918,21 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     }
 
     if (
-      (sessionStorage.getItem("externalUserType") == "Internal") &&
+      (sessionStorage.getItem("externalUserType") == "Internal" ) &&
       event.name == "originatorName"
     ) {
       const originatorNumber = await this.standardService.getOriginatorNumberByName(event.data);
       this.mainForm.form.get("originatorNumber")?.setValue(originatorNumber);
+      if(originatorNumber){
       this.getsalesPerson(originatorNumber);
+      }
     }
   }
 
   override async onFormEvent(res: any) {
     if (res.name == "originatorName") {
       const selectedOriginator = this.introObj[Number(res?.value)];
-
+      
       this.baseSvc.setBaseDealerFormData({
         supplierName: this.introObj[Number(res?.value)],
       });
@@ -890,19 +963,24 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     }
 
     if (res.name == "productId") {
-      // Reset promotional quote
-      this.promotionQuote = false;
-      this.mainForm.get("promotionQuote")?.setValue(false, { emitEvent: false });
-      this.promotionalCheckDone = false;
+       const previousProductId = this.baseFormData?.productId;
+      if (previousProductId && previousProductId !== res.value) {
+        this.promotionQuote = false;
+        this.mainForm.get("promotionQuote")?.setValue(false, { emitEvent: false });
+        this.promotionalCheckDone = false;
+        this.clearPromotionalCache(); // Clear cache when product changes
+      }
       let productOptions = await this.mainForm?.getOptions("productId");
       const filteredProduct = productOptions?.find((item: any) => {
         return item.productId === res.value;
       });
       if (res.value) {
-        await this.setProgram(res?.value);
+       await this.setProgram(res?.value, false);
 
         if (this.promotionQuote) {
-          this.filterProgramOptionsByPromotions();
+          await this.filterProgramOptionsByPromotions();
+        } else {
+          await this.filterProgramOptionsExcludingPromotions();
         }
       }
 
@@ -948,30 +1026,50 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
         this.promotionQuote = true;
       } else {
         this.promotionQuote = false;
-        // this.mainForm.fieldProps["programId"].list$ = "Program/get_programs";
-        this.mainForm.fieldProps["programId"].options = this.programList;
-        let productId = this.mainForm.get("productId")?.value;
-        await this.setProgram(productId);
+        await this.filterProgramOptionsExcludingPromotions();
       }
     }
     super.onFormEvent(res);
   }
 
-  async filterProgramOptionsByPromotions(): Promise<void> {
-    const productId = this.mainForm.get("productId")?.value;
-    if (!productId) return;
-
-    let programOptions = await this.mainForm.getOptions("programId");
-    if (!programOptions || programOptions?.length == 0) {
-      // let key = `Program/get_programs?productId=${productId}`;
-      // this.svc.data.get(key).subscribe((res) => {
-      //   programOptions = res?.data;
-      // });
-      programOptions = this.productProgramList.programs.filter(
-        (product) => product.productId === productId
-      );
+//  method to get promotional programs with caching
+  private async getPromotionalPrograms(productId: number): Promise<any[]> {
+    // Return cached data if available for the same product
+    if (this.cachedProductIdForPromo === productId) {
+      // If there's an ongoing request for this product, wait for it
+      if (this.promotionalProgramsPromise) {
+        return this.promotionalProgramsPromise;
+      }
+      // Return cached data if available
+      return this.cachedPromotionalPrograms;
     }
 
+    // Clear cache if product changed
+    if (this.cachedProductIdForPromo !== null && this.cachedProductIdForPromo !== productId) {
+      this.clearPromotionalCache();
+    }
+
+    // If there's already an ongoing request for this product, wait for it
+    if (this.promotionalProgramsPromise && this.cachedProductIdForPromo === productId) {
+      return this.promotionalProgramsPromise;
+    }
+
+    // Set the product ID immediately to prevent concurrent calls
+    this.cachedProductIdForPromo = productId;
+
+    // Create and store the promise to prevent concurrent API calls
+    this.promotionalProgramsPromise = this.fetchPromotionalPrograms(productId);
+    
+    try {
+      this.cachedPromotionalPrograms = await this.promotionalProgramsPromise;
+      return this.cachedPromotionalPrograms;
+    } finally {
+      this.promotionalProgramsPromise = null;
+    }
+  }
+
+
+  private async fetchPromotionalPrograms(productId: number): Promise<any[]> {
     const request = {
       parameterValues: [String(productId)],
       procedureName: configure.SPPromotionalProgramExtract,
@@ -979,87 +1077,140 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     const promoResponse = await this.svc.data
       .post("LookupServices/CustomData", request)
       .toPromise();
-    const promotionalPrograms = promoResponse?.data?.table || [];
+    
+    return promoResponse?.data?.table || [];
+  }
 
-    const filteredOptions = programOptions.filter((option) => {
+  // Clear promotional cache when product changes
+  private clearPromotionalCache(): void {
+    this.cachedPromotionalPrograms = [];
+    this.cachedProductIdForPromo = null;
+    this.promotionalProgramsPromise = null;
+  }
+
+  async filterProgramOptionsByPromotions(): Promise<void> {
+    const productId = this.mainForm.get("productId")?.value;
+    if (!productId) return;
+
+    // Always get the full list of programs from productProgramList to avoid filtering an already-filtered list
+    let programOptions = this.productProgramList?.programs?.filter(
+      (program) => program.productId === productId
+    );
+
+    if (!programOptions || programOptions.length === 0) {
+      await this.mainForm.updateList("programId", []);
+      return;
+    }
+
+    // Map to dropdown format
+    let allProgramOptions = programOptions.map((item) => ({
+      label: item.name,
+      value: item.programId,
+    })).sort((a, b) => a.label.localeCompare(b.label));
+
+    // Get promotional programs (uses cache)
+    const promotionalPrograms = await this.getPromotionalPrograms(productId);
+
+    // Filter to keep only promotional programs
+    const filteredOptions = allProgramOptions.filter((option) => {
       return promotionalPrograms.some((program) => {
+        return Number(program.program_id) === Number(option.value);  
+      });
+    });
+
+    await this.mainForm.updateList("programId", filteredOptions);
+  }
+
+  async filterProgramOptionsExcludingPromotions(): Promise<void> {
+    const productId = this.mainForm.get("productId")?.value;
+    if (!productId) return;
+
+    // Get all programs for the selected product
+    let programOptions = this.productProgramList?.programs?.filter(
+      (program) => program.productId === productId
+    );
+
+    if (!programOptions || programOptions.length === 0) {
+      await this.mainForm.updateList("programId", []);
+      return;
+    }
+
+    // Map to dropdown format
+    let allProgramOptions = programOptions.map((item) => ({
+      label: item.name,
+      value: item.programId,
+    })).sort((a, b) => a.label.localeCompare(b.label));
+
+    // Get promotional programs (uses cache)
+    const promotionalPrograms = await this.getPromotionalPrograms(productId);
+
+    // Filter out promotional programs - keep only non-promotional ones
+    const filteredOptions = allProgramOptions.filter((option) => {
+      return !promotionalPrograms.some((program) => {
         return Number(program.program_id) === Number(option.value);
       });
     });
-    // let mappedOptions = [];
-    // promotionalPrograms?.forEach((ele) => {
-    //   let obj = {
-    //     label: ele?.name,
-    //     value: ele?.program_id,
-    //   };
-    //   mappedOptions?.push(obj);
-    // });
-    // this.mainForm.fieldProps["programId"].list$ = null;
+
     await this.mainForm.updateList("programId", filteredOptions);
   }
-  async checkIfProgramIsPromotional(programId: number): Promise<void> {
-    // Guard: Prevent duplicate calls
-    if (this.promotionalCheckDone) {
-      return;
-    }
-
-    const productId = this.baseFormData?.productId;
-
-    if (!productId || !programId) {
-      return;
-    }
-
-    // Mark as done immediately to prevent race conditions
-    this.promotionalCheckDone = true;
-
-    try {
-      const request = {
-        parameterValues: [String(productId)],
-        procedureName: configure.SPPromotionalProgramExtract,
-      };
-
-      const promoResponse = await this.svc.data
-        .post("LookupServices/CustomData", request)
-        .toPromise();
-
-      const promotionalPrograms = promoResponse?.data?.table;
-
-      const isProgramPromotional = promotionalPrograms?.some(
-        (program: any) => Number(program.program_id) === Number(programId)
-      );
-
-      if (isProgramPromotional) {
-        this.promotionQuote = true;
-
-        const control = this.mainForm.get("promotionQuote");
-        if (control) {
-          control.setValue(true, { emitEvent: false });
-        }
-
-        await this.filterProgramOptionsByPromotions();
-
-        this.baseSvc.setBaseDealerFormData({
-          promotionQuote: true,
-        });
-
-        this.changeDetectorRef.detectChanges();
-
-      } else {
-        this.promotionQuote = false;
-        this.mainForm.get("promotionQuote")?.setValue(false, { emitEvent: false });
-
-        this.baseSvc.setBaseDealerFormData({
-          promotionQuote: false,
-        });
-
-        this.changeDetectorRef.detectChanges();
-      }
-
-    } catch (error) {
-      this.promotionQuote = false;
-      this.mainForm.get("promotionQuote")?.setValue(false);
-    }
+async checkIfProgramIsPromotional(programId: number): Promise<void> {
+  // Guard: Prevent duplicate calls
+  if (this.promotionalCheckDone) {
+    return;
   }
+
+  const productId = this.baseFormData?.productId;
+  
+  if (!productId || !programId) {
+    return;
+  }
+
+  // Mark as done immediately to prevent race conditions
+  this.promotionalCheckDone = true;
+
+  try {
+    // Use cached helper to avoid redundant API calls
+    const promotionalPrograms = await this.getPromotionalPrograms(productId);
+
+    const isProgramPromotional = promotionalPrograms?.some(
+      (program: any) => Number(program.program_id) === Number(programId)
+    );
+
+    if (isProgramPromotional) {
+      this.promotionQuote = true;
+      
+      const control = this.mainForm.get("promotionQuote");
+      if (control) {
+        control.setValue(true, { emitEvent: false });
+      }
+      
+      await this.filterProgramOptionsByPromotions();
+      
+      this.baseSvc.setBaseDealerFormData({
+        promotionQuote: true,
+      });
+      
+      this.changeDetectorRef.detectChanges();
+      
+    } else {
+      this.promotionQuote = false;
+      this.mainForm.get("promotionQuote")?.setValue(false, { emitEvent: false });
+      
+      await this.filterProgramOptionsExcludingPromotions();
+      
+      this.baseSvc.setBaseDealerFormData({
+        promotionQuote: false,
+      });
+      
+      this.changeDetectorRef.detectChanges();
+    }
+
+  } catch (error) {
+    this.promotionQuote = false;
+    this.mainForm.get("promotionQuote")?.setValue(false);
+    await this.filterProgramOptionsExcludingPromotions();
+  }
+}
 
   // override async onStatusChange(statusDetails: any): Promise<void> {
   //   if (this.baseFormData?.contractId) {
@@ -1067,7 +1218,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
   //       this.mainForm.get("workFlowStatus").patchValue("Draft");
   //     } else {
   //       console.log("WorkFlow Check StatusDetails: ", statusDetails);
-
+      
   //   let workFlowStatusMatrixRes = await this.baseSvc.getFormData(
   //     `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Workflow Steps`
   //   );
@@ -1084,47 +1235,48 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
 
   override async onStatusChange(statusDetails: any): Promise<void> {
 
-    if (statusDetails) {
+    if(statusDetails){
 
       await this.handleWorkflowLogic(statusDetails);
       super.onStatusChange(statusDetails);
-    }
-
+    } 
+  
   }
 
   private async handleWorkflowLogic(statusDetails: any): Promise<void> {
-    // Handle draft case
+  // Handle draft case
     // if (this.baseFormData?.isDraft && this.baseFormData?.contractId) {
     //   this.mainForm.get("workFlowStatus").patchValue("Draft");
     //   this.workflowOptions = [];
     //   return;
     // }
-
+    
     // Handle new quote case (no contractId)
     if (!this.baseFormData?.contractId) {
       this.mainForm.get("workFlowStatus").patchValue("Open Quote");
+      sessionStorage.setItem("workFlowStatus", "Open Quote");
       this.workflowOptions = [];
       return;
     }
-
+    
     // Handle workflow matrix processing
     console.log("WorkFlow Check StatusDetails: ", statusDetails?.currentState);
-
+    
     const workFlowStatusMatrixRes = await this.baseSvc.getFormData(
       `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Workflow Steps`
     );
     console.log("WorkFlow Check Response: ", workFlowStatusMatrixRes);
-
-    const matchingRow = workFlowStatusMatrixRes?.data?.dataRowList?.find((row: any) =>
+    
+    const matchingRow = workFlowStatusMatrixRes?.data?.dataRowList?.find((row: any) => 
       row.customFields?.["Application State"] === statusDetails?.currentState
     );
-
+    
     if (matchingRow) {
       const dealerPortalState = matchingRow.customFields?.["Dealer Portal State"];
       const allowedTransitions = matchingRow.customFields?.["Portal Allowed Transitions"];
 
       // this.mainForm.get("workFlowStatus").patchValue(dealerPortalState);
-
+            
       // Process workflow options
       if (allowedTransitions && allowedTransitions !== "NA") {
         this.workflowOptions = allowedTransitions
@@ -1132,171 +1284,178 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
           .map(transition => transition.trim())
           .filter(transition => transition && transition !== "NA");
 
-        this.mainForm.get("workFlowStatus").enable();
+          this.mainForm.get("workFlowStatus").enable();
+          this.mainForm.updateClass( {workFlowStatus : "status w-10rem" }, "className"  )
+
       } else {
         this.workflowOptions = [];
         this.mainForm.get("workFlowStatus").disable();
-        this.mainForm.updateClass({ workFlowStatus: "status w-10rem disable-workflow" }, "className")
+        this.mainForm.updateClass( {workFlowStatus : "status w-10rem disable-workflow" }, "className"  )
         //  this.mainForm?.updateProps("workFlowStatus", {disabled: true});
         //  this.mainForm.get("workFlowStatus").updateValueAndValidity();
       }
 
-      this.mainForm.get("workFlowStatus").patchValue(dealerPortalState);
+      this.mainForm?.get("workFlowStatus")?.patchValue(dealerPortalState);
+
+      if(dealerPortalState){
+      sessionStorage.setItem("workFlowStatus", dealerPortalState);
+      }
+
     } else {
       // Fallback
       this.mainForm.get("workFlowStatus").patchValue(statusDetails?.currentState);
       this.workflowOptions = [];
       this.mainForm.get("workFlowStatus").disable();
-      this.mainForm.updateClass({ workFlowStatus: "status w-10rem disable-workflow" }, "className")
+      this.mainForm.updateClass( {workFlowStatus : "status w-10rem disable-workflow" }, "className"  )
     }
 
-
+    
   }
 
   async onWorkflowOptionSelect(option: string): Promise<void> {
     let currentWorkflowState = this.mainForm.get("workFlowStatus").value;
     console.log(currentWorkflowState, "Current Workflow State");
-    console.log(option, this.baseFormData, "Selected Option");
+   console.log(option, this.baseFormData, "Selected Option");
 
 
-    if (option == "Submit") {
-      if (this.baseFormData?.AFworkflowStatus === "Quote") {
-        if (this.fieldValidations()) {
-          return;
-        }
-        if (this.checkIfLoanDatePassed()) {
-          this.showLoanPastDialog = true;
-          // this.getDeclaration();
-          return;
-        }
+   if(option == "Submit"){
+    if(this.baseFormData?.AFworkflowStatus === "Quote") {
+    if(this.fieldValidations()){
+      return;
+    }
+      if(this.checkIfLoanDatePassed()) {
+        this.showLoanPastDialog = true;
+        // this.getDeclaration();
+        return; 
+      }
 
-        // this.updateState("Submitted");
-      }
-      let productCode = sessionStorage.getItem("productCode") || this.baseFormData?.productCode;
-      if (this.tradeSvc.assetList.length > 1 && productCode == 'CSA') {
-        this.toasterSvc.showToaster({
-          severity: "warn",
-          detail: "CSA Applications should not be used for more than a single asset.",
-        });
-        // return;
-      }
-      if (!this.checkIfLoanDatePassed()) {
-        this.getDeclaration()
-        return;
-      }
       // this.updateState("Submitted");
     }
-    else if (option == "Withdraw") {
-      if (this.fieldValidations()) {
-        return;
-      }
-
-      if (this.clickCalculate()) {
-        return;
-      }
-
-
-      this.showWithdrawDialog = true;
-      // this.updateState("Withdrawn");
+    let productCode = sessionStorage.getItem("productCode") || this.baseFormData?.productCode;
+    if(this.tradeSvc.assetList.length > 1 && productCode == 'CSA'){
+      this.toasterSvc.showToaster({
+        severity: "warn",
+        detail: "CSA Applications should not be used for more than a single asset.",
+      });
+      // return;
     }
-    else if (option == "Open Quote") {
-      if (this.fieldValidations()) {
-        return;
-      }
-
-      if (this.clickCalculate()) {
-        return;
-      }
-
-      let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-      if (updateContractRes == null || updateContractRes?.apiError || updateContractRes?.Error?.Message) {
-        return;
-      }
-
-      this.updateState("Quote");
+    if(!this.checkIfLoanDatePassed()){
+      this.getDeclaration()
+      return;
     }
-    else if (option == "Assessment Q") {
-
-      if (this.fieldValidations()) {
-        return;
-      }
-
-      if (this.clickCalculate()) {
-        return;
-      }
-
-      let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-      if (updateContractRes == null || updateContractRes?.apiError || updateContractRes?.Error?.Message) {
-        return;
-      }
-
-      this.updateState("Awaiting Assessment - Retail Lending");
+    // this.updateState("Submitted");
+   }
+   else if(option == "Withdraw"){
+    if(this.fieldValidations()){
+      return;
     }
-    else if (option == "Generate Docs") {
 
-      if (this.fieldValidations()) {
-        return;
-      }
+     if (this.clickCalculate()){
+      return;
+    }
+    
+  	
+    this.showWithdrawDialog = true;
+    // this.updateState("Withdrawn");
+   }
+   else if(option == "Open Quote"){
+     if(this.fieldValidations()){
+      return;
+    }
 
-      if (this.clickCalculate()) {
-        return;
-      }
+    if (this.clickCalculate()){
+      return;
+    }
 
-      if (this.baseFormData?.AFworkflowStatus === "Ready for Documentation") {
-        if (this.checkIfLoanDatePassed()) {
+    let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
+           
+    if(updateContractRes == null ||updateContractRes?.apiError || updateContractRes?.Error?.Message){
+      return;
+    }
+
+    this.updateState("Quote");
+   }
+   else if(option == "Assessment Q"){
+
+     if(this.fieldValidations()){
+      return;
+    }
+
+    if (this.clickCalculate()){
+      return;
+    }
+
+    let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
+           
+    if(updateContractRes == null ||updateContractRes?.apiError || updateContractRes?.Error?.Message){
+      return;
+    }
+    
+    this.updateState("Awaiting Assessment - Retail Lending");
+   }
+   else if(option == "Generate Docs"){
+
+     if(this.fieldValidations()){
+      return;
+    }
+
+    if (this.clickCalculate()){
+      return;
+    }
+
+      if(this.baseFormData?.AFworkflowStatus === "Ready for Documentation") {
+        if(this.checkIfLoanDatePassed()) {
           this.showLoanPastDialog = true;
-          return;
+          return; 
         }
       }
-      this.updateState("Generate documents");
+    this.updateState("Generate documents");
+   }
+   else if(option == "Approved"){
+
+     if(this.fieldValidations()){
+      return;
     }
-    else if (option == "Approved") {
 
-      if (this.fieldValidations()) {
-        return;
-      }
-
-      if (this.clickCalculate()) {
-        return;
-      }
-
-      let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-      if (updateContractRes == null || updateContractRes?.apiError || updateContractRes?.Error?.Message) {
-        return;
-      }
-
-      this.updateState("Ready for Documentation");
+    if (this.clickCalculate()){
+      return;
     }
-    else if (option == "Payout Q") {
 
-      if (this.fieldValidations()) {
-        return;
-      }
-
-      if (this.clickCalculate()) {
-        return;
-      }
-
-      let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-      if (updateContractRes == null || updateContractRes?.apiError || updateContractRes?.Error?.Message) {
-        return;
-      }
-
-      this.updateState("Awaiting Settlement Review");
+    let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
+           
+    if(updateContractRes == null || updateContractRes?.apiError || updateContractRes?.Error?.Message){
+      return;
     }
-    else {
-      this.toasterSvc.showToaster({
-        severity: "error",
-        detail: "Invalid workflow option selected.",
-      });
+
+    this.updateState("Ready for Documentation");
+   }
+   else if(option == "Payout Q"){
+
+     if(this.fieldValidations()){
+      return;
     }
+
+    if (this.clickCalculate()){
+      return;
+    }
+
+    let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
+           
+    if(updateContractRes == null ||updateContractRes?.apiError || updateContractRes?.Error?.Message){
+      return;
+    }
+
+    this.updateState("Awaiting Settlement Review");
+   }
+   else{
+    this.toasterSvc.showToaster({
+      severity: "error",
+      detail: "Invalid workflow option selected.",
+    });
+   }
   }
 
-  fieldValidations() {
+   fieldValidations() {
     // Program & Product
     if (!(this.baseFormData?.productId && this.baseFormData?.programId)) {
       this.toasterSvc.showToaster({
@@ -1398,8 +1557,8 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     return false;
   }
 
-  clickCalculate() {
-    if (this.clickCalculateError) {
+  clickCalculate(){
+    if(this.clickCalculateError){
       this.toasterSvc.showToaster({
         severity: "error",
         detail: "Please click on Calculate.",
@@ -1469,73 +1628,73 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
         ?.onClose.subscribe(async (data: CloseDialogData) => {
           if (data?.btnType == "submit") {
             let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-            if (updateContractRes?.apiError || updateContractRes?.Error?.Message) {
+          
+            if(updateContractRes?.apiError || updateContractRes?.Error?.Message){
               return;
             }
-            else {
+            else{
+            
+            let updateWorkflow = await this.updateState("Submitted");
 
-              let updateWorkflow = await this.updateState("Submitted");
+            if ( updateWorkflow !== false &&
+              this.baseFormData.contractId &&
+              data?.btnType == "submit" &&
+              data?.data?.formData &&
+              data?.data?.formData?.isPrivacyAuthorization &&
+              data?.data?.formData?.isFinancialAdvise
+            ) {
+              // alert(JSON.stringify(data?.data?.formData));
+              // todo proceed api
+              this.svc.dialogSvc
+                .show(FinalConfirmationComponent, "", {
+                  data: this.baseFormData,
+                })
+                ?.onClose.subscribe((data: CloseDialogData) => {
+                  if (data?.btnType == "submit") {
+                    this.standardService.resetBaseDealerFormData();
+                    this.indSvc.resetBaseDealerFormData();
+                    this.businessSvc.resetBaseDealerFormData();
+                    this.trustSvc.resetBaseDealerFormData();
+                    this.standardService.individualDataSubject.unsubscribe();
+                    this.tradeSvc.resetData();
+                    this.quickquoteService.resetData();
+                    this.router.navigateByUrl("/dealer");
+                    this.standardService.activeStep = 0;
+                  }
+                });
+            } 
+            
+            // else if (data?.btnType == "submit" && this.baseFormData.contractId) {
 
-              if (updateWorkflow !== false &&
-                this.baseFormData.contractId &&
-                data?.btnType == "submit" &&
-                data?.data?.formData &&
-                data?.data?.formData?.isPrivacyAuthorization &&
-                data?.data?.formData?.isFinancialAdvise
-              ) {
-                // alert(JSON.stringify(data?.data?.formData));
-                // todo proceed api
-                this.svc.dialogSvc
-                  .show(FinalConfirmationComponent, "", {
-                    data: this.baseFormData,
-                  })
-                  ?.onClose.subscribe((data: CloseDialogData) => {
-                    if (data?.btnType == "submit") {
-                      this.standardService.resetBaseDealerFormData();
-                      this.indSvc.resetBaseDealerFormData();
-                      this.businessSvc.resetBaseDealerFormData();
-                      this.trustSvc.resetBaseDealerFormData();
-                      this.standardService.individualDataSubject.unsubscribe();
-                      this.tradeSvc.resetData();
-                      this.quickquoteService.resetData();
-                      this.router.navigateByUrl("/dealer");
-                      this.standardService.activeStep = 0;
-                    }
-                  });
-              }
+            //   await this.baseSvc.contractModification(this.baseFormData, false);
+            //   this.svc.dialogSvc
+            //     .show(FinalConfirmationComponent, "", {
+            //       data: {
+            //         data: this.baseFormData,
+            //       },
+            //       templates: {
+            //         footer: null,
+            //       },
+            //       width: "60vw",
+            //     })
+            //     ?.onClose.subscribe((data: CloseDialogData) => {
+            //       if (data?.btnType == "submit") {
+            //         this.standardService.resetBaseDealerFormData();
+            //         this.indSvc.resetBaseDealerFormData();
+            //         this.businessSvc.resetBaseDealerFormData();
+            //         this.trustSvc.resetBaseDealerFormData();
+            //         this.standardService.individualDataSubject.unsubscribe();
+            //         this.tradeSvc.resetData();
+            //         this.quickquoteService.resetData();
+            //         this.router.navigateByUrl("/dealer");
+            //         this.standardService.activeStep = 0;
+            //       }
+            //     });
+            //   // alert('Declaration form is unchecked!');
+            // }
 
-              // else if (data?.btnType == "submit" && this.baseFormData.contractId) {
-
-              //   await this.baseSvc.contractModification(this.baseFormData, false);
-              //   this.svc.dialogSvc
-              //     .show(FinalConfirmationComponent, "", {
-              //       data: {
-              //         data: this.baseFormData,
-              //       },
-              //       templates: {
-              //         footer: null,
-              //       },
-              //       width: "60vw",
-              //     })
-              //     ?.onClose.subscribe((data: CloseDialogData) => {
-              //       if (data?.btnType == "submit") {
-              //         this.standardService.resetBaseDealerFormData();
-              //         this.indSvc.resetBaseDealerFormData();
-              //         this.businessSvc.resetBaseDealerFormData();
-              //         this.trustSvc.resetBaseDealerFormData();
-              //         this.standardService.individualDataSubject.unsubscribe();
-              //         this.tradeSvc.resetData();
-              //         this.quickquoteService.resetData();
-              //         this.router.navigateByUrl("/dealer");
-              //         this.standardService.activeStep = 0;
-              //       }
-              //     });
-              //   // alert('Declaration form is unchecked!');
-              // }
-
-            }
           }
+        }
         });
     } else {
       this.router.navigateByUrl("/dealer");
@@ -1549,7 +1708,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
 
     const loanDate = new Date(this.baseFormData?.loanDate);
     const today = new Date();
-
+    
     loanDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
 
@@ -1557,11 +1716,11 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       this.selectedPastLoanDate = loanDate;
       return true;
     }
-
+    
     return false;
   }
 
-  onLoanYes() {
+ onLoanYes() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -1573,7 +1732,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     this.showLoanPastDialog = false;
 
     let productCode = sessionStorage.getItem("productCode") || this.baseFormData?.productCode;
-    if (this.tradeSvc.assetList.length > 1 && productCode == 'CSA') {
+    if(this.tradeSvc.assetList.length > 1 && productCode == 'CSA'){
       this.toasterSvc.showToaster({
         severity: "warn",
         detail: "CSA Applications should not be used for more than a single asset.",
@@ -1587,29 +1746,29 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     this.showLoanPastDialog = false;
   }
 
-  async onYes() {
+  async onYes(){
     this.showWithdrawDialog = false;
 
     let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
-
-    if (updateContractRes == null || updateContractRes?.apiError || updateContractRes?.Error?.Message) {
+           
+    if(updateContractRes == null ||updateContractRes?.apiError || updateContractRes?.Error?.Message){
       return;
     }
 
     this.updateState("Withdrawn");
-
+        
   }
 
-  onNo() {
+  onNo(){
     this.showWithdrawDialog = false;
   }
 
   override ngAfterViewInit() {
     setTimeout(() => {
       const el = document.querySelector(".status input") as HTMLInputElement;
-
+ 
       if (el) {
-        el.readOnly = true;
+        el.readOnly = true; 
         el.style.cursor = "pointer";
       }
     });
@@ -1632,7 +1791,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
   //           return res?.data?.data;
   //         }
   //         // else if(res?.apiError?.errors.length > 0){
-
+            
   //         //   let errors = res?.apiError?.errors
 
   //         //    const messages: Message[] = errors.map((err) => ({
@@ -1655,58 +1814,58 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
   //   }
 
   async updateState(nextState): Promise<any | false> {
-    try {
-      const request = {
-        nextState: nextState,
-        isForced: false,
-      };
+  try {
+    const request = {
+      nextState: nextState,
+      isForced: false,
+    };
+    
+    const response = await this.svc.data
+      .put(
+        `WorkFlows/update_workflowstate?contractId=${this.baseFormData?.contractId}&workflowName=Application&WorkFlowId=${this.baseFormData?.AFworkflowId}`,
+        request
+      )
+      .pipe(
+        catchError(() => of(null)) // Convert errors to null
+      )
+      .toPromise();
 
-      const response = await this.svc.data
-        .put(
-          `WorkFlows/update_workflowstate?contractId=${this.baseFormData?.contractId}&workflowName=Application&WorkFlowId=${this.baseFormData?.AFworkflowId}`,
-          request
-        )
-        .pipe(
-          catchError(() => of(null)) // Convert errors to null
-        )
-        .toPromise();
-
-      // Check for API-level errors
-      if ((response?.apiError?.errors?.length > 0) || (response?.Error?.Message)) {
-        return false;
-      }
-
-      const stateData = response?.data?.data;
-
-      // If successful response with data
-      if (stateData) {
-        this.baseSvc?.appStatus?.next({
-          currentState: stateData?.currentState?.name,
-          nextState: stateData?.defaultNextState?.name,
-        });
-        return stateData;
-      }
-
-      return false;
-
-    } catch (error) {
-      console.error('Error in updateState:', error);
+    // Check for API-level errors
+    if ((response?.apiError?.errors?.length > 0 ) || (response?.Error?.Message )) {
       return false;
     }
+    
+    const stateData = response?.data?.data;
+    
+    // If successful response with data
+    if (stateData) {
+      this.baseSvc?.appStatus?.next({
+        currentState: stateData?.currentState?.name,
+        nextState: stateData?.defaultNextState?.name,
+      });
+      return stateData;
+    }
+    
+    return false;
+    
+  } catch (error) {
+    console.error('Error in updateState:', error);
+    return false;
   }
-
+}
+  
 
   override renderComponentWithNewData() {
     if (this.baseFormData && this.mainForm?.form) {
       this.mainForm.updateHidden({ contractId: false });
       this.mainForm.form.patchValue({
         contractId: this.baseFormData?.contractId,
-      });
-      // Check if program is promotional when contract is reopened
-      if (this.baseFormData?.contractId && this.baseFormData?.programId) {
-        this.checkIfProgramIsPromotional(this.baseFormData.programId);
-      }
+      }); 
+    // Check if program is promotional when contract is reopened
+    if (this.baseFormData?.contractId && this.baseFormData?.programId) {
+      this.checkIfProgramIsPromotional(this.baseFormData.programId);
     }
+  }
     super.renderComponentWithNewData();
     this.changeDetectorRef.detectChanges();
   }
@@ -1774,9 +1933,9 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       let data = this.salePersonData?.data;
       let arr = Array.isArray(data)
         ? data.map((item) => ({
-          label: item.lastName,
-          value: item.customerId,
-        }))
+            label: item.lastName,
+            value: item.customerId,
+          }))
         : [];
       this.mainForm.updateList("salesPerson", arr);
       this.mainForm.form.get("salesPerson").patchValue(arr[0]?.value);
@@ -1800,19 +1959,19 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
         let programData = res?.data?.programs;
         this.productList = Array.isArray(productdata)
           ? productdata
-            .map((item) => ({
-              label: item.name,
-              value: item.productId,
-            }))
-            .sort((a, b) => a.label.localeCompare(b.label))
+              .map((item) => ({
+                label: item.name,
+                value: item.productId,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
           : [];
         this.programList = Array.isArray(programData)
           ? programData
-            .map((item) => ({
-              label: item.name,
-              value: item.programId,
-            }))
-            .sort((a, b) => a.label.localeCompare(b.label))
+              .map((item) => ({
+                label: item.name,
+                value: item.programId,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
           : [];
       }
     }
@@ -1825,11 +1984,11 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       );
       let productJson = Array.isArray(productList)
         ? productList
-          .map((item) => ({
-            label: item.name,
-            value: item.productId,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
+            .map((item) => ({
+              label: item.name,
+              value: item.productId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
         : [];
       await this.mainForm.updateList("productId", productJson);
     } else {
@@ -1850,19 +2009,19 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       let programData = res?.data?.programs;
       this.productList = Array.isArray(productdata)
         ? productdata
-          .map((item) => ({
-            label: item.name,
-            value: item.productId,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
+            .map((item) => ({
+              label: item.name,
+              value: item.productId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
         : [];
       this.programList = Array.isArray(programData)
         ? programData
-          .map((item) => ({
-            label: item.name,
-            value: item.programId,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
+            .map((item) => ({
+              label: item.name,
+              value: item.programId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
         : [];
     }
 
@@ -1874,11 +2033,11 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       );
       let productJson = Array.isArray(productList)
         ? productList
-          .map((item) => ({
-            label: item.name,
-            value: item.productId,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
+            .map((item) => ({
+              label: item.name,
+              value: item.productId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
         : [];
       await this.mainForm.updateList("productId", productJson);
     } else {
@@ -1889,21 +2048,21 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     }
   }
 
-  async setProgram(productId) {
-    if (this.sessionProductCode === "AFV" || this.productCode === "AFV") {
-
-      return;
-    }
+  async setProgram(productId, applyPromotionalFilter: boolean = true) {
+     if (this.sessionProductCode === "AFV" || this.productCode === "AFV") {
+    
+    return;
+  }
     let programOptions = this.productProgramList?.programs?.filter(
       (program) => program.productId === productId
     );
     let programJson = Array.isArray(programOptions)
       ? programOptions
-        ?.map((item) => ({
-          label: item.name,
-          value: item.programId,
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label))
+          ?.map((item) => ({
+            label: item.name,
+            value: item.programId,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
       : [];
     if (programJson?.length == 1) {
       //this.mainForm.get("programId").patchValue(programJson[0]?.value);
@@ -1918,6 +2077,15 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       businessModel: selectedProduct?.businessModel,
     });
     await this.mainForm.updateList("programId", programJson);
+
+    // Apply promotional filter based on checkbox state
+    if (applyPromotionalFilter) {
+      if (this.promotionQuote) {
+        await this.filterProgramOptionsByPromotions();
+      } else {
+        await this.filterProgramOptionsExcludingPromotions();
+      }
+    }
   }
 
   async checkProductProgram() {

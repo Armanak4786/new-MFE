@@ -45,15 +45,16 @@ export class AddSupplierComponent extends BaseStandardQuoteClass {
     effect(() => {
       this.dataList = this.baseSvc
         ?.searchResultForSupplier()
-        .filter((c) => c.customerRole == 7)
+        .filter((c) => c.customerRole == 7 || c.roleName == "Third Party")
         .map((c) => ({
-          customerName: c.customerName,
-          customerNo: c.customerNo,
-          customerType: c.customerType,
-          roleName: c.roleName === "PrivateSaleParty" ? "Third Party" : "",
-          applyId: false,
-          bud: false,
-          action: this.actions,
+          customerName: c?.customerName,
+          customerNo: c?.customerNo,
+          customerType: c?.customerType,
+          roleName: c?.roleName === "PrivateSaleParty" || "Third Party" ? "Third Party" : "",
+          currentWorkflowStatus: c?.currentWorkflowStatus,
+          delete: this.actions,
+          email: c?.email,
+          phoneNo: c?.phoneNo,
         }));
         this.cdr.detectChanges()
     });
@@ -109,7 +110,9 @@ export class AddSupplierComponent extends BaseStandardQuoteClass {
   }
 
   onCellClick(event: any) {
-   
+
+        this.baseSvc?.customerRowData?.set(event?.rowData);
+        
       if (event?.colName == "customerName") {
       if (event?.rowData?.customerType == "Business") {
         this.router.navigateByUrl(
@@ -142,7 +145,7 @@ export class AddSupplierComponent extends BaseStandardQuoteClass {
             if(index != -1){
               this.baseFormData?.customerSummary?.splice(index, 1);
             }
-              
+            this.baseSvc.searchResultForSupplier.set([]);
             this.cdr.detectChanges()
           }
         });

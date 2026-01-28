@@ -103,8 +103,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         options: [],
         className: " ml-2 pr-0 py-1 pl-5  ",
         alignmentType: "vertical",
-        labelClass: "pt-1 ctsig",
-
+        labelClass:"pt-1 ctsig",
+        
       },
 
       {
@@ -381,7 +381,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         cols: 2,
         className: "ml-6 pl-5 pr-2 mt-2",
         inputClass: " soi",
-        labelClass: "mb-2",
+        labelClass:"mb-2",
         mode: Mode.view,
         showButtons: true,
         inputType: "vertical",
@@ -1450,15 +1450,15 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
       this.baseFormData?.preferredDeliveryMethod || "ESign";
   }
 
-  isDisabled() {
-    if (configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) {
-      return true;
-    }
-    return false;
+  isDisabled(){
+    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
+    return true;
+  }
+  return false;
   }
 
-  workflowViewonlyField(rowData: any) {
-    if (configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || this.baseSvc?.partyStatusListforIconDisable?.includes(rowData?.currentWorkflowStatus.toLowerCase())) {
+  workflowViewonlyField(rowData:any){
+    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || this.baseSvc?.partyStatusListforIconDisable?.includes(rowData?.currentWorkflowStatus.toLowerCase())){
       return true;
     }
     return false;
@@ -1470,7 +1470,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
       `CustomerDetails/get_AllDocusign?contractId=${this.baseData.contractId}`,
       (res) => {
         if (res.data) {
-          this.signatoriesData = res.data?.filter(r => r.customerRole != 7);
+          this.signatoriesData = res.data?.filter(r=>r.customerRole != 7);
           this.baseSvc.setBaseDealerFormData({
             signatories: this.signatoriesData,
           });
@@ -1585,7 +1585,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
     rowIndex: number,
     contactIndex: number
   ) {
-    if ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus))) {
+    if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus))){
       return;
     }
     this.svc.data
@@ -1639,7 +1639,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
     this.selectedContactIndex = contactIndex || null;
     this.lastClickedElement = targetElement;
 
-    if (this.baseSvc?.partyStatusListforIconDisable?.includes(rowData?.currentWorkflowStatus?.toLowerCase())) {
+    if(this.baseSvc?.partyStatusListforIconDisable?.includes(rowData?.currentWorkflowStatus?.toLowerCase())){
       return;
     }
 
@@ -1647,14 +1647,14 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
     this.overlayPanel.toggle(event, targetElement);
   }
   onOverlayShow() {
-    if (this.lastClickedElement) {
-      const buttonWidth = this.lastClickedElement.offsetWidth;
-      const overlayPanel = document.querySelector('.custom-overlay-panel.p-overlaypanel') as HTMLElement;
-      if (overlayPanel) {
-        overlayPanel.style.width = `${buttonWidth}px`;
-      }
+  if (this.lastClickedElement) {
+    const buttonWidth = this.lastClickedElement.offsetWidth;
+    const overlayPanel = document.querySelector('.custom-overlay-panel.p-overlaypanel') as HTMLElement;
+    if (overlayPanel) {
+      overlayPanel.style.width = `${buttonWidth}px`;
     }
   }
+} 
 
   // Handle verification completion from the child component
   onVerificationComplete(result: any) {

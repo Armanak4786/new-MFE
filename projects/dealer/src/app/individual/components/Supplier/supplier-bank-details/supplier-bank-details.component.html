@@ -3,17 +3,13 @@
     <span >
       <label class="ml-2 customer-role" >Role<span class="text-red-500">* </span></label>
     </span>
-      <p-dropdown
-        [options]="customerRoleData"
-        name="role"
-        optionLabel="label"
-        optionValue="value"
-        (onClick)="clearSearchFilter(dropdown)"
-        [appendTo]="'body'"
-        [disabled]="true"
-        #dropdown
-      ></p-dropdown>
 
+        <input
+        type="text"
+        pInputText
+        [value]="selectedCustomerRole"
+        disabled
+        />
   </form>
 </div>
 
@@ -27,4 +23,7 @@
     (formReady)="onFormReady()"
     (formEvent)="onFormEvent($event)"
     (formButtonEvent)="onButtonClick($event)"
+    (onInput)="onValueTyped($event)"
+    (onBlur)="onBlurEvent($event)"
+    (onValueChange)="onValueEvent($event)"
   ></base-form>

@@ -212,15 +212,20 @@ export class IndividualService extends BaseDealerService implements OnInit {
         )
       ),
 
-      country: from(
-        this.getFormData(`LookUpServices/locations?LocationType=country`)
+      country: from
+        (this.getFormData(`LookUpServices/locations?LocationType=country`)
       ).pipe(
-        map((res: any) =>
-          res?.data?.map((item: any) => ({
+        map((res: any) => {
+      const list = res?.data || [];
+      const index = list.findIndex(c => c.name === "New Zealand");
+      if (index > -1) {
+       list.unshift(list.splice(index, 1)[0]); // move NZ to top
+      }
+    return list.map((item: any) => ({
             label: item.name,
             value: item.name,
-          }))
-        )
+        }));
+        })
       ),
       city: from(
         this.getFormData(`LookUpServices/locations?LocationType=City`)

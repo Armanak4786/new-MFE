@@ -443,6 +443,16 @@ export class SoleTradePersonalDetailComponent extends BaseSoleTradeClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
     if(this.baseSvc.showValidationMessage){
       this.mainForm.form.markAllAsTouched()
@@ -534,6 +544,7 @@ private sortMaritalStatusOptions(options: any[], selectedValue: string | null): 
         }));
 
         this.mainForm.updateList("title", titleList);
+        titleList?.sort((a, b) => a?.label?.localeCompare(b?.label));
 
         return titleList;
       }
@@ -551,6 +562,7 @@ private sortMaritalStatusOptions(options: any[], selectedValue: string | null): 
           label: item.lookupValue,
           value: item.lookupValue,
         }));
+        genderList?.sort((a, b) => a?.label?.localeCompare(b?.label));
 
         this.mainForm.updateList("gender", genderList);
 

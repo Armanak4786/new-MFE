@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
 import {
@@ -9,7 +9,7 @@ import {
   ToasterService,
 } from "auro-ui";
 import { cloneDeep } from "lodash";
-import { map, Subscription } from "rxjs";
+import { map, Subscription, takeUntil } from "rxjs";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import { CalculationService } from "../payment-summary/calculation.service";
 import { StandardQuoteService } from "../../services/standard-quote.service";
@@ -17,6 +17,8 @@ import { Contract } from "../../../asset/asset.component";
 import { ValidationService } from "auro-ui";
 import { DocumentHistoryComponent } from "../document-history/document-history.component";
 import { DocumentEsignDetailsComponent } from "../document-esign-details/document-esign-details.component";
+import { Table } from "primeng/table";
+
 
 type FileTypeMapping = {
   type: string;
@@ -209,13 +211,21 @@ export class GenerateDocumentComponent extends BaseStandardQuoteClass {
   ) {
     super(route, svc, baseSvc);
 
-    this.baseSvc.formDataCacheableRoute([
-      "WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset",
-    ]);
+    // this.baseSvc.formDataCacheableRoute([
+    //   "WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset",
+    // ]);
 
-    this.baseSvc.getFormData(
-      `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset`
-    );
+    // this.baseSvc.getFormData(
+    //   `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset`
+    // );
+
+    // this.baseSvc.formDataCacheableRoute([
+    //   "WorkFlows/get_static_config_matrix",
+    // ]);
+
+    // this.baseSvc.getFormData(
+    //   `WorkFlows/get_static_config_matrix`
+    // );
   }
   responsedData: any;
 
@@ -290,14 +300,22 @@ export class GenerateDocumentComponent extends BaseStandardQuoteClass {
   //   await this.updateValidation("onInit");
   // }
 
-  // init() {
-  //   this.svc.data.get(`DocumentServices/documents?PageNo=1&PageSize=100&Category=CreditAdvices&ContractId=${this.baseFormData?.contractId}`).pipe(
-  //         map((res) => {
-  //           this.generatedDocuments = res;
-  //         })
-  //       )
-  //       .toPromise();
-  // }
+  async init() {
+    const response = await this.svc.data.get(
+      `DocumentServices/documents?PageNo=1&PageSize=100&Category=CreditAdvices&ContractId=${this.baseFormData?.contractId}`
+    ).toPromise();
+    
+    // Extract items array and filter only documents with source === "Generated"
+    if (response?.items && Array.isArray(response.items)) {
+      this.generatedDocuments = response.items.filter(
+        (doc) => doc.source === "Generated"
+      );
+    } else {
+      this.generatedDocuments = [];
+    }
+    
+    console.log(this.generatedDocuments, "Generated Documents (filtered by source: Generated)");
+  }
 
   // Add these properties
 duplicateDocumentsMap: Map<string, any[]> = new Map();
@@ -352,60 +370,60 @@ processGeneratedDocuments(documents: any[]): void {
 }
 
 // Update your ngOnInit
-override async ngOnInit(): Promise<void> {
-  let params: any = this.route.snapshot.params;
-  this.id = params.id;
+// override async ngOnInit(): Promise<void> {
+//   let params: any = this.route.snapshot.params;
+//   this.id = params.id;
 
-  await super.ngOnInit();
+//   await super.ngOnInit();
 
-  this.documentMatrixData = await this.baseSvc.getFormData(
-    `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset`
-  );
+//   this.documentMatrixData = await this.baseSvc.getFormData(
+//     `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset`
+//   );
 
   
 
-  if (this.baseFormData) {
-    this.baseFormData?.documentsData?.forEach((ele) => {
-      const obj = new DocumentData();
-      this.documents.push({
-        dateLoaded: new Date(ele?.loaded),
-        ...obj,
-        ...ele,
-      });
-    });
+//   if (this.baseFormData) {
+//     this.baseFormData?.documentsData?.forEach((ele) => {
+//       const obj = new DocumentData();
+//       this.documents.push({
+//         dateLoaded: new Date(ele?.loaded),
+//         ...obj,
+//         ...ele,
+//       });
+//     });
 
-    // this.generatedDocuments = [
-    //   {name: 'Credit Advice', loaded: '2025-10-17T00:25:51', history: 'Pending', eSignDetails: 'Pending', checked: false},
-    //   {name: 'Credit Advice', loaded: '2025-10-17T00:25:52', history: 'Pending', eSignDetails: 'Pending', checked: false},
-    //   {name: 'Credit Advice', loaded: '2025-10-17T00:25:53', history: 'Pending', eSignDetails: 'Pending', checked: false},
-    //   {name: 'Disclosure Statement', loaded: '2024-09-10T10:32:00', history: 'Pending', eSignDetails: 'Sent', checked: true},
-    //   {name: 'Direct Debit Authority', loaded: '2024-09-10T10:35:00', history: 'Generated', eSignDetails: 'Completed', checked: true},
-    // ]
+//     // this.generatedDocuments = [
+//     //   {name: 'Credit Advice', loaded: '2025-10-17T00:25:51', history: 'Pending', eSignDetails: 'Pending', checked: false},
+//     //   {name: 'Credit Advice', loaded: '2025-10-17T00:25:52', history: 'Pending', eSignDetails: 'Pending', checked: false},
+//     //   {name: 'Credit Advice', loaded: '2025-10-17T00:25:53', history: 'Pending', eSignDetails: 'Pending', checked: false},
+//     //   {name: 'Disclosure Statement', loaded: '2024-09-10T10:32:00', history: 'Pending', eSignDetails: 'Sent', checked: true},
+//     //   {name: 'Direct Debit Authority', loaded: '2024-09-10T10:35:00', history: 'Generated', eSignDetails: 'Completed', checked: true},
+//     // ]
 
-    // this.processGeneratedDocuments(this.generatedDocuments);
-    // this.generatedDocuments = this.displayDocuments;
-    // console.log('Processed Generated Documents:', this.generatedDocuments);
+//     // this.processGeneratedDocuments(this.generatedDocuments);
+//     // this.generatedDocuments = this.displayDocuments;
+//     // console.log('Processed Generated Documents:', this.generatedDocuments);
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // if (this.baseFormData?.generatedDocuments) {
+//     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//     // if (this.baseFormData?.generatedDocuments) {
 
-    //   console.log('Document Matrix Data:', this.documentMatrixData?.data, this.baseFormData?.generatedDocuments, this.baseFormData?.workFlowStatus, this.baseFormData);
+//     //   console.log('Document Matrix Data:', this.documentMatrixData?.data, this.baseFormData?.generatedDocuments, this.baseFormData?.workFlowStatus, this.baseFormData);
       
-    //   this.processGeneratedDocuments(this.baseFormData.generatedDocuments);  //To process duplicate documents
-    //   this.generatedDocuments = this.displayDocuments;
-    // }
+//     //   this.processGeneratedDocuments(this.baseFormData.generatedDocuments);  //To process duplicate documents
+//     //   this.generatedDocuments = this.displayDocuments;
+//     // }
 
-    this.matrixApiCombinedDetail = this.combineMatrixAndGeneratedDocuments();
+//     this.matrixApiCombinedDetail = this.combineMatrixAndGeneratedDocuments();
 
-    let filterDocumentByStatus = this.matrixApiCombinedDetail.filter(doc => {
-      return doc.applicationWorkflowState === this.baseFormData?.workFlowStatus;
-    });
+//     let filterDocumentByStatus = this.matrixApiCombinedDetail.filter(doc => {
+//       return doc.applicationWorkflowState === this.baseFormData?.workFlowStatus;
+//     });
 
-    this.generatedDocuments = filterDocumentByStatus;
-    console.log('Final Generated Documents to Display:', this.generatedDocuments);
+//     this.generatedDocuments = filterDocumentByStatus;
+//     console.log('Final Generated Documents to Display:', this.generatedDocuments);
     
-  }
-}
+//   }
+// }
 
 private combineMatrixAndGeneratedDocuments(): any[] {
   const matrixApiCombinedDetail = [];
@@ -833,5 +851,469 @@ updateCustRole(event: any): void {
         // });
       }
     }
+  }
+
+
+  @ViewChild('dt') dt: Table;
+
+  @Input() documentsData: any[] = [];
+
+  selectAll: boolean = false;
+  selectedDocuments: any[] = [];
+
+  override async ngOnInit(): Promise<void>{
+
+    this.baseSvc.getBaseDealerFormData().pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.baseFormData = data;
+      console.log(this.baseFormData);
+      
+    });
+
+  this.documentMatrixData = [];
+  // await this.baseSvc.getFormData(
+  //   `WorkFlows/get_static_config_matrix`
+  // );
+
+  await this.init();
+
+  
+  console.log(this.baseFormData, this.documentMatrixData, "Generate DOcs Implementation");
+    // Process the data to handle parent-child relationships
+    // this.documentsData = [
+    //   ...DUMMY_DOCUMENTS_DATA,
+    //   ...LOAN_CHILD_DOCUMENTS
+    // ];
+    this.documentsData =await this.filterDocumentMatrix();
+
+    console.log(this.documentsData, "SUbhashishsss");
+    
+    this.organizeDocumentsData();
+
+    console.log(this.documentsData, "After organizing data");
+    
+  }
+
+filterDocumentMatrix() {
+  if (!this.documentMatrixData || !this.documentMatrixData?.data?.dataRowList) {
+    return [];
+  }
+
+  const workflowStatus = this.baseFormData?.AFworkflowStatus;
+  const productCode = this.baseFormData?.product?.productCode;
+  const generatedDocuments = this.generatedDocuments || this.baseFormData?.generatedDocuments || [];
+
+  if (!workflowStatus || !productCode) {
+    console.warn('Missing workflow status or product code for filtering');
+    return [];
+  }
+
+  // Helper function to clean and split product codes
+  const cleanAndSplitProductCodes = (productCodesString) => {
+    if (!productCodesString) return [];
+    
+    // Remove newlines, trim spaces, and split by comma
+    return productCodesString
+      .replace(/\n/g, ',')  // Replace newlines with commas
+      .split(',')          // Split by comma
+      .map(code => code.trim())  // Trim whitespace from each code
+      .filter(code => code.length > 0);  // Remove empty strings
+  };
+
+  // Helper function to normalize string for comparison (trim and collapse multiple spaces)
+  const normalizeString = (str: string) => {
+    if (!str) return '';
+    return str.trim().replace(/\s+/g, ' ');
+  };
+
+  // Helper function to find matching generated document by documentRuleName
+  // Returns the LATEST document (by loaded date) when multiple documents have the same documentRuleName
+  const findMatchingGeneratedDocument = (dprName: string) => {
+    if (!dprName) return null;
+
+    const normalizedDprName = normalizeString(dprName);
+
+    // Find ALL matching documents
+    const matchingDocs = generatedDocuments.filter(generatedDoc => {
+      const matchingGeneratedDocItem = generatedDoc.generatedDocs?.find(
+        (doc) => normalizeString(doc.documentRuleName) === normalizedDprName
+      );
+      return matchingGeneratedDocItem !== undefined;
+    });
+
+    if (matchingDocs.length === 0) {
+      return null;
+    }
+
+    // Sort by loaded date descending (newest first) and return the latest one
+    const sortedDocs = matchingDocs.sort((a, b) => {
+      const dateA = new Date(a.loaded).getTime();
+      const dateB = new Date(b.loaded).getTime();
+      return dateB - dateA; // Descending order (newest first)
+    });
+
+    return sortedDocs[0]; // Return the latest document
+  };
+
+  // Filter the data by workflowStatus and productCode (dprName matching handled in map step)
+  const filteredMatrixItems = this.documentMatrixData?.data?.dataRowList.filter(item => {
+    const customFields = item.customFields;
+    
+    // Condition 1: Check if workflow state matches (STRICT)
+    const workflowMatch = customFields["Application Workflow State"] === workflowStatus;
+    if (!workflowMatch) return false;
+    
+    // Condition 2: Check product code match
+    const matrixProductCode = customFields["Product (Code)"];
+    
+    // If matrix product code is null, undefined, or empty - it's applicable for ALL products
+    if (!matrixProductCode || matrixProductCode.trim() === '') {
+      return true; // Product is valid (applicable for all)
+    }
+    
+    // Clean and split the product codes from matrix
+    const matrixProductCodes = cleanAndSplitProductCodes(matrixProductCode);
+    const productMatch = matrixProductCodes.includes(productCode);
+    
+    return productMatch;
+  });
+
+  // Map filtered items and combine with matching generatedDocuments if dprName matches
+  const combinedResults = filteredMatrixItems.map(item => {
+    const customFields = item.customFields;
+    const dprName = customFields["Doc Rule (DPR) Name (UDC Required DPR Name)"];
+    
+    // Try to find matching generated document by dprName
+    const matchingGeneratedDoc = findMatchingGeneratedDocument(dprName);
+    
+    if (matchingGeneratedDoc) {
+      // dprName matched - Combine both objects: matrix customFields + generatedDocument properties
+      return {
+        ...customFields,
+        documentId: matchingGeneratedDoc.documentId,
+        name: matchingGeneratedDoc.name,
+        category: matchingGeneratedDoc.category,
+        description: matchingGeneratedDoc.description,
+        type: matchingGeneratedDoc.type,
+        loaded: matchingGeneratedDoc.loaded,
+        loadedBy: matchingGeneratedDoc.loadedBy,
+        source: matchingGeneratedDoc.source,
+        isDocumentDeleted: matchingGeneratedDoc.isDocumentDeleted,
+        documentProvider: matchingGeneratedDoc.documentProvider,
+        securityClassification: matchingGeneratedDoc.securityClassification,
+        reference: matchingGeneratedDoc.reference,
+        generatedDocs: matchingGeneratedDoc.generatedDocs,
+        outputDt: matchingGeneratedDoc.outputDt,
+        expiryDt: matchingGeneratedDoc.expiryDt,
+        fileDetails: matchingGeneratedDoc.fileDetails,
+        isMatched: true,
+        eSignStatus : matchingGeneratedDoc.eSignStatus,
+      };
+    } else {
+      // dprName not matched - Return matrix data only (workflowStatus & productCode are valid)
+      return {
+        ...customFields,
+        isMatched: false
+      };
+    }
+  });
+
+  return combinedResults;
+}
+
+  /**
+   * Organize documents into parent-child structure
+   * Assumes documents with Portal Display Name (Child) belong to their parent
+   */
+  organizeDocumentsData() {
+    // Group documents by parent name
+    const parentMap = new Map();
+    const standaloneDocs = [];
+    
+    this.documentsData.forEach(doc => {
+      // Check if this is a child document
+      if (doc['Portal Display Name (Parent)'] && doc['Portal Display Name (Child)']) {
+        const parentName = doc['Portal Display Name (Parent)'];
+        
+        if (!parentMap.has(parentName)) {
+          // Create parent document structure
+          parentMap.set(parentName, {
+            documentId: `parent_${parentName}`,
+            name: parentName,
+            'Portal Display Name (Parent)': parentName,
+            'Portal Display Name (Child)': null,
+            selected: false,
+            isParent: true,
+            children: []
+          });
+        }
+        
+        // Add as child
+        doc.selected = false;
+        parentMap.get(parentName).children.push(doc);
+      } else {
+        // Standalone document
+        doc.selected = false;
+        doc.isParent = false;
+        standaloneDocs.push(doc);
+      }
+    });
+    
+    // Combine parent documents with their children and standalone docs
+    const organizedData = [];
+    
+    // Add parent documents
+    parentMap.forEach(parent => {
+      organizedData.push(parent);
+    });
+    
+    // Add standalone documents
+    organizedData.push(...standaloneDocs);
+    
+    this.documentsData = organizedData;
+  }
+  
+  /**
+   * Check if document has child documents
+   */
+  hasChildDocuments(rowData: any): boolean {
+    return rowData.children && rowData.children.length > 0;
+  }
+  
+  /**
+   * Get child documents for a parent
+   */
+  getChildDocuments(rowData: any): any[] {
+    return rowData.children || [];
+  }
+  
+  /**
+   * Get display name for document
+   */
+  getDocumentDisplayName(rowData: any): string {
+    if (rowData['Portal Display Name (Parent)'] && !rowData['Portal Display Name (Child)']) {
+      return rowData['Portal Display Name (Parent)'];
+    }
+    else if (!rowData['Portal Display Name (Parent)'] && rowData['Portal Display Name (Child)']) {
+      return rowData['Portal Display Name (Child)'];
+    }
+    return 'Unnamed Document';
+  }
+  
+  /**
+   * Get display name for child document
+   */
+  getChildDocumentDisplayName(childDoc: any): string {
+    return childDoc['Portal Display Name (Child)'] || childDoc.name || 'Unnamed Document';
+  }
+  
+  /**
+   * Format date time for display
+   */
+  formatDateTime(dateTimeString: string): string {
+    if (!dateTimeString) return '-';
+    
+    try {
+      const date = new Date(dateTimeString);
+      // return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      // Format date as DD/MM/YYYY
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const formattedDate = `${day}/${month}/${year}`;
+      
+      // Format time as h:mm AM/PM
+      const hours = date.getHours();
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = hours % 12 || 12;
+      const formattedTime = `${hour12}:${minutes} ${ampm}`;
+      
+      return `${formattedDate} | ${formattedTime}`;
+    } catch {
+      return dateTimeString;
+    }
+  }
+  
+  /**
+   * Check if document has duplicates based on DPR Name
+   */
+  hasDuplicateDocuments(rowData: any): boolean {
+    // Logic to check for duplicates based on Doc Rule (DPR) Name
+    // This assumes you have access to all documents for comparison
+    const dprName = rowData['Doc Rule (DPR) Name (UDC Required DPR Name)'];
+    
+    if (!dprName) return false;
+    
+    // Count occurrences of this DPR name
+    const count = this.documentsData.filter(doc => 
+      doc['Doc Rule (DPR) Name (UDC Required DPR Name)'] === dprName
+    ).length;
+    
+    return count > 1;
+  }
+  
+  /**
+   * Toggle select all checkboxes
+   */
+  toggleSelectAll(event: any) {
+    const checked = event.checked;
+    this.selectAll = checked;
+    
+    this.documentsData.forEach(doc => {
+      if (!this.shouldDisableCheckbox(doc)) {
+        doc.selected = checked;
+        
+        // Also select/deselect children if this is a parent
+        if (this.hasChildDocuments(doc)) {
+          doc.children.forEach(child => {
+            if (!this.shouldDisableCheckbox(child)) {
+              child.selected = checked;
+            }
+          });
+        }
+      }
+    });
+    
+    this.updateSelectedDocuments();
+  }
+  
+  /**
+   * Handle individual row selection
+   */
+  onRowSelect(rowData: any, event: any) {
+    rowData.selected = event.checked;
+    
+    // If this is a parent, select/deselect all children
+    if (rowData.isParent && this.hasChildDocuments(rowData)) {
+      rowData.children.forEach(child => {
+        if (!this.shouldDisableCheckbox(child)) {
+          child.selected = event.checked;
+        }
+      });
+    }
+    
+    // If this is a child, update parent selection state
+    if (!rowData.isParent) {
+      this.updateParentSelectionState(rowData);
+    }
+    
+    this.updateSelectedDocuments();
+    this.updateSelectAllState();
+  }
+  
+  /**
+   * Update parent selection state based on children
+   */
+  updateParentSelectionState(childDoc: any) {
+    // Find the parent of this child
+    const parent = this.documentsData.find(doc => 
+      doc.isParent && doc.children?.some(child => child.documentId === childDoc.documentId)
+    );
+    
+    if (parent) {
+      const allChildrenSelected = parent.children.every(child => 
+        this.shouldDisableCheckbox(child) || child.selected
+      );
+      const anyChildSelected = parent.children.some(child => 
+        !this.shouldDisableCheckbox(child) && child.selected
+      );
+      
+      parent.selected = allChildrenSelected ? true : anyChildSelected ? null : false;
+    }
+  }
+  
+  /**
+   * Update the select all checkbox state
+   */
+  updateSelectAllState() {
+    const selectableDocs = this.documentsData.filter(doc => !this.shouldDisableCheckbox(doc));
+    
+    if (selectableDocs.length === 0) {
+      this.selectAll = false;
+      return;
+    }
+    
+    const allSelected = selectableDocs.every(doc => doc.selected === true);
+    const anySelected = selectableDocs.some(doc => doc.selected === true);
+    
+    this.selectAll = allSelected ? true : anySelected ? null : false;
+  }
+  
+  /**
+   * Update the selected documents array
+   */
+  updateSelectedDocuments() {
+    this.selectedDocuments = [];
+    
+    this.documentsData.forEach(doc => {
+      if (doc.selected) {
+        this.selectedDocuments.push(doc);
+      }
+      
+      if (this.hasChildDocuments(doc)) {
+        doc.children.forEach(child => {
+          if (child.selected) {
+            this.selectedDocuments.push(child);
+          }
+        });
+      }
+    });
+  }
+  
+  /**
+   * Check if checkbox should be disabled for a document
+   */
+  shouldDisableCheckbox(rowData: any): boolean {
+    // Add your logic here for when checkboxes should be disabled
+    // For example: if document is deleted, expired, etc.
+    return false;
+    // return rowData.isDocumentDeleted || 
+    //        new Date(rowData.expiryDt) < new Date() ||
+    //        rowData['Always Refresh'] === 'true';
+  }
+  
+  /**
+   * Check if select all should be disabled
+   */
+  isSelectAllDisabled(): boolean {
+    // Disable select all if all documents are not selectable
+    return this.documentsData.every(doc => this.shouldDisableCheckbox(doc));
+  }
+  
+  /**
+   * Show document history
+   */
+  showDocumentHistory(document: any) {
+    console.log('Show history for:', document);
+    // Implement your history viewing logic here
+    // You might want to open a modal or navigate to a history page
+  }
+  
+  /**
+   * Show e-sign status
+   */
+  showEsignStatus(document: any) {
+    console.log('Show e-sign status for:', document);
+
+    this.svc.dialogSvc
+            .show(
+              DocumentEsignDetailsComponent,
+              "e-Signature Details",
+              {
+                templates: {
+                  footer: null,
+                },
+                data: {
+                // eSignDetails: [],
+                documentId: document.documentId,
+                },
+                width: "50vw",
+              }
+            )
+            .onClose.subscribe((res: any) => {
+              console.log(res, "closed");
+            });
+      
+    // Implement your e-sign status viewing logic here
   }
 }

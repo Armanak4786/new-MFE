@@ -1,25 +1,26 @@
 <ng-container body >
-  <div class="tab-header-with-close">
-<p-tabView>
+  
 
-
-  <p-tabPanel header="Add Existing">
-
-<div class="result-container">
-
-<div *ngIf="suppliers.length===0">
-  <gen-card>
+    @if(suppliers.length===0){
+    <div>
+  
     <ng-container body>
-      <div class="flex justify-center items-center flex-col">
+      <div class="flex justify-content-center align-items-center flex-column">
         <img
           src="assets/images/noResultsReturned.png"
           alt="No Data Found"
-          class="w-20 h-20 mb-6 mt-6"
+          class="w-20 h-20 mb-6 mt-6 "
         />
       </div>
     </ng-container>
-  </gen-card>
-</div>
+ 
+</div>}
+
+@else{
+
+ 
+
+<div class="result-container">
 
 <div *ngIf="suppliers.length > 0">
 <div class="mt-3" *ngFor="let s of suppliers; let i = index">
@@ -121,8 +122,8 @@
 </div>
 
 </div>
-</p-tabPanel >
-</p-tabView>
+
+}
 
   <div class="flex justify-content-center align-items-center mt-3">
   <span><text [mode]="'label'" [label]="'lbl_notinlist'"></text></span>
@@ -133,7 +134,7 @@
   ></gen-button>
 </div>
 
-    <i class="pi pi-times close-tab-icon" (click)="onClose()" title="Close"></i>
+    <!-- <i class="pi pi-times close-tab-icon" (click)="onClose()" title="Close"></i> -->
 
-    </div>
+   
 </ng-container>

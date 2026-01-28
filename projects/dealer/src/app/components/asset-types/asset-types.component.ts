@@ -49,6 +49,14 @@ export class AssetTypesComponent extends BaseFormClass {
     public cdr: ChangeDetectorRef
   ) {
     super(route, svc);
+    
+    // const configFields = this.validationSvc.validationConfigSubject.getValue();
+    // const filteredValidations = this.validationSvc?.filterValidation(
+    // configFields,this.modelName,this.pageCode);
+    // this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    // console.log('Asset Type Component:', filteredValidations);
+
+
     JSON.stringify(config.data);
 
     this.assetTypeData = this.config?.data?.assetTypeData;
@@ -107,7 +115,7 @@ export class AssetTypesComponent extends BaseFormClass {
         this.mapDataToDD(val);
       }
     }
-    this.mainForm.get("assetType").patchValue("All Asset Type");
+    this.mainForm?.get("assetType")?.patchValue("All Asset Type");
   }
 
   filterAssetTypeData(ownerId) {
@@ -227,6 +235,18 @@ export class AssetTypesComponent extends BaseFormClass {
       },
     ],
   };
+
+  // override formConfig: any = {
+  //   cardType: "non-border",
+  //   headerTitle: null,
+  //   autoResponsive: true,
+  //   api: "",
+  //   goBackRoute: "",
+  //   createData: {
+  //     assetType: "All Asset Type",
+  //   },
+  //   fields: [],
+  // };
 
   subCategory;
   assetProduct;

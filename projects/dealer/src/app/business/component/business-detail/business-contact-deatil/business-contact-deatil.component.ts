@@ -23,8 +23,8 @@ export class BusinessContactDeatilComponent extends BaseBusinessClass {
   countryCodeOptionsList = [];
   phoneForm: FormGroup;
   phoneType = ["PhoneBusiness", "PhoneMobile", "PhoneHome"];
-  businessLabel = ["Business", "Mobile", "Other"];
-  activeStep: any;
+  businessLabel = ["Business Number", "Mobile Number", "Other"];
+  activeStep: any; 
 
   constructor(
     public override route: ActivatedRoute,
@@ -91,6 +91,14 @@ export class BusinessContactDeatilComponent extends BaseBusinessClass {
       this.phone.markAllAsTouched();
     }
   }
+  isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
   onCountryCodeChange(event: any, index: number) {
     const phoneArray = this.phone as FormArray;

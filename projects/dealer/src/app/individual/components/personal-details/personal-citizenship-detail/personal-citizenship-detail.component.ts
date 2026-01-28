@@ -170,6 +170,14 @@ private countryOptions: any[] = [];
   }
 
 
+isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
 
 

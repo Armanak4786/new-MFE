@@ -12,7 +12,9 @@ import { StandardQuoteService } from '../../services/standard-quote.service';
 })
 export class DocumentEsignDetailsComponent extends BaseStandardQuoteClass {
 
-  
+
+eSignDetails: any;
+
  constructor(
       public override route: ActivatedRoute,
       public override svc: CommonService,
@@ -27,19 +29,19 @@ export class DocumentEsignDetailsComponent extends BaseStandardQuoteClass {
     eSignDetailsColumns: any = [
     
     {
-      field: "name",
+      field: "extName",
       headerName: "Party",
       columnHeaderClass: "font-bold",
 
     },
     {
-      field: "email",
+      field: "businessEmail",
       headerName: "Email Address",
       columnHeaderClass: "font-bold",
 
     },
     {
-      field: "signingStatus",
+      field: "eSignStatus",
       headerName: "Signing Status",
       columnHeaderClass: "font-bold",
 
@@ -48,6 +50,27 @@ export class DocumentEsignDetailsComponent extends BaseStandardQuoteClass {
     
     override async ngOnInit(): Promise<void> {
       await super.ngOnInit();
+
+      this.svc.data
+      .post(
+        `DocumentServices/eSignStatus?DocumentId=${this.config.data.documentId}`
+      )
+      .subscribe((res) => {
+        const eSignSignatories = 
+          res?.data?.generatedDocs?.[0]?.documentESignDetails?.[0]?.eSignSignatories || [];
+        
+        // Filter only valid signatories (those with actual party info and envelope)
+        this.eSignDetails = eSignSignatories
+          .filter((signatory: any) => signatory.party?.partyId > 0)
+          .map((signatory: any) => ({
+            extName: signatory.party?.extName || '',
+            businessEmail: signatory.businessEmail || '',
+            eSignStatus: signatory.eSignStatus || ''
+          }));
+        
+        console.log(this.eSignDetails, "eSignDetails");
+      });
+
       }
 
       

@@ -7,7 +7,7 @@
   <ng-container body>
     <div class="grid p-0 m-0">
       <div class="col-6 p-0 m-0">
-        <form [formGroup]="phoneForm">
+        <form [formGroup]="phoneForm" [class.disabled]="isDisabled()">
           <ng-container formArrayName="phone">
             <div *ngFor="let phone of phone.controls; let i = index">
               <div [formGroupName]="i" class="mt-2">

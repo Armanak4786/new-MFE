@@ -1,7 +1,6 @@
-
-
-  <ng-container body>
-
+<!-- 
+  <ng-container body> -->
+<!-- 
     <gen-table
           [columns]="generatedDocsColumns"
           [dataList]="generatedDocuments"
@@ -12,9 +11,9 @@
           (onCellValueChange)="updateCustRole($event)"
           [selectionType]="'checkbox'"
           [selection]="'true'"
-        ></gen-table>
-    
-    <!-- <div class="flex scrollabel">
+        ></gen-table> -->
+
+<!-- <div class="flex scrollabel">
       <ng-container *ngFor="let doc of generatedDocuments; let i = index">
         <div class="col-fixed w-10rem">
           <div class="border-1 border-300 border-round-sm p-1">
@@ -42,7 +41,7 @@
         </div>
       </ng-container>
     </div> -->
-    <div class="full-width-divider"></div>
+<!-- <div class="full-width-divider"></div>
     <div class="flex pt-2">
       
       <gen-button id="preview-button" [btnLabel]="'Preview'" [btnIcon]="'far fa-eye pr-2'" [btnType]="'non-bg-btn'"
@@ -69,5 +68,173 @@
     </div>
     <div *ngIf="displayDoc">
       <iframe [src]="getSanitizedUrl(displayDoc)" frameborder="0" width="100%" height="500px" id="iframe"></iframe>
-    </div>  </ng-container>
-    
+    </div>  </ng-container> -->
+
+<p-table [value]="documentsData" dataKey="documentId" #dt class="custom-documents-table" [rowHover]="true">
+
+  <!-- Table Header -->
+  <ng-template pTemplate="header">
+  <tr>
+    <!-- Select All Checkbox -->
+    <th style="width: 50px;">
+      <!-- <div class="flex justify-content-center align-items-center"> -->
+        <p-checkbox 
+          [(ngModel)]="selectAll" 
+          (onChange)="toggleSelectAll($event)" 
+          binary="true"
+          [disabled]="isSelectAllDisabled()">
+        </p-checkbox>
+      <!-- </div> -->
+    </th>
+
+    <!-- Documents Column -->
+    <th style="min-width: 250px; color: var(--surface-500); text-align: center; font-weight: 500;">
+      Documents
+    </th>
+
+    <!-- Date & Time Column -->
+    <th style="min-width: 150px; color: var(--surface-500); white-space: nowrap; text-align: center; font-weight: 500">
+      Date & Time
+    </th>
+
+    <!-- History Column -->
+    <th style="width: 70px; color: var(--surface-500); text-align: center; font-weight: 500">
+      History
+    </th>
+
+    <!-- E-sign Status Column -->
+    <th style="width: 120px; color: var(--surface-500); text-align: center; font-weight: 500">
+      E-sign Status
+    </th>
+  </tr>
+</ng-template>
+
+
+  <!-- Main Row (Parent Documents) -->
+  <ng-template pTemplate="body" let-rowData let-i="rowIndex" let-expanded="expanded">
+    <tr [pSelectableRow]="rowData">
+      <!-- Checkbox Column -->
+      <td>
+        <p-checkbox [(ngModel)]="rowData.selected" (onChange)="onRowSelect(rowData, $event)" binary="true"
+          [disabled]="shouldDisableCheckbox(rowData)">
+        </p-checkbox>
+      </td>
+
+      <!-- Document Name with Expand/Collapse Button -->
+      <td>
+        <div class="flex align-items-center">
+          <!-- Expand/Collapse Button for documents with children -->
+          <button *ngIf="hasChildDocuments(rowData)" pButton
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            class="p-button-text p-button-sm p-button-rounded" [pRowToggler]="rowData"
+            style="width: 24px; height: 0px;">
+          </button>
+
+          <!-- Placeholder for documents without children -->
+          <div *ngIf="!hasChildDocuments(rowData)" style="width: 24px;"></div>
+
+          <!-- Document Name -->
+          <span class="document-name">
+            {{ getDocumentDisplayName(rowData) }}
+          </span>
+        </div>
+      </td>
+
+      <!-- Date & Time -->
+      <td>
+        <div class="flex justify-content-center align-items-center">
+          <ng-container *ngIf="rowData.loaded; else noDate">
+            {{ formatDateTime(rowData.loaded) }}
+          </ng-container>
+
+          <ng-template #noDate>
+            <span class="text-500">-</span>
+          </ng-template>
+        </div>
+      </td>
+
+      <!-- History Icon -->
+      <td>
+        <div class="flex justify-content-center">
+          <i *ngIf="hasDuplicateDocuments(rowData)" class="fa-regular fa-clock-rotate-left text-blue-500 cursor-pointer"
+            pTooltip="View history" tooltipPosition="top" (click)="showDocumentHistory(rowData)">
+          </i>
+          <span *ngIf="!hasDuplicateDocuments(rowData)" class="text-500">-</span>
+        </div>
+      </td>
+
+      <!-- E-sign Status -->
+      <td>
+        <div class="flex justify-content-center">
+          <i *ngIf="rowData['Signature Required'] === 'true' && baseFormData?.preferredDeliveryMethod.toLowerCase() === 'esign'" class="far fa-eye text-base text-blue-500 cursor-pointer"
+            pTooltip="View e-sign status" tooltipPosition="top" (click)="showEsignStatus(rowData)">
+          </i>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <!-- Expanded Row (Child Documents) -->
+  <ng-template pTemplate="rowexpansion" let-rowData let-parentIndex="rowIndex">
+    <ng-container *ngIf="getChildDocuments(rowData) as childDocuments">
+      <tr *ngFor="let childDoc of childDocuments; let childIndex = index" [pSelectableRow]="childDoc" class="child-row">
+
+        <!-- Checkbox Column for Child -->
+        <td>
+          <p-checkbox [(ngModel)]="childDoc.selected" (onChange)="onRowSelect(childDoc, $event)" binary="true"
+            [disabled]="shouldDisableCheckbox(childDoc)">
+          </p-checkbox>
+        </td>
+
+        <!-- Child Document Name with indentation -->
+        <td>
+          <div class="flex align-items-center" style="padding-left: 1rem;">
+            <div style="width: 24px;"></div>
+            <span class="document-name text-color-secondary">
+              {{ getChildDocumentDisplayName(childDoc) }}
+            </span>
+          </div>
+        </td>
+
+        <!-- Date & Time for Child -->
+        <td>
+          <div class="flex justify-content-center align-items-center">
+            <ng-container *ngIf="childDoc.loaded; else noDate">
+              {{ formatDateTime(childDoc.loaded) }}
+            </ng-container>
+
+            <ng-template #noDate>
+              <span class="text-500">-</span>
+            </ng-template>
+          </div>
+        </td>
+
+        <!-- History Icon for Child -->
+        <td>
+          <div class="flex justify-content-center">
+            <i *ngIf="hasDuplicateDocuments(childDoc)"
+              class="fa-regular fa-clock-rotate-left text-blue-500 cursor-pointer" pTooltip="View history"
+              tooltipPosition="top" (click)="showDocumentHistory(childDoc)">
+            </i>
+            <span *ngIf="!hasDuplicateDocuments(childDoc)" class="text-500">-</span>
+          </div>
+        </td>
+
+        <!-- E-sign Status for Child -->
+        <td>
+          <div class="flex justify-content-center align-items-center gap-2">
+            <ng-container *ngIf="childDoc['Signature Required'] === 'true' && baseFormData?.preferredDeliveryMethod?.toLowerCase() === 'esign'">
+              <i class="far fa-eye text-base text-blue-500 cursor-pointer" 
+                pTooltip="View e-sign status" tooltipPosition="top" (click)="showEsignStatus(childDoc)">
+              </i>
+              <span *ngIf="childDoc.eSignStatus" class="text-sm">{{ childDoc.eSignStatus }}</span>
+            </ng-container>
+            <ng-container *ngIf="childDoc['Signature Required'] !== 'true'">
+              <span class="text-500">-</span>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </ng-template>
+</p-table>

@@ -6,7 +6,7 @@
       <label class="assetTypelabel col-2 text-size-12 text-center">Amount</label>
       <label class="assetTypelabel col-3 text-size-12 text-center">Frequency<span class="text-red-500"> * </span></label>
     </div>
-    <form [formGroup]="liabilitiesDetailsForm">
+    <form [formGroup]="liabilitiesDetailsForm" [class.disabled]="isDisabled()">
       <div formArrayName="liabilitiesDetails">
         <div *ngFor="let liabilities of liabilitiesDetails.controls; let i = index" [formGroupName]="i">
           <div class="grid" *ngIf="shouldShowLiability(liabilities.get('liabilityDescription').value)">
@@ -14,17 +14,19 @@
               <span class="label-text" style="color: var(--label-color)">{{ getDisplayText(liabilities.get('liabilityDescription').value) }}</span>
             </div>
             <div class="col-2 p-fluid">
-              <p-inputNumber 
-                [inputStyle]="{ 'text-align': 'right' }" 
-                inputId="currency-us" 
-                mode="currency" 
-                currency="USD"
-                locale="en-US" 
-                placeholder="Amount" 
-                formControlName="amtBalanceLimit"
-                [maxFractionDigits]="4"
-                (ngModelChange)="updateLiabilityDetails(i)"
-              />
+             <amount
+  [inputStyle]="{ 'text-align': 'right' }"
+  formControlName="amtBalanceLimit"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  placeholder="Amount"            
+  [maxFractionDigits]="4"
+  [minFractionDigits]="0"          
+  (ngModelChange)="updateLiabilityDetails(i)"
+  (blur)="onAmountBlur(i, 'amtBalanceLimit')"
+></amount>
+
               <!-- Enhanced Error messages for Balance/Limit -->
               <div class="p-error" *ngIf="
                   liabilities?.get('amtBalanceLimit')?.invalid &&
@@ -40,21 +42,23 @@
                   ">
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="liabilities?.get('amtBalanceLimit').errors?.max">Amount cannot exceed (18,4)</small>
+                <small *ngIf="liabilities?.get('amtBalanceLimit').errors?.max">Amount cannot exceed (18,2)</small>
               </div>
             </div>
             <div class="col-2 p-fluid">
-              <p-inputNumber 
-                [inputStyle]="{ 'text-align': 'right' }" 
-                inputId="currency-us" 
-                mode="currency"
-                currency="USD" 
-                locale="en-US" 
-                placeholder="Amount" 
-                formControlName="amtLiability"
-                [maxFractionDigits]="4"
-                (ngModelChange)="updateLiabilityDetails(i)"
-              />
+              <amount
+  [inputStyle]="{ 'text-align': 'right' }"
+  formControlName="amtLiability"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  placeholder="Amount"            
+  [maxFractionDigits]="4"
+  [minFractionDigits]="0"           
+  (ngModelChange)="updateLiabilityDetails(i)"
+  (blur)="onAmountBlur(i, 'amtLiability')"
+></amount>
+
               <!-- Enhanced Error messages for Amount -->
          <div class="p-error" *ngIf="shouldShowError(liabilities, 'amtLiability')">
 
@@ -69,7 +73,7 @@
                 ">
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="liabilities?.get('amtLiability').errors?.max">Amount cannot exceed (18,4)</small>
+                <small *ngIf="liabilities?.get('amtLiability').errors?.max">Amount cannot exceed (18,2)</small>
               </div>
             </div>
             <div class="col-3 p-fluid">

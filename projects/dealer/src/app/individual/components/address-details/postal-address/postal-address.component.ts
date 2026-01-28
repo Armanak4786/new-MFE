@@ -197,7 +197,7 @@ export class PostalAddressComponent extends BaseIndividualClass {
           validators.required,
           validators.pattern(/^[A-Za-z0-9'\-\&\/. ]*$/),
         ],   -- Auro */
-        className: " ",
+        className: "ml- ",
         inputClass: "w-8",
         inputType: "vertical",
         cols: 2,
@@ -363,6 +363,16 @@ export class PostalAddressComponent extends BaseIndividualClass {
 
   await this.getCities();
   this.initializeCityHandler();
+   let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 }
 private togglePostalCountry(addressType: string): void {
   const countryCtrl = this.mainForm?.form?.get('postalCountry');
@@ -999,6 +1009,17 @@ override async onFormEvent(event) {
         postalNumber: false,
       });
     }
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+    
     await this.updateValidation("onInit");
   }
 }

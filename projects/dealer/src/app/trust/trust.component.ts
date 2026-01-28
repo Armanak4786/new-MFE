@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, effect, OnDestroy, OnInit } from "@angular/core";
 import { TrustService } from "./services/trust.service";
-import { map, Subject, takeUntil } from "rxjs";
+import { map, skip, Subject, takeUntil } from "rxjs";
 import { CommonService, MapFunc, Mode, ToasterService } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../standard-quote/services/standard-quote.service";
@@ -29,7 +29,7 @@ export class TrustComponent implements OnInit, OnDestroy {
   financialPositionLiability: any[] = [];
   trustCustomerContractRole: any;
   updatedCustomerSummary: any;
-  params: any
+
   constructor(
     private trustSvc: TrustService,
     private commonSvc: CommonService,
@@ -64,10 +64,10 @@ export class TrustComponent implements OnInit, OnDestroy {
 
   }
 
-
+  params: any = this.route.snapshot.params;
 
   async ngOnInit() {
-    this.params = this.route.snapshot.params;
+
     this.trustSvc.iconfirmCheckbox.subscribe((valid: any[]) => {
 
       if (valid && valid.length > 0) {
@@ -93,9 +93,9 @@ export class TrustComponent implements OnInit, OnDestroy {
     });
 
     let sessionStorageCustomerSummary = JSON.parse(sessionStorage?.getItem("updatedCustomerSummary"))
-    if (sessionStorageCustomerSummary?.length > 0) {
+      if(sessionStorageCustomerSummary?.length > 0){
       const updateServiceRole = sessionStorageCustomerSummary?.find(c => c.customerRole == 1 || c.roleName == "Borrower")
-      if (updateServiceRole) {
+      if(updateServiceRole){
         this.trustSvc.role = 1
       }
       this.updatedCustomerSummary = sessionStorageCustomerSummary
@@ -112,7 +112,7 @@ export class TrustComponent implements OnInit, OnDestroy {
       })
     })
 
-
+    
 
     this.activeStep = this.trustSvc.activeStep;
     let params: any = this.route.snapshot.params;
@@ -417,20 +417,20 @@ export class TrustComponent implements OnInit, OnDestroy {
           isPreviousAddress: previousAddress ? true : false,
 
           previousResidenceType: previousAddress?.residentType || "",
-          previousYear: previousAddress && physicalAddress
-            ? await this.getTimeDifference(
+        previousYear: previousAddress && physicalAddress
+          ? await this.getTimeDifference(
               previousAddress?.effectDtFrom,
               physicalAddress?.effectDtFrom,
               "year"
             )
-            : 0,
-          previousMonth: previousAddress && physicalAddress
-            ? await this.getTimeDifference(
+          : 0,  
+        previousMonth: previousAddress && physicalAddress
+          ? await this.getTimeDifference(
               previousAddress?.effectDtFrom,
               physicalAddress?.effectDtFrom,
               "month"
             )
-            : 0,
+          : 0,
           previousBuildingName:
             previousAddress?.addressComponents?.find(
               (comp) => comp.type === "BuildingName"
@@ -550,7 +550,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             )?.value || "",
           postalSuburbs: postalAddress?.suburb || "",
           postalCity: postalAddress?.city?.extName || "",
-          postalPostcode: postalAddress?.zipCode || "",
+          postalPostcode:postalAddress?.zipCode || "",
           postalCountry: postalAddress?.countryRegion?.extName || "",
 
           postalStreetArea: this.searchAddressService.sanitizeStreetValue(postalAddress?.street || ""),
@@ -1058,15 +1058,15 @@ export class TrustComponent implements OnInit, OnDestroy {
     this.formData.customerId = res?.data?.customerId;
     this.formData.customerNo = res?.data?.customerNo;
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1115,7 +1115,7 @@ export class TrustComponent implements OnInit, OnDestroy {
       isConfirmed: false,
       business: null,
       individual: null,
-      partyType: ["Direct Customer"],
+       partyType: ["Direct Customer"],
       trust: {
         businessIndividual: "Business",
         customerId: -1,
@@ -1154,15 +1154,15 @@ export class TrustComponent implements OnInit, OnDestroy {
       body
     );
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1613,8 +1613,8 @@ export class TrustComponent implements OnInit, OnDestroy {
               return;
             }
 
-            else {
-              // if (borrowerExists && !isAddingExistingCustomer) {
+           else {
+            // if (borrowerExists && !isAddingExistingCustomer) {
               if (this.activeStep == 0) {
                 res = await this.trustDetailsUpdate();
               }
@@ -1629,10 +1629,10 @@ export class TrustComponent implements OnInit, OnDestroy {
                 res = await this.trusteeDetailsUpdate();
               }
 
-              if (res) {
+              if(res){
                 const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
-                if (updateCustomerIsConfirmAsPerApiResponse) {
-                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed
+                if(updateCustomerIsConfirmAsPerApiResponse){
+                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed 
                 }
                 this.formData.trustDetailsConfirmation = res?.data?.customerContractRole?.isConfirmed
               }
@@ -1653,7 +1653,7 @@ export class TrustComponent implements OnInit, OnDestroy {
 
               sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
             }
-
+            
           }
 
           if (!res?.apiError?.errors.length) {
@@ -1726,7 +1726,7 @@ export class TrustComponent implements OnInit, OnDestroy {
           }
 
           else {
-            // if (borrowerExists && !isAddingExistingCustomer) {
+          // if (borrowerExists && !isAddingExistingCustomer) {
             if (this.activeStep == 0) {
               res = await this.trustDetailsUpdate();
             }
@@ -1744,13 +1744,13 @@ export class TrustComponent implements OnInit, OnDestroy {
               res = await this.trusteeContactUpdate();
             }
 
-            if (res) {
-              const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
-              if (updateCustomerIsConfirmAsPerApiResponse) {
-                updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed
+            if(res){
+                const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
+                if(updateCustomerIsConfirmAsPerApiResponse){
+                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed 
+                }
+                this.formData.detailsConfirmation = res?.data?.customerContractRole?.isConfirmed
               }
-              this.formData.detailsConfirmation = res?.data?.customerContractRole?.isConfirmed
-            }
 
             const updateCustomerIcon = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData.customerNo)
             if (updateCustomerIcon) {
@@ -1764,7 +1764,7 @@ export class TrustComponent implements OnInit, OnDestroy {
 
             sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
           }
-
+         
         }
         this.toasterService.showToaster({
           severity: "success",
@@ -2028,7 +2028,7 @@ export class TrustComponent implements OnInit, OnDestroy {
           Number(this.formData?.previousMonth)
         ),
         // effectDtTo: new Date(),
-        effectDtTo: null,
+        effectDtTo:null,
         isCurrent: false,
         addressComponentTemplateHdrId: this.formData?.overseasAddress ? 0 : 1,
         addressComponents: this.formData?.overseasAddress

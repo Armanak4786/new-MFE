@@ -67,9 +67,9 @@ export class IndividualComponent implements OnInit, OnDestroy {
 
     });
   }
-  params: any
+
+  params: any = this.route.snapshot.params;
   async ngOnInit() {
-    this.params = this.route.snapshot.params;
 
     this.individualSvc.iconfirmCheckbox.subscribe((valid: any[]) => {
       // console.log("Iconfirm Check ", valid, this.steps);
@@ -105,14 +105,14 @@ export class IndividualComponent implements OnInit, OnDestroy {
     });
 
     let sessionStorageCustomerSummary = JSON.parse(sessionStorage?.getItem("updatedCustomerSummary"))
-    if (sessionStorageCustomerSummary) {
+      if(sessionStorageCustomerSummary){
       const updateServiceRole = sessionStorageCustomerSummary?.find(c => c.customerRole == 1 || c.roleName == "Borrower")
-      if (updateServiceRole) {
+      if(updateServiceRole){
         this.individualSvc.role = 1
       }
     }
 
-    if (sessionStorageCustomerSummary?.length > 0) {
+    if(sessionStorageCustomerSummary?.length > 0){
       this.updatedCustomerSummary = sessionStorageCustomerSummary
     }
 
@@ -122,8 +122,9 @@ export class IndividualComponent implements OnInit, OnDestroy {
 
       this.individualSvc.setBaseDealerFormData({
         updatedCustomerSummary: this.updatedCustomerSummary,
-        customerSummary: data?.customerSummary
-
+        customerSummary: data?.customerSummary,
+        AFworkflowStatus:data?.AFworkflowStatus,
+        workflowStatus:data?.workflowStatus
       })
 
     })
@@ -143,13 +144,13 @@ export class IndividualComponent implements OnInit, OnDestroy {
       });
       this.accessGranted = this.individualSvc.accessGranted;
 
-      this.steps = [
-        { label: "Personal Details" },
-        { label: "Address Details" },
-        { label: "Employment Details" },
-        { label: "Financial Position" },
-        { label: "Reference Details" }
-      ];
+     this.steps = [
+  { label: "Personal Details" },
+  { label: "Address Details" },
+  { label: "Employment Details" },
+  { label: "Financial Position" },
+  { label: "Reference Details" }
+];
     }
 
     ///RBAC
@@ -247,33 +248,33 @@ export class IndividualComponent implements OnInit, OnDestroy {
       const FinancialDetails = {
         IsSharedFinancialPosition:
           individualCustomer?.financialDetails?.financialPositionBase
-            ?.isSharedFinancialPosition
-          ?? this.formData?.IsSharedFinancialPosition,
+          ?.isSharedFinancialPosition
+    ?? this.formData?.IsSharedFinancialPosition,
         amtTakeHomePay: this.formData?.incomeDetails?.[0].amount,
         amtSpousePay: this.formData?.incomeDetails?.[1].amount,
         financialPositionBase:
           individualCustomer?.financialDetails?.financialPositionBase
           ?? this.formData?.financialPositionBase,
         financialPositionAsset:
-          individualCustomer?.financialDetails?.financialPositionAsset
-          ?? this.formData?.financialPositionAsset
-          ?? [],
+        individualCustomer?.financialDetails?.financialPositionAsset
+        ?? this.formData?.financialPositionAsset
+        ?? [],
         financialPositionIncome:
-          individualCustomer?.financialDetails?.financialPositionIncome
-          ?? this.formData?.financialPositionIncome
-          ?? [],
+        individualCustomer?.financialDetails?.financialPositionIncome
+    ?? this.formData?.financialPositionIncome
+    ?? [],
         financialPositionLiability:
-          individualCustomer?.financialDetails?.financialPositionLiability
-          ?? this.formData?.financialPositionLiability
-          ?? [],
+    individualCustomer?.financialDetails?.financialPositionLiability
+    ?? this.formData?.financialPositionLiability
+    ?? [],
         financialPositionExpenditure:
-          individualCustomer?.financialDetails?.financialPositionExpenditure
-          ?? this.formData?.financialPositionExpenditure
-          ?? [],
+    individualCustomer?.financialDetails?.financialPositionExpenditure
+    ?? this.formData?.financialPositionExpenditure
+    ?? [],
         financialPositionRegularRecurring:
-          individualCustomer?.financialDetails?.financialPositionRegularRecurring
-          ?? this.formData?.financialPositionRegularRecurring
-          ?? [],
+    individualCustomer?.financialDetails?.financialPositionRegularRecurring
+        ?? this.formData?.financialPositionRegularRecurring
+    ?? [],
         customerId: individualCustomer?.customerId,
         customerNo: individualCustomer?.customerNo,
       };
@@ -296,20 +297,20 @@ export class IndividualComponent implements OnInit, OnDestroy {
           postalAddressId: postalAddress?.addressId,
           previousAddressId: previousAddress?.addressId,
           physicalResidenceType: physicalAddress?.residentType,
-          physicalYear: physicalAddress
-            ? await this.getTimeDifference(
-              physicalAddress?.effectDtFrom,
-              this.commonSvc.data.convertDateToString(new Date()),
+           physicalYear: physicalAddress 
+        ? await this.getTimeDifference(
+            physicalAddress?.effectDtFrom,
+            this.commonSvc.data.convertDateToString(new Date()),
               "year"
-            )
-            : 0,
-          physicalMonth: physicalAddress
-            ? await this.getTimeDifference(
-              physicalAddress?.effectDtFrom,
-              this.commonSvc.data.convertDateToString(new Date()),
+          )
+        : 0,
+      physicalMonth: physicalAddress 
+        ? await this.getTimeDifference(
+            physicalAddress?.effectDtFrom,
+            this.commonSvc.data.convertDateToString(new Date()),
               "month"
-            )
-            : 0,
+          )
+        : 0,
           // physicalReuseOff: physicalAddress?.street === postalAddress?.street,
           physicalReuseOff: false,
 
@@ -367,33 +368,33 @@ export class IndividualComponent implements OnInit, OnDestroy {
 
           previousResidenceType: previousAddress?.residentType || "",
           previousYear: previousAddress && physicalAddress
-            // ? await this.getTimeDifference(
+           // ? await this.getTimeDifference(
             //   previousAddress?.effectDtFrom,
             //   physicalAddress?.effectDtFrom,
             //   "year"
             // )
             // : null,
 
-            ? await this.getTimeDifference(
-              previousAddress?.effectDtFrom,
-              physicalAddress?.effectDtFrom,
-              "year"
-            )
-            : 0,
-          previousMonth: previousAddress && physicalAddress
-            // ? await this.getTimeDifference(
+        ? await this.getTimeDifference(
+            previousAddress?.effectDtFrom,
+            physicalAddress?.effectDtFrom,
+            "year"
+          )
+        : 0,  
+      previousMonth: previousAddress && physicalAddress
+       // ? await this.getTimeDifference(
             //   previousAddress?.effectDtFrom,
             //   physicalAddress?.effectDtFrom,
             //   "month"
             // )
             // : null,
 
-            ? await this.getTimeDifference(
-              previousAddress?.effectDtFrom,
-              physicalAddress?.effectDtFrom,
-              "month"
-            )
-            : 0,
+        ? await this.getTimeDifference(
+            previousAddress?.effectDtFrom,
+            physicalAddress?.effectDtFrom,
+            "month"
+          )
+          : 0,  
 
           previousBuildingName:
             previousAddress?.addressComponents?.find(
@@ -578,8 +579,8 @@ export class IndividualComponent implements OnInit, OnDestroy {
   }
 
   async updateAddressDetails() {
-
-
+    
+    
     let addressBody: any = [
       {
         addressId: this.formData?.physicalAddressId || -1,
@@ -601,16 +602,16 @@ export class IndividualComponent implements OnInit, OnDestroy {
             : undefined,
         zipCode: String(this.formData?.physicalPostcode),
         suburb: this.formData?.physicalSuburbs,
-        street: this.formData?.physicalStreetArea || "default",
-        // this.formData?.physicalCountry?.toLowerCase() !== "new zealand"
-        //   ? this.formData?.physicalStreetArea
-        //   : "default",
+        street:this.formData?.physicalStreetArea || "default",
+          // this.formData?.physicalCountry?.toLowerCase() !== "new zealand"
+          //   ? this.formData?.physicalStreetArea
+          //   : "default",
         alternateSuburb: "",
         effectDtFrom: this.calculateNewDate(
           Number(this.formData?.physicalYear),
           Number(this.formData?.physicalMonth)
         ),
-        effectDtTo: null,
+        effectDtTo:null,
         isCurrent: true,
         addressComponentTemplateHdrId:
           this.formData?.physicalCountry?.toLowerCase() === "new zealand"
@@ -657,7 +658,7 @@ export class IndividualComponent implements OnInit, OnDestroy {
         addressId: this.formData?.postalAddressId || -1,
         addressType: "Mailing",
         county: null,
-        residentType: null,
+        residentType:null,
         stateProvince: null,
         countryRegion: {
           extName: this.formData?.postalCountry || "New Zealand",
@@ -674,10 +675,10 @@ export class IndividualComponent implements OnInit, OnDestroy {
         street:
           this.formData?.postalAddressType?.toLowerCase() === "po"
             ? this.formData?.postalStreetArea
-            : "default",
+            :"default",
         alternateSuburb: "",
         effectDtFrom: new Date().toISOString()?.split(".")[0],
-        effectDtTo: null,
+        effectDtTo:null,
         isCurrent: true,
         addressComponentTemplateHdrId:
           this.formData?.postalAddressType?.toLowerCase() === "street" ? 1 : 0,
@@ -718,8 +719,8 @@ export class IndividualComponent implements OnInit, OnDestroy {
       Number(this.formData?.physicalMonth) <
       36
     ) {
-
-
+        
+      
       addressBody.push({
         addressId: this.formData?.previousAddressId || -1,
         addressType: "Street",
@@ -739,7 +740,7 @@ export class IndividualComponent implements OnInit, OnDestroy {
           //   ? this.formData?.previousStreetArea
           //   : "default",
 
-          this.formData?.overseasAddress
+              this.formData?.overseasAddress
             ? this.formData?.previousStreetArea
             : "default",
         alternateSuburb: "",
@@ -751,12 +752,12 @@ export class IndividualComponent implements OnInit, OnDestroy {
           Number(this.formData?.previousYear),
           Number(this.formData?.previousMonth)
         ),
-        //  effectDtFrom: this.calculateNewDate(
-        //     Number(this.formData?.previousYear)||0,
-        // Number(this.formData?.previousMonth) || 0
-        //   ),
+      //  effectDtFrom: this.calculateNewDate(
+      //     Number(this.formData?.previousYear)||0,
+      // Number(this.formData?.previousMonth) || 0
+      //   ),
         effectDtTo: null,
-        residenceType: null,
+        residenceType:null,
         isCurrent: false,
         addressComponentTemplateHdrId: this.formData?.overseasAddress ? 0 : 1,
         addressComponents: this.formData?.overseasAddress
@@ -882,7 +883,7 @@ export class IndividualComponent implements OnInit, OnDestroy {
           maritalStatus: this.formData?.maritalStatus,
           middleName: this.formData?.middleName,
           noOfDependents: String(this.formData?.noOfDependents || "0"),
-
+          
           partyStatus: "",
           // partyType: ["Direct Customer"],
           phone: this.formData?.personalDetailsPhone,
@@ -904,15 +905,15 @@ export class IndividualComponent implements OnInit, OnDestroy {
       body
     );
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1003,15 +1004,15 @@ export class IndividualComponent implements OnInit, OnDestroy {
       body
     );
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1072,122 +1073,122 @@ export class IndividualComponent implements OnInit, OnDestroy {
 
     return res;
   }
-  async employmentDetailsPost() {
-    // function to determine jobTitle based on employment status
-    const getJobTitle = (employmentStatus: string, occupationType: string): string | null => {
-      const excludedStatuses = ["Retired", "Seasonal", "Unknown", "others"];
-      return excludedStatuses.includes(employmentStatus) ? null : occupationType;
-    };
+async employmentDetailsPost() {
+  // function to determine jobTitle based on employment status
+  const getJobTitle = (employmentStatus: string, occupationType: string): string | null => {
+    const excludedStatuses = ["Retired", "Seasonal", "Unknown", "others"];
+    return excludedStatuses.includes(employmentStatus) ? null : occupationType;
+  };
 
-    let body = {
-      contractId: this.contractId || Number(this.params?.contractId),
-      isConfirmed: false,
-      individual: {
-        personalDetails: null,
-        addressDetails: null,
-        employementDetails: this.formData?.previousEmployer
-          ? [
-            // Current employment details
-            {
-              employmentInfoId: this.currentEmployeeInfoId || -1,
-              isCurrent: true,
-              employmentStatus: this.formData?.currentEmploymentType,
-              occupationType: this.formData?.currentOccupation,
-              employerName: this.formData?.currentEmployer,
-              comment: "",
-              primaryIncomeSource: null,
-              jobTitle: getJobTitle(this.formData?.currentEmploymentType, this.formData?.currentOccupation),
-              grossIncome: 0,
-              effectDtFrom: this.calculateNewDate(
+  let body = {
+    contractId: this.contractId || Number(this.params?.contractId),
+    isConfirmed: false,
+    individual: {
+      personalDetails: null,
+      addressDetails: null,
+      employementDetails: this.formData?.previousEmployer
+        ? [
+          // Current employment details
+          {
+            employmentInfoId: this.currentEmployeeInfoId || -1,
+            isCurrent: true,
+            employmentStatus: this.formData?.currentEmploymentType,
+            occupationType: this.formData?.currentOccupation,
+            employerName: this.formData?.currentEmployer,
+            comment: "",
+            primaryIncomeSource: null,
+            jobTitle: getJobTitle(this.formData?.currentEmploymentType, this.formData?.currentOccupation),
+            grossIncome: 0,
+            effectDtFrom: this.calculateNewDate(
+              this.formData?.currentEmployeeYear,
+              this.formData?.currentEmployeeMonth
+            ),
+            effectDtTO: this.calculateNewDate(0, 0),
+          },
+          // Previous employment details
+          {
+            employmentInfoId: this.previousEmployeeInfoId || -1,
+            isCurrent: false, // Mark the previous one as not current
+            employmentStatus: this.formData?.previousEmploymentType,
+            occupationType: this.formData?.previousOccupation,
+            employerName: this.formData?.previousEmployer,
+            comment: null,
+            primaryIncomeSource: null,
+            jobTitle: getJobTitle(this.formData?.previousEmploymentType, this.formData?.previousOccupation),
+            grossIncome: 0,
+            effectDtFrom: this.calculateNewPreviousDate(
+              this.calculateNewDate(
                 this.formData?.currentEmployeeYear,
                 this.formData?.currentEmployeeMonth
               ),
-              effectDtTO: this.calculateNewDate(0, 0),
-            },
-            // Previous employment details
-            {
-              employmentInfoId: this.previousEmployeeInfoId || -1,
-              isCurrent: false, // Mark the previous one as not current
-              employmentStatus: this.formData?.previousEmploymentType,
-              occupationType: this.formData?.previousOccupation,
-              employerName: this.formData?.previousEmployer,
-              comment: null,
-              primaryIncomeSource: null,
-              jobTitle: getJobTitle(this.formData?.previousEmploymentType, this.formData?.previousOccupation),
-              grossIncome: 0,
-              effectDtFrom: this.calculateNewPreviousDate(
-                this.calculateNewDate(
-                  this.formData?.currentEmployeeYear,
-                  this.formData?.currentEmployeeMonth
-                ),
-                this.formData?.previousEmployeeYear,
-                this.formData?.previousEmployeeMonth
-              ),
-              effectDtTO: this.calculateNewDate(
-                this.formData?.currentEmployeeYear,
-                this.formData?.currentEmployeeMonth
-              ),
-            },
-          ]
-          : [
-            // Only current employment details if no previous employment exists
-            {
-              employmentInfoId: this.currentEmployeeInfoId || -1,
-              isCurrent: true,
-              employmentStatus: this.formData?.currentEmploymentType,
-              occupationType: this.formData?.currentOccupation,
-              employerName: this.formData?.currentEmployer,
-              comment: null,
-              primaryIncomeSource: null,
-              jobTitle: getJobTitle(this.formData?.currentEmploymentType, this.formData?.currentOccupation),
-              grossIncome: 0,
-              effectDtFrom: this.calculateNewDate(
-                this.formData?.currentEmployeeYear,
-                this.formData?.currentEmployeeMonth
-              ),
-              effectDtTO: this.calculateNewDate(0, 0),
-            },
-          ],
-        financialDetails: null,
-        referenceDetails: null,
-        customerId: this.formData?.customerId,
-        customerNo: this.formData?.customerNo,
-        role: this.formData?.role,
-        customerContractRole: this.formData?.customerContractRole
-          ? this.formData?.customerContractRole
-          : this.individualCustomerDetails?.customerContractRole,
-        businessIndividual: "Individual",
-        partyType: ["Direct Customer"],
-      },
-    };
+              this.formData?.previousEmployeeYear,
+              this.formData?.previousEmployeeMonth
+            ),
+            effectDtTO: this.calculateNewDate(
+              this.formData?.currentEmployeeYear,
+              this.formData?.currentEmployeeMonth
+            ),
+          },
+        ]
+        : [
+          // Only current employment details if no previous employment exists
+          {
+            employmentInfoId: this.currentEmployeeInfoId || -1,
+            isCurrent: true,
+            employmentStatus: this.formData?.currentEmploymentType,
+            occupationType: this.formData?.currentOccupation,
+            employerName: this.formData?.currentEmployer,
+            comment: null,
+            primaryIncomeSource: null,
+            jobTitle: getJobTitle(this.formData?.currentEmploymentType, this.formData?.currentOccupation),
+            grossIncome: 0,
+            effectDtFrom: this.calculateNewDate(
+              this.formData?.currentEmployeeYear,
+              this.formData?.currentEmployeeMonth
+            ),
+            effectDtTO: this.calculateNewDate(0, 0),
+          },
+        ],
+      financialDetails: null,
+      referenceDetails: null,
+      customerId: this.formData?.customerId,
+      customerNo: this.formData?.customerNo,
+      role: this.formData?.role,
+      customerContractRole: this.formData?.customerContractRole
+        ? this.formData?.customerContractRole
+        : this.individualCustomerDetails?.customerContractRole,
+      businessIndividual: "Individual",
+      partyType: ["Direct Customer"],
+    },
+  };
 
-    // Perform the update or create operation
-    let res: any = await this.putFormData(
-      "CustomerDetails/update_customer",
-      body
+  // Perform the update or create operation
+  let res: any = await this.putFormData(
+    "CustomerDetails/update_customer",
+    body
+  );
+
+  this.individualSvc.setBaseDealerFormData({
+    employementDetails: res?.data?.employementDetails,
+  });
+
+  if (this.mode == "edit") {
+    let index = this.standardQuoteSvc?.individualData?.findIndex(
+      (ele) => ele.data?.customerNo == res?.data?.customerNo
     );
-
-    this.individualSvc.setBaseDealerFormData({
-      employementDetails: res?.data?.employementDetails,
-    });
-
-    if (this.mode == "edit") {
-      let index = this.standardQuoteSvc?.individualData?.findIndex(
-        (ele) => ele.data?.customerNo == res?.data?.customerNo
-      );
-      this.standardQuoteSvc.individualData[index] = { ...res };
-      this.standardQuoteSvc.individualDataSubject.next(
-        this.standardQuoteSvc.individualData
-      );
-    } else if (this.mode == "create") {
-      this.standardQuoteSvc.individualData.push(res);
-      this.standardQuoteSvc.individualDataSubject.next(
-        this.standardQuoteSvc.individualData
-      );
-    }
-
-    return res;
+    this.standardQuoteSvc.individualData[index] = { ...res };
+    this.standardQuoteSvc.individualDataSubject.next(
+      this.standardQuoteSvc.individualData
+    );
+  } else if (this.mode == "create") {
+    this.standardQuoteSvc.individualData.push(res);
+    this.standardQuoteSvc.individualDataSubject.next(
+      this.standardQuoteSvc.individualData
+    );
   }
+
+  return res;
+}
 
 
 
@@ -1678,7 +1679,7 @@ export class IndividualComponent implements OnInit, OnDestroy {
         updatedCustomerSummary: this.updatedCustomerSummary
       })
 
-      sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+       sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
 
       //The above code is for handling red-icon from the UI
 
@@ -1700,14 +1701,14 @@ export class IndividualComponent implements OnInit, OnDestroy {
 
           const isAddingExistingCustomer = this.individualSvc?.addingExistingCustomer;
 
-          if (isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification") { //To change workflow state of the party when adding existing customer to new contract
-            let requestBody = {
-              nextState: "Start Verification",
-              isForced: true
-            }
+          if(isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification" ){ //To change workflow state of the party when adding existing customer to new contract
+              let requestBody = {
+                nextState: "Start Verification",
+                isForced: true
+              }
 
-            await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo || this.customerNo}&WorkflowName=ID Party Verification`, requestBody);
-          }
+              await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo || this.customerNo}&WorkflowName=ID Party Verification`, requestBody);
+            }
 
           if (this.mode == "create") {
             this.standardQuoteSvc.mode = "create";
@@ -1783,7 +1784,7 @@ export class IndividualComponent implements OnInit, OnDestroy {
             }
 
             else {
-              // if (borrowerExists===false || !isAddingExistingCustomer) {
+            // if (borrowerExists===false || !isAddingExistingCustomer) {
               // Allow operation - Borrower exists but we're NOT adding existing customer
               if (this.activeStep == 0) {
                 res = await this.personalDetailUpdate();
@@ -1798,10 +1799,10 @@ export class IndividualComponent implements OnInit, OnDestroy {
                 res = await this.financialPositionUpdate();
               }
 
-              if (res) {
+              if(res){
                 const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
-                if (updateCustomerIsConfirmAsPerApiResponse) {
-                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed
+                if(updateCustomerIsConfirmAsPerApiResponse){
+                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed 
                 }
                 this.formData.individualDetailsConfirmation = res?.data?.customerContractRole?.isConfirmed
               }
@@ -1841,7 +1842,7 @@ export class IndividualComponent implements OnInit, OnDestroy {
             //   return;
             // }
 
-            if (isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification") { //To change workflow state of the party when adding existing customer to new contract
+            if(isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification"){ //To change workflow state of the party when adding existing customer to new contract
               let requestBody = {
                 nextState: "Start Verification",
                 isForced: true
@@ -1918,8 +1919,8 @@ export class IndividualComponent implements OnInit, OnDestroy {
             });
             return;
           }
-          else {
-            // if (borrowerExists===false && !isAddingExistingCustomer) {
+          else{
+          // if (borrowerExists===false && !isAddingExistingCustomer) {
             if (this.activeStep == 0) {
               res = await this.personalDetailUpdate();
             }
@@ -1931,19 +1932,19 @@ export class IndividualComponent implements OnInit, OnDestroy {
             }
             if (this.activeStep == 3) {
               // await this.financialPositionPost();
-              res = await this.financialPositionUpdate();
+             res = await this.financialPositionUpdate();
             }
             if (this.activeStep == 4) {
               res = await this.referenceDetailPost();
             }
 
-            if (res) {
-              const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
-              if (updateCustomerIsConfirmAsPerApiResponse) {
-                updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed
+            if(res){
+                const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
+                if(updateCustomerIsConfirmAsPerApiResponse){
+                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed 
+                }
+                this.formData.individualDetailsConfirmation = res?.data?.customerContractRole?.isConfirmed
               }
-              this.formData.individualDetailsConfirmation = res?.data?.customerContractRole?.isConfirmed
-            }
 
             const updateCustomerIcon = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData.customerNo)
             if (updateCustomerIcon) {
@@ -1964,15 +1965,15 @@ export class IndividualComponent implements OnInit, OnDestroy {
             this.standardQuoteSvc.updateIndividualCustomerWarning = false; //when loan purpose is changed and there is individual customer role as borrower
           }
 
-          if (isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification") { //To change workflow state of the party when adding existing customer to new contract
-            let requestBody = {
-              nextState: "Start Verification",
-              isForced: true
+          if(isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification"){ //To change workflow state of the party when adding existing customer to new contract
+              let requestBody = {
+                nextState: "Start Verification",
+                isForced: true
+              }
+
+              await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo || this.customerNo}&WorkflowName=ID Party Verification`, requestBody);
             }
-
-            await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo || this.customerNo}&WorkflowName=ID Party Verification`, requestBody);
-          }
-
+          
         }
         if (this.mode == "create") {
           if (this.activeStep == 0 && !this.formData?.customerNo) {
@@ -2045,34 +2046,34 @@ export class IndividualComponent implements OnInit, OnDestroy {
       }
     ); // Ensure the event is passed here
   }
-  async getTimeDifference(
-    fromDate: string,
-    toDate: string = new Date().toISOString(),
-    unit: 'year' | 'month' = 'year'
-  ): Promise<number> {
-    if (!fromDate) return 0;
-
-    const startDate = new Date(fromDate);
-    const endDate = toDate ? new Date(toDate) : new Date();
-
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-      return 0;
-    }
-
-    let yearsDifference = endDate.getFullYear() - startDate.getFullYear();
-    let monthsDifference = endDate.getMonth() - startDate.getMonth();
-
-    // Adjust for negative month difference
-    if (monthsDifference < 0) {
-      yearsDifference -= 1;
-      monthsDifference += 12;
-    }
-
-    // Return the appropriate value
-    return unit === 'year'
-      ? Math.max(0, yearsDifference)
-      : Math.max(0, monthsDifference);
+async getTimeDifference(
+  fromDate: string, 
+  toDate: string = new Date().toISOString(), 
+  unit: 'year' | 'month' = 'year'
+): Promise<number> {
+  if (!fromDate) return 0;
+  
+  const startDate = new Date(fromDate);
+  const endDate = toDate ? new Date(toDate) : new Date();
+  
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    return 0;
   }
+  
+  let yearsDifference = endDate.getFullYear() - startDate.getFullYear();
+  let monthsDifference = endDate.getMonth() - startDate.getMonth();
+  
+  // Adjust for negative month difference
+  if (monthsDifference < 0) {
+    yearsDifference -= 1;
+    monthsDifference += 12;
+  }
+  
+  // Return the appropriate value
+  return unit === 'year' 
+    ? Math.max(0, yearsDifference)
+    : Math.max(0, monthsDifference);
+}
 
   pageCode: string = "IndividualComponent";
   modelName: string = "IndividualComponent";

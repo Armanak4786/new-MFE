@@ -15,7 +15,7 @@
         >Frequency<span class="text-red-500"> * </span></label
       >
     </div>
-    <form [formGroup]="expenditureDetailsForm">
+    <form [formGroup]="expenditureDetailsForm" [class.disabled]="isDisabled()">
       <div formArrayName="expenditureDetails">
         <div
           *ngFor="let expenditure of expenditureDetails.controls; let i = index"
@@ -41,19 +41,20 @@
               <!-- </span> -->
             </div>
             <div class="col-3 p-fluid">
-              <p-inputNumber
-                [inputStyle]="{ 'text-align': 'right' }"
-                inputId="currency-us"
-                mode="currency"
-                currency="USD"
-                locale="en-US"
-                formControlName="amtExpenditure"
-                placeholder="Amount"
-                [fractionDigits]="4"
-                [maxFractionDigits]="4"
-                [minFractionDigits]="2"
-                (ngModelChange)="updateExpenditureDetails(i)"
-              />
+              <amount
+  [inputStyle]="{ 'text-align': 'right' }"
+  formControlName="amtExpenditure"
+  mode="currency"
+  currency="USD"
+  locale="en-US"
+  placeholder="Amount"
+  [fractionDigits]="4"
+  [maxFractionDigits]="4"
+  [minFractionDigits]="2"
+  (ngModelChange)="updateExpenditureDetails(i)"
+  (blur)="onAmountBlur(i)"
+></amount>
+
               <div
                 class="p-error"
                 *ngIf="
@@ -72,7 +73,7 @@
                   Amount should be greater than 0
                 </small>
                 <small *ngIf="expenditure?.get('amtExpenditure').errors?.max"
-                  >Amount cannot exceed (18,4)</small
+                  >Amount cannot exceed (18,2)</small
                 >
               </div>
             </div>

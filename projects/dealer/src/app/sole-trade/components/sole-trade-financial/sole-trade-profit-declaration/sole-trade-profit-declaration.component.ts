@@ -39,7 +39,7 @@ export class SoleTradeProfitDeclarationComponent extends BaseSoleTradeClass {
         ],
         alignmentType: 'horizontal',
         labelClass: 'col-5',
-        inputClass: 'col-3',
+        inputClass: 'col-5',
         nextLine: false,
         default: null,
       },
@@ -60,9 +60,22 @@ export class SoleTradeProfitDeclarationComponent extends BaseSoleTradeClass {
 
    override async ngOnInit(): Promise<void> {
     await super.ngOnInit()
+    if(this.baseSvc.showValidationMessage){
+      this.mainForm.form.markAllAsTouched()
+    }
     if (this.baseFormData.soleTradeisNetProfitLastYear != null) {
     this.mainForm.get("soleTradeisNetProfitLastYear").patchValue(this.baseFormData.soleTradeisNetProfitLastYear);
     }
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
   }
 
     override onFormEvent(event: any) {

@@ -8,3 +8,6 @@
 .business-contact-details-form{
   background-color: var(--background-color-secondary);
 }
+.disabled {
+  pointer-events: none;
+}

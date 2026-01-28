@@ -65,7 +65,7 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
       (d) => d.disbursementType === env.labelData.payableToOriginator
     );
     const supplierName = originatorRow?.supplierName;
-
+    
     if (supplierName && supplierName.trim()) {
       // API has valid supplierName - use it and set flag to prevent effect from overwriting
       this.originatorName = supplierName;
@@ -103,14 +103,14 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
     // }
   }
 
-
-  isDisabled() {
-    if (configure?.workflowStatus?.view?.includes(this.formData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.formData?.AFworkflowStatus))) {
-      return true;
-    }
-    return false;
+  
+ isDisabled() {
+  if(configure?.workflowStatus?.view?.includes(this.formData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.formData?.AFworkflowStatus))){
+    return true;
   }
-
+  return false;
+}
+ 
   // bindApiDisbursementDetails() {
   //   const apiDisbursementDetails = this.formData?.apiDisbursementDetails || [];
 
@@ -135,7 +135,7 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
   //   this.calculateTotal();
   //   this.cdr.detectChanges();
   // }
-
+  
   bindApiDisbursementDetails() {
     const apiDisbursementDetails = this.formData?.apiDisbursementDetails || [];
 
@@ -168,16 +168,16 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
 
   addSupplier() {
 
-    if ((configure?.workflowStatus?.view?.includes(this.formData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.formData?.AFworkflowStatus))) {
-      return;
-    }
+     if((configure?.workflowStatus?.view?.includes(this.formData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.formData?.AFworkflowStatus))){
+        return;
+      }
 
     this.disbursmentData.suppliers.push({
       supplierName: "",
       supplierAmount: 0,
       row: -1,
     });
-
+    
   }
 
   // removeSupplier(index: number) {
@@ -186,11 +186,11 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
   //   this.getValue();
   // }
   removeSupplier(index: number) {
-    const supplier = this.disbursmentData.suppliers[index];
-    supplier.changeAction = "Delete";
-    this.calculateTotal();
-    this.getValue();
-  }
+  const supplier = this.disbursmentData.suppliers[index];
+  supplier.changeAction = "Delete";
+  this.calculateTotal();
+  this.getValue();
+}
 
 
   // calculateTotal() {
@@ -208,7 +208,7 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
   //   });
 
   // }
-
+ 
   getValue() {
     this.calculateTotal();
 
@@ -268,7 +268,7 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
 
     // Add up all the suppliers' amounts
     this.disbursmentData.suppliers.forEach((supplier) => {
-      if (!supplier.showError && supplier.changeAction !== "Delete") {
+      if (!supplier.showError  && supplier.changeAction !== "Delete") {
         // supplier.supplierAmount = +supplier.supplierAmount;
         this.totalCaluclationOfDisbursmentDetails += +supplier.supplierAmount;
       }

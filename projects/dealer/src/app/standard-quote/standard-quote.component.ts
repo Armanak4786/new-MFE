@@ -32,7 +32,7 @@ import configure from "../../../public/assets/configure.json";
 import { DashboardService } from "../dashboard/services/dashboard.service";
 import { SoleTradeService } from "../sole-trade/services/sole-trade.service";
 import { Message } from "primeng/api";
-import { LayoutService } from "shared-lib";
+import { LayoutService } from "../../../../shared-lib/src/lib/layout.service";
 
 @Component({
   selector: "app-standard-quote",
@@ -69,6 +69,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
   hideDraft: boolean = false;
   userRole: any;
   showSupplier: boolean = false;
+  conditionDDValue: any;
 
   constructor(
     private standardQuoteSvc: StandardQuoteService,
@@ -93,6 +94,9 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
     this.commonSvc.data.getCacheableRoutes(["Brand/all_brand_logo"]);
     this.commonSvc.data.postCacheableRoutes(["LookUpServices/CustomData"]);
 
+     this.standardQuoteSvc.formDataCacheableRoute([
+     "Contract/contract_party_dealer_details_internal"
+    ]);
     //  this.standardQuoteSvc.formDataCacheableRoute([
     //   "WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Workflow Steps",
     // ]);
@@ -138,9 +142,8 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         }
       });
 
-    await this.init();
-
-    await this.getState();
+      await this.init();
+      await this.getState();
     if (this.formData?.contractId) {
       this.standardQuoteSvc.calculatedOnce = true;
       if (!this.formData.isDealerChange) {
@@ -216,10 +219,13 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         nextState: state?.defaultNextState?.name,
       });
       this.standardQuoteSvc.setBaseDealerFormData({ AFworkflowStatus: state.currentState.name, AFworkflowId: state.workflowId })
+      this.isReady = true;
+      this.changeDetectorRef?.detectChanges();
     } else {
       this.standardQuoteSvc.setBaseDealerFormData({
         workFlowStatus: "Open Quote",
       });
+      sessionStorage.setItem("workFlowStatus", "Open Quote");
     }
   }
 
@@ -323,6 +329,9 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         }
       );
 
+      if(sessionStorage.getItem("externalUserType") == "Internal"){
+      await this.standardQuoteSvc?.getDealerForInternalSales(contractData?.program?.programId);
+      }
       // if(contractData){
       //   this.standardQuoteSvc.updateFieldValuesFromApi(contractData);
       // }
@@ -348,11 +357,11 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         ...contractData,
         ...dataMapped,
         programExtName: contractData?.program?.extName || contractData?.programExtName || dataMapped?.programExtName,
-        productExtName: contractData?.product?.extName || contractData?.productExtName || dataMapped?.productExtName,
+        productExtName: contractData?.product?.extName || contractData?.productExtName ||dataMapped?.productExtName,
 
-        status: contractData?.status || dataMapped?.status || 'Open Quote',
-        isDraft: contractData?.isDraft != undefined ? contractData?.isDraft : dataMapped?.isDraft,
-        workflowStatus: contractData?.workflowStatus || dataMapped?.workflowStatus || 'Open Quote',
+        status: contractData?.status ||dataMapped?.status ||'Open Quote',
+        isDraft: contractData?.isDraft != undefined ? contractData?.isDraft :dataMapped?.isDraft,
+        workflowStatus: contractData?.workflowStatus || dataMapped?.workflowStatus ,
 
         quoteId: contractData?.quoteId || contractData?.contractId || this.id,
         //documentsData:  this.documentsApiData,
@@ -376,8 +385,10 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       this.sumAccessories();
       this.getProductCustomFlow(this.formData?.productId);
     }
+    if (!this.id) {
 
-    this.isReady = true;
+      this.isReady = true;
+    }
     this.standardQuoteSvc.programChange.next(this.formData.programId);
 
     this.showSupplier =
@@ -1492,7 +1503,11 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         ...item,
         id: firstOtherId
       }));
-      console.log(this.formData, 'createcontarct')
+      const newRegistration = this.formData?.registrations?.map((reg: any) => ({
+        ...reg,
+        name: "Registration"
+      }));
+
       let request = {
         contractpartyRoles: this.formData?.salePersonDetails,
         PRCode: sessionStorage.getItem("productCode"),
@@ -1609,7 +1624,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
           netTradeAmount: 0,
           paymentAmount: this.formData?.paymentAmount || 0,
           paymentSchedule: 0,
-          registrations: this.formData?.registrations || [],
+          registrations: newRegistration || [],
           residualValue: this.formData?.residualValue || 0,
           pctResidualValue: this.formData?.pctResidualValue || 0,
           servicePlan: servicePlan || [],
@@ -1641,7 +1656,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
             additionalFund: this.formData?.additionalFund,
           }),
           //  additionalFund:this.formData?.additionalFund
-          privateSale: this.formData?.privateSales,
+          privateSale: Boolean(this.formData?.privateSales && this.formData?.privateSales !== '0') || false,
         },
         financialAssets: this.getFinancialAsset(),
         firstPaymentDate: String(this.formData?.firstPaymentDate) || "",
@@ -1864,6 +1879,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         others: otherServicePlanList,
         registrations: this.formData?.registrations?.map((ele, index) => ({
           ...ele,
+          name: "Registration",
           customflowID:
             createRes?.financialAssetLease?.registrations?.[index]
               ?.customflowID || 0,
@@ -1928,7 +1944,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
         //added new fields
         residualValue: this.formData?.residualValue || 0,
         pctResidualValue: this.formData?.pctResidualValue || 0,
-        privateSale: this.formData?.privateSales,
+        privateSale: Boolean(this.formData?.privateSales && this.formData?.privateSales !== '0') || false,
       },
       isDraft: createRes?.isDraft,
       location: createRes?.location,
@@ -1945,9 +1961,9 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       loanMaintenanceFee: this.formData?.loanMaintenceFee,
       preferredDeliveryMethod: this.formData?.preferredDeliveryMethod || null,
 
-      totalMaintenanceHdrId: 0,
+      totalMaintenanceHdrId: createRes?.totalMaintenanceHdrId || 0,
       totalMaintenanceAmount: this.formData?.maintainanceCost,
-      financedMaintenanceHdrId: 0,
+      financedMaintenanceHdrId: createRes?.financedMaintenanceHdrId || 0,
       financedMaintenanceAmount: this.formData?.financedMaintainanceCharge,
       tracksorTyres: this.formData?.tracksorTyres
         ? String(this.formData?.tracksorTyres)
@@ -1984,7 +2000,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
     if (updateRes?.contractId) {
       this.router.navigate([
         `/dealer/standard-quote/create/${updateRes?.contractId}`
-      ], { replaceUrl: true });
+      ], {replaceUrl:true});
       let dataMapped = this.standardQuoteSvc?.mapConfigData(updateRes);
 
       this.standardQuoteSvc.setBaseDealerFormData({

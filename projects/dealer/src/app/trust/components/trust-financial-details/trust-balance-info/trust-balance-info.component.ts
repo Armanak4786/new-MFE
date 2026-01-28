@@ -138,6 +138,16 @@ export class TrustBalanceInfoComponent extends BaseTrustClass {
     super.onFormReady();
     this.normalizeMinDateFields();
     await this.updateValidation("onInit");
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
   }
 
   private toDateString(value: any): string | null {

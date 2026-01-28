@@ -64,19 +64,19 @@ export class SearchCustomerComponent extends BaseStandardQuoteClass {
     this.mainForm.get("searchCustomer").patchValue("individual");
     this.searchType = "individual";
 
-    if (this.baseFormData?.purposeofLoan == configure.LoanPurpose) {
+    if (this.baseFormData?.purposeofLoan == configure.LoanPurpose ) {
       this.mainForm.updateProps("searchCustomer", {
         className: "disabled-radio",
       });
     }
 
-    if (this.baseFormData?.purposeofLoan == "Business" || this.baseFormData?.searchCustomerData?.business != null) {
-      this.mainForm.get("searchCustomer").patchValue("business");
-      this.searchType = "business";
+    if(this.baseFormData?.purposeofLoan == "Business" ||  this.baseFormData?.searchCustomerData?.business != null) {
+    this.mainForm.get("searchCustomer").patchValue("business");
+    this.searchType = "business";
     }
-    if (this.baseFormData?.searchCustomerData?.trust != null) {
-
-      this.mainForm.get("searchCustomer").patchValue("trust");
+    if(this.baseFormData?.searchCustomerData?.trust != null){
+ 
+    this.mainForm.get("searchCustomer").patchValue("trust");
       this.searchType = "trust"
     }
 
@@ -86,14 +86,14 @@ export class SearchCustomerComponent extends BaseStandardQuoteClass {
   override onFormEvent(event: any): void {
     if (event.name == "searchCustomer") {
       this.searchType = event.value;
-      if (this.searchType == "trust" && this.baseFormData?.purposeofLoan == configure?.LoanPurpose && this.individualSvc?.role !== 1 && this.businessSvc?.role !== 1) {
+       if(this.searchType == "trust" && this.baseFormData?.purposeofLoan == configure?.LoanPurpose && this.individualSvc?.role !== 1 && this.businessSvc?.role !== 1){  
         this.toasterSvc.showToaster({
-          severity: "error",
-          detail: "Please add an individual borrower before adding a Trust as a Guarantor."
-        })
-
-        return
-      }
+            severity: "error",
+            detail: "Please add an individual borrower before adding a Trust as a Guarantor."
+          })
+        
+          return
+        }
     }
   }
   newCustomer() {
@@ -112,8 +112,8 @@ export class SearchCustomerComponent extends BaseStandardQuoteClass {
     this.trustSvc.resetBaseDealerFormData();
     this.soleTradeSvc.resetBaseDealerFormData();
     this.baseSvc.getBaseDealerFormData().pipe(takeUntil(this.destroy$)).subscribe((data) => {
-
-
+    
+     
       if (this.searchType === "business") {
         this.businessSvc.setBaseDealerFormData({
           registeredCompanyNumber: data?.businessregisteredNo,
@@ -121,7 +121,7 @@ export class SearchCustomerComponent extends BaseStandardQuoteClass {
           tradingName: data?.businesstradingName,
           taxNumber: data?.businessgstNo,
         });
-      }
+      } 
       else if (this.searchType === "trust") {
         this.trustSvc.setBaseDealerFormData({
           trustName: data?.udcTrustName,
@@ -129,14 +129,14 @@ export class SearchCustomerComponent extends BaseStandardQuoteClass {
       }
       else if (this.searchType === "individual") {
         this.individualSvc.setBaseDealerFormData({
-          firstName: data?.firstName,
-          lastName: data?.lastName,
-          dateOfBirth: data?.dateOfBirth,
-        });
+        firstName: data?.firstName,
+        lastName: data?.lastName,
+        dateOfBirth: data?.dateOfBirth,
+      });
       }
-
+     
     });
-
+  
     this.ref.close();
   }
 

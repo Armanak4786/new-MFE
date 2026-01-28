@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <form [formGroup]="accessoriesForm" #mainForm>
+    <form [formGroup]="accessoriesForm"  [class.disabled]="isDisabled()" #mainForm>
       <ng-container formArrayName="accessories" >
         <div class="grid ">
            <ng-container *ngFor="let acc of accessories.controls; let i = index" class="col-4">
@@ -84,7 +84,7 @@
                   </div>
                 </div>
 
-                 <div class="col-3 p-fluid"  *ngIf="acc.get('name').value === 'Other'">
+                 <div class="col-3 p-fluid"  *ngIf="acc.get('name').value === 'Other' && acc.get('amount').value > 0">
                    <text formControlName="description" [value] ="description" [placeholder]="'description'">
                    </text> 
                     <div *ngIf="acc.get('description').hasError('required')">

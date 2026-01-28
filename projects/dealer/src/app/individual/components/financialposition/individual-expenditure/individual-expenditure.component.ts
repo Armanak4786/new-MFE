@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { BaseIndividualClass } from '../../../base-individual.class';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService, GenericFormConfig } from 'auro-ui';
@@ -26,7 +26,8 @@ export class IndividualExpenditureComponent extends BaseIndividualClass {
     public override route: ActivatedRoute,
     public override svc: CommonService,
     override baseSvc: IndividualService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     super(route, svc, baseSvc);
     this.customForm = { form: this.expenditureDetailsForm };
@@ -107,6 +108,14 @@ export class IndividualExpenditureComponent extends BaseIndividualClass {
     return this.expenditureDetailsForm.get('expenditureDetails') as FormArray;
   }
 
+  isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
   private sanitizeExpenditureDetails(expenditures: any[]): any[] {
     return expenditures.map((exp) => ({
@@ -165,7 +174,7 @@ export class IndividualExpenditureComponent extends BaseIndividualClass {
         expenditure.expenditureDescription,
         // Validators.required,
       ],
-      amtExpenditure: [amt, [Validators.max(999999999999999999.9999)]], // Add max validator
+      amtExpenditure: [amt, [Validators.min(0), Validators.max(999999999999999999.99)]], // Add min and max validator - prevent negative values, 18,2 format
       // expenditure.amtExpenditure || 0,
       // [Validators.required, Validators.min(1)],
       // ],
@@ -185,24 +194,29 @@ export class IndividualExpenditureComponent extends BaseIndividualClass {
     this.calculateTotalIncome();
   }
 
-  // Add new method to handle expenditure field updates with negative value validation
+  // Add new method to handle expenditure field updates
   updateExpenditureDetails(index: number): void {
     const expenditureGroup = this.expenditureDetails.at(index);
     if (expenditureGroup) {
-      // Handle negative values for amount field
-      const amountControl = expenditureGroup.get('amtExpenditure');
-      const currentValue = amountControl?.value;
-
-      // Convert negative values to 0
-      if (currentValue !== null && currentValue < 0) {
-        amountControl?.setValue(0);
-        return; // Exit early since the value change will trigger another update
-      }
-
       this.baseSvc.setBaseDealerFormData({
         expenditureDetails: this.expenditureDetails.value,
       });
       this.calculateTotalIncome();
+    }
+  }
+
+  onAmountBlur(index: number): void {
+    const expenditureGroup = this.expenditureDetails.at(index);
+    if (expenditureGroup) {
+      const amountControl = expenditureGroup.get('amtExpenditure');
+      const currentValue = amountControl?.value;
+      
+      // Set to 0 when field is empty/null/undefined on blur (but allow negative values for validation)
+      if (currentValue === null || currentValue === undefined || currentValue === '') {
+        amountControl?.setValue(0);
+        this.cdr.detectChanges();
+        // Note: setBaseDealerFormData() and calculateTotalIncome() are handled automatically by valueChanges subscription
+      }
     }
   }
 
@@ -222,58 +236,154 @@ export class IndividualExpenditureComponent extends BaseIndividualClass {
 
   //Calculate total expenditure with frequency conversion to monthly
 calculateTotalIncome(): void {
-  // Check if any amount exceeds 18 digits
-  const hasInvalidAmount = this.expenditureDetails.value.some(
+  // Helper function to check if amount is invalid (>18,2 format OR negative)
+  const isInvalidAmount = (amount: any): boolean => {
+    if (amount === null || amount === undefined) return false;
+    const amountStr = amount.toString();
+    const [integerPart, decimalPart] = amountStr.split('.');
+    
+    // Check if negative
+    if (amount < 0) return true;
+    
+    // Check if integer part exceeds 18 digits
+    if (integerPart && integerPart.length > 18) return true;
+    
+    // Check if decimal part exceeds 2 digits
+    if (decimalPart && decimalPart.length > 2) return true;
+    
+    // Check if total value exceeds the maximum (18,2 format)
+    if (parseFloat(amountStr) > 999999999999999999.99) return true;
+    
+    return false;
+  };
+
+  // Filter out null/undefined amounts and get valid amounts
+  const validExpenditures = this.expenditureDetails.value.filter(
     (expenditure: any) => {
-      if (
-        expenditure.amtExpenditure === null ||
-        expenditure.amtExpenditure === undefined
-      )
-        return false;
-      const amountStr = expenditure.amtExpenditure
-        .toString()
-        .replace(".", "");
-      return amountStr.length > 18;
+      return expenditure.amtExpenditure !== null && 
+             expenditure.amtExpenditure !== undefined;
     }
   );
 
-  if (hasInvalidAmount) {
-    this.expenditureTotal = Infinity;
-  } else {
-    // Calculate monthly-converted total
-    this.expenditureTotal = 0;
-    this.expenditureDetails.value.forEach((expenditure: any) => {
-      const amount = expenditure.amtExpenditure || 0;
-      const frequency = expenditure.expenditureFrequency;
+  // Check if any amount is invalid
+  const hasInvalidAmount = validExpenditures.some(
+    (expenditure: any) => isInvalidAmount(expenditure.amtExpenditure)
+  );
 
-      // Convert to monthly based on frequency
-      let monthlyAmount = amount;
-      if (amount && amount !== 0) {
-        switch (frequency) {
-          case 3533:
-            monthlyAmount = amount * 4.33;
-            break; // Weekly
-          case 3534:
-            monthlyAmount = amount * 2.17;
-            break; // Fortnightly
-          case 3535:
-            monthlyAmount = amount;
-            break; // Monthly
-          case 4017:
-            monthlyAmount = amount / 3;
-            break; // Quarterly
-          default:
-            monthlyAmount = amount;
-            break;
+  // Filter out invalid amounts for calculation
+  const validAmountsForCalculation = validExpenditures.filter(
+    (expenditure: any) => !isInvalidAmount(expenditure.amtExpenditure)
+  );
+
+  if (validExpenditures.length === 0) {
+    this.expenditureTotal = 0;
+    this.baseSvc.setBaseDealerFormData({
+      expenditureTotal: this.expenditureTotal,
+      hasInvalidExpenditureInput: false,
+    });
+  } else if (hasInvalidAmount) {
+    // Check if ALL amounts are invalid - if so, reset graph to 0
+    const allInvalid = validExpenditures.every(
+      (expenditure: any) => isInvalidAmount(expenditure.amtExpenditure)
+    );
+
+    if (allInvalid) {
+      // All values are invalid - reset graph to 0
+      this.expenditureTotal = 0;
+    } else {
+      // Some values are invalid - calculate using only valid positive values
+      this.expenditureTotal = 0;
+      validAmountsForCalculation.forEach((expenditure: any) => {
+        const amount = expenditure.amtExpenditure || 0;
+        
+        // Only process positive values
+        if (amount > 0) {
+          const frequency = expenditure.expenditureFrequency;
+
+          // Convert to monthly based on frequency
+          let monthlyAmount = amount;
+          if (amount && amount !== 0) {
+            switch (frequency) {
+              case 3533:
+                monthlyAmount = amount * 4.3333;
+                break; // Weekly
+              case 3534:
+                monthlyAmount = amount * 2.1667;
+                break; // Fortnightly
+              case 3535:
+                monthlyAmount = amount;
+                break; // Monthly
+              case 4017:
+                monthlyAmount = amount / 3;
+                break; // Quarterly
+              default:
+                monthlyAmount = amount;
+                break;
+            }
+          }
+          this.expenditureTotal += monthlyAmount;
         }
+      });
+    }
+    
+    // Set flag to indicate invalid input exists
+    this.baseSvc.setBaseDealerFormData({
+      expenditureTotal: this.expenditureTotal,
+      hasInvalidExpenditureInput: true,
+    });
+  } else {
+    // No invalid amounts - check if ALL amounts are negative
+    const allNegative = validExpenditures.every(
+      (expenditure: any) => {
+        return expenditure.amtExpenditure < 0;
       }
-      this.expenditureTotal += monthlyAmount;
+    );
+
+    if (allNegative) {
+      // Reset graph to 0 when ALL values are negative
+      this.expenditureTotal = 0;
+    } else {
+      // Calculate monthly-converted total
+      // Only include positive values in the calculation
+      this.expenditureTotal = 0;
+      this.expenditureDetails.value.forEach((expenditure: any) => {
+        const amount = expenditure.amtExpenditure || 0;
+        
+        // Only process positive values
+        if (amount > 0) {
+          const frequency = expenditure.expenditureFrequency;
+
+          // Convert to monthly based on frequency
+          let monthlyAmount = amount;
+          if (amount && amount !== 0) {
+            switch (frequency) {
+              case 3533:
+                monthlyAmount = amount * 4.3333;
+                break; // Weekly
+              case 3534:
+                monthlyAmount = amount * 2.1667;
+                break; // Fortnightly
+              case 3535:
+                monthlyAmount = amount;
+                break; // Monthly
+              case 4017:
+                monthlyAmount = amount / 3;
+                break; // Quarterly
+              default:
+                monthlyAmount = amount;
+                break;
+            }
+          }
+          this.expenditureTotal += monthlyAmount;
+        }
+      });
+    }
+    
+    this.baseSvc.setBaseDealerFormData({
+      expenditureTotal: this.expenditureTotal,
+      hasInvalidExpenditureInput: false,
     });
   }
-
-  this.baseSvc.setBaseDealerFormData({
-    expenditureTotal: this.expenditureTotal,
-  });
 }
 
 

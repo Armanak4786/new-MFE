@@ -39,6 +39,7 @@ export class TrustDetailsConfirmationComponent extends BaseTrustClass {
 
   override async onFormReady(): Promise<void> {
     super.onFormReady();
+
     let invalidPages = this.checkStepValidity()
     if(invalidPages.length > 0 && this.mainForm){
     this.mainForm.form.get("trustDetailsConfirmation").patchValue(false)
@@ -52,6 +53,11 @@ export class TrustDetailsConfirmationComponent extends BaseTrustClass {
       this.mainForm.form.get("trustDetailsConfirmation").patchValue(false)
     }
   }
+
+    // Disable checkbox if workflow status requires it
+    if (this.isDisabled()) {
+      this.mainForm?.updateDisable({ "trustDetailsConfirmation": true });
+    }
 
     // await this.updateValidation("onInit");
     
@@ -82,4 +88,13 @@ export class TrustDetailsConfirmationComponent extends BaseTrustClass {
       this.baseSvc.iconfirmCheckbox.next(invalidPages)
       
     }
+
+  isDisabled(): boolean {
+    const baseFormDataStatus = this.baseFormData?.AFworkflowStatus;
+    const sessionStorageStatus = sessionStorage.getItem('workFlowStatus');
+    return !(
+      baseFormDataStatus === 'Quote' ||
+      sessionStorageStatus === 'Open Quote'
+    );
+  }
 }

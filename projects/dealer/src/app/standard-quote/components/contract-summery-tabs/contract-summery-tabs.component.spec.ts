@@ -11,19 +11,21 @@ import {
   AuthenticationService,
   CommonService,
   DataService,
+  FileUploadComponent,
   AuroUiFrameWork,
   ToasterService,
   UiService,
 } from 'auro-ui';
+import { CoreAppModule } from 'projects/app-core/src/app/app-core.module';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
+import { CalculationService } from '../payment-summary/calculation.service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { ChangeDetectorRef, DebugElement } from '@angular/core';
 import { By, DomSanitizer } from '@angular/platform-browser';
 import { StandardQuoteService } from '../../services/standard-quote.service';
-import { AppModule } from '../../../app.module';
 
 describe('ContractSummeryTabsComponent', () => {
   let component: ContractSummeryTabsComponent;
@@ -57,7 +59,7 @@ describe('ContractSummeryTabsComponent', () => {
       declarations: [ContractSummeryTabsComponent],
       imports: [
         AuroUiFrameWork,
-        AppModule,
+        CoreAppModule,
         AppPrimengModule,
         BrowserDynamicTestingModule,
       ],
@@ -84,7 +86,7 @@ describe('ContractSummeryTabsComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContractSummeryTabsComponent);
-
+   
 
     fixture.detectChanges();
   });
@@ -92,5 +94,5 @@ describe('ContractSummeryTabsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
+ 
 });

@@ -60,9 +60,11 @@ export class SupplierSearchResultComponent extends BaseStandardQuoteClass {
     c => (String(c?.customerNo) === String(supplierNo))
   );
 
-  const supplierExists = this.baseFormData?.customerSummary?.some(
-    c =>  c?.customerRole == 7 
-  );
+
+  const supplierExists = this.baseSvc
+        ?.searchResultForSupplier()?.some(
+          c =>  c?.customerRole == 7 
+        );
 
   if (customerExists) {
     const existing = this.baseFormData.customerSummary.find(
@@ -89,6 +91,8 @@ export class SupplierSearchResultComponent extends BaseStandardQuoteClass {
   supplier?.supplierType === "Business" ||
   supplier?.raw?.businessDetails;
   
+
+  
   const route = isBusiness
   ? `/dealer/supplier/edit/${this.baseFormData.contractId}/${supplierNo}/business`
   : `/dealer/supplier/edit/${this.baseFormData.contractId}/${supplierNo}/individual`;
@@ -100,6 +104,19 @@ export class SupplierSearchResultComponent extends BaseStandardQuoteClass {
 
   newSupplier() {
 
+    const supplierExists = this.baseSvc
+        ?.searchResultForSupplier()?.some(
+          c =>  c?.customerRole == 7 
+        );
+
+    if (supplierExists) {
+    this.toasterSvc.showToaster({
+      severity: "error",
+      summary: "Supplier Already Added",
+      detail: `A supplier has already been added. Only one supplier is allowed per quote.`,
+    });
+    return;
+  }
   const route =
     this.searchType === "individual"
       ? "/dealer/supplier/add-supplier-individual"

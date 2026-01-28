@@ -97,6 +97,16 @@ export class TurnoverInformationComponent extends BaseBusinessClass implements O
     // Store the subscription to unsubscribe later
     this.valueChangesSub = this.mainForm.valueChanges.subscribe();
     await this.updateValidation("onInit");
+     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+      if (
+      (portalWorkflowStatus != 'Open Quote') || (
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
+      {
+        this.mainForm?.form?.disable();
+      }
+      else{ this.mainForm?.form?.enable();}
   }
 
   // override onValueChanges(event: any): void {
@@ -135,6 +145,7 @@ export class TurnoverInformationComponent extends BaseBusinessClass implements O
 
       // Resubscribe to value changes
       this.valueChangesSub = this.mainForm.valueChanges.subscribe();
+      this.baseSvc.setTurnoverLatestDate(latestDate);
     }
   }
 

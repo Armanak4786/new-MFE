@@ -41,13 +41,13 @@ export class IndividualAssetDetailsComponent extends BaseIndividualClass {
     this.assetDetailsForm = this.fb.group({
       assetDetails: this.fb.array([]), // Initialize form array
       financialAssetType: [''], // Temporary field for adding new label
-      financialAssetTypeAmount: ['', [Validators.max(999999999999999999.9999)]], // Add validation here
+      financialAssetTypeAmount: ['', [Validators.min(0), Validators.max(999999999999999999.99)]], // Add validation here - 18,2 format
       assestHomeOwnerType: [''],
       financialPositionAssetId: [0],
     });
   }
 
-  // Custom validator for 18,4 format (if you want to use this instead)
+  // Custom validator for 18,2 format (if you want to use this instead)
   private amountValidator = (control: AbstractControl): ValidationErrors | null => {
     if (control.value === null || control.value === undefined || control.value === '') {
       return null; // Don't validate empty values
@@ -56,18 +56,18 @@ export class IndividualAssetDetailsComponent extends BaseIndividualClass {
     const value = control.value.toString();
     const [integerPart, decimalPart] = value.split('.');
     
-    // Check if integer part exceeds 14 digits (for safety)
-    if (integerPart && integerPart.length > 14) {
+    // Check if integer part exceeds 18 digits
+    if (integerPart && integerPart.length > 18) {
       return { max: true };
     }
     
-    // Check if decimal part exceeds 4 digits
-    if (decimalPart && decimalPart.length > 4) {
+    // Check if decimal part exceeds 2 digits
+    if (decimalPart && decimalPart.length > 2) {
       return { max: true };
     }
     
     // Check if total value exceeds the maximum
-    if (parseFloat(value) > 999999999999999999.9999) {
+    if (parseFloat(value) > 999999999999999999.99) {
       return { max: true };
     }
     
@@ -183,13 +183,31 @@ export class IndividualAssetDetailsComponent extends BaseIndividualClass {
   
     const assetGroup = this.fb.group({
       assestType: [asset.assestType],                               
-      amount: [asset.amount || 0, [Validators.max(999999999999999999.9999)]],
+      amount: [asset.amount || 0, [Validators.min(0), Validators.max(999999999999999999.99)]], // 18,2 format
       assestHomeOwnerType: [asset.assestHomeOwnerType],
       financialPositionAssetId: [asset.financialPositionAssetId || 0],
     });
   
     this.assetDetails.push(assetGroup);
     this.updateFormData();
+  }
+
+  /**
+   * Check if the Add Row button should be disabled
+   * Returns true if asset type or amount is not properly filled
+   */
+  isAddRowDisabled(): boolean {
+    const financialAssetType = this.assetDetailsForm.get('financialAssetType')?.value;
+    const financialAssetTypeAmount = this.assetDetailsForm.get('financialAssetTypeAmount')?.value;
+    const amountControl = this.assetDetailsForm.get('financialAssetTypeAmount');
+    
+    // Disabled if: no asset type selected OR amount is empty/null/undefined/0 OR amount is invalid
+    return !financialAssetType || 
+           financialAssetTypeAmount === null || 
+           financialAssetTypeAmount === undefined || 
+           financialAssetTypeAmount === '' ||
+           financialAssetTypeAmount === 0 ||
+           (amountControl?.invalid ?? false);
   }
 
   addRow(): void {
@@ -250,6 +268,14 @@ export class IndividualAssetDetailsComponent extends BaseIndividualClass {
       this.updateFormData();
     }
   }
+  isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
 
   deleteRow(index: number): void {
     if (this.assetDetails.length > 0) {
@@ -291,16 +317,6 @@ export class IndividualAssetDetailsComponent extends BaseIndividualClass {
   updateAssetDetails(index: number): void {
     const assetGroup = this.assetDetails.at(index);
     if (assetGroup) {
-
-      const amountControl = assetGroup.get('amount');
-      const currentValue = amountControl?.value;
-    
-    // Convert negative values to 0
-    if (currentValue !== null && currentValue < 0) {
-      amountControl?.setValue(0);
-      return; // Exit early since the value change will trigger another update
-    }
-
       const updatedAmount = assetGroup.value.amount;
 
       if(this.baseFormData.financialPositionAsset){
@@ -319,26 +335,125 @@ export class IndividualAssetDetailsComponent extends BaseIndividualClass {
     }
   }
 
-  calculateTotalIncome(): void {
-  // Check if any amount exceeds 18 digits
-  const hasInvalidAmount = this.assetDetails.value.some((asset: any) => {
-    if (asset.amount === null || asset.amount === undefined) return false;
-    const amountStr = asset.amount.toString().replace('.', '');
-    return amountStr.length > 18;
-  });
-
-  if (hasInvalidAmount) {
-    this.totalAsset = Infinity;
-  } else {
-    this.totalAsset = this.assetDetails.value.reduce(
-      (acc: number, asset: any) => acc + (asset.amount || 0),
-      0
-    );
+  onAmountBlur(index?: number): void {
+    let amountControl;
+    
+    if (index !== undefined && index !== null) {
+      // Handle form array item
+      const assetGroup = this.assetDetails.at(index);
+      if (assetGroup) {
+        amountControl = assetGroup.get('amount');
+      }
+    } else {
+      // Handle standalone financialAssetTypeAmount field
+      amountControl = this.assetDetailsForm.get('financialAssetTypeAmount');
+    }
+    
+    if (amountControl) {
+      const currentValue = amountControl?.value;
+      
+      // Set to 0 when field is empty/null/undefined on blur (but allow negative values for validation)
+      if (currentValue === null || currentValue === undefined || currentValue === '') {
+        amountControl?.setValue(0);
+        this.cdr.detectChanges();
+        
+        // Update form data and recalculate total only for form array items
+        if (index !== undefined && index !== null) {
+          this.updateFormData();
+        }
+      }
+    }
   }
 
-  this.baseSvc.setBaseDealerFormData({
-    totalAsset: this.totalAsset,
+  calculateTotalIncome(): void {
+  // Helper function to check if amount is invalid (>18,2 format OR negative)
+  const isInvalidAmount = (amount: any): boolean => {
+    if (amount === null || amount === undefined) return false;
+    const amountStr = amount.toString();
+    const [integerPart, decimalPart] = amountStr.split('.');
+    
+    // Check if negative
+    if (amount < 0) return true;
+    
+    // Check if integer part exceeds 18 digits
+    if (integerPart && integerPart.length > 18) return true;
+    
+    // Check if decimal part exceeds 2 digits
+    if (decimalPart && decimalPart.length > 2) return true;
+    
+    // Check if total value exceeds the maximum (18,2 format)
+    if (parseFloat(amountStr) > 999999999999999999.99) return true;
+    
+    return false;
+  };
+
+  // Filter out null/undefined amounts and get valid amounts
+  const validAssets = this.assetDetails.value.filter((asset: any) => {
+    return asset.amount !== null && asset.amount !== undefined;
   });
+
+  // Check if any amount is invalid
+  const hasInvalidAmount = validAssets.some((asset: any) => isInvalidAmount(asset.amount));
+
+  // Filter out invalid amounts for calculation
+  const validAmountsForCalculation = validAssets.filter((asset: any) => !isInvalidAmount(asset.amount));
+
+  if (validAssets.length === 0) {
+    this.totalAsset = 0;
+    this.baseSvc.setBaseDealerFormData({
+      totalAsset: this.totalAsset,
+      hasInvalidAssetInput: false,
+    });
+  } else if (hasInvalidAmount) {
+    // Check if ALL amounts are invalid - if so, reset graph to 0
+    const allInvalid = validAssets.every((asset: any) => isInvalidAmount(asset.amount));
+    
+    if (allInvalid) {
+      // All values are invalid - reset graph to 0
+      this.totalAsset = 0;
+    } else {
+      // Some values are invalid - calculate using only valid positive values
+      this.totalAsset = validAmountsForCalculation.reduce(
+        (acc: number, asset: any) => {
+          const amount = asset.amount || 0;
+          // Only include positive values in the calculation
+          return acc + (amount > 0 ? amount : 0);
+        },
+        0
+      );
+    }
+    
+    // Set flag to indicate invalid input exists
+    this.baseSvc.setBaseDealerFormData({
+      totalAsset: this.totalAsset,
+      hasInvalidAssetInput: true,
+    });
+  } else {
+    // No invalid amounts - check if ALL amounts are negative
+    const allNegative = validAssets.every((asset: any) => {
+      return asset.amount < 0;
+    });
+
+    if (allNegative) {
+      // Reset graph to 0 when ALL values are negative
+      this.totalAsset = 0;
+    } else {
+      // Calculate sum using only positive values (exclude negative values)
+      this.totalAsset = this.assetDetails.value.reduce(
+        (acc: number, asset: any) => {
+          const amount = asset.amount || 0;
+          // Only include positive values in the calculation
+          return acc + (amount > 0 ? amount : 0);
+        },
+        0
+      );
+    }
+    
+    this.baseSvc.setBaseDealerFormData({
+      totalAsset: this.totalAsset,
+      hasInvalidAssetInput: false,
+    });
+  }
 }
 
   private updateFormData(): void {

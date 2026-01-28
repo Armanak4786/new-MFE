@@ -29,7 +29,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         inputType: "vertical",
         name: "currentEmployer",
         className: "mt-3 mr-2 ",
-        inputClass: "mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         labelClass: "ba pb-5 -mb-3",
         cols: 2,
         nextLine: false,
@@ -69,11 +69,11 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
       {
         type: "number",
         inputType: "vertical",
-        label: "Time with current employer",
+        label: "Time with Current Employer",
         labelClass: "tce pb-3 white-space-nowrap",
         name: "currentEmployeeYear",
         className: "ml-3 mt-0 py-4 col-fixed w-4rem",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
         //validators: [validators.required],
       },
       {
@@ -89,7 +89,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         name: "currentEmployeeMonth",
         className:
           "ml-3 py-4 mt-4 col-fixed w-4rem timeInBusinessMonthsClass",
-        inputClass: "-m-2 mb-3",
+        inputClass: "-m-2 mb-0 ml-2",
       },
       {
         type: "label-only",
@@ -117,6 +117,16 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
 
     
     if(this.baseSvc.showValidationMessage){
@@ -140,7 +150,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         }));
 
         this.mainForm.updateList("currentOccupation", currentOccupationList);
-
+        currentOccupationList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return currentOccupationList;
       }
     );
@@ -159,7 +169,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
           "currentEmploymentType",
           currentEmploymentTypeList
         );
-
+        currentEmploymentTypeList?.sort((a, b) => a?.label?.localeCompare(b?.label));
         return currentEmploymentTypeList;
       }
     );
@@ -360,12 +370,12 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
       // this.mainForm.get('checkPreviousEmployee').patchValue(!this.baseFormData?.currentEmployment?.isCurrent)
 
       const duration = this.calculateYearAndMonthDifference(
-        this.baseFormData?.currentEmployeeYear || this.baseFormData?.employementDetails[0]?.effectDtFrom,
-        this.baseFormData?.currentEmployeeMonth || this.baseFormData?.employementDetails[0]?.effectDtTO
+        this.baseFormData?.employementDetails[0]?.effectDtFrom,
+        this.baseFormData?.employementDetails[0]?.effectDtTO
       );
 
-      this.mainForm.get("currentEmployeeYear").patchValue(duration.years);
-      this.mainForm.get("currentEmployeeMonth").patchValue(duration.months);
+      this.mainForm.get("currentEmployeeYear").patchValue(this.baseFormData?.currentEmployeeYear || duration.years);
+      this.mainForm.get("currentEmployeeMonth").patchValue(this.baseFormData?.currentEmployeeMonth || duration.months);
 
       // this.mainForm
       //   .get("currentEmployeeYear")
@@ -384,7 +394,11 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
       //     )
       //   );
     }
-  }
+    else {
+      this.mainForm.get("currentEmployeeYear").patchValue(this.baseFormData?.currentEmployeeYear || null);
+      this.mainForm.get("currentEmployeeMonth").patchValue(this.baseFormData?.currentEmployeeMonth || null);
+  } 
+}
   override onValueTyped(event: any): void {
     this.updateValidation(event);
   }

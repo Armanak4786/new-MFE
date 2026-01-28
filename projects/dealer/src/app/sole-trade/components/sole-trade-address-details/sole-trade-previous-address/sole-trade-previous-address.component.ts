@@ -434,6 +434,17 @@ override formConfig: GenericFormConfig = {
 
 override async ngOnInit(): Promise<void> {
   await super.ngOnInit();
+ let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+
 
   if (this.baseSvc.showValidationMessage) {
     this.mainForm.form.markAllAsTouched();
@@ -538,6 +549,18 @@ private clearAllAddressFields(): void {
 
 
     await super.onFormEvent(event);
+     
+    let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
+     if (
+      (portalWorkflowStatus != 'Open Quote') || (
+    this.baseFormData?.AFworkflowStatus &&
+    this.baseFormData.AFworkflowStatus !== 'Quote'
+    ) )
+    {
+    this.mainForm?.form?.disable();
+    }
+    else{ this.mainForm?.form?.enable();}
+
   }
 
   // async updateDropdownData() {

@@ -6,12 +6,12 @@ import { SoleTradeService } from "../../services/sole-trade.service";
 import { Validators } from "@angular/forms";
 
 @Component({
-  selector: "app-sole-trade-business-contact-detail",
+  selector: "app-sole-trade-contact-form",
 
   templateUrl: "./sole-trade-business-contact-detail.component.html",
   styleUrl: "./sole-trade-business-contact-detail.component.scss",
 })
-export class SoleTradeBusinessContactDetailComponent extends BaseSoleTradeClass {
+export class SoleTradeContactFormComponent extends BaseSoleTradeClass {
   optionsdata: any[] = ["aa"];
   privousChecked: any;
   borrowedAmount: any;
@@ -154,5 +154,22 @@ export class SoleTradeBusinessContactDetailComponent extends BaseSoleTradeClass 
 
   override onFormEvent(event: any): void {
      super.onFormEvent(event);
+     
+  }
+  isDisabled(): boolean {
+  const baseFormDataStatus = this.baseFormData?.AFworkflowStatus;
+  const sessionStorageStatus = sessionStorage.getItem('workFlowStatus');
+  return !(
+    baseFormDataStatus === 'Quote' ||
+    sessionStorageStatus === 'Open Quote'
+  );
+}
+
+  override onFormReady(): void {
+    super.onFormReady();
+    // Disable form if workflow status requires it
+    if (this.isDisabled() && this.mainForm?.form) {
+      this.mainForm.form.disable();
+    }
   }
 }

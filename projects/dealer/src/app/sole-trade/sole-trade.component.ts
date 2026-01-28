@@ -4,7 +4,7 @@ import { SoleTradeService } from "./services/sole-trade.service";
 import { CommonService, MapFunc, Mode, ToasterService } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../standard-quote/services/standard-quote.service";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "../../../public/assets/configure.json";
 import { DashboardService } from "../dashboard/services/dashboard.service";
 import { SearchAddressService } from "../standard-quote/services/search-address.service";
 
@@ -27,7 +27,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
   previousEmployeeInfoId: number;
   customerContactId: any;
   updatedCustomerSummary: any;
-  params: any
+
   constructor(
     private soleTradeSvc: SoleTradeService,
     private commonSvc: CommonService,
@@ -58,8 +58,8 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
     });
 
   }
+  params: any = this.route.snapshot.params;
   async ngOnInit() {
-    this.params = this.route.snapshot.params;
 
     this.soleTradeSvc.iconfirmCheckbox.subscribe((valid: any[]) => {
 
@@ -86,9 +86,9 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
     });
 
     let sessionStorageCustomerSummary = JSON.parse(sessionStorage?.getItem("updatedCustomerSummary"))
-    if (sessionStorageCustomerSummary?.length > 0) {
+      if(sessionStorageCustomerSummary?.length > 0){
       const updateServiceRole = sessionStorageCustomerSummary?.find(c => c.customerRole == 1 || c.roleName == "Borrower")
-      if (updateServiceRole) {
+      if(updateServiceRole){
         this.soleTradeSvc.role = 1
       }
       this.updatedCustomerSummary = sessionStorageCustomerSummary
@@ -106,7 +106,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
 
     })
 
-
+    
 
     // Initialize route params
     this.activeStep = this.soleTradeSvc.activeStep;
@@ -374,19 +374,19 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           physicalTextArea: physicalAddress?.street || "",
           previousResidenceType: previousAddress?.residentType || "",
           previousYear: previousAddress && physicalAddress
-            ? await this.getTimeDifference(
-              previousAddress?.effectDtFrom,
-              physicalAddress?.effectDtFrom,
+              ? await this.getTimeDifference(
+                  previousAddress?.effectDtFrom,
+                  physicalAddress?.effectDtFrom,
               "year"
-            )
-            : 0,
-          previousMonth: previousAddress && physicalAddress
-            ? await this.getTimeDifference(
-              previousAddress?.effectDtFrom,
-              physicalAddress?.effectDtFrom,
+                )
+              : 0,
+         previousMonth: previousAddress && physicalAddress
+              ? await this.getTimeDifference(
+                  previousAddress?.effectDtFrom,
+                  physicalAddress?.effectDtFrom,
               "month"
-            )
-            : 0,
+                )
+              : 0,
           previousBuildingName:
             previousAddress?.addressComponents?.find(
               (comp) => comp.type === "BuildingName"
@@ -578,7 +578,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
         gender: soleTradeCustomer?.personalDetails?.gender || "",
         noOfDependents:
           soleTradeCustomer?.personalDetails?.noOfDependents || "0",
-        dependentsAge: soleTradeCustomer?.personalDetails?.dependentsAge || "0",
+        dependentsAge : soleTradeCustomer?.personalDetails?.dependentsAge || "0",
         dateOfBirth: soleTradeCustomer?.personalDetails?.dateOfBirth || "",
         versionNumber: soleTradeCustomer?.personalDetails?.versionNumber || null,
         licenceNumber: soleTradeCustomer?.personalDetails?.licenceNumber || null,
@@ -1007,7 +1007,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
         employementDetails: null,
         financialDetails: null,
         addressDetails: null,
-        partyType: ["Direct Customer"],
+         partyType: ["Direct Customer"],
         personalDetails: {
           title: this.formData?.title,
           firstName: this.formData?.firstName,
@@ -1066,15 +1066,15 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
     this.formData.customerNo = res?.data?.customerNo;
     this.formData.customerContractRole = res?.data?.customerContractRole;
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1163,15 +1163,15 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
     this.formData.customerNo = res?.data?.customerNo;
     this.formData.customerContractRole = res?.data?.customerContractRole;
 
-    if (res?.data?.customerContractRole) {
-      if (this.updatedCustomerSummary) {
+    if(res?.data?.customerContractRole){
+       if (this.updatedCustomerSummary) {
         const index = this.updatedCustomerSummary.findIndex(
           (c) => c.customerNo === this.formData?.customerNo
         );
 
         if (index !== -1) {
-          this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
-          sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
+        this.updatedCustomerSummary[index] = res?.data?.customerContractRole;
+        sessionStorage.setItem("updatedCustomerSummary", JSON.stringify(this.updatedCustomerSummary));
         }
 
       }
@@ -1222,7 +1222,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             ? this.formData?.physicalStreetArea
             : "default",
         alternateSuburb: "",
-        effectDtFrom: this.calculateNewDate(
+       effectDtFrom: this.calculateNewDate(
           Number(this.formData?.physicalYear || 0),
           Number(this.formData?.physicalMonth || 0)
         ),
@@ -1230,8 +1230,8 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
         //   Number(this.formData?.physicalYear),
         //   Number(this.formData?.physicalMonth)
         // ),
-        // "2025-09-22T15:20:08",
-        effectDtTo: null,
+       // "2025-09-22T15:20:08",
+        effectDtTo:null,
         isCurrent: true,
         addressComponentTemplateHdrId:
           this.formData?.physicalCountry?.toLowerCase() === "new zealand"
@@ -1299,9 +1299,9 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             : this.formData?.postalStreetArea,
         alternateSuburb: "",
         effectDtFrom: new Date().toISOString()?.split(".")[0],
-        effectDtTo: null,
+        effectDtTo:null,
         isCurrent: true,
-        residentType: null,
+        residentType:null,
         addressComponentTemplateHdrId:
           this.formData?.postalAddressType?.toLowerCase() === "street" ? 1 : 0,
         addressComponents:
@@ -1356,8 +1356,8 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             : "default",
         alternateSuburb: "",
         effectDtFrom: new Date().toISOString()?.split(".")[0],
-        effectDtTo: null,
-        residentType: null,
+        effectDtTo:null,
+        residentType:null,
         isCurrent: true,
         addressComponentTemplateHdrId:
           this.formData?.registerCountry?.toLowerCase() === "new zealand"
@@ -1409,13 +1409,13 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
       Number(this.formData?.physicalMonth) <
       36
     ) {
-
+    
       addressBody.push({
         addressId: this.formData?.previousAddressId || -1,
         addressType: "Street",
         county: null,
         stateProvince: null,
-        residentType: null,
+        residentType:null,
         countryRegion: {
           extName: this.formData?.previousCountry || "New Zealand",
         },
@@ -1431,7 +1431,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
         alternateSuburb: "",
 
 
-
+        
         //effectDtFrom:
         //  this.calculateNewPreviousDate(
         //   this.calculateNewDate(
@@ -1441,8 +1441,8 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
         //   Number(this.formData?.previousYear),
         //   Number(this.formData?.previousMonth)
         // ),
-
-
+        
+        
         // ),
         // new Date().toISOString()?.split(".")[0],
         effectDtFrom: this.calculateNewPreviousDate(
@@ -1453,10 +1453,10 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           Number(this.formData?.previousYear || 0),
           Number(this.formData?.previousMonth || 0)
         ),
-        // "2025-09-22T15:20:08",
+       // "2025-09-22T15:20:08",
         effectDtTo: null,
         // new Date().toISOString(),
-        // new Date().toISOString()?.split(".")[0],
+         // new Date().toISOString()?.split(".")[0],
         isCurrent: false,
         addressComponentTemplateHdrId: this.formData?.overseasAddress ? 0 : 1,
         addressComponents: this.formData?.overseasAddress
@@ -1539,7 +1539,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
     let body = {
       contractId: this.contractId || Number(this.params?.contractId),
       isConfirmed: false,
-      partyType: ["Direct Customer"],
+        partyType: ["Direct Customer"],
       individual: {
         personalDetails: null,
         addressDetails: null,
@@ -1684,7 +1684,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
 
-  calculateNewPreviousDate(referenceDate, yearsToSubtract, monthsToSubtract) {
+ calculateNewPreviousDate(referenceDate, yearsToSubtract, monthsToSubtract) {
     const date = new Date(referenceDate);
     const totalMonthsToSubtract = yearsToSubtract * 12 + monthsToSubtract;
     date.setMonth(date.getMonth() - totalMonthsToSubtract);
@@ -1758,16 +1758,16 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
         this.soleTradeSvc.stepper.next(params);
         let referenceDetailResponse = await this.referenceDetailPost();
 
-        const isAddingExistingCustomer = this.soleTradeSvc?.addingExistingCustomer;
+         const isAddingExistingCustomer = this.soleTradeSvc?.addingExistingCustomer;
 
-        if (isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification") { //To change workflow state of the party when adding existing customer to new contract
-          let requestBody = {
-            nextState: "Start Verification",
-            isForced: true
-          }
+          if(isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification" ){ //To change workflow state of the party when adding existing customer to new contract
+              let requestBody = {
+                nextState: "Start Verification",
+                isForced: true
+              }
 
-          await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo}&WorkflowName=ID Party Verification`, requestBody);
-        }
+              await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo}&WorkflowName=ID Party Verification`, requestBody);
+            }
 
         if (this.mode == "create") {
           this.standardQuoteSvc.mode = "create";
@@ -1876,7 +1876,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             }
 
             else {
-              // if (borrowerExists && !isAddingExistingCustomer) {
+            // if (borrowerExists && !isAddingExistingCustomer) {
               if (this.activeStep === 0) {
                 //alert()
                 res = await this.soleTradeDetailsUpdate();
@@ -1894,10 +1894,10 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
                 res = await this.referenceDetailPost();
               }
 
-              if (res) {
+              if(res){
                 const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
-                if (updateCustomerIsConfirmAsPerApiResponse) {
-                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed
+                if(updateCustomerIsConfirmAsPerApiResponse){
+                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed 
                 }
                 this.formData.soleTradeConfirmation = res?.data?.customerContractRole?.isConfirmed
               }
@@ -1922,7 +1922,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             }
 
 
-            if (isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification") {  //To change workflow state of the party when adding existing customer to new contract
+            if(isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification" ){  //To change workflow state of the party when adding existing customer to new contract
               let requestBody = {
                 nextState: "Start Verification",
                 isForced: true
@@ -1930,7 +1930,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
 
               await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo}&WorkflowName=ID Party Verification`, requestBody);
             }
-
+           
           }
 
           if (!res?.apiError?.errors.length) {
@@ -2001,8 +2001,8 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             return;
           }
 
-          else {
-            // if (borrowerExists && !isAddingExistingCustomer) {
+          else{
+          // if (borrowerExists && !isAddingExistingCustomer) {
             if (this.activeStep === 0) {
               res = await this.soleTradeDetailsUpdate();
             }
@@ -2019,13 +2019,13 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
               res = await this.referenceDetailPost();
             }
 
-            if (res) {
-              const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
-              if (updateCustomerIsConfirmAsPerApiResponse) {
-                updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed
+            if(res){
+                const updateCustomerIsConfirmAsPerApiResponse = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData?.customerNo)
+                if(updateCustomerIsConfirmAsPerApiResponse){
+                  updateCustomerIsConfirmAsPerApiResponse.isConfirmed = res?.data?.customerContractRole?.isConfirmed 
+                }
+                this.formData.soleTradeConfirmation = res?.data?.customerContractRole?.isConfirmed
               }
-              this.formData.soleTradeConfirmation = res?.data?.customerContractRole?.isConfirmed
-            }
 
             const updateCustomerIcon = this.updatedCustomerSummary?.find(c => c.customerNo === this.formData.customerNo)
             if (updateCustomerIcon) {
@@ -2046,15 +2046,15 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             this.standardQuoteSvc.updateIndividualCustomerWarning = false; //when loan purpose is changed and there is individual customer role as borrower
           }
 
-          if (isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification") {  //To change workflow state of the party when adding existing customer to new contract
-            let requestBody = {
-              nextState: "Start Verification",
-              isForced: true
+          if(isAddingExistingCustomer && this.updatedCustomerSummary?.currentWorkflowStatus != "Start Verification" ){  //To change workflow state of the party when adding existing customer to new contract
+              let requestBody = {
+                nextState: "Start Verification",
+                isForced: true
+              }
+
+              await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo}&WorkflowName=ID Party Verification`, requestBody);
             }
-
-            await this.putFormData(`WorkFlows/update_party_workflowstate?PartyNo=${this.formData?.customerNo}&WorkflowName=ID Party Verification`, requestBody);
-          }
-
+         
         }
         // this.commonSvc.ui.showToaster({
         //   severity: 'success',

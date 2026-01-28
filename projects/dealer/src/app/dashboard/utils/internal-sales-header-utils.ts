@@ -57,12 +57,12 @@ export const expiredQuoteColumnList = [
   { field: "originator", headerName: "Originator" },
   { field: "dealerSalesperson", headerName: "Dealer Salesperson" },
   { field: "salesperson", headerName: "Salesperson" },
-  { field: "workflowStatus", headerName: "Workflow Status" },
   {
     field: "webformCheckbox",
     headerName: "Webform Checkbox",
     format: "#checkbox",
   },
+  { field: "workflowStatus", headerName: "Workflow Status" },
   { field: "assignedTo", headerName: "Assigned To" },
   {
     field: "actions",
@@ -78,27 +78,15 @@ export const afvLoansColumnList = [
   { field: "customerName", headerName: "Customer Name" },
   { field: "coBorrower", headerName: "Co-borrower Name" },
   { field: "asset", headerName: "Asset" },
+  { field: "program", headerName: "Program" },
   { field: "regoNo", headerName: "Rego No" },
-  { field: "term", headerName: "Term(Months)" },
-  { field: "remainingTerm", headerName: "Remaining Term" },
-  { field: "startDate", headerName: "Start Date" },
-  { field: "product", headerName: "Product" },
-  { field: "regularPaymentAmoun", headerName: "regularPaymentAmount" },
-  { field: "maxPermittedKm", headerName: "KM Allowance Per Annum" },
-  {
-    field: "futureValueDate",
-    headerName: "Future Value Date",
-    format: "#date",
-    dateFormat: "MM/dd/yyyy",
-  },
+  { field: "regoNo", headerName: "Maximum Permitted KM" },
+  { field: "regoNo", headerName: "Future Value Date" },
   { field: "futureValueAmount", headerName: "Future Value Amount" },
   { field: "outstandingBalance", headerName: "Outstanding Balance" },
-  { field: "interestRate", headerName: "Interest Rate" },
-  { field: "provider", headerName: "Provider" },
-  { field: "customerDecision", headerName: "Customer Decision" },
   { field: "originator", headerName: "Originator" },
-  { field: "email", headerName: "Email", columnHeaderClass: "pr-8" },
-  { field: "phone", headerName: "Phone", columnHeaderClass: "pr-8" },
+  { field: "phone", headerName: "Phone" },
+  { field: "email", headerName: "Email" },
   {
     field: "actions",
     headerName: "Actions",
@@ -119,19 +107,13 @@ export const activatedLoansColumnList = [
     headerName: "Amount Financed",
     format: "#currency",
   },
-  { field: "term", headerName: "Term(Months)" },
-  { field: "remainingTerm", headerName: "Remaining Term" },
-  { field: "startDate", headerName: "Start Date" },
   { field: "maturityDate", headerName: "Maturity Date" },
   { field: "product", headerName: "Product" },
-  { field: "regularPaymentAmount", headerName: "Regular Payment Amount" },
-  { field: "finalPaymentAmount", headerName: "Final Payment/Residual Value" },
-  { field: "totalUnitUsage", headerName: "totalUnitUsage" },
-  { field: "interestRate", headerName: "interestRate" },
-  { field: "outstandingBalance", headerName: "Outstanding Balance" },
+  { field: "program", headerName: "Program" },
+  { field: "outstandingBalance", headerName: "Outstanding Balances" },
   { field: "originator", headerName: "Originator" },
-  { field: "email", headerName: "Email", columnHeaderClass: "pr-8" },
   { field: "phone", headerName: "Phone", columnHeaderClass: "pr-8" },
+  { field: "email", headerName: "Email", columnHeaderClass: "pr-8" },
   {
     field: "actions",
     headerName: "Actions",
@@ -362,63 +344,39 @@ export const addSupplierColumns = [
         let html = `<a class="cursor-pointer text-primary">${displayName}</a>`;
         return html;
       },
+      columnHeaderClass: "justify-content-center",
+      width : "200px",
    },
-  { field: "customerNo", headerName: "UDC Number" },
-  { field: "customerType", headerName: "Type" },
-  { field: "roleName", headerName: "Role" },
+  { field: "customerNo", headerName: "UDC Number", columnHeaderClass: "justify-content-center",width: "80px", },
+  { field: "customerType", headerName: "Type", columnHeaderClass: "justify-content-center", width: "80px", },
+  { field: "roleName", headerName: "Role", columnHeaderClass: "justify-content-center", width: "80px", },
   {
     field: "currentWorkflowStatus",
     headerName: "ID",
-    format: "#checkbox"
-    // format: (row) => {
-    //   let iconClass = "fa-solid fa-regular fa-circle-ellipsis";
-    //   let statusClass = "";
-    //   const status = (row.currentWorkflowStatus || "").toLowerCase();
+    format: (row) => {
+      let iconClass = "fa-solid fa-regular fa-circle-ellipsis";
+      let statusClass = "";
+      const status = (row.currentWorkflowStatus || "").toLowerCase();
+      if (status === "verified successfully") {
+        statusClass = "status-verified";
+      } else if (status === "start verification") {
+        statusClass = "status-start-verification";
+      } else {
+        statusClass = "status-other";
+      }
 
-    //   if (status === "verified successfully") {
-    //     statusClass = "status-verified";
-    //   } else if (status === "start verification") {
-    //     statusClass = "status-start-verification";
-    //   } else {
-    //     statusClass = "status-other";
-    //   }
-
-    //   return `<i class="${iconClass} ${statusClass}"></i>`;
-    // },
-    // tooltipValueGetter: (params) => {
-    //   return params;
-    // },
-    // toolTipPosition: "top",
-    // action: "applyId",
-    // columnHeaderClass: "justify-content-center",
-    // overlayPanel: PartyVerificationComponent,
-    // width: "40px",
-  },
-  { field: "bud", headerName: "BUD",
-     format: "#checkbox",
-    //   format: (row) => {
-    //   let iconClass = "fa-solid fa-regular fa-circle-ellipsis";
-    //   let statusClass = "";
-    //   const status = (row.currentWorkflowStatus || "").toLowerCase();
-
-    //   if (status === "verified successfully") {
-    //     statusClass = "status-verified";
-    //   } else if (status === "start verification") {
-    //     statusClass = "status-start-verification";
-    //   } else {
-    //     statusClass = "status-other";
-    //   }
-
-    //   return `<i class="${iconClass} ${statusClass}"></i>`;
-    // },
-    // tooltipValueGetter: (params) => {
-    //   return params;
-    // },
-    // toolTipPosition: "top",
-    // action: "applyId",
-    // columnHeaderClass: "justify-content-center",
-    // overlayPanel: PartyVerificationComponent,
-    // width: "40px",
+      return `<i class="${iconClass} ${statusClass}"></i>`;
     },
-  { field: "action", headerName: "", format: "#icons" },
+    tooltipValueGetter: (params) => {
+      return params;
+    },
+    toolTipPosition: "top",
+    action: "currentWorkflowStatus",
+    columnHeaderClass: "justify-content-center",
+    overlayPanel: PartyVerificationComponent,
+    width: "30px",
+ 
+  },
+ 
+  { field: "delete", headerName: "", format: "#icons" },
 ];

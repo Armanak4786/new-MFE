@@ -3,6 +3,7 @@ import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import { ActivatedRoute } from "@angular/router";
 import { CommonService, GenericFormConfig, Mode } from 'auro-ui';
 import { StandardQuoteService } from "../../services/standard-quote.service";
+import { Validators } from "@angular/forms";
 import { ToasterService, ValidationService } from "auro-ui";
 import configure from "../../../../../public/assets/configure.json";
 
@@ -25,6 +26,12 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
     public cdr: ChangeDetectorRef
   ) {
     super(route, svc, baseSvc);
+
+    const config = this.validationSvc?.validationConfigSubject.getValue();
+    const filteredValidations = this.validationSvc?.filterValidation(
+    config,this.modelName,this.pageCode);
+    this.formConfig = { ...this.formConfig, fields: filteredValidations };
+    console.log('Filtered Validations Excess Allowance:', filteredValidations);
   }
 
   optionsdata: any = [
@@ -32,159 +39,176 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
     { label: "frequency", value: "FR" },
   ];
 
+  // override formConfig: GenericFormConfig = {
+  //   cardType: "non-border",
+  //   autoResponsive: true,
+  //   api: "physicalAddress",
+  //   // cardBgColor: '--background-color-secondary-light',
+  //   goBackRoute: "physicalAddress",
+  //   fields: [
+    //   {
+    //     type: "select",
+    //     alignmentType: "vertical",
+    //     label: "Usage Unit ",
+    //     name: "usageUnit",
+    //     // maxLength: 6,
+    //     cols: 3,
+    //     nextLine: false,
+    //     labelClass: "",
+    //     inputClass: "",
+    //     list$: "LookUpServices/CustomData",
+    //     apiRequest: {
+    //       parameterValues: ["Usage Unit"],
+    //       procedureName: configure.SPContractCfdLuExtract,
+    //     },
+    //     idKey: "value_text",
+    //     idName: "value_text",
+    //     className: "mb-3 ",
+    //   },
+    //   {
+    //     type: "amount",
+    //     inputType: "vertical",
+    //     label: "Usage Allowance ",
+    //     name: "usageAllowance",
+    //     maxLength: 6,
+    //     // grouping: true,
+    //     cols: 3,
+    //     nextLine: false,
+    //     className: "  ",
+    //     labelClass: "mb-3 mt-2",
+    //   },
+    //   {
+    //     type: 'percentage',
+    //     inputType: "vertical",
+    //     label: "Excess Usage Allowance",
+    //     name: "excessUsageAllowancePercentage",
+    //     cols:3,
+    //     className: "ml-4  pb-1",
+    //     labelClass: "mb-3 mt-2",
+
+    //   },
+    //   // {
+    //   //   type: "label-only",
+    //   //   typeOfLabel: "inline",
+    //   //   label: "%",
+    //   //   name: "excessUsageAllowanceLabel",
+    //   //   className: "mt-6 col-fixed mr-1",
+    //   // },
+    //   {
+    //     type: "amount",
+    //     inputType: "vertical",
+    //     maxLength: 6,
+    //     name: "excessUsageAllowance",
+    //     cols:2,
+    //     className: " mt-4 pt-3 ml-4 no-underline",
+    //     nextLine: true,
+    //     disabled: true,
+    //     mode: Mode.view
+    //     // mode: Mode.label
+    //   },
+    //   {
+    //     type: "amount",
+    //     inputType: "vertical",
+    //     label: "Total Usage Allowance",
+    //     name: "totalUsageAllowance",
+    //     cols: 3,
+    //     maxLength: 8,
+    //     disabled: true,       
+    //     // grouping: true,
+    //     inputClass: "col-12 no-underline mt-2",
+    //     className: " pr-4",
+    //   },
+    //   {
+    //     type: "number",
+    //     inputType: "vertical",
+    //     label: "Excess Usage Charge",
+    //     maxLength: 2,
+    //     cols: 3,
+    //     // grouping: true,
+    //     name: "excessUsageCharge",
+    //     className: " lg:col-offset-1 col-fixed pb-1 ml-0",
+    //     inputClass: "mt-3",
+    //   },
+    //   {
+    //     type: "label-only",
+    //     typeOfLabel: "inline",
+    //     label: "Cents",
+    //     name: "excessUsageChargesCents",
+    //     className: "mt-5 col-fixed w-3rem",
+    //     nextLine: true,
+    //   },
+    //   {
+    //     type: "label-only",
+    //     typeOfLabel: "inline",
+    //     label: "Rebate Allowance ",
+    //     cols: 12,
+    //     name: "rebateAllowance",
+    //     className: "mt-3 font-bold text-base mb-2 text-color",
+    //     nextLine: true,
+    //   },
+    //   {
+    //     type: "percentage",
+    //     inputType: "vertical",
+    //     label: "Total Rebate Allowance",
+    //     name: "totalRebateAllowancePercent",
+    //     cols: 3,
+    //     className: " pb-1",
+    //   },
+    //   // {
+    //   //   type: "label-only",
+    //   //   typeOfLabel: "inline",
+    //   //   label: "%",
+    //   //   name: "rebatePercent",
+    //   //   className: "mt-4 col-fixed w-2rem mr-1",
+    //   // },
+    //   {
+    //     type: "amount",
+    //     inputType: "vertical",
+    //     name: "totalRebateAllowance",
+    //     maxLength: 6,
+    //     cols: 3,
+    //     className: "ml-2 mt-3 pt-2 col-fixed no-underline",
+    //     nextLine: false,
+    //     disabled: true,
+    //     mode:Mode.view
+    //     // mode:Mode.label
+    //   },
+
+    //   {
+    //     type: "number",
+    //     inputType: "vertical",
+    //     label: "Rebate Amount",
+    //     name: "rebateAmount",
+    //     // grouping: true,
+    //     maxLength: 6,
+    //     cols: 2,
+    //     //prefix: "¢",
+    //     className: " lg:col-offset-1 mb-0  col-fixed no-underline",
+    //     // inputClass: "mt-2",
+    //     // labelClass:"mb-0",
+    //     disabled: true,
+    //     mode:Mode.view
+    //   },
+    //   {
+    //     type: "label-only",
+    //     typeOfLabel: "inline",
+    //     label: "Cents",
+    //     name: "rebateAmountCents",
+    //     className: "mt-4 col-fixed w-3rem",
+        
+    //     nextLine: true,
+    //   },
+    // ],
+  // };
+
   override formConfig: GenericFormConfig = {
     cardType: "non-border",
     autoResponsive: true,
     api: "physicalAddress",
     // cardBgColor: '--background-color-secondary-light',
     goBackRoute: "physicalAddress",
-    fields: [
-      {
-        type: "select",
-        alignmentType: "vertical",
-        label: "Usage Unit ",
-        name: "usageUnit",
-        // maxLength: 6,
-        cols: 3,
-        nextLine: false,
-        labelClass: "col-12",
-        inputClass: "col-12",
-        list$: "LookUpServices/CustomData",
-        apiRequest: {
-          parameterValues: ["Usage Unit"],
-          procedureName: configure.SPContractCfdLuExtract,
-        },
-        idKey: "value_text",
-        idName: "value_text",
-        className: "mb-3 pr-4",
-      },
-      {
-        type: "amount",
-        inputType: "vertical",
-        label: "Usage Allowance ",
-        name: "usageAllowance",
-        maxLength: 6,
-        // grouping: true,
-        cols: 3,
-        nextLine: false,
-        className: "  ",
-        labelClass: "mb-4 mt-2",
-      },
-      {
-        type: 'percentage',
-        inputType: "vertical",
-        label: "Excess Usage Allowance",
-        name: "excessUsageAllowancePercentage",
-        cols: 2,
-        className: "ml-4 w-12rem pb-1",
-        labelClass: "mb-4 mt-2",
-
-      },
-      // {
-      //   type: "label-only",
-      //   typeOfLabel: "inline",
-      //   label: "%",
-      //   name: "excessUsageAllowanceLabel",
-      //   className: "mt-6 col-fixed mr-1",
-      // },
-      {
-        type: "amount",
-        inputType: "vertical",
-        maxLength: 6,
-        name: "excessUsageAllowance",
-        className: " mt-6 pt-0 ml-4 w-10rem",
-        nextLine: true,
-        // disabled: true
-        mode: Mode.view
-      },
-      {
-        type: "amount",
-        inputType: "vertical",
-        label: "Total Usage Allowance",
-        name: "totalUsageAllowance",
-        cols: 3,
-        maxLength: 8,
-        disabled: true,
-        // grouping: true,
-        inputClass: "col-12 no-underline",
-        className: " pr-4",
-      },
-      {
-        type: "number",
-        inputType: "vertical",
-        label: "Excess Usage Charge",
-        maxLength: 2,
-        // grouping: true,
-        name: "excessUsageCharge",
-        className: " lg:col-offset-1 col-fixed pb-1 ml-0",
-        inputClass: "mt-3",
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Cents",
-        name: "excessUsageChargesCents",
-        className: "mt-5 col-fixed w-3rem",
-        nextLine: true,
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Rebate Allowance ",
-        cols: 12,
-        name: "rebateAllowance",
-        className: "mt-3 font-bold text-base mb-2 text-color",
-        nextLine: true,
-      },
-      {
-        type: "percentage",
-        inputType: "vertical",
-        label: "Total Rebate Allowance",
-        name: "totalRebateAllowancePercent",
-        cols: 3,
-        className: "pl-2 pb-1",
-      },
-      // {
-      //   type: "label-only",
-      //   typeOfLabel: "inline",
-      //   label: "%",
-      //   name: "rebatePercent",
-      //   className: "mt-4 col-fixed w-2rem mr-1",
-      // },
-      {
-        type: "amount",
-        inputType: "vertical",
-        name: "totalRebateAllowance",
-        maxLength: 6,
-        className: "ml-4 mt-3 pt-2 pr-3 col-fixed w-12rem",
-        nextLine: false,
-        // disabled: true
-        mode: Mode.view
-      },
-
-      {
-        type: "number",
-        inputType: "vertical",
-        label: "Rebate Amount",
-        name: "rebateAmount",
-        // grouping: true,
-        maxLength: 6,
-        //prefix: "¢",
-        className: " lg:col-offset-1 w-10rem col-fixed pb-1",
-        // disabled: true
-        mode: Mode.view
-      },
-      {
-        type: "label-only",
-        typeOfLabel: "inline",
-        label: "Cents",
-        name: "rebateAmountCents",
-        className: "mt-4 col-fixed w-3rem",
-
-        nextLine: true,
-      },
-    ],
-  };
+    fields: []
+    };
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
@@ -213,7 +237,7 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
         .get("totalUsageAllowance")
         .patchValue(
           Number(this.mainForm.get("usageAllowance").value || 0) +
-          Number(this.mainForm.get("excessUsageAllowance").value || 0)
+            Number(this.mainForm.get("excessUsageAllowance").value || 0)
         );
     }
 
@@ -223,9 +247,9 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
         this.mainForm.get("excessUsageAllowancePercentage").value,
         event.value
       );
-
+      
     }
-    if (event.name == "excessUsageAllowancePercentage") {
+     if (event.name == "excessUsageAllowancePercentage") {
       this.convertPctToAmounts(
         "excessUsageAllowance",
         event.value,
@@ -233,7 +257,7 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
       );
     }
 
-    if (
+      if (
       event.name == "totalRebateAllowancePercent" ||
       event.name == "excessUsageCharge"
     ) {
@@ -245,7 +269,7 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
         .patchValue(cents);
     }
 
-    if (
+      if (
       event.name == "totalRebateAllowancePercent" ||
       event.name == "usageAllowance"
     ) {
@@ -260,9 +284,9 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
   }
 
   override onValueTyped(event: any): void {
-    this.mainForm.form.markAllAsTouched();
-    this.updateValidation(event);
-
+      this.mainForm.form.markAllAsTouched();
+      this.updateValidation(event);
+      
     // if (event.name == "excessUsageAllowance") {
     //   this.convertAmountToPct(
     //     "excessUsageAllowancePercentage",
@@ -302,7 +326,7 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
         this.mainForm.get(name).patchValue(amount);
       }
     }
-    else {
+    else{
       this.mainForm.get(name).patchValue(null);
     }
     this.updateValidation(name);
@@ -321,20 +345,20 @@ export class ExcessAllowanceComponent extends BaseStandardQuoteClass {
   modelName: string = "ExcessAllowanceComponent";
 
   override async onFormReady(): Promise<void> {
-    this.mainForm.form.markAllAsTouched();
+   this.mainForm.form.markAllAsTouched();
     await this.updateValidation("onInit");
     super.onFormReady();
   }
 
   override async onBlurEvent(event): Promise<void> {
-    this.mainForm.form.markAllAsTouched();
+        this.mainForm.form.markAllAsTouched();
 
     await this.updateValidation(event);
   }
 
   override async onValueEvent(event): Promise<void> {
-    // this.mainForm.form.markAllAsTouched();
-    // this.mainForm.form.markAllAsTouched()
+        // this.mainForm.form.markAllAsTouched();
+// this.mainForm.form.markAllAsTouched()
     await this.updateValidation(event);
   }
 

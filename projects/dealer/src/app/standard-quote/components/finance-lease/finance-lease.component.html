@@ -1,5 +1,5 @@
-<div class="col-8 mb-2 mt-3 flex " *ngIf="hidden">
-<label class="font-bold text-base pl-2"><text [mode]="'label'" [label]="getLeaseDetailsLabel()"></text></label>
+<div class="mb-2 mt-3 flex " [ngClass]="productCode === 'OL' ? 'col-9' : 'col-8'" *ngIf="hidden">
+<label class="font-bold pl-2" [ngClass]="productCode === 'OL' ? 'text-sm' : 'text-base'"><text [mode]="'label'" [label]="getLeaseDetailsLabel()"></text></label>
   
 @if(productCode == 'OL'){
    <div class="ml-auto flex items-center gap-2">

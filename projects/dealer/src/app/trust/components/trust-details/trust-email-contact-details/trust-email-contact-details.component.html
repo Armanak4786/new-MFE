@@ -17,7 +17,7 @@
 
 
 
-<form [formGroup]="emailForm">
+<form [formGroup]="emailForm" [class.disabled]="isDisabled()">
   <ng-container formArrayName="emails">
     <div *ngFor="let email of emails.controls; let i = index">
       <div [formGroupName]="i" class="mt-3">
@@ -39,7 +39,7 @@
             
 
             <!-- Error messages -->
-           <div *ngIf="(email.dirty || email.touched) && email.invalid" class="-mb-1">
+           <div *ngIf="(email.touched) && email.invalid" class="-mb-1">
               <small class="p-error block mt-1" *ngIf="email.get('value').hasError('required')">
                 Email is required
               </small>

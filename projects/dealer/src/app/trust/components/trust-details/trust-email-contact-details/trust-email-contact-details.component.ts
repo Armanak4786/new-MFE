@@ -268,6 +268,15 @@ override async ngOnInit(): Promise<void> {
   //   }
   // }
 
+  isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus; 
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus'); 
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
+
   onCheckboxChange(event: any, index: number) {
     const emailGroup = this.emails.at(index) as FormGroup;
 
