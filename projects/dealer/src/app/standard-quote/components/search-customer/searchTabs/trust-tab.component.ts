@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { BaseStandardQuoteClass } from "../../../base-standard-quote.class";
 import { CommonService, DataService, GenericFormConfig } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
@@ -104,7 +104,7 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
     public toasterSvc: ToasterService,
     public validationSvc: ValidationService,
     public cdr: ChangeDetectorRef,
-     public individualSvc : IndividualService,
+    public individualSvc : IndividualService,
     public businessSvc : BusinessService
   ) {
     super(route, svc, baseSvc);
@@ -178,13 +178,11 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
     this.dataSvc
       .post(`CustomerDetails/search_customer`, payload)
       .subscribe((res) => {
-       
           this.baseSvc.searchCustomerData = res?.data?.customers;
-          this.svc.router.navigateByUrl(
-            "/standard-quote/borrower-search-result/trust"
-          );
           this.mainForm.form.reset();
           this.ref.close();
+          this.svc.router.navigateByUrl("/search-result/borrower/trust");
+          
         
       });
   }

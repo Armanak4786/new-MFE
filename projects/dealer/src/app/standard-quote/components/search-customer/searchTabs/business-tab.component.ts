@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { BaseStandardQuoteClass } from "../../../base-standard-quote.class";
 import { CommonService, DataService, GenericFormConfig } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
@@ -289,11 +289,9 @@ export class BusinessTabComponent extends BaseStandardQuoteClass {
       .post(`CustomerDetails/search_customer`, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res) => {
         this.baseSvc.searchCustomerData = res?.data?.customers || [];
-        this.svc.router.navigateByUrl(
-          "/standard-quote/borrower-search-result/business"
-        );
         this.mainForm.form.reset();
         this.ref.close();
+        this.svc.router.navigateByUrl("/search-result/borrower/business");
       });
   }
 
