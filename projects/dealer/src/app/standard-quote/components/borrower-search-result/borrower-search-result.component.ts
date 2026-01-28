@@ -452,11 +452,11 @@ customerQuoteOptions: { [key: string]: any[] } = {};
     if ($event.actionName === "redirectToQuoteDetails") {
     const quoteId = $event.cellData;
     // this.svc.router.navigateByUrl(
-    //   `dealer/standard-quote/edit/${quoteId}`
+    //   `/standard-quote/edit/${quoteId}`
     // );
     // this.baseSvc.mode = 'restricted';
      this.svc.router.navigateByUrl(
-       `dealer/standard-quote/edit/${quoteId}`
+       `/standard-quote/edit/${quoteId}`
      );
    }
 

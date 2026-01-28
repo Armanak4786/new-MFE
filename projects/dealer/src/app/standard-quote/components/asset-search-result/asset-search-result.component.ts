@@ -90,10 +90,10 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
 
   onClickAdd() {
     let url = this.router.url;
-    if (url == "/dealer/standard-quote/asset-search-result") {
+    if (url == "/standard-quote/asset-search-result") {
       this.addAsset();
     }
-    if (url == "/dealer/standard-quote/trade-search-result") {
+    if (url == "/standard-quote/trade-search-result") {
       this.addTrade();
     }
   }

@@ -66,23 +66,23 @@ fdescribe('SearchAssetComponent', () => {
     });
   });
   describe('redirectToAsset', () => {
-    it('should navigate to "dealer/standard-quote/addAsset" and close dialog if modalType is "Search Asset"', () => {
+    it('should navigate to "standard-quote/addAsset" and close dialog if modalType is "Search Asset"', () => {
       const navigateSpy = spyOn(router, 'navigateByUrl');
       component.modalType = 'Search Asset';
       component.redirectToAsset();
 
-      expect(navigateSpy).toHaveBeenCalledWith('dealer/asset/addAsset');
+      expect(navigateSpy).toHaveBeenCalledWith('asset/addAsset');
       expect(dialogRefSpy.close).toHaveBeenCalledWith({
         action: 'closeAssetInsuranceSummaryTable',
       });
     });
 
-    it('should navigate to "dealer/standard-quote/addTrade" and close dialog if modalType is "Search Trade"', () => {
+    it('should navigate to "standard-quote/addTrade" and close dialog if modalType is "Search Trade"', () => {
       const navigateSpy = spyOn(router, 'navigateByUrl');
       component.modalType = 'Search Trade';
       component.redirectToAsset();
 
-      expect(navigateSpy).toHaveBeenCalledWith('dealer/asset/addTrade');
+      expect(navigateSpy).toHaveBeenCalledWith('asset/addTrade');
       expect(dialogRefSpy.close).toHaveBeenCalledWith({
         action: 'closeAssetInsuranceSummaryTable',
       });

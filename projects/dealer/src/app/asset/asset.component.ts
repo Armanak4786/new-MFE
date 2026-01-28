@@ -284,7 +284,7 @@ export class AssetComponent implements OnInit {
         if (this.standardQuoteData?.contractId) {
           this.standardQuoteSvc.isAssetSearch = false;
           this.svc?.router?.navigateByUrl(
-            `/dealer/standard-quote/edit/${this.standardQuoteData?.contractId}`
+            `/standard-quote/edit/${this.standardQuoteData?.contractId}`
           );
         } else {
           this.svc?.router?.navigateByUrl("/standard-quote");

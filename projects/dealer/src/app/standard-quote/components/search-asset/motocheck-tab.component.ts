@@ -177,11 +177,11 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
           //  this.dataList = extractedValues;
           if (this.addType == "Add Asset") {
             this.svc.router.navigateByUrl(
-              "/dealer/standard-quote/asset-search-result"
+              "/standard-quote/asset-search-result"
             );
           } else {
             this.svc.router.navigateByUrl(
-              "/dealer/standard-quote/trade-search-result"
+              "/standard-quote/trade-search-result"
             );
           }
 
@@ -199,7 +199,7 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
         //call api
         // this.dataSvc.post('assets', this.assetData);
         // this.svc.router.navigateByUrl(
-        //   '/dealer/standard-quote/asset-search-result'
+        //   '/standard-quote/asset-search-result'
         // );
         // this.ref.close();
       }

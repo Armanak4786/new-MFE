@@ -213,7 +213,7 @@ export class TopbarComponent {
         }
 
         if (
-            url.startsWith("/dealer/standard-quote/edit") ||
+            url.startsWith("/standard-quote/edit") ||
             url == "/dealer/standard-quote"
         ) {
             const activeTab = this.layoutService.getActiveTab();

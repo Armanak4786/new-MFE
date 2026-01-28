@@ -5,10 +5,8 @@ import {
   Input,
   Output,
 } from '@angular/core';
-// import { BaseStandardQuoteClass } from '../../../../dealer/standard-quote/base-standard-quote.class';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService, CommonService, ToasterService } from 'auro-ui';
-// import { StandardQuoteService } from '../../../../dealer/standard-quote/services/standard-quote.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { DialogService } from 'primeng/dynamicdialog';
 import { DocumentViewComponent } from '../../../assetlink/components/document-view/document-view.component';

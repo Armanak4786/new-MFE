@@ -1532,7 +1532,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             let mode = this.standardQuoteSvc.mode;
             if (trusteeContactUpdateResponse) {
               this.commonSvc.router.navigateByUrl(
-                `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+                `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
                 }`
               );
               this.standardQuoteSvc.activeStep = 1;
@@ -1542,7 +1542,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             let mode = this.standardQuoteSvc.mode;
             if (trusteeContactUpdateResponse) {
               this.commonSvc.router.navigateByUrl(
-                `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+                `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
                 }`
               );
               this.standardQuoteSvc.activeStep = 1;
@@ -2206,11 +2206,11 @@ export class TrustComponent implements OnInit, OnDestroy {
         this.trustSvc.showValidationMessage = false; //this flag is for mark all as read for all the customer components
         // if (this.mode == "create") {
         //   this.standardQuoteSvc.mode = "create";
-        //   this.commonSvc.router.navigateByUrl(`/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
+        //   this.commonSvc.router.navigateByUrl(`/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
         //   this.standardQuoteSvc.activeStep = 1;
         // } else if (this.mode == "edit" || this.mode == "view") {
         //   this.standardQuoteSvc.mode = "edit";
-        //   this.commonSvc.router.navigateByUrl(`/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
+        //   this.commonSvc.router.navigateByUrl(`/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
         //   this.standardQuoteSvc.activeStep = 1;
         // }
 
@@ -2229,7 +2229,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/dealer/standard-quote/${mode}/${params.contractId}`
+            `/standard-quote/${mode}/${params.contractId}`
           );
           this.trustSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;

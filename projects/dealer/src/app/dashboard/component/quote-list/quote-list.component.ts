@@ -284,7 +284,7 @@ export class QuoteListComponent {
       this.standardQuoteSvc.mode = "view";
 
       this.commonSvc.router.navigateByUrl(
-        `/dealer/standard-quote/${event.actionName}/${id}`
+        `/standard-quote/${event.actionName}/${id}`
       );
     } else if (event.actionName == "edit") {
       //fetching productCode from JSON file
@@ -303,14 +303,14 @@ export class QuoteListComponent {
       );
       this.standardQuoteSvc.dealerOriginationFeeopenOnEdit = true;
       this.commonSvc.router.navigateByUrl(
-        `/dealer/standard-quote/${event.actionName}/${id}`
+        `/standard-quote/${event.actionName}/${id}`
       );
     } else if (event.actionName == "copy") {
       this.standardQuoteSvc.accessMode = "copy";
       this.standardQuoteSvc.mode = "copy";
       this.standardQuoteSvc.calculatedOnce = true;
       this.commonSvc.router.navigateByUrl(
-        `/dealer/standard-quote/${event.actionName}/${id}`
+        `/standard-quote/${event.actionName}/${id}`
       );
     }
 
