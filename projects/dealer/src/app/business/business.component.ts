@@ -229,7 +229,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
 
     //   // await this.businessDetailPost();
 
-    //   //   this.commonSvc.router.navigateByUrl('dealer/standard-quote');
+    //   //   this.commonSvc.router.navigateByUrl('standard-quote');
     //   // }
     // }
 
@@ -276,7 +276,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (contactDetailPostResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+              `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
               }`
             );
             this.standardQuoteSvc.activeStep = 1;
@@ -286,7 +286,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (contactDetailPostResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+              `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
               }`
             );
             this.standardQuoteSvc.activeStep = 1;
@@ -1840,7 +1840,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/dealer/standard-quote/${mode}/${params.contractId}`
+            `/standard-quote/${mode}/${params.contractId}`
           );
           this.businessSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;

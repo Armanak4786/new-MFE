@@ -225,7 +225,7 @@ export class SettlementQuoteDetailsComponent extends BaseStandardQuoteClass {
             });
 
             this.svc.router.navigateByUrl(
-              `/dealer/standard-quote/${this.baseSvc.mode}/${newSettlementContractId}`
+              `/standard-quote/${this.baseSvc.mode}/${newSettlementContractId}`
             );
           }
         } else {
@@ -248,7 +248,7 @@ export class SettlementQuoteDetailsComponent extends BaseStandardQuoteClass {
           });
 
           this.svc.router.navigateByUrl(
-            `/dealer/standard-quote/${this.baseSvc.mode}/${this.contractId}`
+            `/standard-quote/${this.baseSvc.mode}/${this.contractId}`
           );
         }
       });
@@ -263,7 +263,7 @@ export class SettlementQuoteDetailsComponent extends BaseStandardQuoteClass {
   //   }
   //   else{
   //     this.svc.router.navigateByUrl(
-  //     `/dealer/standard-quote/${this.baseSvc.mode}/${this.contractId}`
+  //     `/standard-quote/${this.baseSvc.mode}/${this.contractId}`
   //   );
 
   //   }
@@ -320,7 +320,7 @@ export class SettlementQuoteDetailsComponent extends BaseStandardQuoteClass {
       this.svc.router.navigateByUrl(`/dealer`);
     } else {
       this.svc.router.navigateByUrl(
-        `/dealer/standard-quote/${this.baseSvc.mode}/${this.contractId}`
+        `/standard-quote/${this.baseSvc.mode}/${this.contractId}`
       );
     }
   }

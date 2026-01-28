@@ -181,7 +181,7 @@ export class TrustTabComponent extends BaseStandardQuoteClass {
        
           this.baseSvc.searchCustomerData = res?.data?.customers;
           this.svc.router.navigateByUrl(
-            "/dealer/standard-quote/borrower-search-result/trust"
+            "/standard-quote/borrower-search-result/trust"
           );
           this.mainForm.form.reset();
           this.ref.close();

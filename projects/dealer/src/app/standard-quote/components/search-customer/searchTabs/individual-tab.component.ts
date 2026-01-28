@@ -308,7 +308,7 @@ export class IndividualTabComponent extends BaseStandardQuoteClass {
         const path = isBusiness ? "sole-trade" : "individual";
         //console.log(this.baseFormData, path, "isBusiness");
         this.svc.router.navigateByUrl(
-          `/dealer/standard-quote/borrower-search-result/${path}`
+          `/standard-quote/borrower-search-result/${path}`
         );
         this.mainForm.form.reset();
         this.ref.close();

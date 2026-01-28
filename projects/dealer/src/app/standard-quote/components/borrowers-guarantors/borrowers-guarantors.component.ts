@@ -1112,7 +1112,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
   // onCellClick(event) {
   //   let id = event?.rowData?.QuoteID;
   //   this.commonSvc.router.navigateByUrl(
-  //     `/dealer/standard-quote/${event.actionName}/${id}`
+  //     `/standard-quote/${event.actionName}/${id}`
   //   );
   // }
   async onCellClick(event) {

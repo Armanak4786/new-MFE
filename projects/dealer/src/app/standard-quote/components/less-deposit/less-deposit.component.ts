@@ -375,7 +375,7 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
             getSettlementAmountData: data?.data,
           });
           this.svc.router.navigateByUrl(
-            "/dealer/standard-quote/settlement-quote-details"
+            "/standard-quote/settlement-quote-details"
           );
         }
 
@@ -389,7 +389,7 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
             })
             .onClose.subscribe((data: CloseDialogData) => {
               this.svc.router.navigateByUrl(
-                "/dealer/standard-quote/settlement-quote-details"
+                "/standard-quote/settlement-quote-details"
               );
               // if(data?.data?.checkboxs)
               // {

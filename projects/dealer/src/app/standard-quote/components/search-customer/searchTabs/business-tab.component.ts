@@ -290,7 +290,7 @@ export class BusinessTabComponent extends BaseStandardQuoteClass {
       .pipe(takeUntil(this.destroy$)).subscribe((res) => {
         this.baseSvc.searchCustomerData = res?.data?.customers || [];
         this.svc.router.navigateByUrl(
-          "/dealer/standard-quote/borrower-search-result/business"
+          "/standard-quote/borrower-search-result/business"
         );
         this.mainForm.form.reset();
         this.ref.close();

@@ -291,7 +291,7 @@ override formConfig: GenericFormConfig = {
         //call api
         // this.dataSvc.post('assets', this.assetData);
         // this.svc.router.navigateByUrl(
-        //   '/dealer/standard-quote/asset-search-result'
+        //   '/standard-quote/asset-search-result'
         // );
         // this.ref.close();
       }

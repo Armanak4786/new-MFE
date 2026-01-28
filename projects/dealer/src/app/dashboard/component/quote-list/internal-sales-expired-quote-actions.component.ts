@@ -58,7 +58,7 @@ export class InternalSalesExpiredQuoteActionsComponent extends BaseStandardQuote
     let rowData = this.dashboardSvc.getCurrentRowData();
 
     //  this.svc.router.navigateByUrl(
-    //     `/dealer/standard-quote/edit/2392`
+    //     `/standard-quote/edit/2392`
     //   );
     
   }

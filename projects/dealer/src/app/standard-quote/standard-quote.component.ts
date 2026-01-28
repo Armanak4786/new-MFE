@@ -184,7 +184,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       //     // this.btnStatus = true;
 
       //     this.commonSvc.router.navigateByUrl(
-      //       `/dealer/standard-quote/${params.mode}/${this.formData?.contractId}`
+      //       `/standard-quote/${params.mode}/${this.formData?.contractId}`
       //     );
       //   } else {
       //     //  this.standardQuoteSvc.activeStep = 0;
@@ -1999,7 +1999,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
 
     if (updateRes?.contractId) {
       this.router.navigate([
-        `/dealer/standard-quote/create/${updateRes?.contractId}`
+        `/standard-quote/create/${updateRes?.contractId}`
       ], {replaceUrl:true});
       let dataMapped = this.standardQuoteSvc?.mapConfigData(updateRes);
 

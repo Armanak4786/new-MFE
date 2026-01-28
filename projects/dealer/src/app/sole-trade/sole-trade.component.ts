@@ -1774,7 +1774,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (referenceDetailResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/dealer/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
+              `/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
               }`
             );
             this.soleTradeSvc.resetBaseDealerFormData();
@@ -1785,7 +1785,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (referenceDetailResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/dealer/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
+              `/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
               }`
             );
             this.soleTradeSvc.resetBaseDealerFormData();
@@ -2099,7 +2099,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/dealer/standard-quote/${mode}/${params.contractId}`
+            `/standard-quote/${mode}/${params.contractId}`
           );
           this.soleTradeSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
