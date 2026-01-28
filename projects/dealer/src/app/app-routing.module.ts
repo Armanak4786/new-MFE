@@ -9,6 +9,14 @@ const routes: Routes = [
       import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
+    path: 'search-result',
+    loadChildren: () =>
+      import('./standard-quote/search-results.module').then(
+        (m) => m.SearchResultsModule
+      ),
+    data: { breadcrumb: 'Search Result' },
+  },
+  {
     path: 'standard-quote/:mode/:id',
     loadChildren: () =>
       import('./standard-quote/standard-quote.module').then(

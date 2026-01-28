@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AuroUiFrameWork } from 'auro-ui';
 import { StandardQuoteComponent } from './standard-quote.component';
 import { StandardQuoteRoutingModule } from './standard-quote-routing.module';
-import { AssetSearchResultComponent } from './components/asset-search-result/asset-search-result.component';
 import { AddOnAccessoriesComponent } from './components/add-on-accessories/add-on-accessories.component';
 import { AdditionalApprovalComponent } from './components/additional-approval/additional-approval.component';
 import { AfvDetailsComponent } from './components/afv-details/afv-details.component';
 import { AssetInsuranceSummaryComponent } from './components/asset-insurance-summary/asset-insurance-summary.component';
 import { AssetSummaryComponent } from './components/asset-summary/asset-summary.component';
-import { BorrowerSearchResultComponent } from './components/borrower-search-result/borrower-search-result.component';
 import { BorrowersGuarantorsComponent } from './components/borrowers-guarantors/borrowers-guarantors.component';
 import { DealerUdcDeclarationComponent } from './components/dealer-udc-declaration/dealer-udc-declaration.component';
 import { KeyInfoPopupComponent } from './components/key-info-popup/key-info-popup.component';
@@ -117,11 +115,9 @@ import { InsuranceRequirementFormComponent } from './components/insurance-requir
     SettlementDisclosureComponent,
     SelectBrandsComponent,
     UploadDocumentComponent,
-    BorrowerSearchResultComponent,
     AfvDetailsComponent,
     SettlementQuoteDetailsComponent,
     PaymentSummaryDeatilsComponent,
-    AssetSearchResultComponent,
     DealerFinanceComponent,
     EditPaymentScheduleTableComponent,
     FinanceLeaseComponent,
