@@ -1,0 +1,66 @@
+<div class="error-messages-container">
+
+  <!-- ========== QUOTES AND APPS ========== -->
+  <ng-container *ngIf="selectedTab === 'quotesAndApps'">
+    <!-- Edit Payment Schedule -->
+    <div class="message-section">
+      <h3 class="section-title">Edit Payment Schedule</h3>
+      <div class="row">
+        <div class="textarea-col">
+          <textarea
+            pInputTextarea
+            [(ngModel)]="paymentScheduleMessage"
+            rows="3"
+            class="message-textarea"
+          ></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="savePaymentSchedule()"></gen-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ========== RETAIL SELF SERVICE ========== -->
+  <ng-container *ngIf="selectedTab === 'retailSelfService'">
+    <!-- Application Submission - Acknowledgement -->
+    <div class="message-section">
+      <h3 class="section-title">Application Submission- Acknowledgement</h3>
+      <div class="row">
+        <div class="textarea-col">
+          <textarea
+            pInputTextarea
+            [(ngModel)]="acknowledgementMessage"
+            rows="3"
+            class="message-textarea"
+          ></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveAcknowledgement()"></gen-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ========== CUSTOMER INFORMATION PORTAL ========== -->
+  <ng-container *ngIf="selectedTab === 'customerPortal'">
+    <!-- Drawdown Request - Warning -->
+    <div class="message-section">
+      <h3 class="section-title">Drawdown Request- Warning</h3>
+      <div class="row">
+        <div class="textarea-col">
+          <textarea
+            pInputTextarea
+            [(ngModel)]="drawdownWarningMessage"
+            rows="4"
+            class="message-textarea"
+          ></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveDrawdownWarning()"></gen-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</div>

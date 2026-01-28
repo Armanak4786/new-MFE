@@ -19,13 +19,12 @@ export class SidebarComponent {
     @Output() iconClick = new EventEmitter<string>();
 
     onIconClick(icon: string): void {
+        //Placeholder until paths are decided. Use navigation().
         this.iconClick.emit(icon);
     }
 
     navigate(path: string) {
+        //Function to redirect from sidebar.
         this.router.navigateByUrl(path);
     }
 }
-
-
-

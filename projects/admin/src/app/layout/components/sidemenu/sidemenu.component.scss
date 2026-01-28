@@ -6,7 +6,9 @@
     justify-content: center;
     align-items: center;
     border: 1px solid #c4c4c4;
+    /* Border with color */
     border-radius: 10px;
+    /* Rounded corners */
     box-sizing: border-box;
     margin-left: 10px;
     float: left;
@@ -15,6 +17,7 @@
 
 .sidebar.expanded {
     width: 20%;
+    /* Expanded width */
     z-index: 999;
     position: fixed;
 }
@@ -43,9 +46,11 @@ ul {
 
 .icon-label {
     font-size: 17x;
+    /* Text label size */
     color: #747474;
     opacity: 1;
     transition: opacity 0.4s ease;
+    /* Fade effect */
     margin-left: 15px;
 }
 
@@ -55,6 +60,7 @@ ul {
 
 .sidebar:not(.expanded) .icon-label {
     opacity: 0;
+    /* Hide text when not expanded */
 }
 
 .sidebar:not(.expanded) .i {
@@ -63,6 +69,10 @@ ul {
 }
 
 .lock-button {
+    // position: absolute;
+    // bottom: 95%;
+    // left: 85%;
+    // margin-top: 5%;
     float: right;
     background: none;
     border: none;
@@ -77,6 +87,7 @@ ul {
 
 .lock-button:hover {
     color: #3498db;
+    /* Highlight on hover */
 }
 
 @media (max-width: 991px) {
@@ -99,6 +110,3 @@ ul {
     z-index: 1000;
     transition: all 0.3s ease-in-out;
 }
-
-
-

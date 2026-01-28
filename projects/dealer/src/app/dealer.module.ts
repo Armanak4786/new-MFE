@@ -10,8 +10,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
       },
       {
         path: 'standard-quote/:mode/:id',

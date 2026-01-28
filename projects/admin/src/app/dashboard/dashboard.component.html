@@ -1,13 +1,32 @@
-<div class="dashboard">
-    <div class="grid">
-        <div class="col-12">
-            <div class="card">
-                <h2>{{ title }}</h2>
-                <p>Welcome to the Admin Portal</p>
-            </div>
-        </div>
+<div class="grid mb-3 p-fluid">
+  <div class="col-12 md:col-12 lg:col-12">
+    <div class="flex gap-2 status-filters">
+      <gen-button [btnLabel]="'Quotes and Apps'" (click)="onStatusTabChange('quotesAndApps')"
+        [btnType]="selectedStatus === 'quotesAndApps' ? '' : 'border-btn'"></gen-button>
+      <gen-button [btnLabel]="'Retail self service'" (onClick)="onStatusTabChange('retailSelfService')"
+        [btnType]="selectedStatus === 'retailSelfService' ? '' : 'border-btn'"></gen-button>
+      <gen-button [btnLabel]="'Customer information Portal'" (onClick)="onStatusTabChange('customerPortal')"
+        [btnType]="selectedStatus === 'customerPortal' ? '' : 'border-btn'"></gen-button>
     </div>
+  </div>
 </div>
 
+<div class="page-layout">
+  <div class="sidebar-menu custom-side-menu">
+    <div class="p-accordion-tab" *ngFor="let item of menu; let i = index">
+      <a class="p-accordion-header-link" [class.p-accordion-tab-active]="activeIndex === i" (click)="onMenuClick(i)">
+        <span>{{ item.label }}</span>
+        <span class="p-accordion-toggle-icon pi"
+          [ngClass]="activeIndex === i ? 'pi-chevron-up' : 'pi-chevron-down'"></span>
+      </a>
+    </div>
+  </div>
 
-
+  <div class="content-area" [ngSwitch]="selectedValue">
+    <app-logo-and-branding *ngSwitchCase="'LOGO_BRANDING'" [selectedTab]="selectedStatus"></app-logo-and-branding>
+    <app-legal-messages *ngSwitchCase="'LEGAL_MESSAGES'" [selectedTab]="selectedStatus"></app-legal-messages>
+    <app-error-messages *ngSwitchCase="'ERROR_MESSAGES'" [selectedTab]="selectedStatus"></app-error-messages>
+    <app-role-base-access *ngSwitchCase="'ROLE_BASE_ACCESS'" [selectedTab]="selectedStatus"></app-role-base-access>
+    <app-notifications *ngSwitchCase="'BANNER_NOTIFICATIONS'" [selectedTab]="selectedStatus"></app-notifications>
+  </div>
+</div>

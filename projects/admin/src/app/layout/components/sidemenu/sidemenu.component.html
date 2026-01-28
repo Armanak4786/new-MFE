@@ -16,14 +16,10 @@
                 <i class="fa-solid fa-wallet"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Dashboard</span>
             </li>
-            <li (click)="navigate('/users')" class="nav-item">
-                <i class="fas fa-users"></i>
-                <span class="icon-label" *ngIf="isExpanded || isLocked">User Management</span>
-            </li>
-            <li (click)="navigate('/settings')" class="nav-item">
-                <i class="fa-solid fa-cog"></i>
-                <span class="icon-label" *ngIf="isExpanded || isLocked">Settings</span>
-            </li>
+            <!-- <li (click)="onIconClick('settings')" class="nav-item">
+        <i class="fa fa-cog"></i>
+        <span class="icon-label" *ngIf="isExpanded || isLocked">Settings</span>
+      </li> -->
             <li (click)="toggleSubmenu()" class="nav-item">
                 <i class="fa-regular fa-chart-bar"></i>
                 <span class="icon-label" *ngIf="isExpanded || isLocked">Reports</span>

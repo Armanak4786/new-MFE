@@ -4,7 +4,7 @@ import { CustomerStatementComponent } from './customer-statement/customer-statem
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'dealer',
     loadChildren: () =>
       import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
   },

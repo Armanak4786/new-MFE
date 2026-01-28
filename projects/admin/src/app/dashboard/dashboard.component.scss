@@ -1,13 +1,48 @@
-.dashboard {
-    padding: 1rem;
-    
-    .card {
-        background: #fff;
-        border-radius: 8px;
-        padding: 2rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+.page-layout {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 20px;
+  width: 100%;
 }
 
+.sidebar-menu {
+  width: 250px;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
 
+.content-area {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
 
+:host ::ng-deep .custom-side-menu .p-accordion-header-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1rem !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  background-color: #ffffff !important;
+  font-weight: 400;
+  color: #000000 !important;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+:host
+  ::ng-deep
+  .custom-side-menu
+  .p-accordion-header-link.p-accordion-tab-active {
+  color: #1b4976 !important;
+  font-weight: 700 !important;
+}
+
+:host ::ng-deep .custom-side-menu .p-accordion-toggle-icon {
+  order: 2;
+  margin-left: auto;
+}

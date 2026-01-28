@@ -7,6 +7,7 @@
 
 .selected {
     padding: 1.2rem 0 0 1rem;
+
     cursor: pointer;
     color: #ffffff !important;
     display: flex;
@@ -40,12 +41,7 @@
 
 .options div:hover {
     background: #f0f0f0;
-}
-
-.admin-title {
-    display: flex;
-    align-items: center;
-    padding-left: 1rem;
+    // border-radius: 0.375rem;
 }
 
 ::ng-deep {
@@ -56,6 +52,18 @@
         }
     }
 
+    // .bell-font {
+    //   font-size: 1.3rem;
+    //   color: white;
+    // }
+
+    .hourglass {
+        display: inline-block;
+        font-size: 12px;
+        /* Adjust size as needed */
+        animation: flipHourglass 2s infinite ease-in-out;
+    }
+
     .bell-icon {
         ::ng-deep {
             .p-badge {
@@ -63,7 +71,23 @@
                 min-width: 1.25rem;
                 line-height: 1.2rem;
                 font-size: 0.7rem;
+
+                // font-size: 0.7rem;
+                // top: 0;
+                // bottom: auto;
             }
+        }
+    }
+
+    @keyframes flipHourglass {
+
+        0%,
+        100% {
+            transform: rotate(0deg);
+        }
+
+        50% {
+            transform: rotate(180deg);
         }
     }
 
@@ -80,8 +104,11 @@
 
         &.p-overlay-badge .p-badge {
             top: 14%;
+            // bottom: auto;
             right: 3%;
             background: var(--secondary-color);
+
+            // transform: translate(50%, -50%);
         }
 
         .p-overlaypanel {
@@ -105,16 +132,61 @@
     0% {
         transform: rotate(0deg);
     }
+
     25% {
         transform: rotate(25deg);
     }
+
     50% {
         transform: rotate(-15deg);
     }
+
     75% {
         transform: rotate(25deg);
     }
+
     100% {
         transform: rotate(0deg);
     }
+}
+
+::ng-deep .topbar-confirm-dialog .p-dialog-header-close {
+    display: none !important;
+}
+
+::ng-deep .topbar-confirm-dialog .p-confirm-dialog-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 1rem;
+}
+
+::ng-deep .topbar-confirm-dialog .p-button {
+    min-width: 80px;
+    font-weight: 600;
+    border-radius: 6px;
+
+    .p-button-icon-left {
+        display: none;
+    }
+}
+
+::ng-deep .topbar-confirm-dialog .p-button-primary {
+    background-color: #0f86b1;
+    border: none;
+    color: white;
+}
+
+::ng-deep .topbar-confirm-dialog .p-button-outlined {
+    border: 0px solid #0f86b1;
+    color: #0f86b1;
+    background-color: white;
+}
+
+::ng-deep .topbar-confirm-dialog .p-confirm-dialog-message {
+    font-family: Verdana, Roboto, "Helvetica Neue Light", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #000000;
+    // line-height: 1.5;
 }

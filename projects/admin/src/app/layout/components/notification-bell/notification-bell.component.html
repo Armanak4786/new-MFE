@@ -6,6 +6,7 @@
                     @if (!selectedNotification || selectedNotification=='errors'){
                     <div class="py-1 flex" *ngFor="let noti of errors">
                         <i class="fa-solid fa-circle-xmark text-red-400 text-base"></i>
+                        <!-- {{ name }} -->
                         <label class="pl-2 text-sm notification-text">{{ noti }}</label>
                     </div>
                     @if (selectedNotification=='errors' && (errors?.length == 0 ||
@@ -29,6 +30,18 @@
                     <label class="text-sm font-italic">No Information to display.</label>
                     } }
 
+                    <!-- @if (!selectedNotification || selectedNotification=='reminders'){
+  
+            <div class="py-1 flex" *ngFor="let noti of reminders">
+              <i class="fa-solid fa-clock text-bluegray-500 text-base"></i>
+              <label class="pl-2 text-sm notification-text">{{noti}}</label>
+            </div>
+            @if (selectedNotification=='reminders' && reminders?.length ==0){
+            <label class=" text-sm font-italic">No Reminders to display.</label>
+            }
+            } -->
+
+                    <!-- {{this.notificationValue}} -->
                     @if (!selectedNotification && this.notificationValue ==0){
                     <label class="text-sm font-italic">No Notifications to display.</label>
                     }
@@ -50,6 +63,9 @@
                         <span class="cursor-pointer"><i class="fa-solid fa-circle-info text-green-500 text-base"></i>
                             <label class="text-sm pl-1 cursor-pointer"
                                 (click)="selectedNotification = 'infos'">Information</label></span>
+                        <!-- <span class="cursor-pointer"><i class="fa-solid fa-clock text-bluegray-500 text-base"></i> <label
+                class="text-sm pl-1 cursor-pointer hover:underline"
+                (click)="selectedNotification = 'reminders'">Reminders</label></span> -->
                     </div>
                     <div class="text-sm cursor-pointer" (click)="dismissAll()">
                         Dismiss All
@@ -59,6 +75,3 @@
         </ng-content>
     </p-overlayPanel>
 </div>
-
-
-

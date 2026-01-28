@@ -1,0 +1,107 @@
+<div class="notifications-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="title">Banner/ Notifications</div>
+    <div class="header-controls">
+      <div class="control-item">
+        <label class="control-label">Select offer ID</label>
+        <p-dropdown
+          [options]="offerOptions"
+          [(ngModel)]="selectedOffer"
+          placeholder="Select Offer"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+        ></p-dropdown>
+      </div>
+      <div class="control-item checkbox-item">
+        <p-checkbox
+          [(ngModel)]="isPrimary"
+          [binary]="true"
+          inputId="primaryCheckbox"
+        ></p-checkbox>
+        <label for="primaryCheckbox" class="checkbox-label">Primary</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Section -->
+  <div class="message-section">
+    <div class="lm-row">
+      <div class="textarea-col">
+        <textarea
+          pInputTextarea
+          placeholder="Message"
+          rows="3"
+          class="message-textarea"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="file-uploader-wrapper">
+    <!-- Preview Section (Left) -->
+    <div class="preview-section">
+      <div class="preview-header">
+        <button *ngIf="previewUrl" (click)="clearImage()" class="delete-btn">
+          <img src="assets/images/icon/delete-icon.svg" alt="Delete" />
+        </button>
+      </div>
+      <div class="preview-content">
+        <img *ngIf="previewUrl" [src]="previewUrl" alt="Preview" />
+        <div *ngIf="!previewUrl" class="preview-placeholder">
+          <img src="assets/images/logo-dark.png" alt="UDC" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Section (Right) -->
+    <div class="upload-section">
+      <div class="section-title">Image</div>
+
+      <div
+        class="inner-upload-box"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        [class.dragover]="isDragOver"
+      >
+        <div class="upload-icon">
+          <img src="assets/images/icon/upload-icon.svg" alt="Upload Icon" />
+        </div>
+
+        <p class="upload-title">Drag & drop any file here</p>
+        <p class="upload-subtitle">
+          Supported documents formats: .jpg, .gif, .bmp, .png, .pdf
+        </p>
+        <p class="upload-info">Can not exceed 200MB per upload</p>
+
+        <p class="upload-browse">
+          Or <span (click)="fileInput.click()">browse file</span> from device
+        </p>
+
+        <input
+          #fileInput
+          type="file"
+          hidden
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        />
+      </div>
+
+      <div class="action-buttons">
+        <gen-button
+          [btnType]="'bg-btn'"
+          (click)="fileInput.click()"
+          [btnLabel]="'Upload'"
+        ></gen-button>
+        <gen-button
+          [btnType]="'bg-btn'"
+          (click)="onApply()"
+          [btnLabel]="'Apply'"
+        ></gen-button>
+      </div>
+    </div>
+  </div>
+</div>

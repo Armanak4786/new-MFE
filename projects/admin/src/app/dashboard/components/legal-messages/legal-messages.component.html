@@ -1,0 +1,103 @@
+<!-- legal-messages.component.html -->
+<div class="legal-messages-container">
+
+  <!-- ========== QUOTES AND APPS ========== -->
+  <ng-container *ngIf="selectedTab === 'quotesAndApps'">
+
+    <div class="message-section">
+      <h3 class="section-title">Key Disclosure</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="disclosureMessage" rows="3" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveDisclosure()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-section">
+      <h3 class="section-title">Application Submission- Success</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="successMessage" rows="3" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveSuccessMessage()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-section">
+      <h3 class="section-title">Application Submission- Failure</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="failureMessage" rows="3" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveFailureMessage()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- ========== RETAIL SELF SERVICE ========== -->
+  <ng-container *ngIf="selectedTab === 'retailSelfService'">
+
+    <div class="message-section">
+      <h3 class="section-title">Application Submission- Success</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="successMessage" rows="3" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveSuccessMessage()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- ========== CUSTOMER INFORMATION PORTAL ========== -->
+  <ng-container *ngIf="selectedTab === 'customerPortal'">
+
+    <div class="message-section">
+      <h3 class="section-title">Application Submission- Success</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="cipSuccessMessage" rows="5" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveCipSuccessMessage()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-section">
+      <h3 class="section-title">Application Submission- Failure</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="cipFailureMessage" rows="3" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveCipFailureMessage()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-section">
+      <h3 class="section-title">Drawdown- Additional Info</h3>
+      <div class="lm-row">
+        <div class="textarea-col">
+          <textarea pInputTextarea [(ngModel)]="drawdownMessage" rows="5" class="message-textarea"></textarea>
+        </div>
+        <div class="btn-col">
+          <gen-button [btnLabel]="'Save'" (click)="saveDrawdownMessage()"></gen-button>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>

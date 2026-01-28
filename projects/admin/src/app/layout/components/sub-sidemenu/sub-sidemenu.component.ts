@@ -1,17 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonService } from 'auro-ui';
 import { ReportDialogComponent } from '../report-dialog/report-dialog.component';
-
 @Component({
     selector: 'app-sub-sidemenu',
     templateUrl: './sub-sidemenu.component.html',
     styleUrls: ['./sub-sidemenu.component.scss']
 })
 export class SubSidemenuComponent {
-    @Input() isExpanded: boolean = false;
-    @Output() closeSubmenu = new EventEmitter<void>();
-    @Output() navigate = new EventEmitter<string>();
-
     constructor(
         private commonsvc: CommonService,
     ) { }
@@ -28,7 +23,7 @@ export class SubSidemenuComponent {
         {
             AccessLevel: 'Internal',
             ExtensionOutput: 'CSV',
-            Id: 2,
+            Id: 1,
             IsActuive: true,
             Parameters: [
                 {
@@ -38,13 +33,19 @@ export class SubSidemenuComponent {
                     SelectList: ['Report 1', 'Report 2', 'Report 3'],
                     Validation: '',
                 },
+                {
+                    Type: 'TextBox',
+                    Name: 'Filter',
+                    DefaultValue: 'PQR',
+                    Validation: '',
+                },
             ],
-            ReportName: 'System Configuration Report',
+            ReportName: 'Monthly Lending Application and Total Amount',
         },
         {
             AccessLevel: 'Internal',
             ExtensionOutput: 'CSV',
-            Id: 3,
+            Id: 1,
             IsActuive: true,
             Parameters: [
                 {
@@ -62,10 +63,48 @@ export class SubSidemenuComponent {
                     MaxValue: '12-12-2025',
                     Validation: '',
                 },
+                {
+                    Type: 'TextBox',
+                    Name: 'Filter',
+                    DefaultValue: 'PQR',
+                    Validation: '',
+                },
             ],
-            ReportName: 'Audit Log Report',
+            ReportName: 'Dealer Listing - Active Loans',
+        },
+        {
+            AccessLevel: 'Internal',
+            ExtensionOutput: 'CSV',
+            Id: 1,
+            IsActuive: true,
+            Parameters: [
+                {
+                    Type: 'Dropdown',
+                    Name: 'Month',
+                    DefaultValue: '',
+                    SelectList: ['Wholesome Report 1', 'Wholesome Report 2', 'Wholesome Report 3'],
+                    Validation: '',
+                },
+                {
+                    Type: 'DatePicker',
+                    Name: 'Start Date',
+                    DefaultValue: '',
+                    MinValue: '12-05-2025',
+                    MaxValue: '12-12-2025',
+                },
+                {
+                    Type: 'DatePicker',
+                    Name: 'End Date',
+                    DefaultValue: '',
+                    MinValue: '12-05-2025',
+                    MaxValue: '12-12-2025',
+                    Validation: '',
+                },
+            ],
+            ReportName: 'Wholesome Interest',
         },
     ];
+
 
     reportSelected(report: any) {
         this.commonsvc?.dialogSvc
@@ -79,6 +118,3 @@ export class SubSidemenuComponent {
             .onClose.subscribe((data: any) => { });
     }
 }
-
-
-

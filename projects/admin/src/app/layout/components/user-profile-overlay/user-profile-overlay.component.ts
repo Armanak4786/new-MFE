@@ -27,13 +27,16 @@ export class UserProfileOverlayComponent {
         });
 
         let accessToken = sessionStorage.getItem("accessToken");
-        if (accessToken) {
-            try {
-                const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
-                this.userName = tokenPayload?.sub?.replace(".", " ") || 'Admin User';
-            } catch {
-                this.userName = 'Admin User';
-            }
+        let decodedToken = this.decodeToken(accessToken);
+        this.userName = decodedToken?.sub?.replace(".", " ");
+    }
+
+    decodeToken(token: string): any {
+        try {
+            const payload = token?.split('.')[1];
+            return JSON.parse(atob(payload));
+        } catch (e) {
+            return null;
         }
     }
 
@@ -62,6 +65,3 @@ export class UserProfileOverlayComponent {
         this.router.navigateByUrl("/authentication/change-password");
     }
 }
-
-
-

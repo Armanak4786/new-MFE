@@ -23,25 +23,26 @@ export class LandingComponent {
     private readonly oidcSecurityService = inject(OidcSecurityService);
 
     // Dynamic module cards configuration
+    // Routes use internal Angular paths to maintain sessionStorage sharing
     modules: ModuleCard[] = [
         {
             title: 'Customer Information Portal',
             icon: 'assets/images/building.svg',
-            route: 'http://localhost:4202',
+            route: 'commercial',
             color: '#B7C200',
             size: 'large'
         },
         {
             title: 'Quotes & Applications',
             icon: 'assets/images/Quotes&Applications.svg',
-            route: 'http://localhost:4201',
+            route: 'dealer',
             color: '#B7C200',
             size: 'small'
         },
         {
             title: 'Admin',
             icon: 'assets/images/setting-2.svg',
-            route: 'http://localhost:4203',
+            route: 'admin',
             color: '#B7C200',
             size: 'small'
         }

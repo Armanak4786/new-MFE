@@ -36,8 +36,8 @@ export class NotificationBellComponent {
         if (
             this.overlayPanel.overlayVisible &&
             this.overlayPanel.el.nativeElement &&
-            !this.eRef.nativeElement.contains(clickedElement) &&
-            !this.target.contains(clickedElement)
+            !this.eRef.nativeElement.contains(clickedElement) && // Click outside the overlay
+            !this.target.contains(clickedElement) // Click outside the bell icon
         ) {
             this.overlayPanel.hide();
         }
@@ -80,10 +80,15 @@ export class NotificationBellComponent {
         this.infos = [];
         this.reminders = [];
         this.warnings = [];
+
         this.notifications = {};
     }
 
+    logout() {
+    }
+
     dismissAll() {
+
         const emptyNotifications = {
             errors: [],
             warnings: [],
@@ -106,7 +111,5 @@ export class NotificationBellComponent {
         this.notificationValue = 0;
         this.selectedNotification = null;
     }
+
 }
-
-
-

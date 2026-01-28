@@ -1,0 +1,265 @@
+<!-- company logo -->
+<div class="branding-wrapper">
+  <div class="upload-section">
+    <div class="section-header">
+      <div class="title">Company Logo</div>
+    </div>
+
+    <div
+      class="inner-upload-box"
+      (dragover)="$event.preventDefault()"
+      (drop)="onDrop($event, 'company')"
+    >
+      <div class="upload-icon">
+        <img src="assets/images/icon/upload-icon.svg" alt="Upload Icon" />
+      </div>
+
+      <p class="upload-title">Drag & drop any file here</p>
+      <p class="upload-subtitle">
+        Supported documents formats: .jpg, .gif, .bmp, .png, .pdf
+      </p>
+      <p class="upload-info">Can not exceed 200MB per upload</p>
+
+      <p class="upload-browse">
+        Or <span (click)="onUploadClick('company')">browse file</span> from
+        device
+      </p>
+
+      <input
+        #companyFileInput
+        type="file"
+        hidden
+        accept="image/*"
+        (change)="onFileSelected($event, 'company')"
+      />
+    </div>
+
+    <div class="action-buttons">
+      <gen-button
+        [btnType]="'bg-btn'"
+        (click)="onUploadClick('company')"
+        [btnLabel]="'Upload'"
+      ></gen-button>
+      <gen-button
+        [btnType]="'bg-btn'"
+        (click)="onApplyClick('company')"
+        [btnLabel]="'Apply'"
+      ></gen-button>
+    </div>
+  </div>
+
+  <div class="preview-section">
+    <div class="preview-header">
+      <button
+        *ngIf="logos.company.previewUrl"
+        (click)="clearLogo('company')"
+        class="delete-btn"
+      >
+        <img src="assets/images/icon/delete-icon.svg" />
+      </button>
+    </div>
+
+    <div class="preview-content">
+      <img *ngIf="logos.company.previewUrl" [src]="logos.company.previewUrl" />
+      <div *ngIf="!logos.company.previewUrl" class="preview-placeholder">
+        <img src="assets/images/logo-dark.png" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- brand logo -->
+<div class="branding-wrapper" *ngIf="selectedTab === 'quotesAndApps'">
+  <div class="upload-section">
+    <div class="section-header">
+      <div class="title">Brand</div>
+      <div class="subtitle ml-5">Select Brand</div>
+      <p-dropdown
+        [options]="brandOptions"
+        [(ngModel)]="selectedBrand"
+        placeholder="Brand Select"
+        optionLabel="label"
+        optionValue="value"
+        (onChange)="onBrandChange($event)"
+        appendTo="body"
+      >
+      </p-dropdown>
+    </div>
+
+    <div
+      class="inner-upload-box"
+      (dragover)="$event.preventDefault()"
+      (drop)="onDrop($event, 'brand')"
+    >
+      <div class="upload-icon">
+        <img src="assets/images/icon/upload-icon.svg" alt="Upload Icon" />
+      </div>
+
+      <p class="upload-title">Drag & drop any file here</p>
+      <p class="upload-subtitle">
+        Supported documents formats: .jpg, .gif, .bmp, .png, .pdf
+      </p>
+      <p class="upload-info">Can not exceed 200MB per upload</p>
+
+      <p class="upload-browse">
+        Or <span (click)="onUploadClick('brand')">browse file</span> from device
+      </p>
+
+      <input
+        #brandFileInput
+        type="file"
+        hidden
+        accept="image/*"
+        (change)="onFileSelected($event, 'brand')"
+      />
+    </div>
+
+    <div class="action-buttons">
+      <gen-button
+        [btnType]="'bg-btn'"
+        (click)="onUploadClick('brand')"
+        [btnLabel]="'Upload'"
+      ></gen-button>
+      <gen-button
+        [btnType]="'bg-btn'"
+        (click)="onApplyClick('brand')"
+        [btnLabel]="'Apply'"
+      ></gen-button>
+    </div>
+  </div>
+
+  <div class="preview-section">
+    <div class="preview-header">
+      <span class="preview-title">Current Brand</span>
+      <button
+        *ngIf="logos.brand.previewUrl"
+        (click)="clearLogo('brand')"
+        class="delete-btn"
+      >
+        <img src="assets/images/icon/delete-icon.svg" />
+      </button>
+    </div>
+
+    <div class="preview-content">
+      <img *ngIf="logos.brand.previewUrl" [src]="logos.brand.previewUrl" />
+      <div *ngIf="!logos.brand.previewUrl" class="preview-placeholder">
+        <img src="assets/images/logo-dark.png" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="branding-wrapper">
+  <div class="upload-section font-color-section">
+    <!-- Font Section -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="title">Font</div>
+      </div>
+      <div class="form-row inline-field">
+        <label class="field-label">Font Select</label>
+        <p-dropdown
+          [options]="fontOptions"
+          [(ngModel)]="selectedFont"
+          placeholder="Select Font"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="custom-dropdown"
+          appendTo="body"
+        ></p-dropdown>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="section-divider"></div>
+
+    <!-- Color Section -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="title">Color</div>
+      </div>
+
+      <div class="form-row two-columns">
+        <!-- Theme Color -->
+        <div class="inline-field">
+          <label class="field-label">Theme Color</label>
+
+          <div class="color-input-wrapper">
+            <input type="color" [(ngModel)]="selectedThemeColor" />
+
+            <input
+              type="text"
+              [(ngModel)]="selectedThemeColor"
+              placeholder="#000000"
+              maxlength="7"
+            />
+          </div>
+        </div>
+
+        <!-- Button Color -->
+        <div class="inline-field">
+          <label class="field-label">Button Color</label>
+
+          <div class="color-input-wrapper">
+            <input type="color" [(ngModel)]="selectedButtonColor" />
+
+            <input
+              type="text"
+              [(ngModel)]="selectedButtonColor"
+              placeholder="#000000"
+              maxlength="7"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Section -->
+  <div class="preview-section font-color-preview">
+    <div class="preview-header">
+      <span class="preview-title">Current Font</span>
+      <button class="delete-btn" (click)="resetFontAndColor()">
+        <img src="assets/images/icon/delete-icon.svg" />
+      </button>
+    </div>
+
+    <div class="font-preview-box">
+      <span [style.font-family]="selectedFont"> ABCDEFGHIJKLMNOPQRST </span>
+    </div>
+
+    <!-- Divider -->
+    <div class="section-divider"></div>
+
+    <div class="color-preview-section">
+      <span class="preview-title">Current Color</span>
+
+      <div class="color-indicators">
+        <div class="color-item">
+          <span
+            class="color-box"
+            [style.background-color]="selectedThemeColor"
+          ></span>
+          <span class="color-label">Theme Color</span>
+        </div>
+
+        <div class="color-item">
+          <span
+            class="color-box"
+            [style.background-color]="selectedButtonColor"
+          ></span>
+          <span class="color-label">Button Color</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="save-button-container">
+  <gen-button
+    [btnType]="'bg-btn'"
+    (click)="saveFontAndColor()"
+    [btnLabel]="'Save'"
+  ></gen-button>
+</div>

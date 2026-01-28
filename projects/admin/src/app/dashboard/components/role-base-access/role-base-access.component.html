@@ -1,0 +1,27 @@
+<form [formGroup]="baseForm" class="rbac-container">
+
+    <div class="role-header">
+        <label>Select Role</label>
+        <select formControlName="role">
+            <option *ngFor="let r of roles" [value]="r.value">
+                {{ r.label }}
+            </option>
+        </select>
+    </div>
+
+    <div class="rbac-grid" *ngIf="permissionsMap[selectedTab]">
+
+        <div class="rbac-column" *ngFor="let section of permissionsMap[selectedTab]">
+
+            <h4>{{ section.title }}</h4>
+
+            <label *ngFor="let field of section.fields">
+                <input type="checkbox" [formControlName]="field.name" />
+                {{ field.label }}
+            </label>
+
+        </div>
+
+    </div>
+
+</form>

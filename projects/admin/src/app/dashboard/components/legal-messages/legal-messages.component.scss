@@ -1,0 +1,69 @@
+/* Host element */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Container */
+.legal-messages-container {
+  padding: 1rem;
+  width: 100%;
+}
+
+/* Section spacing */
+.message-section {
+  margin-bottom: 2rem;
+}
+
+/* Section title */
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* Row layout - horizontal with button beside textarea */
+.lm-row,
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  gap: 24px;
+}
+
+/* Textarea column - takes remaining space */
+.textarea-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Button column - fixed width, aligned to bottom */
+.btn-col {
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+/* PrimeNG textarea - full width */
+:host ::ng-deep .textarea-col textarea.p-inputtextarea,
+:host ::ng-deep textarea.message-textarea {
+  width: 100% !important;
+  display: block !important;
+  background: #f5f6f7;
+  border: 1px solid #d9dde1;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  resize: none;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+/* Gen-button styling - dark teal */
+:host ::ng-deep .btn-col gen-button .p-button,
+:host ::ng-deep .btn-col gen-button button {
+  min-width: 160px;
+  border-radius: 10px;
+  background-color: #004b66 !important;
+  border-color: #004b66 !important;
+}

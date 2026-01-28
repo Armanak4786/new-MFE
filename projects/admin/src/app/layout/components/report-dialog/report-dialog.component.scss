@@ -107,6 +107,7 @@
     }
 }
 
+// Dialog styling overrides
 ::ng-deep .p-dialog {
     border-radius: 12px;
     overflow: hidden;
@@ -144,12 +145,14 @@
     }
 }
 
+// Loading state
 ::ng-deep .p-button-loading {
     .p-button-icon {
         margin-right: 8px;
     }
 }
 
+// Responsive adjustments
 @media (max-width: 576px) {
     ::ng-deep .p-dialog {
         width: 95vw !important;
@@ -164,6 +167,3 @@
         }
     }
 }
-
-
-

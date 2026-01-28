@@ -1,4 +1,6 @@
 .layout-sidemenu {
+
+    // padding-top: 12px;
     .sidebar {
         position: absolute;
         background-color: #ffffff;
@@ -30,9 +32,7 @@
         color: #747474;
         opacity: 1;
         transition: opacity 0.4s ease;
+        /* Fade effect */
         margin-left: 10px;
     }
 }
-
-
-

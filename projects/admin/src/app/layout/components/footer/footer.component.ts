@@ -1,3 +1,4 @@
+
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { LayoutService } from 'shared-lib';
@@ -35,6 +36,3 @@ export class FooterComponent {
         this.visible = true;
     }
 }
-
-
-
