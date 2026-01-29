@@ -15,7 +15,7 @@
   "grant_type": "client_credentials",
   "validationURL": "https://devportalgateway.aurionpro.com/gateway/validationrule/GetPropertyValidationFramework",
   "currency": "https://devportalgateway.aurionpro.com/gateway/LookUpServices/currency",
-  "CommonConfiguration": "assets/api-json/commonConfiguration.json",
+  "CommonConfiguration": "auro-ui-assets/api-json/commonConfiguration.json",
   "FIS": true,
   "revokeSessionUrlEntra": "https://graph.microsoft.com/v1.0/me/revokeSignInSessions",
   "revokeAllTokenFIS": "https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me",

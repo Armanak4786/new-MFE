@@ -36,7 +36,7 @@ export const environment = {
     grant_type: 'client_credentials',
     validationURL: 'https://devportalgateway.aurionpro.com/gateway/validationrule/GetPropertyValidationFramework',
     currency: 'https://devportalgateway.aurionpro.com/gateway/LookUpServices/currency',
-    CommonConfiguration: 'assets/api-json/commonConfiguration.json',
+    CommonConfiguration: 'auro-ui-assets/api-json/commonConfiguration.json',
     ActiveClient: 'UDCDO',
 };
 
