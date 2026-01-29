@@ -210,7 +210,7 @@ getTimeDifference(
         if (this.formData?.supplierCustomerId) {
         await this.updateBusinessSupplier().subscribe((res) => {
           if (res?.data) {
-            this.svc.router.navigateByUrl("/dealer/standard-quote");
+            this.svc.router.navigateByUrl("/standard-quote");
           }
         });
       }
@@ -263,7 +263,7 @@ getTimeDifference(
       "Any unsaved changes will be lost. Are you sure you want to cancel?",
       "Customer",
       () => {
-        this.svc.router.navigateByUrl("/dealer/standard-quote");
+        this.svc.router.navigateByUrl("/standard-quote");
       }
     );
   }

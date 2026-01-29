@@ -1830,7 +1830,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           this.standardQuoteSvc.setBaseDealerFormData({
             CustomerID: this.formData.CustomerID,
           });
-          this.commonSvc.router.navigateByUrl("/dealer/standard-quote");
+          this.commonSvc.router.navigateByUrl("/standard-quote");
           this.businessSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
         } else if (this.mode == "edit" || this.mode == "view") {

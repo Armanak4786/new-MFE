@@ -2089,7 +2089,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           this.standardQuoteSvc.setBaseDealerFormData({
             CustomerID: this.formData.CustomerID,
           });
-          this.commonSvc.router.navigateByUrl("/dealer/standard-quote");
+          this.commonSvc.router.navigateByUrl("/standard-quote");
           this.soleTradeSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
         } else if (this.mode == "edit" || this.mode == "view") {
