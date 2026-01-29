@@ -59,7 +59,6 @@ export class AddOnAccessoriesComponent extends BaseStandardQuoteClass {
       () => {
     this.svc.router.navigateByUrl("/standard-quote");
       })
-      this.svc.router.navigateByUrl("/standard-quote");
   }
 
   override onFormDataUpdate(res: any): void {
