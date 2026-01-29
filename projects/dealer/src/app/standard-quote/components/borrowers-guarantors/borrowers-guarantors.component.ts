@@ -1164,7 +1164,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
     if (event?.colName == "customerName") {
       if (event?.rowData?.customerType == "Business") {
         this.router.navigateByUrl(
-          `dealer/business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
         this.businessService.activeStep = 0;
       }
@@ -1174,7 +1174,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
         const path = isBusiness ? "sole-trade" : "individual";
 
         this.router.navigateByUrl(
-          `dealer/${path}/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `${path}/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
 
         if (isBusiness) {
@@ -1186,7 +1186,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
 
       if (event.rowData.customerType == "Trust") {
         this.router.navigateByUrl(
-          `dealer/trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
         this.trustSvc.activeStep = 0;
       }
@@ -1211,7 +1211,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.soleService.activeStep = 3;
         this.router.navigateByUrl(
-          `dealer/sole-trade/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `sole-trade/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       } else if (
         // event.rowData.financialPosition == "Financial Position" &&
@@ -1219,7 +1219,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.businessService.activeStep = 2;
         this.router.navigateByUrl(
-          `dealer/business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       } else if (
         // event.rowData.financialPosition == "Financial Position" &&
@@ -1227,7 +1227,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.trustSvc.activeStep = 2;
         this.router.navigateByUrl(
-          `dealer/trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       }
     }

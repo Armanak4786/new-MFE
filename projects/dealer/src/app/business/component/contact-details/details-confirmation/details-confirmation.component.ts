@@ -43,7 +43,7 @@ export class DetailsConfirmationComponent extends BaseBusinessClass {
     }
 
     let sessionUpdatedCustomerSummary = JSON.parse(sessionStorage.getItem("updatedCustomerSummary"))
-    if(sessionUpdatedCustomerSummary.length > 0 || this.baseFormData?.updatedCustomerSummary){
+    if(sessionUpdatedCustomerSummary?.length > 0 || this.baseFormData?.updatedCustomerSummary){
     const updateIconfirmCheckboxAsPerRedIcon = sessionUpdatedCustomerSummary?.find(c => c.customerNo === this.baseFormData?.customerNo)
     if(!updateIconfirmCheckboxAsPerRedIcon?.isConfirmed || updateIconfirmCheckboxAsPerRedIcon?.showInfoIcon){
       this.mainForm.form.get("detailsConfirmation").patchValue(false)

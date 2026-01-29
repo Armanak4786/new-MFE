@@ -267,7 +267,7 @@ private primaryNatureTrustOptions: any[] = [];
     this.stdsvc.getBaseDealerFormData().subscribe((data) => {
       // this.baseFormData = data.purposeofLoan;
       this.trustSvc.setBaseDealerFormData({
-        loanPurpose: data.purposeofLoan,
+        loanPurpose: data?.purposeofLoan,
       });
     });
     // const natureOfTrustData = this.decodeHtmlEntities(

@@ -7,6 +7,7 @@ const routes: Routes = [
     path: '',
     loadChildren: () =>
       import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+    data: { breadcrumb: 'Dashboard' },
   },
   {
     path: 'search-result',
@@ -22,7 +23,7 @@ const routes: Routes = [
       import('./standard-quote/standard-quote.module').then(
         (m) => m.StandardQuoteModule
       ),
-    data: { breadcrumb: 'Standard Quote' },
+    data: { breadcrumb: (params) => `Standard Quote - ${params['id']}`, },
   },
   {
     path: 'standard-quote',
@@ -30,7 +31,7 @@ const routes: Routes = [
       import('./standard-quote/standard-quote.module').then(
         (m) => m.StandardQuoteModule
       ),
-    data: { breadcrumb: 'Standard Quote' },
+    data: { breadcrumb: 'Create Standard Quote' },
   },
   {
     path: 'asset/:type/:mode',
