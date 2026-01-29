@@ -214,7 +214,7 @@ export class TopbarComponent {
 
         if (
             url.startsWith("/standard-quote/edit") ||
-            url == "/dealer/standard-quote"
+            url == "/standard-quote"
         ) {
             const activeTab = this.layoutService.getActiveTab();
             this.isDealerDropdownEnabled = activeTab === "asset_details";

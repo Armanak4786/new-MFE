@@ -65,11 +65,11 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
   }
 
   redirectToHome() {
-    this.svc.router.navigateByUrl('/dealer/standard-quote');
+    this.svc.router.navigateByUrl('/standard-quote');
   }
 
   redirectToSearch() {
-    this.svc.router.navigateByUrl('/dealer/standard-quote');
+    this.svc.router.navigateByUrl('/standard-quote');
     this.svc.dialogSvc
       .show(SearchAssetComponent, 'Search Asset', {
         templates: {
@@ -363,7 +363,7 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
       this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
 
       // Navigate to the desired route
-      this.svc.router.navigateByUrl("/dealer/standard-quote");
+      this.svc.router.navigateByUrl("/standard-quote");
     }
   }
 

@@ -772,7 +772,7 @@ export class AssetComponent implements OnInit {
   }
 
   redirectToAssetSummery() {
-    this.svc.router.navigateByUrl('/dealer/standard-quote');
+    this.svc.router.navigateByUrl('/standard-quote');
    this.svc.dialogSvc
          .show(AssetInsuranceSummaryComponent, "Asset & Insurance Summary", {
            templates: {
