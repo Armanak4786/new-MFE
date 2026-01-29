@@ -42,3 +42,4 @@ export class DashboardComponent implements OnInit {
     this.selectedValue = this.menu[index].value;
   }
 }
+
