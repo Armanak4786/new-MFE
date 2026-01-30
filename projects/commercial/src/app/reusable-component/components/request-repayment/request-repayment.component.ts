@@ -25,7 +25,6 @@ import { CreditlineDashboardService } from '../../../creditlines/services/credit
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BaseCommercialService } from '../../services/base-commercial.service';
 import {
-  clearUploadedDocuments,
   convertFileToBase64,
   formatDate,
   getCurrentAccountLoans,

@@ -98,11 +98,8 @@ export class ReleaseSecurityConfirmationComponent implements OnInit {
 
   ngOnInit(): void {
     let SSV = 0;
-    //this.partyId = JSON.parse(sessionStorage.getItem('currentParty'));
-    this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-      this.partyId = currentParty?.id;
-      this.customerName = currentParty.name;
-    });
+    this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
+    this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
 
     // Updated to handle both old base-form and new reactive form structures
     let object;
