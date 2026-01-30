@@ -516,7 +516,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       if (!dealer) return;
       this.hideQuote = false;
       const currentRoute = this.router.url;
-      if (currentRoute == "/dealer/quick-quote") {
+      if (currentRoute == "/quick-quote") {
         await this.getProductProgram();
         await this.checkProductProgram();
       }
@@ -557,7 +557,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     //     if (!dealer) return;
     //     this.hideQuote = false;
     //     const currentRoute = this.router.url;
-    //     if (currentRoute == "/dealer/quick-quote") {
+    //     if (currentRoute == "/quick-quote") {
     //       await this.getProductProgram();
     //       await this.checkProductProgram();
     //       // const messages: Message[] = this.errorsMessageArray.map(
@@ -2196,6 +2196,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     const introducerId = this.dashboardSvc?.userOptions?.find(
       (dealer) => dealer.value.num === originatorNo
     )?.id;
+
     if (introducerId) {
       await this.baseSvc.getFormData(
         `Product/get_programs_products?introducerId=${introducerId}`,
