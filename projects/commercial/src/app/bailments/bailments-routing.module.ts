@@ -29,7 +29,7 @@ const routes: Routes = [
   {
     path: 'swaps',
     component: BailmentSummaryDashboardComponent,
-    data: { breadcrumb: 'Swaps' },
+    data: { breadcrumb: 'Swap Request' },
   },
   {
     path: 'same-day-payout',
