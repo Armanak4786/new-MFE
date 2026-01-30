@@ -463,3 +463,53 @@ canvas {
     height: 400px;
     /* expand height automatically */
 }
+
+  /* Table Column Info Icon Size - Scoped to datatable context only */
+  .p-datatable-tbody .fa-circle-info,
+  .p-datatable-tbody .pi-info-circle {
+    font-size: 10px !important;
+    margin-left: 4px !important;
+    vertical-align: middle !important;
+  }
+  
+  /* Override tooltip styles - applies to all tooltips in the app */
+  .p-tooltip {
+    max-width: 180px !important;
+  
+    .p-tooltip-text {
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      color: #333333 !important;
+      padding: 0.5rem 0.75rem !important;
+      font-size: 10px !important;
+      line-height: 1.4 !important;
+      border-radius: 4px !important;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+      border: 1px solid #e0e0e0 !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
+    }
+  
+    &.p-tooltip-right .p-tooltip-arrow,
+    &.p-tooltip-left .p-tooltip-arrow,
+    &.p-tooltip-top .p-tooltip-arrow,
+    &.p-tooltip-bottom .p-tooltip-arrow {
+      border-color: #ffffff !important;
+    }
+  
+    &.p-tooltip-right .p-tooltip-arrow {
+      border-right-color: #ffffff !important;
+    }
+  
+    &.p-tooltip-left .p-tooltip-arrow {
+      border-left-color: #ffffff !important;
+    }
+  
+    &.p-tooltip-top .p-tooltip-arrow {
+      border-top-color: #ffffff !important;
+    }
+  
+    &.p-tooltip-bottom .p-tooltip-arrow {
+      border-bottom-color: #ffffff !important;
+    }
+  }

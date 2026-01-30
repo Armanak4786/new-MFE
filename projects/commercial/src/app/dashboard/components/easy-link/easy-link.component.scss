@@ -22,3 +22,12 @@
   .row-class-easylink {
   pointer-events: none !important;
 }
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-easylink
+  .fa-circle-info {
+  pointer-events: auto !important;
+}

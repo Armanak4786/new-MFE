@@ -427,7 +427,7 @@ export class BailmentsComponent {
   }
 
   onCellClick(event: any) {
-    if (!event?.cellData || event?.cellData.trim() === '') return;
+    // if (!event?.cellData || event?.cellData.trim() === '') return;
     const clickedFacility = event.rowData;
     // if (clickedFacility.facilityName) {
     this.bailmentSubFacilityDataList = [

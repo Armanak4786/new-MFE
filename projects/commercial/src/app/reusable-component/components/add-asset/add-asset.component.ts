@@ -58,10 +58,10 @@ export class AddAssetComponent implements OnInit {
       this.isFromFacilityContext = !!this.dynamicDialogConfig.data.facilityType;
     }
 
-    this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-      this.partyId = currentParty?.id;
-      this.customerName = currentParty.name;
-    });
+     const partyData = sessionStorage.getItem('currentParty');
+    const partyId = JSON.parse(partyData);
+    this.partyId = partyId?.id;
+    this.customerName = partyId?.name;
     this.formGroup = this.fb.group({
       facilityType: [this.selectedFacility, Validators.required],
       arr: this.fb.array([this.createItem()]),
