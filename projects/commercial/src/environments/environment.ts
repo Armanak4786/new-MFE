@@ -28,6 +28,7 @@ export const environment = {
         'https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me',
     redirectUrl: window.location.origin + '/authentication',
     postLogoutRedirectUri: window.location.origin + '/post-logout',
+    CommonConfiguration: "/auro-ui-assets/api-json/commonConfiguration.json",
     // clientId: 'd4ea1b2b-7183-4465-a51a-d36e7f10ca69',
 
     scope: 'openid profile email User.Read',
