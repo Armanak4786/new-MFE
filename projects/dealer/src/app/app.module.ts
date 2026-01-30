@@ -21,6 +21,7 @@ import { JwtModule } from "@auth0/angular-jwt";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from 'primeng/dynamicdialog';
 import { CurrencyMaskModule } from "ng2-currency-mask";
+import { CookieAuthService } from "shared-lib";
 
 // Custom loader that loads from both i18n and api-json folders
 export class CustomTranslateLoader implements TranslateLoader {
@@ -53,8 +54,29 @@ export function tokenGetter() {
   return localStorage.getItem("id_token");
 }
 
-export function initializeAppEnv(configService: ConfigService) {
-  return loadConfigAndSetEnv(configService, "assets/config.json");
+/**
+ * Initialize app and restore auth from cookies.
+ * When this app is accessed on its port (localhost:4201),
+ * it restores auth data from cookies that were set by the host (localhost:4200).
+ * If no token is found, redirect to host login page.
+ */
+export function initializeAppEnv(configService: ConfigService, cookieAuthService: CookieAuthService) {
+  return async () => {
+    // First, restore auth data from cookies to sessionStorage (key: accessToken)
+    cookieAuthService.restoreAuthFromCookies();
+    
+    // Check if token exists after restoration
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.log('[Dealer] No token found, redirecting to login...');
+      // Redirect to host login page (port 4200)
+      window.location.href = 'http://localhost:4200/login';
+      return;
+    }
+    
+    // Then load the app configuration
+    await loadConfigAndSetEnv(configService, "assets/config.json")();
+  };
 }
 
 
@@ -93,7 +115,7 @@ export function initializeAppEnv(configService: ConfigService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppEnv,
-      deps: [ConfigService],
+      deps: [ConfigService, CookieAuthService],
       multi: true,
     },
     provideHttpClient(withInterceptorsFromDi()),
