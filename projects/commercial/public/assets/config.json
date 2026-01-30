@@ -14,6 +14,7 @@
   "maxIdTokenIatOffsetAllowedInSeconds": 600,
   "grant_type": "client_credentials",
   "currency": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortalGateway/gateway/LookUpServices/currency",
+  "CommonConfiguration": "/auro-ui-assets/api-json/commonConfiguration.json",
   "revokeSessionUrlEntra": "https://graph.microsoft.com/v1.0/me/revokeSignInSessions",
   "revokeAllTokenFIS": "https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me",
   "environment": "SandboxEnvironment"
