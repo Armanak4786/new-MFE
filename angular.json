@@ -399,6 +399,11 @@
                 "glob": "**/*",
                 "input": "public",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/auro-ui/src/auro-ui-assets",
+                "output": "/auro-ui-assets"
               }
             ],
             "styles": [
