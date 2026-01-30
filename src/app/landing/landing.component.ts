@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { DataService } from 'auro-ui';
-import { LayoutService } from 'shared-lib';
+import { LayoutService, CookieAuthService } from 'shared-lib';
 import { DashboardService } from '../../../projects/dealer/src/app/dashboard/services/dashboard.service';
 
 export interface ModuleCard {
@@ -61,10 +61,13 @@ export class LandingComponent {
         public layoutService: LayoutService,
         private dataSvc: DataService,
         private router: Router,
-        public dashboardService: DashboardService
+        public dashboardService: DashboardService,
+        private cookieAuthService: CookieAuthService
     ) {
         let accessToken = sessionStorage.getItem("accessToken");
         if (accessToken) {
+            // Store auth data to cookies immediately after login for cross-port sharing
+            this.cookieAuthService.storeAuthToCookies();
             this.dashboardService?.callOriginatorApi();
             console.log("getRoleBasedPermissions");
             this.getRoleBasedPermissions();
@@ -76,7 +79,17 @@ export class LandingComponent {
     }
 
     navigateTo(route: string): void {
-        this.router.navigate([route]);
+        // Check if it's an external URL (different port)
+        if (route.startsWith('http://') || route.startsWith('https://')) {
+            // Store auth data to cookies before redirecting to different port
+            this.cookieAuthService.storeAuthToCookies();
+            console.log('[Landing] Auth stored to cookies, redirecting to:', route);
+            // Redirect to external URL
+            window.location.href = route;
+        } else {
+            // Internal route - use Angular router
+            this.router.navigate([route]);
+        }
     }
 
     getRoleBasedPermissions() {
@@ -93,6 +106,8 @@ export class LandingComponent {
                 };
 
                 sessionStorage.setItem("user_role", JSON.stringify(structuredData));
+                // Update cookies with new user role data
+                this.cookieAuthService.storeAuthToCookies();
             }
         });
     }
