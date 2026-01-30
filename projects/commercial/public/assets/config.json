@@ -1,9 +1,9 @@
 {
   "production": true,
-  "apiUrl": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortalGateway/gateway",
-  "clientId": "AURPR.RESTAPI.IACSS",
+  "apiUrl": "https://devportalgateway.aurionpro.com/gateway",
+  "clientId": "AURPR.RESTAPI.CSS1",
   "authority": "https://login10.fisglobal.com/idp/aurionpro",
-  "redirectUrl": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortal/authentication",
+  "redirectUrl": "https://devportalcommercial.aurionpro.com/authentication",
   "postLogoutRedirectUri": "window.location.origin + '/post-logout'",
   "scope": "'openid profile'",
   "autoUserInfo": false,
@@ -13,8 +13,8 @@
   "secureRoutes": [""],
   "maxIdTokenIatOffsetAllowedInSeconds": 600,
   "grant_type": "client_credentials",
-  "currency": "https://aurpr-ia.assetfinance.myfis.cloud/IACSSPortalGateway/gateway/LookUpServices/currency",
-  "CommonConfiguration": "/auro-ui-assets/api-json/commonConfiguration.json",
+  "CommonConfiguration": "auro-ui-assets/api-json/commonConfiguration.json",
+  "currency": "https://devportalgateway.aurionpro.com/gateway/LookUpServices/currency",
   "revokeSessionUrlEntra": "https://graph.microsoft.com/v1.0/me/revokeSignInSessions",
   "revokeAllTokenFIS": "https://login10.fisglobal.com/idp/aurionpro/rest/1.0/idptoken/delete/alltoken/me",
   "environment": "SandboxEnvironment"
