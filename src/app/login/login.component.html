@@ -1,5 +1,5 @@
 <ng-container *ngIf="pageType === 'login'">
-    <form class="form loginForm">
+    <!-- <form class="form loginForm">
         <div class="my-2 login-btn">
             <div class="mt-3 text-center">
                 <gen-button [btnLabel]="'Login with FIS'" (onClick)="loginWithOidc()"></gen-button>
@@ -15,5 +15,93 @@
                 appropriate authorities.
             </p>
         </div>
-    </form>
+    </form> -->
+    <form [formGroup]="loginForm" class="form loginForm">
+        <div class="username mb-4">
+          <input
+            id="username"
+            type="email"
+            pInputText
+            formControlName="username"
+            placeholder="User Name"
+            autocomplete
+          />
+          <div
+            *ngIf="
+              loginForm.get('username').touched && loginForm.get('username').invalid
+            "
+            class="text-red-500 text-sm"
+          >
+            Username is required.
+          </div>
+        </div>
+    
+        <div class="w-100 password">
+          <input
+            id="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            pInputText
+            formControlName="password"
+            placeholder="Password"
+            autocomplete
+          />
+          <i
+            class="showPassword fa-solid cursor-pointer"
+            [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="togglePasswordVisibility()"
+          ></i>
+          <div
+            *ngIf="
+              loginForm.get('password').touched && loginForm.get('password').invalid
+            "
+            class="text-red-500 text-sm"
+          >
+            Password is required.
+          </div>
+        </div>
+    
+        <div class="w-full text-xs my-5">
+          <p-checkbox
+            value="Remember me"
+            inputId="remember"
+            name="remember"
+            formControlName="remember"
+          />
+          <label for="remember" class="ml-2">Remember me</label>
+    
+          <div class="inline-block float-right">
+            <a
+              class="text-sm hover:underline text-color-primary pointer text-size-12"
+              >Forgotten your login details??</a
+            >
+          </div>
+        </div>
+    
+        <div class="my-2 login-btn">
+          <gen-button
+            [btnWidth]="'full'"
+            [btnLabel]="'Login'"
+            (onClick)="basicAuthentication()"
+          ></gen-button>
+    
+          <div class="my-6">
+            <p-divider align="center" type="solid">
+              <p class="p-2">Or</p>
+            </p-divider>
+          </div>
+    
+          <div class="mt-3 text-center">
+            <gen-button [btnLabel]="'Login with FIS'" (onClick)="loginWithOidc()"></gen-button>
+          </div>
+        </div>
+        <div class="text-center">
+          <p class="text-xs mt-4">
+            By accessing UDC Live! you confirm you are an authorised user and have
+            agreed to the application
+            <a href="javascript:void(0)" class="text-color-primary text-decoration-none"
+              routerLink="/authentication/terms-condition">Conditions of Use</a>. Unauthorised use may be referred to the
+            appropriate authorities.
+          </p>
+        </div>
+      </form>
 </ng-container>
