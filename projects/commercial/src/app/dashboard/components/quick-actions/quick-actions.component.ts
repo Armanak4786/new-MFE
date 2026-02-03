@@ -119,10 +119,10 @@ export class QuickActionsComponent {
   }
 
   showDialogDocuments() {
-    this.svc.router.navigateByUrl(`/dashboard/documents`);
+    this.svc.router.navigateByUrl(`/documents`);
   }
 
   showDialogRequestHistory() {
-    this.svc.router.navigateByUrl(`/dashboard/request-history`);
+    this.svc.router.navigateByUrl(`/request-history`);
   }
 }

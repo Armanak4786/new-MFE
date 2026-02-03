@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'auro-ui';
+import { RequestHistoryComponent } from './reusable-component/components/request-history/request-history.component';
+import { DocumentsComponent } from './reusable-component/components/documents/documents.component';
 
 const routes: Routes = [
   {
@@ -83,6 +85,16 @@ const routes: Routes = [
     loadChildren: () =>
       import('./introducer/introducer-module').then((m) => m.IntroducerModule),
     data: { breadcrumb: 'Introducer Transaction Summary' },
+  },
+  {
+    path: 'request-history',
+    component: RequestHistoryComponent,
+    data: { breadcrumb: 'Request History' },
+  },
+  {
+    path: 'documents',
+    component: DocumentsComponent,
+    data: { breadcrumb: 'Documents' },
   },
 ];
 

@@ -4,6 +4,7 @@ import { Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import {
+  clearSession,
   formatDate,
   getCurrentAccountLoans,
 } from '../../../utils/common-utils';
@@ -16,7 +17,6 @@ import {
   SettlementQuoteRequestBody,
 } from '../../../utils/common-interface';
 import { CommonApiService } from '../../../services/common-api.service';
-import { RequestAcknowledgmentComponent } from '../request-acknowledgment/request-acknowledgment.component';
 import { AcknowledgmentPopupComponent } from '../../../reusable-component/components/acknowledgment-popup/acknowledgment-popup.component';
 import { CancelPopupComponent } from '../../../reusable-component/components/cancel-popup/cancel-popup.component';
 
@@ -192,6 +192,7 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
       },
     ],
   };
+  facilityType: any;
 
   constructor(
     public override svc: CommonService,
@@ -205,44 +206,56 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
     super(route, svc, baseSvc);
   }
   override async ngOnInit() {
-    this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-      this.partyId = currentParty.id;
-      this.customerName = currentParty.name;
-    });
-    this.commonSetterGetterSvc.userDetails$.subscribe((userDtl) => {
-      this.userDetails = userDtl;
-    });
-    this.commonSetterGetterSvc.contractIdForSettlementQuote$.subscribe(
-      (loanId) => {
-        this.loanId = loanId;
-        this.facilityWiseContractsList.push(loanId);
-      }
-    );
-    this.commonSetterGetterSvc.facilityMap$.subscribe((map) => {
-      this.facilityTypeOptionList.push(map.FacilityType);
-      this.fetchSubfacilityByContractId(map.FacilityType);
-    });
-
+    this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
+    this.customerName = JSON.parse(
+      sessionStorage.getItem('currentParty'),
+    )?.name;
+    this.userDetails = JSON.parse(sessionStorage.getItem('userDetails'));
+    const storedLoanId = sessionStorage.getItem('settlementLoanId');
+    if (storedLoanId) {
+      this.loanId = storedLoanId;
+      this.facilityWiseContractsList.push(storedLoanId);
+    } else {
+      this.commonSetterGetterSvc.contractIdForSettlementQuote$.subscribe(
+        (loanId) => {
+          if (!loanId) return;
+          this.loanId = loanId;
+          this.facilityWiseContractsList.push(this.loanId);
+          sessionStorage.setItem('settlementLoanId', this.loanId);
+          if (this.facilityType) {
+            this.fetchSubfacilityByContractId(this.facilityType);
+          }
+        },
+      );
+    }
+    this.facilityType = sessionStorage.getItem('currentFacilityType');
+    this.facilityTypeOptionList.push(this.facilityType);
+    if (this.loanId && this.facilityType) {
+      this.fetchSubfacilityByContractId(this.facilityType);
+    }
+ 
     this.fetchFiAcc();
-  }
-  onTextareaClick(event) {
-    const value = (event.target as HTMLTextAreaElement).value;
-    this.settlementObject.externalData.settlementQuoteRequest.remarks = value;
   }
 
   fetchSubfacilityByContractId(facilityType: string) {
-    this.dashboardSetterGetterSvc.financialList$.subscribe((list) => {
-      const facilityMap = {
-        [FacilityType.Assetlink]: list?.assetLinkDetails ?? [],
-        [FacilityType.Easylink]: list?.easyLinkDetails ?? [],
-      };
+    const financialList = JSON.parse(
+      sessionStorage.getItem('financialSummaryData') || '[]',
+    );
+    const facilityMap = {
+      [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
+      [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
+    };
+ 
+    const details = facilityMap[facilityType];
+    const matchingSubfacility = details.find(
+      (item) => item.contractId === Number(this.loanId),
+    );
+    this.facilityOptions.push(matchingSubfacility.facilityType);
+  } 
 
-      const details = facilityMap[facilityType];
-      const matchingSubfacility = details.find(
-        (item) => item.contractId === this.loanId
-      );
-      this.facilityOptions.push(matchingSubfacility.facilityType);
-    });
+  onTextareaClick(event) {
+    const value = (event.target as HTMLTextAreaElement).value;
+    this.settlementObject.externalData.settlementQuoteRequest.remarks = value;
   }
 
   override onFormReady() {
@@ -413,4 +426,8 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
         }
       });
   }
+  override ngOnDestroy() {
+  clearSession(['settlementLoanId']);
+  }
 }
+

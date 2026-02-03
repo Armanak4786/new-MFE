@@ -1,8 +1,7 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { AuthenticationService, ValidationService, CurrencyService, DataService, CommonService } from 'auro-ui';
-import { MenuItem, ConfirmationService } from 'primeng/api';
+import { AuthenticationService, CurrencyService, DataService, CommonService } from 'auro-ui';
+import { MenuItem } from 'primeng/api';
 import { Subscription, Subject, timer, takeUntil, filter } from 'rxjs';
 import { LayoutService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';

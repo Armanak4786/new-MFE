@@ -1,7 +1,8 @@
-import { Component, Inject, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 import { LayoutService } from 'shared-lib';
+import { CommonService, DataService } from 'auro-ui';
 import { TopbarComponent } from './layout/components/topbar/topbar.component';
 import { NavigationEnd, Router } from '@angular/router';
 import { SidemenuService } from './layout/services/sidemenu.service';
@@ -16,7 +17,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AppComponent {
   title = 'commercial';
-
+ isloading: boolean;
   overlayMenuOpenSubscription: Subscription;
   menuOutsideClickListener: any;
   profileMenuOutsideClickListener: any;
@@ -26,8 +27,11 @@ export class AppComponent {
 
   constructor(private translate: TranslateService,
     public layoutService: LayoutService,
+    public svc: CommonService,
     public renderer: Renderer2,
     private router: Router,
+      public dataService: DataService,
+       private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     private sidemenuService: SidemenuService,
     private ActivatedRoute: ActivatedRoute,
@@ -95,6 +99,8 @@ export class AppComponent {
         this.hideProfileMenu();
       });
   }
+
+  isLoading$ = this.svc.data.loading$;
   currentRoute: string = this.ActivatedRoute.snapshot.url.join("/");
   authRoute: boolean = true;
 
@@ -116,6 +122,11 @@ export class AppComponent {
         //current route
         this.authRoute = !this.currentRoute.includes("/authentication"); //To resize CSS for auth.
       });
+
+       this.dataService?.loading$.subscribe((isloading: boolean) => {
+      this.isloading = isloading;
+      this.cdr?.detectChanges();
+    });
   }
 
   hideMenu() {

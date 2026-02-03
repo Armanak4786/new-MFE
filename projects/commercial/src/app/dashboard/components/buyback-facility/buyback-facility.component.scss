@@ -9,13 +9,16 @@
   .p-datatable.p-datatable-striped
   .p-datatable-tbody
   > tr:nth-child(1) {
-  .row-class-assetlink {
+  .row-class-buyback {
     font-weight: 700;
   }
 }
 
-// .scrollable-table-wrapper {
-//   max-height: 140px;
-//   overflow-y: auto;
-//   overflow-x: hidden;
-// }
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-buyback
+  .fa-circle-info {
+  pointer-events: auto !important;
+}
