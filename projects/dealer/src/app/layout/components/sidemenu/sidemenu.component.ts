@@ -1,12 +1,20 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener } from '@angular/core';
 import { CommonService, AuthenticationService, ToasterService } from 'auro-ui';
 import { Router } from '@angular/router';
-import { LayoutService } from 'shared-lib';
+import { LayoutService, CookieAuthService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
 import { DashboardService } from '../../../dashboard/services/dashboard.service';
 import { QuickQuoteService } from '../../../quick-quote/services/quick-quote.service';
 import { AssetTradeSummaryService } from '../../../standard-quote/components/asset-insurance-summary/asset-trade.service';
 import { StandardQuoteService } from '../../../standard-quote/services/standard-quote.service';
+
+interface Portal {
+    name: string;
+    description: string;
+    code: string;
+    icon: string;
+    route: string;
+}
 
 @Component({
     selector: 'app-sidemenu',
@@ -26,12 +34,22 @@ export class SidemenuComponent {
         private quickquoteService: QuickQuoteService,
         private sidemenuService: SidemenuService,
         private dashboardSvc: DashboardService,
-        private toasterSvc: ToasterService
+        private toasterSvc: ToasterService,
+        private cookieAuthService: CookieAuthService
     ) { }
 
     isExpanded = false; // True when hovered
     isLocked = false; // True when locked
     isSubmenuOpen = false;
+
+    // Portal options - using same routes as landing page
+    portalOptions: Portal[] = [
+        { name: 'Quotes & Applications', description: 'Dealer Operations', code: 'RETAIL', icon: 'assets/images/Quotes&Applications.svg', route: 'http://localhost:4201' },
+        { name: 'Customer Information Portal', description: 'Commercial Operations', code: 'COMMERCIAL', icon: 'assets/images/building.svg', route: 'http://localhost:4202' },
+        { name: 'Admin', description: 'Administration', code: 'ADMIN', icon: 'assets/images/setting-2.svg', route: 'http://localhost:4203' }
+    ];
+    selectedPortal: Portal = this.portalOptions[0];
+    isPortalMenuOpen: boolean = false;
 
     onMouseEnter() {
         //Mouse enter logic, expands sidemenu
@@ -127,6 +145,42 @@ export class SidemenuComponent {
 
     closeSubmenu() {
         this.isSubmenuOpen = false;
+    }
+
+    togglePortalMenu(event: Event): void {
+        event.stopPropagation();
+        this.isPortalMenuOpen = !this.isPortalMenuOpen;
+    }
+
+    selectPortal(portal: Portal, event: Event): void {
+        event.stopPropagation();
+        this.selectedPortal = portal;
+        this.isPortalMenuOpen = false;
+
+        // Navigate using same mechanism as landing page
+        this.navigateToPortal(portal.route);
+    }
+
+    navigateToPortal(route: string): void {
+        // Check if it's an external URL (different port)
+        if (route.startsWith('http://') || route.startsWith('https://')) {
+            // Store auth data to cookies before redirecting to different port
+            this.cookieAuthService.storeAuthToCookies();
+            console.log('[Sidemenu] Auth stored to cookies, redirecting to:', route);
+            // Redirect to external URL
+            window.location.href = route;
+        } else {
+            // Internal route - use Angular router
+            this.router.navigate([route]);
+        }
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent): void {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.portal-selector-container')) {
+            this.isPortalMenuOpen = false;
+        }
     }
 }
 

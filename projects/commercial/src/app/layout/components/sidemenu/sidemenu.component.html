@@ -27,5 +27,30 @@
                 (closeSubmenu)="closeSubmenu()" (navigate)="navigate($event)">
             </app-sub-sidemenu>
         </ul>
+
+        <!-- Portal Selector at Bottom -->
+        <div class="portal-selector-container" (click)="togglePortalMenu($event)">
+            <div class="portal-selector">
+                <img [src]="selectedPortal.icon" alt="" class="portal-icon" />
+                <div class="portal-info" *ngIf="isExpanded || isLocked">
+                    <span class="portal-title">{{ selectedPortal?.name }}</span>
+                    <span class="portal-subtitle">ACTIVE WORKSPACE</span>
+                </div>
+                <i class="fa fa-chevron-up portal-arrow" *ngIf="isExpanded || isLocked" [class.rotated]="isPortalMenuOpen"></i>
+            </div>
+            
+            <div class="portal-menu" *ngIf="isPortalMenuOpen && (isExpanded || isLocked)">
+                <div class="portal-menu-item" 
+                     *ngFor="let portal of portalOptions" 
+                     (click)="selectPortal(portal, $event)"
+                     [class.active]="portal.code === selectedPortal.code">
+                    <img [src]="portal?.icon" alt="" class="portal-icon" />
+                    <div class="portal-info">
+                        <span class="portal-title">{{ portal?.name }}</span>
+                        <span class="portal-subtitle">{{ portal?.description }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </nav>
 </div>
