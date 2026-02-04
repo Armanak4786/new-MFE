@@ -6,12 +6,6 @@
             <h1>Brand Manager</h1>
             <p class="subtitle">Customise visual identity and theme settings for the Retail Portal instance.</p>
         </div>
-        <div class="header-actions">
-            <button class="btn-secondary" (click)="resetToDefault()">Reset to Default</button>
-            <button class="btn-primary" (click)="saveChanges()">
-                <i class="fa fa-save"></i> Save Changes
-            </button>
-        </div>
     </div>
 
     <!-- Main Content Grid -->
@@ -149,5 +143,18 @@
                 </p>
             </div>
         </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+        <gen-button
+            btnLabel="Reset to Default"
+            [btnType]="'border-btn'"
+            (onClick)="resetToDefault()">
+        </gen-button>
+        <gen-button
+            btnLabel="Save Changes"
+            (onClick)="saveChanges()">
+        </gen-button>
     </div>
 </div>

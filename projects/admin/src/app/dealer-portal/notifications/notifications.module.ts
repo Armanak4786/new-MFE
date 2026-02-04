@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { DealerNotificationsComponent } from './notifications.component';
+import { AuroUiFrameWork } from 'auro-ui';
 
 const routes: Routes = [
     {
@@ -16,6 +17,7 @@ const routes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
+        AuroUiFrameWork,
         RouterModule.forChild(routes)
     ]
 })
