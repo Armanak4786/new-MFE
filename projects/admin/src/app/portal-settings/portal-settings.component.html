@@ -17,7 +17,7 @@
         <div class="portal-headers">
             <div class="header-spacer"></div>
             <div class="portal-column">
-                <span class="portal-name">ADMIN PORTAL</span>
+                <span class="portal-name">DEALER PORTAL</span>
             </div>
             <div class="portal-column">
                 <span class="portal-name">COMMERCIAL PORTAL</span>
@@ -31,10 +31,11 @@
         <div class="accordion-section" *ngFor="let category of featureCategories">
             <!-- Category Header -->
             <div class="accordion-header" 
-                 [style.background]="category.iconBg"
                  (click)="toggleCategory(category)">
                 <div class="header-left">
-                    <i [class]="category.icon"></i>
+                    <div class="category-icon" [style.background]="category.iconBg">
+                        <i [class]="category.icon"></i>
+                    </div>
                     <span class="category-name">{{ category.name }}</span>
                 </div>
                 <i class="fa fa-chevron-down accordion-arrow" [class.rotated]="!category.expanded"></i>

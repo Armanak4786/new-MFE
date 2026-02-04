@@ -15,12 +15,6 @@ const routes: Routes = [
         pathMatch: 'full',
         redirectTo: 'dealer/logo-branding',
       },
-      // {
-      //   path: 'dashboard',
-      //   loadChildren: () =>
-      //     import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
-      //   data: { breadcrumb: 'Dashboard' },
-      // },
       {
         path: 'portal-settings',
         loadChildren: () =>
