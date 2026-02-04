@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonService, AuthenticationService, ToasterService } from 'auro-ui';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { LayoutService, CookieAuthService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 interface Portal {
     name: string;
@@ -30,8 +32,9 @@ interface MenuSection {
     templateUrl: './sidemenu.component.html',
     styleUrls: ['./sidemenu.component.scss']
 })
-export class SidemenuComponent {
+export class SidemenuComponent implements OnInit, OnDestroy {
     activeStep: number;
+    private routerSubscription: Subscription;
     
     constructor(
         public layoutService: LayoutService,
@@ -45,8 +48,48 @@ export class SidemenuComponent {
 
     isExpanded = true; // Always expanded
     isLocked = true; // Always locked open
-    expandedMenus: { [key: string]: boolean } = { 'dealer-portal': true }; // Dealer Portal expanded by default
-    activeMenuItem: string = 'dealer-logo-branding';
+    expandedMenus: { [key: string]: boolean } = {};
+    activeMenuItem: string = '';
+
+    ngOnInit(): void {
+        // Set initial active menu based on current URL
+        this.updateActiveMenuFromUrl(this.router.url);
+        
+        // Subscribe to route changes
+        this.routerSubscription = this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe((event: NavigationEnd) => {
+            this.updateActiveMenuFromUrl(event.urlAfterRedirects || event.url);
+        });
+    }
+
+    ngOnDestroy(): void {
+        if (this.routerSubscription) {
+            this.routerSubscription.unsubscribe();
+        }
+    }
+
+    private updateActiveMenuFromUrl(url: string): void {
+        // Find matching menu item based on URL
+        for (const section of this.menuSections) {
+            for (const item of section.items) {
+                if (item.route && url.includes(item.route)) {
+                    this.activeMenuItem = item.id;
+                    return;
+                }
+                if (item.children) {
+                    for (const child of item.children) {
+                        if (child.route && url.includes(child.route)) {
+                            this.activeMenuItem = child.id;
+                            // Auto-expand parent menu
+                            this.expandedMenus[item.id] = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // Menu structure matching the design
     menuSections: MenuSection[] = [
