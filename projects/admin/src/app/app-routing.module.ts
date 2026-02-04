@@ -2,16 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  // {
-  //   path: '',
-  //   loadChildren: () =>
-  //     import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
-  // },
   {
-    path: 'dashboard',
-    loadChildren: () =>
-      import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
-    data: { breadcrumb: 'Dashboard' },
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'dealer/logo-branding',
   },
   {
     path: 'portal-settings',
@@ -26,7 +20,7 @@ const routes: Routes = [
     data: { breadcrumb: 'Legal Messages' },
   },
   {
-    path: '',
+    path: 'dealer/logo-branding',
     loadChildren: () =>
       import('./dealer-portal/logo-branding/logo-branding.module').then((m) => m.LogoBrandingModule),
     data: { breadcrumb: 'Logo and Branding' },

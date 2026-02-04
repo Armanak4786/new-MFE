@@ -104,28 +104,39 @@
     padding: 14px 20px;
     cursor: pointer;
     transition: all 0.2s ease;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
 
     .header-left {
         display: flex;
         align-items: center;
         gap: 12px;
 
-        i {
-            font-size: 14px;
-            color: #fff;
+        .category-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                font-size: 14px;
+                color: #fff;
+            }
         }
     }
 
     .category-name {
         font-size: 13px;
         font-weight: 600;
-        color: #fff;
+        color: #1e293b;
         letter-spacing: 0.5px;
     }
 
     .accordion-arrow {
         font-size: 12px;
-        color: #fff;
+        color: #64748b;
         transition: transform 0.3s ease;
 
         &.rotated {
@@ -134,7 +145,7 @@
     }
 
     &:hover {
-        filter: brightness(1.1);
+        background: #f1f5f9;
     }
 }
 
