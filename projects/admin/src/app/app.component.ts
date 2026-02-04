@@ -96,7 +96,7 @@ export class AppComponent {
   currentRoute: string = this.activatedRoute.snapshot.url.join("/");
   authRoute: boolean = true;
 
-  isSidemenuLocked: boolean = false;
+  isSidemenuLocked: boolean = true;
 
   ngOnInit() {
     this.sidemenuService.sidemenuExpanded$.subscribe((expanded: boolean) => {

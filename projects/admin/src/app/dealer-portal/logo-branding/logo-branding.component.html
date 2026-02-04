@@ -1,0 +1,282 @@
+<div class="logo-branding-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Brand Manager</h1>
+            <p class="subtitle">Customise visual identity and theme settings for the Dealer Portal instance.</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-secondary" (click)="resetToDefault()">Reset to Default</button>
+            <button class="btn-primary" (click)="saveChanges()">
+                <i class="fa fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Logo Management Section -->
+        <div class="section-card">
+            <h2 class="section-title">Logo Management</h2>
+            
+            <div class="logo-item">
+                <label class="logo-label">Portal Main Logo</label>
+                <div class="logo-upload-area">
+                    <div class="logo-preview" [class.has-logo]="portalMainLogo">
+                        <img *ngIf="portalMainLogo" [src]="portalMainLogo" alt="Main Logo" />
+                        <div *ngIf="!portalMainLogo" class="placeholder-logo">
+                            <i class="fa fa-image"></i>
+                        </div>
+                    </div>
+                    <div class="upload-controls">
+                        <label class="btn-upload">
+                            <i class="fa fa-upload"></i> Upload
+                            <input type="file" accept="image/*" (change)="onMainLogoUpload($event)" hidden />
+                        </label>
+                        <span class="file-hint">Max size: 2MB, PNG or JPG</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logo-item">
+                <label class="logo-label">Inverted Logo (Dark Headers)</label>
+                <div class="logo-upload-area">
+                    <div class="logo-preview dark" [class.has-logo]="invertedLogo">
+                        <img *ngIf="invertedLogo" [src]="invertedLogo" alt="Inverted Logo" />
+                        <div *ngIf="!invertedLogo" class="placeholder-logo">
+                            <i class="fa fa-image"></i>
+                        </div>
+                    </div>
+                    <div class="upload-controls">
+                        <label class="btn-upload">
+                            <i class="fa fa-upload"></i> Upload
+                            <input type="file" accept="image/*" (change)="onInvertedLogoUpload($event)" hidden />
+                        </label>
+                        <span class="file-hint">Recommended for footer or dark themes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favicon & Browser Tab Section -->
+        <div class="section-card">
+            <h2 class="section-title">Favicon & Browser Tab</h2>
+            
+            <div class="browser-mockup">
+                <label class="logo-label">Browser Tab Mockup</label>
+                <div class="tab-preview">
+                    <div class="tab-item">
+                        <img *ngIf="faviconFile" [src]="faviconFile" class="tab-favicon" />
+                        <i *ngIf="!faviconFile" class="fa fa-globe tab-favicon-placeholder"></i>
+                        <span class="tab-title">{{ browserTabName }}</span>
+                        <i class="fa fa-times tab-close"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="favicon-upload">
+                <label class="logo-label">Upload Favicon (.ico / .png)</label>
+                <div class="favicon-area">
+                    <div class="favicon-preview">
+                        <img *ngIf="faviconFile" [src]="faviconFile" alt="Favicon" />
+                        <i *ngIf="!faviconFile" class="fa fa-image"></i>
+                    </div>
+                    <label class="btn-select-icon">
+                        Select Icon
+                        <input type="file" accept=".ico,.png" (change)="onFaviconUpload($event)" hidden />
+                    </label>
+                </div>
+                <span class="file-hint">Must be a square image. 32x32px or 64x64px recommended.</span>
+            </div>
+        </div>
+
+        <!-- Car Brand Assets Section (Full Width) -->
+        <div class="section-card full-width">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Brand Assets</h2>
+                </div>
+                <div class="header-controls">
+                    <span class="total-count">{{ getTotalLogosCount() }} total logos</span>
+                    <button class="btn-add-brand" (click)="showAddBrandModal = true">
+                        <i class="fa fa-plus"></i> Add New Brand
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Brand Selector for Upload -->
+            <div class="brand-selector-section">
+                <div class="selector-group">
+                    <label class="selector-label">
+                        <i class="fa fa-car"></i> Select Brand to Upload Logos
+                    </label>
+                    <div class="selector-wrapper">
+                        <select [(ngModel)]="selectedBrandId" class="brand-select">
+                            <option value="">-- Select a brand to upload --</option>
+                            <option *ngFor="let brand of carBrands" [value]="brand.id">
+                                {{ brand.name }} ({{ brand.logos.length }} logos)
+                            </option>
+                        </select>
+                        <button class="btn-delete-brand-selector" 
+                                *ngIf="selectedBrandId"
+                                (click)="removeBrand(selectedBrandId)"
+                                title="Delete selected brand">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="upload-action" *ngIf="selectedBrandId">
+                    <label class="btn-upload-logo-primary">
+                        <i class="fa fa-upload"></i> Upload Logos to {{ getSelectedBrand()?.name }}
+                        <input type="file" accept="image/*" multiple (change)="onBrandLogoUpload($event)" hidden />
+                    </label>
+                </div>
+            </div>
+
+            <!-- All Logos Display Section -->
+            <div class="all-logos-section">
+                <div class="section-top-bar">
+                    <div class="brand-header">
+                        <h3 class="brand-title">
+                            <i class="fa fa-images"></i>
+                            All Uploaded Logos
+                        </h3>
+                        <span class="brand-logo-count">{{ getTotalLogosCount() }} logo(s)</span>
+                    </div>
+                </div>
+
+                <!-- No Logos -->
+                <div class="no-logos" *ngIf="getAllLogos().length === 0">
+                    <div class="empty-icon-small">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <p class="empty-text">No logos uploaded yet</p>
+                    <p class="empty-hint">Select a brand above and upload your first logo</p>
+                </div>
+
+                <!-- All Logos Grid -->
+                <div class="logos-grid-wrapper" *ngIf="getAllLogos().length > 0">
+                    <div class="logos-grid" [class.limited-rows]="hasMoreLogos()">
+                        <div class="logo-card" *ngFor="let logo of getDisplayedLogos()">
+                            <div class="logo-image-wrapper">
+                                <img [src]="logo.image" [alt]="logo.name" class="logo-img" />
+                                <span class="brand-badge">{{ logo.brandName }}</span>
+                                <button class="btn-remove-logo" 
+                                        (click)="removeLogo(logo.id)" 
+                                        title="Remove logo">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="logo-details">
+                                <span class="logo-name">{{ logo.fileName }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Add More Logo Card -->
+                        <label class="logo-card add-more-card" *ngIf="selectedBrandId">
+                            <div class="add-more-content">
+                                <i class="fa fa-plus-circle"></i>
+                                <span>Add More Logos</span>
+                            </div>
+                            <input type="file" accept="image/*" multiple (change)="onBrandLogoUpload($event)" hidden />
+                        </label>
+                    </div>
+
+                    <!-- Show More Button -->
+                    <div class="show-more-container" *ngIf="hasMoreLogos()">
+                        <button class="btn-show-more" (click)="showMoreLogos()">
+                            <i class="fa fa-chevron-down"></i>
+                            Show More ({{ getAllLogos().length - logosToShow }} remaining)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Brand Modal -->
+            <div class="modal-overlay" *ngIf="showAddBrandModal" (click)="showAddBrandModal = false">
+                <div class="modal-content" (click)="$event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3>Add New Car Brand</h3>
+                        <button class="btn-close" (click)="showAddBrandModal = false">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Brand Name</label>
+                        <input type="text" 
+                               class="brand-name-input"
+                               [(ngModel)]="newBrandName" 
+                               placeholder="e.g., Tesla, Porsche, Nissan..."
+                               (keyup.enter)="addNewBrand()" />
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" (click)="showAddBrandModal = false">Cancel</button>
+                        <button class="btn-primary" (click)="addNewBrand()" [disabled]="!newBrandName.trim()">
+                            <i class="fa fa-plus"></i> Add Brand
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme Colors Section -->
+        <div class="section-card">
+            <h2 class="section-title">Theme Colors</h2>
+            
+            <div class="colors-grid">
+                <div class="color-item" *ngFor="let color of themeColors; let i = index">
+                    <label class="color-label">{{ color.label }}</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" [value]="color.value" (change)="onColorChange(i, $event)" class="color-picker" />
+                        <input type="text" [value]="color.value" class="color-hex" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="accessibility-check">
+                <i class="fa fa-check-circle"></i>
+                <span>Accessibility check: <strong>Pass</strong>. Contrast ratio for Primary on White is 4.5:1</span>
+            </div>
+        </div>
+
+        <!-- Typography Section -->
+        <div class="section-card">
+            <h2 class="section-title">Typography</h2>
+            
+            <div class="typography-controls">
+                <div class="form-group">
+                    <label>Primary Font Family</label>
+                    <select [(ngModel)]="selectedFontFamily" class="font-select">
+                        <option *ngFor="let font of fontFamilies" [value]="font">{{ font }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Base Font Size</label>
+                    <div class="font-size-slider">
+                        <input type="range" min="8" max="30" [(ngModel)]="baseFontSize" class="slider" />
+                        <span class="size-value">{{ baseFontSize }}px</span>
+                    </div>
+                    <div class="size-labels">
+                        <span *ngFor="let opt of fontSizeOptions" 
+                              [class.active]="baseFontSize === opt.value"
+                              (click)="baseFontSize = opt.value">
+                            {{ opt.label }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="live-preview">
+                <span class="preview-label">LIVE PREVIEW</span>
+                <h3 class="preview-headline" [style.font-family]="selectedFontFamily" [style.font-size.px]="baseFontSize + 8">
+                    Headline Example
+                </h3>
+                <p class="preview-text" [style.font-family]="selectedFontFamily" [style.font-size.px]="baseFontSize">
+                    The quick brown fox jumps over the lazy dog. Brand typography ensures consistent messaging.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="portal-settings-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Portal Settings</h1>
+            <p class="subtitle">Configure branding, messages, access controls and notifications across all portals.</p>
+        </div>
+        <div class="sync-status" [class.synced]="systemsSynced">
+            <span class="status-dot"></span>
+            <span class="status-text">SYSTEMS SYNCED</span>
+        </div>
+    </div>
+
+    <!-- Accordion Container -->
+    <div class="accordion-container">
+        <!-- Portal Headers Row -->
+        <div class="portal-headers">
+            <div class="header-spacer"></div>
+            <div class="portal-column">
+                <span class="portal-name">ADMIN PORTAL</span>
+            </div>
+            <div class="portal-column">
+                <span class="portal-name">COMMERCIAL PORTAL</span>
+            </div>
+            <div class="portal-column">
+                <span class="portal-name">RETAIL PORTAL</span>
+            </div>
+        </div>
+
+        <!-- Accordion Sections -->
+        <div class="accordion-section" *ngFor="let category of featureCategories">
+            <!-- Category Header -->
+            <div class="accordion-header" 
+                 [style.background]="category.iconBg"
+                 (click)="toggleCategory(category)">
+                <div class="header-left">
+                    <i [class]="category.icon"></i>
+                    <span class="category-name">{{ category.name }}</span>
+                </div>
+                <i class="fa fa-chevron-down accordion-arrow" [class.rotated]="!category.expanded"></i>
+            </div>
+
+            <!-- Accordion Content -->
+            <div class="accordion-content" *ngIf="category.expanded">
+                <div class="feature-row" *ngFor="let item of category.items">
+                    <div class="feature-info">
+                        <span class="feature-name">{{ item.name }}</span>
+                        <span class="feature-description">{{ item.description }}</span>
+                    </div>
+                    <div class="toggle-cell">
+                        <label class="toggle-switch">
+                            <input type="checkbox" 
+                                   [checked]="item.adminPortal" 
+                                   (change)="onToggleChange(item, 'admin')">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-cell">
+                        <label class="toggle-switch">
+                            <input type="checkbox" 
+                                   [checked]="item.commercialPortal" 
+                                   (change)="onToggleChange(item, 'commercial')">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-cell">
+                        <label class="toggle-switch">
+                            <input type="checkbox" 
+                                   [checked]="item.retailPortal" 
+                                   (change)="onToggleChange(item, 'retail')">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

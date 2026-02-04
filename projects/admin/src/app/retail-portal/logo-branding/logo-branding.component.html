@@ -1,0 +1,153 @@
+<div class="logo-branding-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Brand Manager</h1>
+            <p class="subtitle">Customise visual identity and theme settings for the Retail Portal instance.</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-secondary" (click)="resetToDefault()">Reset to Default</button>
+            <button class="btn-primary" (click)="saveChanges()">
+                <i class="fa fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Logo Management Section -->
+        <div class="section-card">
+            <h2 class="section-title">Logo Management</h2>
+            
+            <div class="logo-item">
+                <label class="logo-label">Portal Main Logo</label>
+                <div class="logo-upload-area">
+                    <div class="logo-preview" [class.has-logo]="portalMainLogo">
+                        <img *ngIf="portalMainLogo" [src]="portalMainLogo" alt="Main Logo" />
+                        <div *ngIf="!portalMainLogo" class="placeholder-logo">
+                            <i class="fa fa-image"></i>
+                        </div>
+                    </div>
+                    <div class="upload-controls">
+                        <label class="btn-upload">
+                            <i class="fa fa-upload"></i> Upload
+                            <input type="file" accept="image/*" (change)="onMainLogoUpload($event)" hidden />
+                        </label>
+                        <span class="file-hint">Max size: 2MB, PNG or JPG</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logo-item">
+                <label class="logo-label">Inverted Logo (Dark Headers)</label>
+                <div class="logo-upload-area">
+                    <div class="logo-preview dark" [class.has-logo]="invertedLogo">
+                        <img *ngIf="invertedLogo" [src]="invertedLogo" alt="Inverted Logo" />
+                        <div *ngIf="!invertedLogo" class="placeholder-logo">
+                            <i class="fa fa-image"></i>
+                        </div>
+                    </div>
+                    <div class="upload-controls">
+                        <label class="btn-upload">
+                            <i class="fa fa-upload"></i> Upload
+                            <input type="file" accept="image/*" (change)="onInvertedLogoUpload($event)" hidden />
+                        </label>
+                        <span class="file-hint">Recommended for footer or dark themes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favicon & Browser Tab Section -->
+        <div class="section-card">
+            <h2 class="section-title">Favicon & Browser Tab</h2>
+            
+            <div class="browser-mockup">
+                <label class="logo-label">Browser Tab Mockup</label>
+                <div class="tab-preview">
+                    <div class="tab-item">
+                        <img *ngIf="faviconFile" [src]="faviconFile" class="tab-favicon" />
+                        <i *ngIf="!faviconFile" class="fa fa-globe tab-favicon-placeholder"></i>
+                        <span class="tab-title">{{ browserTabName }}</span>
+                        <i class="fa fa-times tab-close"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="favicon-upload">
+                <label class="logo-label">Upload Favicon (.ico / .png)</label>
+                <div class="favicon-area">
+                    <div class="favicon-preview">
+                        <img *ngIf="faviconFile" [src]="faviconFile" alt="Favicon" />
+                        <i *ngIf="!faviconFile" class="fa fa-image"></i>
+                    </div>
+                    <label class="btn-select-icon">
+                        Select Icon
+                        <input type="file" accept=".ico,.png" (change)="onFaviconUpload($event)" hidden />
+                    </label>
+                </div>
+                <span class="file-hint">Must be a square image. 32x32px or 64x64px recommended.</span>
+            </div>
+        </div>
+
+        <!-- Theme Colors Section -->
+        <div class="section-card">
+            <h2 class="section-title">Theme Colors</h2>
+            
+            <div class="colors-grid">
+                <div class="color-item" *ngFor="let color of themeColors; let i = index">
+                    <label class="color-label">{{ color.label }}</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" [value]="color.value" (change)="onColorChange(i, $event)" class="color-picker" />
+                        <input type="text" [value]="color.value" class="color-hex" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="accessibility-check">
+                <i class="fa fa-check-circle"></i>
+                <span>Accessibility check: <strong>Pass</strong>. Contrast ratio for Primary on White is 4.5:1</span>
+            </div>
+        </div>
+
+        <!-- Typography Section -->
+        <div class="section-card">
+            <h2 class="section-title">Typography</h2>
+            
+            <div class="typography-controls">
+                <div class="form-group">
+                    <label>Primary Font Family</label>
+                    <select [(ngModel)]="selectedFontFamily" class="font-select">
+                        <option *ngFor="let font of fontFamilies" [value]="font">{{ font }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Base Font Size</label>
+                    <div class="font-size-slider">
+                        <input type="range" min="8" max="30" [(ngModel)]="baseFontSize" class="slider" />
+                        <span class="size-value">{{ baseFontSize }}px</span>
+                    </div>
+                    <div class="size-labels">
+                        <span *ngFor="let opt of fontSizeOptions" 
+                              [class.active]="baseFontSize === opt.value"
+                              (click)="baseFontSize = opt.value">
+                            {{ opt.label }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="live-preview">
+                <span class="preview-label">LIVE PREVIEW</span>
+                <h3 class="preview-headline" [style.font-family]="selectedFontFamily" [style.font-size.px]="baseFontSize + 8">
+                    Headline Example
+                </h3>
+                <p class="preview-text" [style.font-family]="selectedFontFamily" [style.font-size.px]="baseFontSize">
+                    The quick brown fox jumps over the lazy dog. Brand typography ensures consistent messaging.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
