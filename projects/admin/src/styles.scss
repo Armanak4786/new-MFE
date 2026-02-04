@@ -100,7 +100,7 @@ $colors: (
 .layout-sidemenu {
     z-index: 99;
     position: fixed;
-    top: 3%;
+    top: 2.3%;
 }
 
 //_topbar.scss:1
@@ -111,8 +111,8 @@ $colors: (
     .layout-topbar {
         position: unset;
         top: 2%;
-        width: 92.8vw;
-        margin-left: 6vw;
+        width: calc(96vw - 260px);
+        margin-left: 290px;    
     }
 }
 
@@ -125,6 +125,10 @@ $colors: (
     position: relative;
     padding-bottom: 10rem;
     padding-top: 5rem;
+    &:not(.auth){
+        width: calc(97.5vw - 260px) !important;
+        margin-left: 290px !important;
+    }
 }
 
 .stepper-footer {

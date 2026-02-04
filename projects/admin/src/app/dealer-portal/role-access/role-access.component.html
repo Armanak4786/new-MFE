@@ -1,0 +1,72 @@
+<div class="role-access-container">
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="role-selector">
+            <label class="selector-label">SELECT TARGET ROLE</label>
+            <div class="select-wrapper">
+                <i class="fa fa-users select-icon"></i>
+                <select [(ngModel)]="selectedRoleId" (change)="onRoleChange()" class="role-dropdown">
+                    <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <label class="selector-label">SEARCH PERMISSIONS</label>
+            <div class="search-wrapper">
+                <i class="fa fa-search search-icon"></i>
+                <input 
+                    type="text" 
+                    [(ngModel)]="searchFilter"
+                    placeholder="Filter by name or category..."
+                    class="search-input" />
+                <button class="btn-icon" title="Filter">
+                    <i class="fa fa-sliders"></i>
+                </button>
+                <button class="btn-icon" title="Export" (click)="exportPermissions()">
+                    <i class="fa fa-download"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Permission Cards -->
+    <div class="permissions-grid">
+        <div class="permission-card" *ngFor="let category of permissionCategories">
+            <div class="card-header">
+                <div class="card-title-section">
+                    <div class="card-icon" [style.background-color]="category.iconColor">
+                        <i [class]="category.icon"></i>
+                    </div>
+                    <h3 class="card-title">{{ category.title }}</h3>
+                </div>
+                <button class="btn-select-all" (click)="toggleSelectAll(category)">
+                    {{ isAllSelected(category) ? 'DESELECT ALL' : 'SELECT ALL' }}
+                </button>
+            </div>
+
+            <div class="permissions-list">
+                <label class="permission-item" *ngFor="let permission of getFilteredPermissions(category)">
+                    <input 
+                        type="checkbox" 
+                        [checked]="permission.checked"
+                        (change)="togglePermission(permission)" />
+                    <span class="checkmark"></span>
+                    <span class="permission-label">{{ permission.label }}</span>
+                </label>
+
+                <div class="no-results" *ngIf="getFilteredPermissions(category).length === 0">
+                    No permissions match your search.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <div class="footer-actions">
+        <button class="btn-save" (click)="savePermissions()">
+            <i class="fa fa-save"></i> Save Changes
+        </button>
+    </div>
+</div>

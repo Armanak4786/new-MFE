@@ -1,48 +1,64 @@
 <div class="layout-sidemenu">
-    <nav class="sidebar" [ngClass]="{ expanded: isExpanded || isLocked }" (mouseleave)="onMouseLeave()"
-        (mouseenter)="onMouseEnter()">
-        <ul>
-            <li (click)="onIconClick('menu')" class="nav-item">
-                <i class="fa fa-bars"></i>
-                <span class="icon-label" *ngIf="isExpanded || isLocked">Menu</span>
-                <button class="lock-button" (click)="toggleLock()" *ngIf="isExpanded">
-                    <i [ngClass]="{
-              'fa-solid fa-lock': isLocked,
-              'fa fa-unlock-alt': !isLocked
-            }"></i>
-                </button>
-            </li>
-            <li (click)="navigate('/dashboard')" class="nav-item">
-                <i class="fa-solid fa-wallet"></i>
-                <span class="icon-label" *ngIf="isExpanded || isLocked">Dashboard</span>
-            </li>
-            <!-- <li (click)="onIconClick('settings')" class="nav-item">
-        <i class="fa fa-cog"></i>
-        <span class="icon-label" *ngIf="isExpanded || isLocked">Settings</span>
-      </li> -->
-            <li (click)="toggleSubmenu()" class="nav-item">
-                <i class="fa-regular fa-chart-bar"></i>
-                <span class="icon-label" *ngIf="isExpanded || isLocked">Reports</span>
-            </li>
+    <nav class="sidebar expanded">
 
-            <app-sub-sidemenu *ngIf="isSubmenuOpen" class="sub-sidemenu"
-                [ngClass]="{ expanded: isExpanded || isLocked }" [isExpanded]="isExpanded || isLocked"
-                (closeSubmenu)="closeSubmenu()" (navigate)="navigate($event)">
-            </app-sub-sidemenu>
-        </ul>
+        <!-- Menu Content -->
+        <div class="menu-content">
+            <ng-container *ngFor="let section of menuSections">
+                <!-- Section Title -->
+                <div class="section-title">
+                    {{ section.title }}
+                </div>
+
+                <!-- Menu Items -->
+                <ul class="menu-list">
+                    <ng-container *ngFor="let item of section.items">
+                        <!-- Parent Item with Children -->
+                        <li *ngIf="item.children" class="menu-item parent-item">
+                            <div class="menu-item-header" 
+                                 (click)="toggleMenu(item.id, $event)"
+                                 [class.active]="isMenuExpanded(item.id)">
+                                <i [class]="item.icon"></i>
+                                <span class="menu-label">{{ item.label }}</span>
+                                <i class="fa fa-chevron-down expand-arrow" 
+                                   [class.rotated]="!isMenuExpanded(item.id)"></i>
+                            </div>
+                            
+                            <!-- Submenu -->
+                            <ul class="submenu" *ngIf="isMenuExpanded(item.id)">
+                                <li *ngFor="let child of item.children" 
+                                    class="submenu-item"
+                                    [class.active]="isActive(child.id)"
+                                    (click)="navigate(child.route, child.id)">
+                                    <span class="submenu-label">{{ child.label }}</span>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Simple Item without Children -->
+                        <li *ngIf="!item.children" 
+                            class="menu-item simple-item"
+                            [class.active]="isActive(item.id)"
+                            (click)="navigate(item.route, item.id)">
+                            <i [class]="item.icon"></i>
+                            <span class="menu-label">{{ item.label }}</span>
+                        </li>
+                    </ng-container>
+                </ul>
+            </ng-container>
+        </div>
 
         <!-- Portal Selector at Bottom -->
         <div class="portal-selector-container" (click)="togglePortalMenu($event)">
             <div class="portal-selector">
                 <img [src]="selectedPortal.icon" alt="" class="portal-icon" />
-                <div class="portal-info" *ngIf="isExpanded || isLocked">
+                <div class="portal-info">
                     <span class="portal-title">{{ selectedPortal?.name }}</span>
                     <span class="portal-subtitle">ACTIVE WORKSPACE</span>
                 </div>
-                <i class="fa fa-chevron-up portal-arrow" *ngIf="isExpanded || isLocked" [class.rotated]="isPortalMenuOpen"></i>
+                <i class="fa fa-chevron-up portal-arrow" [class.rotated]="isPortalMenuOpen"></i>
             </div>
             
-            <div class="portal-menu" *ngIf="isPortalMenuOpen && (isExpanded || isLocked)">
+            <div class="portal-menu" *ngIf="isPortalMenuOpen">
                 <div class="portal-menu-item" 
                      *ngFor="let portal of portalOptions" 
                      (click)="selectPortal(portal, $event)"

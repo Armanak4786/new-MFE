@@ -12,6 +12,19 @@ interface Portal {
     route: string;
 }
 
+interface MenuItem {
+    id: string;
+    label: string;
+    icon: string;
+    route?: string;
+    children?: MenuItem[];
+}
+
+interface MenuSection {
+    title: string;
+    items: MenuItem[];
+}
+
 @Component({
     selector: 'app-sidemenu',
     templateUrl: './sidemenu.component.html',
@@ -19,7 +32,7 @@ interface Portal {
 })
 export class SidemenuComponent {
     activeStep: number;
-    //This is the sidemenu, for Devices with width > 992px
+    
     constructor(
         public layoutService: LayoutService,
         public svc: CommonService,
@@ -30,79 +43,118 @@ export class SidemenuComponent {
         private cookieAuthService: CookieAuthService
     ) { }
 
-    isExpanded = false; // True when hovered
-    isLocked = false; // True when locked
-    isSubmenuOpen = false;
+    isExpanded = true; // Always expanded
+    isLocked = true; // Always locked open
+    expandedMenus: { [key: string]: boolean } = { 'dealer-portal': true }; // Dealer Portal expanded by default
+    activeMenuItem: string = 'dealer-logo-branding';
 
-    // Portal options - using same routes as landing page
+    // Menu structure matching the design
+    menuSections: MenuSection[] = [
+        {
+            title: 'PLATFORM PORTALS',
+            items: [
+                {
+                    id: 'dealer-portal',
+                    label: 'Dealer Portal',
+                    icon: 'fa-solid fa-building',
+                    children: [
+                        { id: 'dealer-logo-branding', label: 'Logo and Branding', icon: '', route: '/dealer/logo-branding' },
+                        { id: 'dealer-legal-messages', label: 'Legal Messages', icon: '', route: '/dealer/legal-messages' },
+                        { id: 'dealer-error-messages', label: 'Error Messages', icon: '', route: '/dealer/error-messages' },
+                        { id: 'dealer-role-access', label: 'Role Base Access', icon: '', route: '/dealer/role-access' },
+                        { id: 'dealer-notifications', label: 'Banner / Notifications', icon: '', route: '/dealer/notifications' }
+                    ]
+                },
+                {
+                    id: 'retail-portal',
+                    label: 'Retail Portal',
+                    icon: 'fa-solid fa-store',
+                    children: [
+                        { id: 'retail-logo-branding', label: 'Logo and Branding', icon: '', route: '/retail/logo-branding' },
+                        { id: 'retail-legal-messages', label: 'Legal Messages', icon: '', route: '/retail/legal-messages' },
+                        { id: 'retail-error-messages', label: 'Error Messages', icon: '', route: '/retail/error-messages' },
+                        { id: 'retail-role-access', label: 'Role Base Access', icon: '', route: '/retail/role-access' },
+                        { id: 'retail-notifications', label: 'Banner / Notifications', icon: '', route: '/retail/notifications' }
+                    ]
+                },
+                {
+                    id: 'commercial-portal',
+                    label: 'Commercial Portal',
+                    icon: 'fa-solid fa-briefcase',
+                    children: [
+                        { id: 'commercial-logo-branding', label: 'Logo and Branding', icon: '', route: '/commercial/logo-branding' },
+                        { id: 'commercial-legal-messages', label: 'Legal Messages', icon: '', route: '/commercial/legal-messages' },
+                        { id: 'commercial-error-messages', label: 'Error Messages', icon: '', route: '/commercial/error-messages' },
+                        { id: 'commercial-role-access', label: 'Role Base Access', icon: '', route: '/commercial/role-access' },
+                        { id: 'commercial-notifications', label: 'Banner / Notifications', icon: '', route: '/commercial/notifications' }
+                    ]
+                }
+            ]
+        },
+        {
+            title: 'INFRASTRUCTURE',
+            items: [
+                { id: 'portal-settings', label: 'Portal Settings', icon: 'fa-solid fa-cog', route: '/portal-settings' }
+            ]
+        }
+    ];
+
+    // Portal options for bottom selector
     portalOptions: Portal[] = [
         { name: 'Quotes & Applications', description: 'Dealer Operations', code: 'RETAIL', icon: 'assets/images/Quotes&Applications.svg', route: 'http://localhost:4201' },
         { name: 'Customer Information Portal', description: 'Commercial Operations', code: 'COMMERCIAL', icon: 'assets/images/building.svg', route: 'http://localhost:4202' },
         { name: 'Admin', description: 'Administration', code: 'ADMIN', icon: 'assets/images/setting-2.svg', route: 'http://localhost:4203' }
     ];
-    selectedPortal: Portal = this.portalOptions[2]; // Admin is selected by default
+    selectedPortal: Portal = this.portalOptions[2];
     isPortalMenuOpen: boolean = false;
 
     onMouseEnter() {
-        //Mouse enter logic, expands sidemenu
-        if (!this.isLocked) {
-            this.isExpanded = true;
-            this.sidemenuService.toggleSidemenu(false);
-        }
-    }
-
-    showConfirmationDialog(targetPath: string, callback: () => void): void {
-        const currentUrl = this.router.url.split("?")[0]; // remove query params
-
-        const isSameRoute = currentUrl === targetPath;
-        if (isSameRoute) {
-            return;
-        }
-        callback();
+        // Menu is always open - no action needed
     }
 
     onMouseLeave() {
-        //Shrinks sidemenu on mouse leave
-        if (!this.isLocked) {
-            this.isExpanded = false;
-            this.sidemenuService.toggleSidemenu(false);
-            this.isSubmenuOpen = false;
-        }
+        // Menu is always open - no action needed
     }
 
     toggleLock() {
-        //To toggle the locking of the sidemenu
-        this.isLocked = !this.isLocked;
-        this.sidemenuService.toggleSidemenu(this.isLocked); // Notify the service
+        // Menu is always open - no action needed
     }
 
-    @Output() iconClick = new EventEmitter<string>(); // Placeholder to emulate click behavior
+    toggleMenu(menuId: string, event: Event): void {
+        event.stopPropagation();
+        
+        // Accordion behavior: close all other menus when opening a new one
+        if (!this.expandedMenus[menuId]) {
+            // Close all menus first
+            Object.keys(this.expandedMenus).forEach(key => {
+                this.expandedMenus[key] = false;
+            });
+        }
+        
+        // Toggle the clicked menu
+        this.expandedMenus[menuId] = !this.expandedMenus[menuId];
+    }
+
+    isMenuExpanded(menuId: string): boolean {
+        return this.expandedMenus[menuId] || false;
+    }
+
+    navigate(route: string, itemId: string): void {
+        this.activeMenuItem = itemId;
+        this.router.navigateByUrl(route);
+    }
+
+    isActive(itemId: string): boolean {
+        return this.activeMenuItem === itemId;
+    }
+
+    @Output() iconClick = new EventEmitter<string>();
 
     onIconClick(icon: string): void {
-        this.showConfirmationDialog("menu", () => {
-            this.isSubmenuOpen = false;
-            //Remove once paths are decided. Use naviagate below.
-            this.iconClick.emit(icon);
-        });
+        this.iconClick.emit(icon);
     }
 
-    navigate(path: string) {
-        this.showConfirmationDialog(path, () => {
-            this.isSubmenuOpen = false;
-            this.router.navigateByUrl(path);
-        });
-    }
-
-    toggleSubmenu() {
-        this.showConfirmationDialog("reports", () => {
-            this.isSubmenuOpen = !this.isSubmenuOpen;
-        });
-    }
-
-    closeSubmenu() {
-        this.isSubmenuOpen = false;
-    }
-
+    // Portal selector methods
     togglePortalMenu(event: Event): void {
         event.stopPropagation();
         this.isPortalMenuOpen = !this.isPortalMenuOpen;
@@ -112,21 +164,15 @@ export class SidemenuComponent {
         event.stopPropagation();
         this.selectedPortal = portal;
         this.isPortalMenuOpen = false;
-
-        // Navigate using same mechanism as landing page
         this.navigateToPortal(portal.route);
     }
 
     navigateToPortal(route: string): void {
-        // Check if it's an external URL (different port)
         if (route.startsWith('http://') || route.startsWith('https://')) {
-            // Store auth data to cookies before redirecting to different port
             this.cookieAuthService.storeAuthToCookies();
             console.log('[Sidemenu] Auth stored to cookies, redirecting to:', route);
-            // Redirect to external URL
             window.location.href = route;
         } else {
-            // Internal route - use Angular router
             this.router.navigate([route]);
         }
     }
