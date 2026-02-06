@@ -11,6 +11,12 @@
     "start:admin": "ng serve admin",
     "start:all": "npm-run-all --parallel start:shell start:dealer start:commercial start:admin",
     "build": "ng build",
+    "build:authentication": "ng build authentication",
+    "build:dealer": "ng build dealer",
+    "build:commercial": "ng build commercial",
+    "build:admin": "ng build admin",
+    "build:all": "npm-run-all --parallel build:authentication build:dealer build:commercial build:admin",
+    "build:all:sequential": "npm-run-all build:authentication build:dealer build:commercial build:admin",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
