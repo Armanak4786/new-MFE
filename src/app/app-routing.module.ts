@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/module-federation';
 import { LoginComponent } from './login/login.component';
 import { LandingComponent } from './landing/landing.component';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
@@ -23,7 +24,7 @@ const routes: Routes = [
     loadChildren: () =>
       loadRemoteModule({
         type: 'module',
-        remoteEntry: 'http://localhost:4201/remoteEntry.js',
+        remoteEntry: `${environment.remotes.dealer}/remoteEntry.js`,
         exposedModule: './Module'
       }).then(m => m.DealerModule)
   },
@@ -32,7 +33,7 @@ const routes: Routes = [
     loadChildren: () =>
       loadRemoteModule({
         type: 'module',
-        remoteEntry: 'http://localhost:4202/remoteEntry.js',
+        remoteEntry: `${environment.remotes.commercial}/remoteEntry.js`,
         exposedModule: './Module'
       }).then(m => m.CommercialModule)
   },
@@ -41,7 +42,7 @@ const routes: Routes = [
     loadChildren: () =>
       loadRemoteModule({
         type: 'module',
-        remoteEntry: 'http://localhost:4203/remoteEntry.js',
+        remoteEntry: `${environment.remotes.admin}/remoteEntry.js`,
         exposedModule: './Module'
       }).then(m => m.AdminModule)
   }

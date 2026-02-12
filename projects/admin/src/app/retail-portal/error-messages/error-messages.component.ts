@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface ErrorMessage {
     id: string;
@@ -23,9 +24,16 @@ export class RetailErrorMessagesComponent implements OnInit {
         },
     ];
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Retail Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
     saveMessage(message: ErrorMessage): void {
         console.log('Saving Retail error message:', message.id, message.content);

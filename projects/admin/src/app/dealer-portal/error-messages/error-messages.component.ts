@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface ErrorMessage {
     id: string;
@@ -20,24 +21,19 @@ export class DealerErrorMessagesComponent implements OnInit {
             title: 'Edit Payment Schedule',
             content: 'The sum of the segment (Number) field must not exceed the loan term.',
             editing: false
-        },
-        {
-            id: 'application-submission-acknowledgement',
-            title: 'Application Submission- Acknowledgement',
-            content: 'Your application has been received and is being processed. You will receive a confirmation shortly.',
-            editing: false
-        },
-        {
-            id: 'drawdown-request-warning',
-            title: 'Drawdown Request- Warning',
-            content: 'Please ensure all required documents are submitted before proceeding with the drawdown request.',
-            editing: false
         }
     ];
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Dealer Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
     saveMessage(message: ErrorMessage): void {
         console.log('Saving Dealer error message:', message.id, message.content);

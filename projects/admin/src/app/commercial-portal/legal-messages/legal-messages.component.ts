@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface LegalMessage {
     id: string;
@@ -34,18 +35,19 @@ Approval is subject to the terms and conditions applicable to your facility. To 
             title: 'Drawdown- Additional Info',
             content: `Upon submission, this drawdown request will be sent to UDC Finance for approval and processing. Approval will be subject to the terms and conditions of your Assetlink Facility Agreement. Upon approval we will send you Assetlink Second Schedule for signing. To assist us in meeting your drawdown date, please ensure that signed Assetlink Second Schedule is returned to UDC before midday on the day funds are required.`,
             editing: false
-        },
-        {
-            id: 'drawdown-warning',
-            title: 'Drawdown Request- Warning',
-            content: `Please note that this request may exceed either the Facility Limit or the Security Limit (scaled security value) once the assets being purchased have been taken into account. If so, your UDC will contact you to discuss your request. Upon approval we will send you the Assetlink Second Schedule for signing.`,
-            editing: false
         }
     ];
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Commercial Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
     saveMessage(message: LegalMessage): void {
         console.log('Saving Commercial message:', message.id, message.content);

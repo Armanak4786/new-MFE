@@ -56,6 +56,12 @@ const routes: Routes = [
     data: { breadcrumb: 'Logo and Branding' },
   },
   {
+    path: 'retail/error-messages',
+    loadChildren: () =>
+      import('./retail-portal/error-messages/error-messages.module').then((m) => m.RetailErrorMessagesModule),
+    data: { breadcrumb: 'Error Messages' },
+  },
+  {
     path: 'retail/notifications',
     loadChildren: () =>
       import('./retail-portal/notifications/notifications.module').then((m) => m.RetailNotificationsModule),
@@ -78,6 +84,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./commercial-portal/logo-branding/logo-branding.module').then((m) => m.CommercialLogoBrandingModule),
     data: { breadcrumb: 'Logo and Branding' },
+  },
+  {
+    path: 'commercial/error-messages',
+    loadChildren: () =>
+      import('./commercial-portal/error-messages/error-messages.module').then((m) => m.CommercialErrorMessagesModule),
+    data: { breadcrumb: 'Error Messages' },
   },
   {
     path: 'commercial/notifications',

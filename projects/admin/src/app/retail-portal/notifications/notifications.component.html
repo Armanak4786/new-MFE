@@ -61,8 +61,15 @@
             </div>
 
             <div class="upload-actions">
-                <button class="btn-upload" (click)="uploadBanner()">Upload</button>
-                <button class="btn-apply" (click)="applyBanner()">Apply</button>
+                <gen-button
+                    btnLabel="Upload"
+                    [btnType]="'border-btn'"
+                    (onClick)="uploadBanner()">
+                </gen-button>
+                <gen-button
+                    btnLabel="Apply"
+                    (onClick)="applyBanner()">
+                </gen-button>
             </div>
         </div>
     </div>
