@@ -3,6 +3,7 @@ import { CommonService, AuthenticationService, ToasterService } from 'auro-ui';
 import { Router } from '@angular/router';
 import { LayoutService, CookieAuthService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
+import { environment } from '../../../../environments/environment';
 
 interface Portal {
     name: string;
@@ -34,11 +35,11 @@ export class SidemenuComponent {
     isLocked = false; // True when locked
     isSubmenuOpen = false;
 
-    // Portal options - using same routes as landing page
+    // Portal options - using routes from environment config
     portalOptions: Portal[] = [
-        { name: 'Quotes & Applications', description: 'Dealer Operations', code: 'RETAIL', icon: 'assets/images/Quotes&Applications.svg', route: 'http://localhost:4201' },
-        { name: 'Customer Information Portal', description: 'Commercial Operations', code: 'COMMERCIAL', icon: 'assets/images/building.svg', route: 'http://localhost:4202' },
-        { name: 'Admin', description: 'Administration', code: 'ADMIN', icon: 'assets/images/setting-2.svg', route: 'http://localhost:4203' }
+        { name: 'Quotes & Applications', description: 'Dealer Operations', code: 'RETAIL', icon: 'assets/images/Quotes&Applications.svg', route: environment.remotes.dealer },
+        { name: 'Customer Information Portal', description: 'Commercial Operations', code: 'COMMERCIAL', icon: 'assets/images/building.svg', route: environment.remotes.commercial },
+        { name: 'Admin', description: 'Administration', code: 'ADMIN', icon: 'assets/images/setting-2.svg', route: environment.remotes.admin }
     ];
     selectedPortal: Portal = this.portalOptions[1]; // Commercial is selected by default
     isPortalMenuOpen: boolean = false;

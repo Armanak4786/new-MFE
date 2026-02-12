@@ -1,5 +1,17 @@
+// Helper to get remote URLs based on current origin
+const getRemoteUrls = () => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    return {
+        dealer: `${origin}/dealer`,
+        commercial: `${origin}/commercial`,
+        admin: `${origin}/admin`,
+    };
+};
+
 export const environment = {
     production: true,
+    // Remote app URLs for portal switching (same domain in production)
+    remotes: getRemoteUrls(),
     apiUrl: 'https://devportalgateway.aurionpro.com/gateway',
     clientId: 'AURPRIA.RESTAPI.DEVPORTAL',
     // OIDC Config

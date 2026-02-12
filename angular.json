@@ -176,6 +176,8 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/dealer/",
+              "deployUrl": "/dealer/",
               "fileReplacements": [
                 {
                   "replace": "projects/dealer/src/environments/environment.ts",
@@ -300,6 +302,8 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/commercial/",
+              "deployUrl": "/commercial/",
               "budgets": [
                 {
                   "type": "initial",
@@ -424,6 +428,8 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/admin/",
+              "deployUrl": "/admin/",
               "fileReplacements": [
                 {
                   "replace": "projects/admin/src/environments/environment.ts",
