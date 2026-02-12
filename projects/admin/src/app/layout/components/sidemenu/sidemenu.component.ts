@@ -5,6 +5,7 @@ import { LayoutService, CookieAuthService } from 'shared-lib';
 import { SidemenuService } from '../../services/sidemenu.service';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 interface Portal {
     name: string;
@@ -142,11 +143,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
         }
     ];
 
-    // Portal options for bottom selector
+    // Portal options for bottom selector - using routes from environment config
     portalOptions: Portal[] = [
-        { name: 'Quotes & Applications', description: 'Dealer Operations', code: 'RETAIL', icon: 'assets/images/Quotes&Applications.svg', route: 'http://localhost:4201' },
-        { name: 'Customer Information Portal', description: 'Commercial Operations', code: 'COMMERCIAL', icon: 'assets/images/building.svg', route: 'http://localhost:4202' },
-        { name: 'Admin', description: 'Administration', code: 'ADMIN', icon: 'assets/images/setting-2.svg', route: 'http://localhost:4203' }
+        { name: 'Quotes & Applications', description: 'Dealer Operations', code: 'RETAIL', icon: 'assets/images/Quotes&Applications.svg', route: environment.remotes.dealer },
+        { name: 'Customer Information Portal', description: 'Commercial Operations', code: 'COMMERCIAL', icon: 'assets/images/building.svg', route: environment.remotes.commercial },
+        { name: 'Admin', description: 'Administration', code: 'ADMIN', icon: 'assets/images/setting-2.svg', route: environment.remotes.admin }
     ];
     selectedPortal: Portal = this.portalOptions[2];
     isPortalMenuOpen: boolean = false;

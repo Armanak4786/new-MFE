@@ -4,6 +4,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { DataService } from 'auro-ui';
 import { LayoutService, CookieAuthService } from 'shared-lib';
 import { DashboardService } from '../../../projects/dealer/src/app/dashboard/services/dashboard.service';
+import { environment } from '../../environments/environment';
 
 export interface ModuleCard {
     title: string;
@@ -23,26 +24,26 @@ export class LandingComponent {
     private readonly oidcSecurityService = inject(OidcSecurityService);
 
     // Dynamic module cards configuration
-    // Routes use internal Angular paths to maintain sessionStorage sharing
+    // Routes are loaded from environment config to support both dev (localhost) and prod (same domain)
     modules: ModuleCard[] = [
         {
             title: 'Customer Information Portal',
             icon: 'assets/images/building.svg',
-            route: 'http://localhost:4202',
+            route: environment.remotes.commercial,
             color: '#B7C200',
             size: 'large'
         },
         {
             title: 'Quotes & Applications',
             icon: 'assets/images/Quotes&Applications.svg',
-            route: 'http://localhost:4201',
+            route: environment.remotes.dealer,
             color: '#B7C200',
             size: 'small'
         },
         {
             title: 'Admin',
             icon: 'assets/images/setting-2.svg',
-            route: 'http://localhost:4203',
+            route: environment.remotes.admin,
             color: '#B7C200',
             size: 'small'
         }
