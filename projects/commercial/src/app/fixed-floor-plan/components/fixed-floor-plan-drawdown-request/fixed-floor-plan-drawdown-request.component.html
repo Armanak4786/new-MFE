@@ -22,7 +22,8 @@
           [optionLabel]="'label'"
           placeholder="Select Facility Type"
           [appendTo]="'body'"
-          class="customDropdown wrap-options"
+          [panelStyleClass]="'dropdown-panel-color'"
+          class="customDropdown wrap-options flat-dropdown"
           (onChange)="
             onFormEvent({ name: 'facilityType', value: $event.value })
           "
@@ -47,8 +48,9 @@
           [options]="subFacilityOptions"
           optionLabel="label"
           placeholder="Select Facility"
-          class="w-full customDropdown wrap-options"
+          class="w-full customDropdown wrap-options flat-dropdown"
           [appendTo]="'body'"
+          [panelStyleClass]="'dropdown-panel-color'"
           (onChange)="
             onFormEvent({ name: 'floorplanname', value: $event.value })
           "
@@ -73,8 +75,9 @@
           [options]="programOptions"
           optionLabel="label"
           placeholder="Select Program"
-          class="w-full customDropdown wrap-options"
+          class="w-full customDropdown wrap-options flat-dropdown"
           appendTo="body"
+          [panelStyleClass]="'dropdown-panel-color'"
           (onChange)="onFormEvent({ name: 'programname', value: $event.value })"
         >
           <ng-template let-item pTemplate="item">
@@ -398,7 +401,7 @@
             <div class="chassis-no">
               <div class="col-10 p-fluid">
                 <text
-                  [label]="'chassis_number'"
+                  [label]="'chassis_serial_no'"
                   mode="edit"
                   labelType="vertical"
                   [labelClass]="''"
@@ -559,7 +562,7 @@
             <div class="chassis-no mt-4">
               <div class="col-10 p-fluid">
                 <text
-                  [label]="'chassis_number'"
+                  [label]="'chassis_serial_no'"
                   mode="edit"
                   labelType="vertical"
                   [labelClass]="''"

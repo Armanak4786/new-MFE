@@ -143,7 +143,7 @@ export class AssetlinkComponent {
   afterAssetLinkLoad() {
     this.initChart();
     this.commonSetterGetterService.setDisableParty(false);
-    this.dashSvc.setFacilityTpe(this.facilityType);{}
+    this.dashSvc.setFacilityTpe(this.facilityType);
     sessionStorage.setItem('currentFacilityType', this.facilityType);
 
     const selectedSessionSubFacility = JSON.parse(
@@ -254,7 +254,7 @@ export class AssetlinkComponent {
   }
 
   onCellClick(event: any) {
-    if (!event?.cellData || event?.cellData?.trim() === '') return;
+    // if (!event?.cellData || event?.cellData?.trim() === '') return;
     const clickedFacility = event.rowData;
     this.selectedSubFacility = { ...clickedFacility };
     sessionStorage.setItem(
@@ -264,6 +264,8 @@ export class AssetlinkComponent {
     const componentToLoad =
       clickedFacility.facilityType === 'Current Account'
         ? 'currentAccount'
+      : clickedFacility.facilityType === 'Assetlink Group'
+        ? 'viewAssetLink'
         : 'assetLinkSubfacility';
 
     sessionStorage.setItem('assetlinkCurrentView', componentToLoad);

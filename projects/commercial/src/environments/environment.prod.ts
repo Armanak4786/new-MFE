@@ -28,6 +28,7 @@ export const environment = {
         Motocheck: 'Motocheck',
         customerCommercial: 'CustomerDetailsCommercial',
         WorkFlowsCommercial: 'WorkFlowsCommercial',
+        DocumentService: 'DocumentServices',
     },
     apiUrl: 'http://testudcportalgateway:444/gateway',
     // OIDC Config : Start

@@ -168,6 +168,15 @@ export const assetlinkLoansColumnDefs = [
     cols: 2,
   },
   {
+    field: 'principal',
+    headerName: 'principal',
+    sortable: true,
+    format: '#currency',
+    maxWidth: '20%',
+    width: '20%',
+    cols: 2,
+  },
+  {
     field: 'action',
     width: '10%',
     maxWidth: '10%',

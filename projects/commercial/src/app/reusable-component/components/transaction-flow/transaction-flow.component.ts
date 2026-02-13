@@ -8,7 +8,7 @@ import { IntroducerPaymentTabPopUpComponent } from '../introducer-payment-tab-po
 @Component({
   selector: 'app-transaction-flow',
   templateUrl: './transaction-flow.component.html',
-  styleUrls: ['./transaction-flow.component.scss'],
+  styleUrl: './transaction-flow.component.scss',
 })
 export class TransactionFlowComponent {
   @Input() facilityType;

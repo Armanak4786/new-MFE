@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AddAssetComponent } from '../../../reusable-component/components/add-asset/add-asset.component';
 import { CommonService, PrintService, ToasterService } from 'auro-ui';
 import { ComponentLoaderService } from '../../services/component-loader.service';

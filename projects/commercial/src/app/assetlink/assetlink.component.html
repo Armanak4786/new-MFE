@@ -1,6 +1,6 @@
 <div class="grid card m-1">
   <div class="sm:col-6 md:col-6 lg:col-3 border-round-md">
-    <div class="border rounded-md asset-link-bg">
+    <div class="border rounded-md asset-link-bg" *ngIf="currentSubFacility !== 'currentAccount'">
       <!-- <p-dropdown class="chartDropdown p-2" [options]="optionData" [(ngModel)]="optionData[0].value"
         (onChange)="onFacilityChange($event)"></p-dropdown> -->
       <dropdown

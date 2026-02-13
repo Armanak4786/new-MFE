@@ -310,13 +310,11 @@ export class DashboardComponent {
   }
   getFormattedAddress(addr: any): string {
     if (!addr || !addr.addressComponents) return '';
-    const componentMap = addr.addressComponents.reduce(
-      (map, comp) => {
-        map[comp.type] = comp.value;
-        return map;
-      },
-      {} as { [key: string]: string },
-    );
+    const componentMap = addr.addressComponents.reduce((map, comp) => {
+      const normalizedKey = comp.type.replace(/\s+/g, '');        
+      map[normalizedKey] = comp.value;
+      return map;
+    }, {} as { [key: string]: string });
 
     const fullAddress = [
       componentMap.BuildingName,

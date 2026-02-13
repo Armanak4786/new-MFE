@@ -44,6 +44,7 @@ export class CreditlinesComponent {
   optionData;
   facilityDataList;
   facilityTypeDropdown;
+  showChart: boolean = false;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -258,6 +259,7 @@ export class CreditlinesComponent {
       (componentName) => {
         this.accountType = componentName;
         sessionStorage.setItem('creditlineCurrentView', componentName);
+        this.initChart();
       }
     );
     this.commonSetterGetterSvc.facilityList$.subscribe((list) => {
@@ -298,6 +300,11 @@ export class CreditlinesComponent {
       const availableFunds = dataItem.availableFunds;
       const currentBalance = dataItem.currentBalance;
       const total = availableFunds + currentBalance;
+      if (this.accountType === 'currentAccount') {
+        this.showChart = availableFunds > 0;
+      } else {
+        this.showChart = true;
+      }
       this.data = {
         labels: ['Remaining Limit', 'Current Balance'],
 

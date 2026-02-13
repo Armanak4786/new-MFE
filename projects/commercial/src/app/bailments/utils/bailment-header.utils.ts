@@ -47,30 +47,36 @@ export const bailmentSubFacilityTypeColumnDefs = [
     class: 'text-bold text-primary',
     columnHeaderClass: 'text-xs',
     color: '--primary-color',
+    width: '25%',
   },
   {
     field: 'noOfAssets',
     headerName: 'no_of_assets',
+    width: '15%',
   },
   {
     field: 'temporaryLimit',
     headerName: 'temporary_limit',
     format: '#currency',
+    width: '15%',
   },
   {
     field: 'limit',
     headerName: 'limit',
     format: '#currency',
+    width: '15%',
   },
   {
     field: 'currentBalance',
     headerName: 'current_balance',
     format: '#currency',
+    width: '15%',
   },
   {
     field: 'availableFunds',
     headerName: 'available_funds',
     format: '#currency',
+    width: '15%',
   },
 ];
 

@@ -202,7 +202,7 @@ export class ProductTransferDisclaimerComponent {
           data: {
             title: 'Submission Error',
             messageKey: 'product_transfer_request_error_msg',
-            facilityRoute: 'bailments',
+            facilityRoute: 'bailment',
           },
           width: '30vw',
           height: 'auto',

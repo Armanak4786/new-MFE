@@ -69,15 +69,16 @@
     </div>
 
     <!-- View Button -->
-    <div class="min-w-[100px]">
-      <gen-button [btnLabel]="'view'" (onClick)="search()"></gen-button>
+    <div class="btn-uniform">
+      <gen-button [btnLabel]="'view'" [btnWidth]="'full'" (onClick)="search()"></gen-button>
     </div>
 
     <!-- Reset Button -->
-    <div class="min-w-[100px]">
+    <div class="btn-uniform">
       <gen-button
         [btnLabel]="'reset'"
         [btnType]="'border-btn'"
+        [btnWidth]="'full'"
         (onClick)="reset()"
         class="reset-btn-color"
       ></gen-button>

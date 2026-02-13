@@ -7,11 +7,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonService, GenTableComponent, PrintService } from 'auro-ui';
-import html2canvas from 'html2canvas';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import {
   afvProductType,
   FacilityType,
+  FacilityTypeDropdown,
   leaseProductType,
   loanProductType,
   optionDataFacilities,
@@ -33,7 +33,7 @@ import { requestHistoryColumnDefs } from '../../../dashboard/utils/dashboard-hea
 import { StatusNoteComponent } from '../status-note/status-note.component';
 import { TranslateService } from '@ngx-translate/core';
 
-const excludeValues: any = ['OperatingLease', 'BuyBack Facility','Introducer Transaction Summary'];
+const excludeValues: any = ['OperatingLease', 'BuyBack Facility'];
 
 @Component({
   selector: 'app-request-history',
@@ -55,7 +55,7 @@ export class RequestHistoryComponent {
   selectedToDate: any;
   requestTypeOptions;
   subFacilityOptions;
-  // facilityTypeOptions;
+  facilityTypeOptions;
   partyId: any;
   fromDate;
   toDate;
@@ -68,6 +68,7 @@ export class RequestHistoryComponent {
   facility: any;
   notesDataList: any = [];
   notesResponse: any = [];
+  facilityDataList: any;
   constructor(
     public svc: CommonService,
     public printSer: PrintService,
@@ -80,19 +81,29 @@ export class RequestHistoryComponent {
   ) {}
 
   ngOnInit() {
-    // this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-    //   this.partyId = currentParty?.id;
-    // });
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
     if (!this.partyId) {
       this.svc.router.navigateByUrl('commercial');
     }
-    // this.commonSetterGetterSvc.facilityList$.subscribe((list: any) => {
-    //   const filteredList = list.filter(
-    //     (item) => !excludeValues.includes(item.value)
-    //   );
-    //   this.facilityTypeOptions = filteredList;
-    // });
+    this.commonSetterGetterSvc.facilityList$.subscribe((list: any) => {
+      if (!list?.length) return;
+      this.facilityDataList = list.filter(
+        (item) => !excludeValues.includes(item.value)
+      );
+      this.facilityTypeOptions = this.facilityDataList.map((item) => ({
+        label: FacilityTypeDropdown[item.value],
+        value:
+          optionDataFacilities[
+            item.label as keyof typeof optionDataFacilities
+          ],
+      }));
+      if (this.facilityTypeOptions) {
+        sessionStorage.setItem(
+          'optionDataFacilities',
+          JSON.stringify(this.facilityTypeOptions)
+        );
+      }
+    });
 
     // Filtered result
 

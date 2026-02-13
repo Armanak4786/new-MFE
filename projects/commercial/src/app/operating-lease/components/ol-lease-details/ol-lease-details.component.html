@@ -80,7 +80,7 @@
   </div>
   <div class="sm:col-6 md:col-6 lg:col-6 p-1 print-page no-break">
     <div class="card p-2">
-      <div class="flex items-center mb-2">
+      <div class="flex items-center mb-3">
         <div class="col-4">
           <text
             [mode]="'label'"
@@ -89,70 +89,71 @@
           ></text>
         </div>
       </div>
-      <div class="flex flex-wrap mb-3">
-        <div class="min-w-[150px]">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
+        <div class="min-w-[150px] ml-2">
           <text
             [mode]="'label'"
             [labelType]="'vertical'"
             [labelClass]="'loan-dash-text loan-dash-text-color mr-2 mb-0 pb-0'"
             [label]="'remaining_term'"
-            [valueClass]="'text-xs ml-2 mt-2 mr-2'"
+            [valueClass]="'text-xs mt-1 block'"
             [value]="currentPosition?.[0]?.remainingTerm"
           ></text>
         </div>
-        <div class="flex-1 min-w-[150px] -mt-1">
+        <div class="min-w-[150px] -mt-2">
           <text
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color mt-0'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
             [label]="'overdue_amount_days'"
           ></text>
           <div class="flex">
             <amount
               [mode]="'label'"
-              [valueClass]="'text-xs'"
+              [valueClass]="'text-xs flex ml-2 mt-2 block w-full'"
               [value]="currentPosition?.[0]?.overdueAmount"
             ></amount>
             <text
               [mode]="'label'"
-              [labelClass]="'text-xs'"
+              [labelClass]="'text-xs flex ml-3 block w-full'"
               [label]="' / ' + currentPosition?.[0]?.overduedays + ' days'"
             ></text>
           </div>
         </div>
       </div>
-      <div class="flex flex-row flex-wrap items-start gap-4">
-        <div class="flex flex-col min-w-[150px] mr-6">
+      <div class="flex flex-wrap items-start gap-6 mb-1">
+        <div class="flex flex-col min-w-[150px]">
           <text
             [mode]="'label'"
             [labelClass]="'text-xs label-color font-bold'"
             [label]="'next_rental'"
           ></text>
         </div>
-        <div class="flex flex-col min-w-[150px] mr-5">
+        <div class="flex flex-col min-w-[150px] ml-6">
           <amount
             [mode]="'label'"
             [labelType]="'vertical'"
-            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
             [label]="'rental_amount'"
             [valueClass]="'text-xs'"
             [value]="currentPosition?.[0]?.rentalAmount"
           ></amount>
         </div>
 
-        <div class="flex flex-col min-w-[150px] mr-5">
+        <div class="flex flex-col min-w-[150px]">
           <amount
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color flex'"
+            [labelType]="'vertical'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
             [label]="'gst'"
-            [valueClass]="'text-xs flex'"
+            [valueClass]="'text-xs'"
             [value]="currentPosition?.[0]?.rentalGST"
           ></amount>
         </div>
 
-        <div class="flex flex-col min-w-[150px] mr-5">
+        <div class="flex flex-col min-w-[150px]">
           <amount
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
             [labelType]="'vertical'"
             [label]="'total_rental_amount'"
             [valueClass]="'text-xs'"
@@ -162,16 +163,15 @@
           ></amount>
         </div>
 
-        <div class="flex flex-col min-w-[150px] mr-5">
+        <div class="flex flex-col min-w-[150px] -mt-2">
           <date
-            [labelClass]="'loan-dash-text loan-dash-text-color flex mb-0'"
+            [labelClass]="'loan-dash-text loan-dash-text-color'"
             [label]="'start_date'"
             [labelType]="'vertical'"
             [valueClass]="'text-xs'"
             [value]="currentPosition?.[0]?.nextInstallment"
             [mode]="'label'"
           ></date>
-        </div>
       </div>
     </div>
   </div>

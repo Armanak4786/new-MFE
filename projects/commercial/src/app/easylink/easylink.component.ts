@@ -5,7 +5,7 @@ import {
   inject,
   PLATFORM_ID,
 } from '@angular/core';
-import { CommonService, CurrencyService } from 'auro-ui';
+import { CommonService } from 'auro-ui';
 import { EasylinkDrawdownRequestComponent } from './components/easylink-drawdown-request/easylink-drawdown-request.component';
 import { AddAssetComponent } from '../reusable-component/components/add-asset/add-asset.component';
 import { ReleaseSecurityComponent } from '../reusable-component/components/release-security/release-security.component';
@@ -44,6 +44,7 @@ export class EasylinkComponent {
   easylinkFacilityColumnDefs = easylinkFacilityColumnDefs;
   facilityDataList;
   facilityTypeDropdown;
+  showChart: boolean = false;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -289,6 +290,7 @@ export class EasylinkComponent {
       (componentName) => {
         this.currentFacility = componentName;
         sessionStorage.setItem('easylinkCurrentView', componentName);
+        this.initChart();
       }
     );
 
@@ -321,7 +323,11 @@ export class EasylinkComponent {
       const dataItem = this.easylinkDataList[0];
       const availableFunds = dataItem?.availableFunds;
       const currentBalance = dataItem?.currentBalance;
-
+      if (this.currentFacility === 'currentAccount') {
+        this.showChart = availableFunds > 0;
+      } else {
+        this.showChart = true;
+      }
       this.data = {
         labels: ['Available Funds', 'Current Balance'],
         datasets: [
@@ -394,7 +400,12 @@ export class EasylinkComponent {
   }
 
   onCellClick(event: any) {
-    if (!event.cellData || event.cellData.trim() === '') return;
+    if (!event || event.colName !== 'facilityName') {
+      return;
+    }
+    if (event.cellData === null || event.cellData === undefined) {
+      return;
+    }
     const clickedFacility = event.rowData;
     this.selectedSubFacility = { ...clickedFacility }; // clone to avoid reference issue
     sessionStorage.setItem(
@@ -404,7 +415,9 @@ export class EasylinkComponent {
     const componentToLoad =
       clickedFacility.facilityType === 'Current Account'
         ? 'currentAccount'
-        : 'easylinkFacility';
+      : clickedFacility.facilityType === 'Easylink Group'
+        ? 'viewEasylink'
+        : 'easylinkFacility'
 
     sessionStorage.setItem('easylinkCurrentView', componentToLoad);
     // Always call even if same component

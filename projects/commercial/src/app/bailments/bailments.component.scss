@@ -212,6 +212,7 @@ gen-table {
   background-color: var(--subfacility-bg-color);
   margin-top: -5px;
   border-radius: 10px;
+  margin-left: -1px;
 }
 
 .text-blue{
@@ -233,4 +234,9 @@ gen-table {
       cursor: default;
     }
   }
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:first-child > td {
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.7rem !important;
 }

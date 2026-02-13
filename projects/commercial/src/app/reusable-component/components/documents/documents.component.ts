@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonService, ToasterService } from 'auro-ui';
 import { DialogService } from 'primeng/dynamicdialog';
 import {
@@ -18,6 +18,7 @@ import {
 import { assetlinkDocumentsColumnDefs } from '../../../assetlink/utils/assetlink-header.util';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import { DocumentViewComponent } from '../../../assetlink/components/document-view/document-view.component';
+import { UploadDocsComponent } from '../upload-docs/upload-docs.component';
 
 interface Document {
   name: string;
@@ -37,6 +38,7 @@ interface Document {
   styleUrl: './documents.component.scss',
 })
 export class DocumentsComponent {
+  @ViewChild(UploadDocsComponent) uploadDocsComponent: UploadDocsComponent;
   @Input() documentsColumnDefs: any[];
   @Input() documentsDataList;
   @Input() facilityType;
@@ -160,16 +162,22 @@ export class DocumentsComponent {
     }
   }
 
-  deleteFile(doc: string) {
+  deleteFile(doc: any) {
+    const fileName = doc.name;
     const index = this.uploadedDocuments.findIndex(
-      (doc) => doc.name === doc.name
+      (item) => item.name === fileName
     );
 
     if (index > -1) {
       console.log(`Deleting file: ${this.uploadedDocuments[index].name}`);
-      this.uploadedDocuments.splice(index, 1); // Remove the document at the specified index
+      this.uploadedDocuments.splice(index, 1); // Remove the document from display
+
+      // Also remove from upload-docs component to prevent submission
+      if (this.uploadDocsComponent) {
+        this.uploadDocsComponent.removeFileByName(fileName);
+      }
     } else {
-      console.log(`Document with ID ${doc} not found.`);
+      console.log(`Document with name ${fileName} not found.`);
     }
   }
 

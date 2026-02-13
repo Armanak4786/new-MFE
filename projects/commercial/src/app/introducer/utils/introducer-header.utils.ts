@@ -74,6 +74,7 @@ export const introducerPaymentColDef = [
   {
     field: 'date',
     headerName: 'date',
+    format: '#date',
   },
   {
     field: 'paymentMethod',
@@ -95,6 +96,7 @@ export const introducerTransactionColDef = [
   {
     field: 'date',
     headerName: 'date',
+    format: '#date',
   },
   {
     field: 'transaction',

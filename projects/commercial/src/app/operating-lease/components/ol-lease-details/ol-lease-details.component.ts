@@ -100,7 +100,7 @@ export class OlLeaseDetailsComponent {
     this.leaseData = this.olSetterGetterService.getLeaseData();
     if (!this.leaseData) {
       // If no data found, navigate back
-      this.router.navigate(['operating-lease']);
+      this.router.navigate(['commercial/operating-lease']);
     } else {
       this.facilityType = this.dashSvc.getFacilityTpe();
       //this.partyId = JSON.parse(sessionStorage.getItem('currentParty'));
@@ -311,12 +311,12 @@ export class OlLeaseDetailsComponent {
 
   navigateToOperatingLease() {
     this.olSetterGetterService.navigateToLease = false;
-    this.router.navigate(['operating-lease']);
+    this.router.navigate(['commercial/operating-lease']);
   }
 
   navigateToLoansDashboard() {
     this.olSetterGetterService.navigateToLease = true;
-    this.router.navigate([`operating-lease`]);
+    this.router.navigate([`commercial/operating-lease`]);
   }
 
   // onDocumentClick(event) {

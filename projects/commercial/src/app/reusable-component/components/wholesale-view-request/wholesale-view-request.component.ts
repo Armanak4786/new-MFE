@@ -274,29 +274,29 @@ export class WholesaleViewRequestComponent {
     });
   }
 
-  async onDocUploadClick(event) {
+    async onDocUploadClick(event) {
     if (this.selectedPaymentOption !== 'udc') {
       const formData = new FormData();
       formData.append('id', String(this.seletectedNote));
-
+ 
       for (const doc of event) {
         const base64 = doc.file;
         const fileName = doc.name;
         const fileType = doc.type;
-
+ 
         const byteArray = base64ToBytes(base64);
         const buffer = byteArray.buffer as ArrayBuffer;
-
+ 
         const finalFileName = fileName.includes('.')
           ? fileName
           : `${fileName}.${fileType}`;
-
+ 
         const mimeType = getMimeTypeFromName(finalFileName);
         const blob = new Blob([buffer], { type: mimeType });
-
+ 
         formData.append('noteAttachment', blob, finalFileName);
       }
-
+ 
       await this.uploadDocs(formData);
     } else {
       const payload = {
@@ -309,7 +309,7 @@ export class WholesaleViewRequestComponent {
           noteAttachmentId: [doc.documentId],
         })),
       };
-
+ 
       await this.uploadTaskDocs(
         { taskId: this.selectedRowData.taskId },
         payload

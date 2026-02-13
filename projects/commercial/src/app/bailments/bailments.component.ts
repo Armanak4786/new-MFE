@@ -427,7 +427,7 @@ export class BailmentsComponent {
   }
 
   onCellClick(event: any) {
-    // if (!event?.cellData || event?.cellData.trim() === '') return;
+    if (!event?.cellData || event?.cellData.trim() === '') return;
     const clickedFacility = event.rowData;
     // if (clickedFacility.facilityName) {
     this.bailmentSubFacilityDataList = [
@@ -459,7 +459,7 @@ export class BailmentsComponent {
   onFrequencyChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`${facilityRoute}`]);
+      this.router.navigate([`commercial/${facilityRoute}`]);
     }
   }
 
@@ -550,9 +550,15 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-        width: '70vw',
-        height: '30vw',
-        contentStyle: { overflow: 'auto' }
+        width: '900px',
+        contentStyle: {
+          minHeight: '500px',
+          height: 'auto',
+          overflow: 'auto',
+        },
+        // width: '70vw',
+        // height: '30vw',
+        // contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
   }
@@ -568,9 +574,15 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-        width: '70vw',
-        height: '30vw',
-        contentStyle: { overflow: 'auto' }
+        width: '900px',
+        contentStyle: {
+        minHeight: '500px',
+        height: 'auto',
+        overflow: 'auto',
+      },
+        // width: '70vw',
+        // height: '30vw',
+        // contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
     // this.showFacilityAssets();
@@ -586,9 +598,15 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-        width: '70vw',
-        height: '30vw',
-        contentStyle: { overflow: 'auto' }
+        width: '950px',
+        contentStyle: {
+        minHeight: '500px',
+        height: 'auto',
+        overflow: 'auto',
+      },
+        // width: '70vw',
+        // height: '30vw',
+        // contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
   }
@@ -604,9 +622,15 @@ export class BailmentsComponent {
           selectedSubFacility: this.selectedSubFacility,
           bailmentFacilityDataList: this.bailmentFacilityDataList,
         },
-        width: '70vw',
-        height: '30vw',
-        contentStyle: { overflow: 'auto' }
+        width: '900px',
+        contentStyle: {
+        minHeight: '500px',
+        height: 'auto',
+        overflow: 'auto',
+      },
+        // width: '70vw',        
+        // height: '30vw',
+        // contentStyle: { overflow: 'auto' }
       })
       .onClose.subscribe((data: any) => {});
   }

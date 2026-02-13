@@ -196,6 +196,15 @@ export const easylinkLoansColumnDefs = [
     sortable: true,
   },
   {
+    field: 'principal',
+    headerName: 'principal',
+    sortable: true,
+    format: '#currency',
+    maxWidth: '20%',
+    width: '20%',
+    cols: 2,
+  },
+  {
     field: 'action',
     headerName: 'Action',
     format: '#icons',

@@ -288,7 +288,7 @@ export class BailmentSummaryDashboardComponent implements OnInit, OnDestroy {
 
   async onSubmit() {
     this.prepareRequestPayloads();
-    this.router.navigate(['bailment']);
+    this.router.navigate(['commercial/bailment']);
 
     try {
       await this.submitRequest();
@@ -537,7 +537,7 @@ export class BailmentSummaryDashboardComponent implements OnInit, OnDestroy {
       data: {
         title: 'Submission Error',
         messageKey: 'product_transfer_request_error_msg',
-        facilityRoute: 'bailments',
+        facilityRoute: 'bailment',
       },
       width: '30vw',
       height: 'auto',

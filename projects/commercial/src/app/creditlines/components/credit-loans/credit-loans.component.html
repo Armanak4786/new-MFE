@@ -44,9 +44,10 @@
         <div class="flex-1">
           <amount
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color flex mb-1'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-right mt-3 mb-1'"
             [label]="'amount_financed'"
-            [valueClass]="'text-xs flex'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
             [value]="loanData?.initialLoanAmount"
           >
           </amount>
@@ -99,7 +100,7 @@
         </div>
       </p-overlayPanel>
 
-      <div class="flex flex-wrap justify-between gap-6">
+      <div class="flex flex-wrap justify-between gap-6 mb-4">
         <div class="flex-1">
           <date
             [labelClass]="'loan-dash-text loan-dash-text-color mb-0'"
@@ -147,11 +148,11 @@
   </div>
   <div class="sm:col-6 md:col-6 lg:col-5 p-2">
     <div class="card p-2">
-      <div class="flex items-center">
-        <div class="flex">
+      <div class="grid mb-1">
+        <div class="col-4 flex">
           <text
             [mode]="'label'"
-            [labelClass]="'loan-dash-text font-bold'"
+            [labelClass]="'loan-dash-text font-bold mt-2 ml-2'"
             [label]="'current_position'"
           ></text>
           <span>
@@ -163,84 +164,76 @@
           </span>
         </div>
       </div>
-      <div class="flex justify-between mb-2">
-        <div class="flex flex-wrap justify-start gap-5 flex-grow">
-          <div class="min-w-[250px]">
-            <text
-              [mode]="'label'"
-              [labelClass]="'loan-dash-text loan-dash-text-color flex mt-1'"
-              [label]="
-                ('gross_balance' | translate) +
-                ' ' +
-                (toDate | date : 'dd/MM/yyyy')
-              "
-            ></text>
+      <div class="grid mb-1">
+        <div class="col-5">
+          <amount
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-right'"
+            [label]="
+              ('gross_balance' | translate) +
+              ' ' +
+              (toDate | date : 'dd/MM/yyyy')
+            "
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.grossBalanceAsOfToday"
+          ></amount>
+        </div>
+        <div class="col-3">
+          <amount
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-right'"
+            [label]="'outstanding_balance'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.outStandingBalance"
+          ></amount>
+        </div>
+        <div class="col-3">
+          <amount
+            [mode]="'label'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-right'"
+            [label]="'remaining_interest'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
+            [value]="currentPosition?.[0]?.remainingInterest"
+          ></amount>
+        </div>
+        <div class="col-1"></div>
+      </div>
+      <div class="grid mb-1">
+        <div class="col-5">
+          <text
+            [mode]="'label'"
+            [labelType]="'vertical'"
+            [labelClass]="
+              'loan-dash-text loan-dash-text-color align-right text-right'
+            "
+            [label]="'overdue_amount'"
+          ></text>
+          <div class="flex justify-content-end gap-2">
             <amount
               [mode]="'label'"
               [valueClass]="'text-xs'"
-              [value]="currentPosition?.[0]?.grossBalanceAsOfToday"
+              [labelType]="'vertical'"
+              [value]="currentPosition?.[0]?.overdueAmount"
             ></amount>
-          </div>
-        </div>
-        <div class="flex-1 flex justify-center">
-          <div class="min-w-[250px] mx-auto">
             <text
               [mode]="'label'"
-              [labelClass]="
-                'loan-dash-text loan-dash-text-color mb-0 pb-0 mt-1'
-              "
               [labelType]="'vertical'"
-              [label]="'outstanding_balance'"
-              [valueClass]="'text-xs'"
-              [value]="currentPosition?.[0]?.overdueAmount"
+              [labelClass]="'text-xs'"
+              [label]="' / ' + currentPosition?.[0]?.overduedays + ' days'"
             ></text>
           </div>
         </div>
-        <div class="min-w-[100px] ml-auto">
-          <amount
-            [mode]="'label'"
-            [labelType]="'vertical'"
-            [labelClass]="'loan-dash-text loan-dash-text-color mt-1 mb-0 pb-0'"
-            [label]="'remaining_interest'"
-            [value]="currentPosition?.[0]?.remainingInterest"
-            [valueClass]="'text-xs'"
-          ></amount>
-          <!-- <text
-            [mode]="'label'"
-            class="text-xs"
-            [label]="currentPosition?.[0]?.overdueAmount"
-          ></text> -->
-        </div>
-      </div>
-
-      <div class="flex flex-wrap justify-between gap-6">
-        <div class="min-w-[150px]">
+         <div class="col-4 mr-1">
           <text
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color'"
-            [label]="'overdue_amount_days'"
-          ></text>
-          <text
-            [mode]="'label'"
-            [labelClass]="'text-xs'"
-            [label]="
-              currentPosition?.[0]?.overdueAmount +
-              '/' +
-              currentPosition?.[0]?.overduedays +
-              ' days'
-            "
-          ></text>
-        </div>
-        <div class="min-w-[150px]">
-          <text
-            [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex'"
             [label]="'remaining_term'"
-          ></text>
-          <text
-            [mode]="'label'"
-            [labelClass]="'text-xs'"
-            [label]="currentPosition?.[0]?.remainingTerm"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs flex mt-1'"
+            [value]="currentPosition?.[0]?.remainingTerm"
           ></text>
         </div>
       </div>

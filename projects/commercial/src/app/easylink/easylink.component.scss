@@ -49,11 +49,3 @@
   padding: 0.6rem 0rem;
 }
 
-::ng-deep
-  .p-datatable.p-datatable-striped
-  .p-datatable-tbody
-  > tr:nth-child(1) {
-  .row-class-easylink {
-    font-weight: 700;
-  }
-}

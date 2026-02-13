@@ -5,8 +5,10 @@ import {
   Input,
   Output,
 } from '@angular/core';
+// import { BaseStandardQuoteClass } from '../../../../dealer/standard-quote/base-standard-quote.class';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService, CommonService, ToasterService } from 'auro-ui';
+// import { StandardQuoteService } from '../../../../dealer/standard-quote/services/standard-quote.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { DialogService } from 'primeng/dynamicdialog';
 import { DocumentViewComponent } from '../../../assetlink/components/document-view/document-view.component';
@@ -79,7 +81,7 @@ const fileTypeMappings: FileTypeMapping[] = [
   //standalone: true,
   //imports: [],
   templateUrl: './upload-docs.component.html',
-  styleUrls: ['./upload-docs.component.scss'],
+  styleUrl: './upload-docs.component.scss',
 })
 export class UploadDocsComponent {
   @Input() showActionIcons = false;
@@ -98,7 +100,7 @@ export class UploadDocsComponent {
   columns = [
     {
       field: 'name',
-      headerName: '',
+      headerName: 'Document Name',
       minWidth: '4rem',
       maxWidth: '5rem',
       width: '5rem',
@@ -602,5 +604,27 @@ export class UploadDocsComponent {
       uploadedDocuments: this.uploadedDocuments.length,
       documents: this.documents.length
     });
+  }
+
+  removeFileByName(fileName: string): void {
+    // Remove from uploadedFiles
+    this.uploadedFiles = this.uploadedFiles.filter(
+      (file: File) => file.name !== fileName
+    );
+
+    // Remove from uploadedDocuments
+    this.uploadedDocuments = this.uploadedDocuments.filter(
+      (doc) => doc.name !== fileName
+    );
+
+    // Remove from documents
+    const docIndex = this.documents.findIndex((doc) => doc.name === fileName);
+    if (docIndex > -1) {
+      this.documents.splice(docIndex, 1);
+      this.baseSvc.setBaseCommercialFormData({ documentsData: this.documents });
+    }
+
+    // Force change detection
+    this.cd.detectChanges();
   }
 }

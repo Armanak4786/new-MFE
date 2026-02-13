@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonService } from 'auro-ui';
 import { AddAssetComponent } from '../../../reusable-component/components/add-asset/add-asset.component';
 import { ActivatedRoute } from '@angular/router';
-
 import { Subscription, timer } from 'rxjs';
 import { DrawdownRequestComponent } from '../../../assetlink/components/drawdown-request/drawdown-request.component';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';

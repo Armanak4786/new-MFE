@@ -450,6 +450,13 @@ label.required::after {
   display: flex;
   width: 130px;
 }
+:host ::ng-deep .year-calendar .p-inputtext {
+  border: none !important;
+  border-bottom: 1px solid #d1d5db !important;
+}
+:host ::ng-deep .year-calendar .p-calendar {
+  border: none !important;
+}
 :host ::ng-deep .p-datepicker {
   z-index: 9999;
 }

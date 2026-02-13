@@ -42,7 +42,7 @@ import { DrawdownService } from '../../../drawdown.service';
 @Component({
   selector: 'app-drawdown-request',
   templateUrl: './drawdown-request.component.html',
- styleUrls: ['./drawdown-request.component.scss'],
+  styleUrl: './drawdown-request.component.scss',
 })
 export class DrawdownRequestComponent
   extends BaseAssetlinkClass
@@ -177,10 +177,6 @@ export class DrawdownRequestComponent
   }
 
   override async ngOnInit() {
-    // this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-    //   this.partyId = currentParty.id;
-    //   this.customerName = currentParty.name;
-    // });
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
     this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
     this.minDate = formatDate(new Date());
@@ -194,7 +190,7 @@ export class DrawdownRequestComponent
     if (this.dynamicDialogConfig?.data) {
       this.selectedFacility = this.dynamicDialogConfig.data.facilityType;
       this.selectedSubFacility =
-        this.dynamicDialogConfig?.data?.subfacility?.facilityType;
+        this.dynamicDialogConfig?.data?.subfacility?.facilityName;
       this.facilityWiseContractsList =
         this.dynamicDialogConfig.data.loansDataList?.map(
           (item) => item.contractId
@@ -254,7 +250,7 @@ export class DrawdownRequestComponent
     );
 
     const uniqueFacilityTypes = Array.from(
-      new Set(details.map((item) => item.facilityType))
+      new Set(details.map((item) => item.facilityName))
     );
 
     this.facilityOptions = uniqueFacilityTypes.map((type) => ({
@@ -420,7 +416,7 @@ export class DrawdownRequestComponent
       this.selectedFacility === FacilityType.Easylink ||
       this.selectedSubFacility === FacilityType.AssetLink_N_type
     ) {
-      if (this.selectedSubFacility === FacilityType.Current_Account) {
+      if (this.selectedSubFacility === FacilityType.Easylink_Current_Account) {
         this.mainForm?.updateList('loan', this.facilityWiseContractsList);
         this.mainForm?.form.controls['loan']?.setValue(
           this.facilityWiseContractsList[0]

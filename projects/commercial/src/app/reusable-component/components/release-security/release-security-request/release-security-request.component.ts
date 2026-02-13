@@ -10,6 +10,7 @@ import { BaseFormClass, CommonService } from 'auro-ui';
 import { FacilityAssetsService } from '../../../../assetlink/services/facility-assets.service';
 import { ReleaseSecurityConfirmationComponent } from '../release-security-confirmation/release-security-confirmation.component';
 import { CancelPopupComponent } from '../../cancel-popup/cancel-popup.component';
+import { PAYMENT_OPTIONS } from '../../../../utils/common-enum';
 
 @Component({
   selector: 'app-release-security-request',
@@ -56,91 +57,66 @@ export class ReleaseSecurityRequestComponent
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit(); // Call parent ngOnInit first
 
-    let SSV = 0;
-    let facilityAssetData = this.facilityAsset.getData();
+    const facilityAssetData = this.facilityAsset.getData();
     this.aasetListToRelease = facilityAssetData.flat();
 
-    if (this.router.url.includes('/easylink')) {
-      this.IfSsv = false;
-    } else {
-      this.IfSsv = true;
-    }
+    this.IfSsv = !this.router.url.includes('/easylink');
 
-    this.aasetListToRelease.forEach((element) => {
-      let value =
-        typeof element.ssv === 'number' ? element.ssv : parseFloat(element.ssv);
-      if (!isNaN(value)) {
-        SSV += value;
-      }
-    });
+    const totalSSV = this.aasetListToRelease.reduce((sum, element) => {
+      const value = typeof element.ssv === 'number' ? element.ssv : parseFloat(element.ssv);
+      return isNaN(value) ? sum : sum + value;
+    }, 0);
 
     if (this.router.url.includes('/assetlink')) {
-      const formattedValue = `$${SSV.toFixed(2)}`;
-      this.scaledSecurityValue = formattedValue + '.';
+      this.scaledSecurityValue = `$${totalSSV.toFixed(2)}.`;
     }
 
-    this.setupFormListeners();
     this.facilityType = window.location.pathname.split('/')[2] ?? '';
+    
+    // Restore form state from sessionStorage
+    this.restoreFormState();
+    
+    this.setupFormListeners();
+    // Subscribe to form changes to save state
+    this.subscribeToFormChanges();
   }
 
-  private setupFormListeners() {
+   setupFormListeners() {
     // Payment Options listener
     this.releaseForm.get('payOptions')?.valueChanges.subscribe((value) => {
-      const totalPaymentControl = this.releaseForm.get('totalPaymentAmt');
-
-      if (
-        value === 'Debit by nominated bank account' ||
-        value === 'I would like to pay UDC directly'
-      ) {
-        totalPaymentControl?.enable();
-        totalPaymentControl?.setValidators([
-          Validators.required,
-          Validators.pattern(/^\d+(\.\d{1,2})?$/),
-        ]);
-      } else {
-        totalPaymentControl?.reset();
-        totalPaymentControl?.clearValidators();
-        totalPaymentControl?.disable();
-      }
-      totalPaymentControl?.updateValueAndValidity();
+      const requiresPayment =
+        value === PAYMENT_OPTIONS.DEBIT_BANK ||
+        value === PAYMENT_OPTIONS.PAY_DIRECTLY;
+      this.toggleAmountField('totalPaymentAmt', requiresPayment);
     });
 
-    // Asset Sold checkbox listener
+    // Checkbox listeners - enable/disable associated amount fields
     this.releaseForm.get('assetSold')?.valueChanges.subscribe((checked) => {
-      const amt1Control = this.releaseForm.get('Amt1');
-      if (checked) {
-        amt1Control?.enable();
-        amt1Control?.setValidators([
-          Validators.required,
-          Validators.pattern(/^\d+(\.\d{1,2})?$/),
-        ]);
-      } else {
-        amt1Control?.reset();
-        amt1Control?.clearValidators();
-        amt1Control?.disable();
-      }
-      amt1Control?.updateValueAndValidity();
+      this.toggleAmountField('Amt1', checked);
     });
 
-    // Insurance Claim checkbox listener
-    this.releaseForm
-      .get('InsuranceClaim')
-      ?.valueChanges.subscribe((checked) => {
-        const amt2Control = this.releaseForm.get('Amt2');
-        if (checked) {
-          amt2Control?.enable();
-          amt2Control?.setValidators([
-            Validators.required,
-            Validators.pattern(/^\d+(\.\d{1,2})?$/),
-          ]);
-        } else {
-          amt2Control?.reset();
-          amt2Control?.clearValidators();
-          amt2Control?.disable();
-        }
-        amt2Control?.updateValueAndValidity();
-      });
-    this.releaseForm.get('Other')?.valueChanges.subscribe((checked) => {});
+    this.releaseForm.get('InsuranceClaim')?.valueChanges.subscribe((checked) => {
+      this.toggleAmountField('Amt2', checked);
+    });
+  }
+
+  /** Enables/disables an amount field with standard validation */
+   toggleAmountField(controlName: string, enable: boolean) {
+    const control = this.releaseForm.get(controlName);
+    if (!control) return;
+
+    if (enable) {
+      control.enable();
+      control.setValidators([
+        Validators.required,
+        Validators.pattern(/^\d+(\.\d{1,2})?$/),
+      ]);
+    } else {
+      control.reset();
+      control.clearValidators();
+      control.disable();
+    }
+    control.updateValueAndValidity();
   }
 
   // Custom validator to ensure at least one reason is selected
@@ -158,6 +134,54 @@ export class ReleaseSecurityRequestComponent
 
   onTextareaInput(event: Event) {
     this.remarks = (event.target as HTMLTextAreaElement).value;
+    sessionStorage.setItem('releaseSecurityRemarks', this.remarks);
+  }
+
+   restoreFormState() {
+    const savedFormData = sessionStorage.getItem('releaseSecurityFormData');
+    const savedRemarks = sessionStorage.getItem('releaseSecurityRemarks');
+    const savedAssetList = sessionStorage.getItem('releaseSecurityAssetList');
+
+    if (savedFormData) {
+      const formData = JSON.parse(savedFormData);
+
+      this.releaseForm.patchValue({
+        payOptions: formData.payOptions ?? '',
+        totalPaymentAmt: formData.totalPaymentAmt ?? '',
+        assetSold: formData.assetSold ?? false,
+        InsuranceClaim: formData.InsuranceClaim ?? false,
+        Other: formData.Other ?? false,
+        Amt1: formData.Amt1 ?? '',
+        Amt2: formData.Amt2 ?? '',
+      });
+    }
+
+    if (savedRemarks) {
+      this.remarks = savedRemarks;
+    }
+
+    if (savedAssetList) {
+      const assetList = JSON.parse(savedAssetList);
+      if (assetList?.length > 0) {
+        this.aasetListToRelease = assetList;
+      }
+    }
+  }
+
+   subscribeToFormChanges() {
+    this.releaseForm.valueChanges.subscribe((formValue) => {
+      sessionStorage.setItem('releaseSecurityFormData', JSON.stringify(formValue));
+    });
+
+    if (this.aasetListToRelease?.length > 0) {
+      sessionStorage.setItem('releaseSecurityAssetList', JSON.stringify(this.aasetListToRelease));
+    }
+  }
+
+   clearSessionStorage() {
+    sessionStorage.removeItem('releaseSecurityFormData');
+    sessionStorage.removeItem('releaseSecurityRemarks');
+    sessionStorage.removeItem('releaseSecurityAssetList');
   }
 
   override submit() {
@@ -192,7 +216,11 @@ export class ReleaseSecurityRequestComponent
           styleClass: 'dialogue-scroll',
           position: 'center',
         })
-        .onClose.subscribe((data: any) => {});
+        .onClose.subscribe((data: any) => {
+          if (data) {
+            this.clearSessionStorage();
+          }
+        });
     } else {
       // Mark all fields as touched to show validation errors
       this.markFormGroupTouched(this.releaseForm);

@@ -53,7 +53,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  width: 14rem;
+  width: 19rem;
 }
 // Allow text inside options to wrap 
 ::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
@@ -65,4 +65,24 @@
 .btn-uniform {
   min-width: 160px;
   text-align: center;
+}
+
+.facility-dropdown-container {
+  ::ng-deep {
+    .dynamic-dropdown {
+      width: fit-content !important;
+      min-width: 200px;
+      max-width: 100%;
+      transition: width 0.2s ease;
+ 
+      .p-dropdown-label {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: auto;
+        max-width: 100%;
+      }
+    }
+  }
 }

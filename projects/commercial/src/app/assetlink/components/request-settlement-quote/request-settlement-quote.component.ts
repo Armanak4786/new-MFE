@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { BaseFormClass, CommonService, GenericFormConfig, Mode } from 'auro-ui';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { CommonService, GenericFormConfig, Mode } from 'auro-ui';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
@@ -17,6 +17,7 @@ import {
   SettlementQuoteRequestBody,
 } from '../../../utils/common-interface';
 import { CommonApiService } from '../../../services/common-api.service';
+import { RequestAcknowledgmentComponent } from '../request-acknowledgment/request-acknowledgment.component';
 import { AcknowledgmentPopupComponent } from '../../../reusable-component/components/acknowledgment-popup/acknowledgment-popup.component';
 import { CancelPopupComponent } from '../../../reusable-component/components/cancel-popup/cancel-popup.component';
 
@@ -50,6 +51,7 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
   customerName;
   today = new Date();
   loanId;
+  facilityType;
   override formConfig: GenericFormConfig = {
     headerTitle: 'Dynamic Form',
     cardType: 'border',
@@ -192,7 +194,6 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
       },
     ],
   };
-  facilityType: any;
 
   constructor(
     public override svc: CommonService,
@@ -233,8 +234,12 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
     if (this.loanId && this.facilityType) {
       this.fetchSubfacilityByContractId(this.facilityType);
     }
- 
+
     this.fetchFiAcc();
+  }
+  onTextareaClick(event) {
+    const value = (event.target as HTMLTextAreaElement).value;
+    this.settlementObject.externalData.settlementQuoteRequest.remarks = value;
   }
 
   fetchSubfacilityByContractId(facilityType: string) {
@@ -245,17 +250,12 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
       [FacilityType.Assetlink]: financialList?.assetLinkDetails ?? [],
       [FacilityType.Easylink]: financialList?.easyLinkDetails ?? [],
     };
- 
+
     const details = facilityMap[facilityType];
     const matchingSubfacility = details.find(
       (item) => item.contractId === Number(this.loanId),
     );
     this.facilityOptions.push(matchingSubfacility.facilityType);
-  } 
-
-  onTextareaClick(event) {
-    const value = (event.target as HTMLTextAreaElement).value;
-    this.settlementObject.externalData.settlementQuoteRequest.remarks = value;
   }
 
   override onFormReady() {
@@ -395,7 +395,7 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
         })
         .onClose.subscribe((data: any) => {
           this.router.navigate([
-            `${this.facilityTypeOptionList[0].toLowerCase()}`,
+            `commercial/${this.facilityTypeOptionList[0].toLowerCase()}`,
           ]);
         });
     } catch (error) {
@@ -421,13 +421,9 @@ export class RequestSettlementQuoteComponent extends BaseCommercialClass {
       .onClose.subscribe((data: any) => {
         if (data.data == 'cancel') {
           this.router.navigate([
-            `${this.facilityTypeOptionList[0].toLowerCase()}`,
+            `commercial/${this.facilityTypeOptionList[0].toLowerCase()}`,
           ]);
         }
       });
   }
-  override ngOnDestroy() {
-  clearSession(['settlementLoanId']);
-  }
 }
-

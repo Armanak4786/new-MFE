@@ -19,13 +19,13 @@
                 <amount
                   [mode]="'label'"
                   [label]="'principal_movement'"
-                  [labelClass]="'text-xs text-600'"
-                  [className]="'flex flex-column'"
+                  [labelClass]="'text-xs text-600 text-right'"
                   [value]="
                     principalForcastDataList?.data.lastMonthPrincipalMovement
                   "
                   [labelType]="'vertical'"
-                  [valueClass]="'text-xs mr-auto'"
+                  [valueClass]="'text-xs'"
+
                 >
                 </amount>
               </div>
@@ -33,8 +33,7 @@
                 <amount
                   [mode]="'label'"
                   [label]="'interest'"
-                  [labelClass]="'text-xs text-600'"
-                  [className]="'flex flex-column'"
+                  [labelClass]="'text-xs text-600 text-right'"
                   [value]="
                     principalForcastDataList?.data.lastMonthInterestMovement
                   "
@@ -48,8 +47,8 @@
                 <amount
                   [mode]="'label'"
                   [label]="'total'"
-                  [labelClass]="'text-xs font-semibold text-600'"
-                  [className]="'flex flex-column'"
+                  [className]="'mr-1'"
+                  [labelClass]="'text-xs font-semibold text-600 text-right'"
                   [value]="principalForcastDataList?.data.lastMonthTotal"
                   [labelType]="'vertical'"
                   [valueClass]="'text-xs mr-auto'"
@@ -82,9 +81,7 @@
                 <amount
                   [mode]="'label'"
                   [label]="'principal'"
-                  [labelClass]="'text-xs text-600'"
-                  [className]="'flex flex-column'"
-                  [value]="calculatePrincipalMovement() || 0"
+                   [labelClass]="'text-xs text-600 text-right'"                  [value]="calculatePrincipalMovement() || 0"
                   [labelType]="'vertical'"
                   [valueClass]="'text-xs mr-auto'"
                 >
@@ -93,8 +90,8 @@
               <div class="sm:col-4 md:col-4 lg:col-4">
                 <amount
                   [label]="'interest'"
-                  [labelClass]="'text-xs text-600'"
-                  [className]="'flex flex-column'"
+                  [labelClass]="'text-xs text-600 text-right'"
+
                   [value]="calculateInterest() || 0"
                   [labelType]="'vertical'"
                   [valueClass]="'text-xs mr-auto'"
@@ -106,10 +103,10 @@
                 <amount
                   [mode]="'label'"
                   [label]="'lbl_payments'"
-                  [labelClass]="'text-xs text-600 font-semibold'"
-                  [className]="'flex flex-column'"
+                  [labelClass]="'text-xs text-600 font-semibold text-right'"
+[className]="'mr-2'"
                   [value]="calculatePayment() || 0"
-                  [valueClass]="'text-xs font-semibold mr-auto'"
+                  [valueClass]="'text-xs font-semibold'"
                   [labelType]="'vertical'"
                 >
                 </amount>
@@ -136,7 +133,6 @@
           [tableClass]="'border-round'"
           [bodyClass]="'text-xs'"
           [headingClass]="'tableHeader text-xs header-text-color'"
-          [sortable]="true"
           [filter]="true"
           [paginatorFlag]="true"
         ></gen-table>
@@ -209,7 +205,6 @@
           [tableStyle]="'stripped-rows'"
           [bodyClass]="'text-xs'"
           [scrollHeight]="'400px'"
-          [sortable]="true"
           [filter]="true"
           [scrollHeight]="'400px'"
           [strippedOddClass]="'tableOddRow'"

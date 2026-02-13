@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="grid gap-2 flex justify-content-center">
-        <div class="col-3">
+        <div class="btn-uniform">
           <gen-button
             (onClick)="onUpload()"
             [btnColor]="'var(--backgroundColorSecondaryDark)'"
@@ -65,16 +65,15 @@
         </div>
       </div>
     </div>
-    <ng-container *ngIf="showActionIcons">
+    <ng-container *ngIf="showActionIcons && documents.length > 0">
       <div class="col-5" *ngIf="showActionIcons">
         <!-- <p class="mt-2 mb-2 text-xs">Document Type</p> -->
         <div class="h-10rem overflow-auto">
           <gen-table
-            [tableClass]="'border-round'"
             [columns]="columns"
             [dataList]="documents"
             [rowHeight]="12"
-            [headingClass]="'font-medium text-500 px-0 hidden'"
+            [headingClass]="'font-medium text-500 px-0'"
             (onCellClick)="onCellClick($event)"
             [bodyClass]="'px-0 py-1'"
           ></gen-table>

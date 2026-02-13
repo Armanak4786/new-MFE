@@ -439,7 +439,7 @@ export class LoanDashboardComponent {
     const route = routeMap[this.facilityType];
 
     if (route) {
-      this.router.navigate([`${route}`]);
+      this.router.navigate([`commercial/${route}`]);
     } else {
       console.warn('Invalid facility type:', this.facilityType);
     }

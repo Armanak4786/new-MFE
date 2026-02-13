@@ -10,9 +10,8 @@ import {
 } from '../utils/common-enum';
 import { CommonSetterGetterService } from '../services/common-setter-getter/common-setter-getter.service';
 import { DashboardSetterGetterService } from '../dashboard/services/dashboard-setter-getter.service';
-import { take } from 'rxjs';
 import { clearSession, updateDataList } from '../utils/common-utils';
-import { NonFacilityLoansColumnDefs } from './utils/non-facility-header-definition';
+import { nonFacilityLoansColumnDefs } from './utils/non-facility-header-definition';
 @Component({
   selector: 'app-non-facility-loans',
   templateUrl: './non-facility-loans.component.html',
@@ -30,7 +29,7 @@ export class NonFacilityLoansComponent {
   facilityAsssetsDatalist = [];
   dashboardValue: any;
   nonFacilityLoanResponseData = [];
-  nonFacilityLoansColumnDefs = NonFacilityLoansColumnDefs;
+  nonFacilityLoansColumnDefs = nonFacilityLoansColumnDefs;
   userInfo;
   selectedSubFacility;
   partyId: number;
@@ -113,6 +112,26 @@ export class NonFacilityLoansComponent {
   // }
 
   ngOnInit() {
+    clearSession([
+      'assetlinkDataList',
+      'easylinkDataList',
+      'creditlineDataList',
+      'bailmentDataList',
+      'fixedFloorPlanDetails',
+      'floatingFloorPlanDetails',
+      'buybackDataList',
+      'introducerDataList',
+      'selectedEasylinkSubFacility',
+      'selectedAssetlinkSubFacility',
+      'selectedBailmentSubFacility',
+      'selectedFixedFloorSubFacility',
+      'selectedFloatingFloorSubFacility',
+      'selectedBuybackSubFacility',
+      'selectedIntroducerSubFacility',
+      'forecastToDate',
+      'forecastFromDate',
+      'forecastFrequency',
+    ]);
     this.commonSetterGetterService.setDisableParty(false);
 
     const partyData = sessionStorage.getItem('currentParty');
@@ -122,7 +141,7 @@ export class NonFacilityLoansComponent {
     const sessionNonFacility = sessionStorage.getItem(
       'nonFacilityLoanDataList'
     );
-    const optionsData = sessionStorage.getItem('optionDataNonFacilityLoan');
+    const optionsData = sessionStorage.getItem('optionDataFacilities');
 
     if (sessionNonFacility) {
       this.nonFacilityLoanResponseData = JSON.parse(sessionNonFacility);
@@ -154,25 +173,53 @@ export class NonFacilityLoansComponent {
       );
     }
 
+    if (!this.nonFacilityLoanResponseData.length) {
+      this.svc.router.navigateByUrl('dashboard');
+      return;
+    }
+
     if (optionsData) {
-      this.optionData = JSON.parse(optionsData);
       this.facilityTypeDropdown = optionDataFacilities['NonFacilityLoan'];
+      this.optionData = JSON.parse(optionsData);
     }
 
     this.afterNonFacilityLoad();
   }
 
   afterNonFacilityLoad() {
-    this.selectedSubFacility = this.nonFacilityLoanResponseData[0];
+    const validTabs = ['reducingLoans', 'currentAccount'];
+    const storedComponent = sessionStorage.getItem('facilityCurrentComponent');
 
-    sessionStorage.setItem(
-      'selectedNonFacilityLoanSubFacility',
-      JSON.stringify(this.selectedSubFacility)
-    );
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+    } else {
+      this.currentComponent = 'reducingLoans';
+      sessionStorage.setItem('facilityCurrentComponent', this.currentComponent);
+    }
 
     this.dashSvc.setFacilityTpe(this.facilityType);
+    sessionStorage.setItem('currentFacilityType', FacilityType.NonFacilityLoan);
 
-    this.currentComponent = 'reducingLoans';
+    const storedSubFacility = sessionStorage.getItem('selectedNonFacilityLoanSubFacility');
+    const selectedSessionSubFacility = storedSubFacility ? JSON.parse(storedSubFacility) : null;
+
+    if (selectedSessionSubFacility) {
+      this.selectedSubFacility = selectedSessionSubFacility;
+    } else {
+      this.selectedSubFacility = this.nonFacilityLoanResponseData[0];
+      sessionStorage.setItem(
+        'selectedNonFacilityLoanSubFacility',
+        JSON.stringify(this.selectedSubFacility)
+      );
+    }
+
+    if (this.currentComponent === 'reducingLoans') {
+      this.nonFacilityLoansComponentLoaderService.loadComponentOnFacilitySelection('reducingLoans');
+    } else if (this.currentComponent === 'currentAccount') {
+      this.nonFacilityLoansComponentLoaderService.loadComponentOnFacilitySelection('currentAccount');
+    }
+
     this.nonFacilityLoansComponentLoaderService.facilityComponent$.subscribe(
       (componentName) => {
         this.currentComponent = componentName;
@@ -180,7 +227,7 @@ export class NonFacilityLoansComponent {
     );
 
     this.commonSetterGetterService.facilityList$.subscribe((list) => {
-      if (list?.length) {
+      if (list && list.length > 0) {
         this.facilityDataList = list;
 
         this.optionData = this.facilityDataList.map((item) => ({
@@ -190,12 +237,12 @@ export class NonFacilityLoansComponent {
               item.label as keyof typeof optionDataFacilities
             ],
         }));
-
+        if (this.optionData) {
         sessionStorage.setItem(
-          'optionDataNonFacilityLoan',
+          'optionDataFacilities',
           JSON.stringify(this.optionData)
         );
-
+        }
         this.facilityTypeDropdown = optionDataFacilities['NonFacilityLoan'];
       }
     });
@@ -220,22 +267,19 @@ export class NonFacilityLoansComponent {
 
     const clickedFacility = event.rowData;
 
-    // Clone to avoid reference mutation
     this.selectedSubFacility = { ...clickedFacility };
 
-    // Store in session for refresh / navigation
     sessionStorage.setItem(
-      'selectedNonFacilitySubFacility',
+      'selectedNonFacilityLoanSubFacility',
       JSON.stringify(this.selectedSubFacility)
     );
 
-    // Decide component
     const componentToLoad =
       clickedFacility.facilityType === 'Current Account'
         ? 'currentAccount'
         : 'reducingLoans';
 
-    // Force reload even if same component
+    sessionStorage.setItem('facilityCurrentComponent', componentToLoad);
     this.nonFacilityLoansComponentLoaderService.loadComponentOnFacilitySelection(
       null
     );
@@ -253,11 +297,15 @@ export class NonFacilityLoansComponent {
   facilityChange(event) {
     const facilityRoute = event.value;
     if (facilityRoute) {
-      this.router.navigate([`${facilityRoute}`]);
+      this.router.navigate([`commercial/${facilityRoute}`]);
     }
   }
 
   ngOnDestroy() {
     clearSession('currentComponent');
+    clearSession('facilityCurrentComponent');
+    clearSession('nonFacilityLoanDataList');
+    clearSession('selectedNonFacilityLoanSubFacility');
+    clearSession('currentFacilityType');
   }
 }

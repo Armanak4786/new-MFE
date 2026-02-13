@@ -7,7 +7,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-4 ml-2">
+  <div class="col-12 md:col-5">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color text-sm'"
@@ -33,7 +33,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-4 ml-2">
+  <div class="col-12 md:col-5">
     <div class="">
       <p-dropdown
         [options]="subFailityOptionList"
@@ -41,9 +41,11 @@
         optionLabel="label"
         optionValue="value"
         (onChange)="subFacilityChange($event)"
+        class="flat-dropdown"
+        [panelStyleClass]="'dropdown-panel-color'" 
       >
-        <ng-template let-item pTemplate="item">
-          <div [title]="item.label">{{ item.label }}</div>
+        <ng-template let-item pTemplate="selectedItem">
+          <div [pTooltip]="item.label" tooltipPosition="bottom">{{ item.label }}</div>
         </ng-template>
       </p-dropdown>
     </div>
@@ -61,21 +63,7 @@
       />
     </span>
   </div>
-  <!-- <div class="col-12 md:col-3 col-offset-1 searchAssetClass">
-    <text (onInput)="searchInput($event)" class="searchAssetInputClass"></text>
-    <text [mode]="'label'" [valueClass]="'text-xs'"> </text>
-  </div>
-
-  <div class="col-12 md:col-2">
-    <gen-button
-      [btnLabel]="'Search'"
-      (click)="onSearch()"
-      [btnWidth]="'full'"
-      [disabled]="!selectedSubFacilityID"
-    ></gen-button>
-  </div> -->
 </div>
-<!-- style="max-height: 500px; overflow-y: auto" -->
 <div *ngIf="showAssetList">
   <div class="lg:col-12 mt-3">
     <gen-table

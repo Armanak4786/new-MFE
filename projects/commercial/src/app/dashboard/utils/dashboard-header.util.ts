@@ -22,7 +22,7 @@ export const creditlineFacilityColumnDefs = [
     width: '20%',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {
@@ -39,7 +39,7 @@ export const creditlineFacilityColumnDefs = [
     width: '20%',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {
@@ -147,7 +147,7 @@ export const nonFacilityLoansColumnDefs = [
     width: '20%',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {
@@ -219,7 +219,7 @@ export const assetlinkColumnDefs = [
     format: '#currency',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {
@@ -235,7 +235,7 @@ export const assetlinkColumnDefs = [
     format: '#currency',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {
@@ -269,7 +269,7 @@ export const easylinkFacilityColumnDefs = [
     width: '20%',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {
@@ -286,7 +286,7 @@ export const easylinkFacilityColumnDefs = [
     width: '20%',
     iconRight: (rowData) => {
       return [0].includes(rowData.__index)
-        ? 'fa-regular fa-circle-info text-primary'
+        ? 'fa-regular fa-circle-info text-primary pl-2'
         : null;
     },
     iconTooltip: (value, rowIndex) => {

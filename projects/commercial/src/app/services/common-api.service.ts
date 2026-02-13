@@ -2383,4 +2383,60 @@ export class CommonApiService {
       });
     });
   }
+
+  getReportParametersById(reportId: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getDataUrl(
+        `${this.baseUrls.DocumentService}/getDynamicParametersByReportId?ReportId=${reportId}`
+      ).subscribe({
+        next: (data) => {
+          if (data?.apiError?.errors?.length !== 0) {
+            data?.apiError?.errors?.forEach((error) => {
+              console.log(error.messageId);
+            });
+          }
+          resolve(data?.data);
+        },
+        error: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  getReportsList(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getDataUrl(`${this.baseUrls.DocumentService}/getAccessibleReportList`).subscribe({
+        next: (data) => {
+          if (data?.apiError?.errors?.length !== 0) {
+            data?.apiError?.errors?.forEach((error) => {
+              console.log(error.messageId);
+            });
+          }
+          resolve(data?.data);
+        },
+        error: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  downloadReport(payload: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.postDataUrl(`${this.baseUrls.DocumentService}/reportInvoke`, payload).subscribe({
+        next: (data) => {
+          if (data?.apiError?.errors?.length !== 0) {
+            data?.apiError?.errors?.forEach((error) => {
+              console.log(error.messageId);
+            });
+          }
+          resolve(data?.data);
+        },
+        error: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
 }

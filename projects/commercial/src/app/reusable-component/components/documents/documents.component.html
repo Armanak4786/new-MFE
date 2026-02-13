@@ -76,11 +76,14 @@
                 valueClass="'text-xs'"
               ></text>
             </div>
+            <!-- <div class="flex items-center mb-2 ml-5">
+              <span class="text-xs text-gray-600">Click on Upload to complete</span>
+            </div> -->
             <div class="flex items-center mb-2 ml-4">
               <!-- <text [mode]="'label'" [valueClass]="'text-xs'" [value]="'(doc.uploadedSize / 1024).toFixed(2) KB of  (doc.totalSize / 1024).toFixed(2)'"> -->
               <span class="text-xs"
                 >{{ (doc.uploadedSize / 1024).toFixed(2) }} KB of
-
+ 
                 {{ (doc.totalSize / 1024).toFixed(2) }} KB
               </span>
               <div class="flex items-center ml-2">
@@ -94,9 +97,9 @@
                   <span class="text-xs ml-1 text-gray-600">Uploading...</span>
                 </ng-container>
                 <ng-template #uploadComplete>
-                  <i class="fas fa-check-circle text-green-500"></i>
-                  <span class="text-xs ml-1 text-green-600"
-                    >Upload complete</span
+                  <!-- <i class="fas fa-check-circle text-green-500"></i> -->
+                  <span class="text-xs ml-1 text-green-600 font-bold"
+                    >Click on Upload to complete</span
                   >
                 </ng-template>
               </div>

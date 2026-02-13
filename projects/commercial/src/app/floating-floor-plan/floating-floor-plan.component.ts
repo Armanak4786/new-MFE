@@ -414,11 +414,12 @@ export class FloatingFloorPlanComponent {
           facilityType: this.facilityType,
           subfacility: this.selectedSubFacility,
         },
-        // height: '42vw',
-        // width: '78vw',
-        height: '30vw',
-        width: '70vw',
-        contentStyle: { overflow: 'auto' },
+        width: '953px',
+        contentStyle: {
+        minHeight: '400px',
+        height: 'auto',
+        overflow: 'auto',
+      },
         styleClass: 'dialogue-scroll',
         position: 'center',
       })

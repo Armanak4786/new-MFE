@@ -26,7 +26,6 @@ import {
   NewLoanRequestBody,
   uploadedFiles,
 } from '../../../utils/common-interface';
-import { RequestAcknowledgmentComponent } from '../../../assetlink/components/request-acknowledgment/request-acknowledgment.component';
 import { FacilityType, taskPostStaticFields } from '../../../utils/common-enum';
 import { DrawdownServiceService } from '../../../dashboard/services/drawdown-service.service';
 import { BaseCommercialService } from '../../../reusable-component/services/base-commercial.service';
@@ -40,7 +39,7 @@ import { DrawdownService } from '../../../drawdown.service';
 @Component({
   selector: 'app-creditline-drawdown-request',
   templateUrl: './creditline-drawdown-request.component.html',
-  styleUrls: ['./creditline-drawdown-request.component.scss'],
+  styleUrl: './creditline-drawdown-request.component.scss',
 })
 export class CreditlineDrawdownRequestComponent
   extends BaseCreditlineClass
@@ -189,7 +188,7 @@ export class CreditlineDrawdownRequestComponent
       // this.selectedFacility = this.dynamicDialogConfig.data.facilityType;
       this.selectedFacility = sessionStorage.getItem('currentFacilityType');
       this.selectedSubFacility =
-        this.dynamicDialogConfig?.data?.subfacility?.facilityType;
+        this.dynamicDialogConfig?.data?.subfacility?.facilityName;
       // this.facilityWiseContractsList =
       //   this.dynamicDialogConfig.data.loansDataList?.map(
       //     (item) => item.contractId
@@ -260,7 +259,7 @@ export class CreditlineDrawdownRequestComponent
       );
 
       const uniqueFacilityTypes = Array.from(
-        new Set(details.map((item) => item.facilityType))
+        new Set(details.map((item) => item.facilityName))
       );
 
       this.facilityOptions = uniqueFacilityTypes.map((type) => ({
