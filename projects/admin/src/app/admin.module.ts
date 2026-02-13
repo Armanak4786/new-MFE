@@ -22,10 +22,10 @@ const routes: Routes = [
         data: { breadcrumb: 'Portal Settings' },
       },
       {
-        path: 'dealer/legal-messages',
+        path: 'dealer/messages',
         loadChildren: () =>
           import('./dealer-portal/legal-messages/legal-messages.module').then((m) => m.LegalMessagesModule),
-        data: { breadcrumb: 'Legal Messages' },
+        data: { breadcrumb: 'Messages' },
       },
       {
         path: 'dealer/logo-branding',
@@ -52,10 +52,10 @@ const routes: Routes = [
         data: { breadcrumb: 'Role Base Access' },
       },
       {
-        path: 'retail/legal-messages',
+        path: 'retail/messages',
         loadChildren: () =>
           import('./retail-portal/legal-messages/legal-messages.module').then((m) => m.RetailLegalMessagesModule),
-        data: { breadcrumb: 'Legal Messages' },
+        data: { breadcrumb: 'Messages' },
       },
       {
         path: 'retail/logo-branding',
@@ -76,10 +76,10 @@ const routes: Routes = [
         data: { breadcrumb: 'Role Base Access' },
       },
       {
-        path: 'commercial/legal-messages',
+        path: 'commercial/messages',
         loadChildren: () =>
           import('./commercial-portal/legal-messages/legal-messages.module').then((m) => m.CommercialLegalMessagesModule),
-        data: { breadcrumb: 'Legal Messages' },
+        data: { breadcrumb: 'Messages' },
       },
       {
         path: 'commercial/logo-branding',

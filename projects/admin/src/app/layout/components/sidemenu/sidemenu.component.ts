@@ -103,16 +103,16 @@ export class SidemenuComponent implements OnInit {
             },
             {
               id: 'dealer-legal-messages',
-              label: 'Legal Messages',
+              label: 'Messages',
               icon: '',
-              route: '/dealer/legal-messages',
+              route: '/dealer/messages',
             },
-            {
-              id: 'dealer-error-messages',
-              label: 'Error Messages',
-              icon: '',
-              route: '/dealer/error-messages',
-            },
+            // {
+            //   id: 'dealer-error-messages',
+            //   label: 'Error Messages',
+            //   icon: '',
+            //   route: '/dealer/error-messages',
+            // },
             {
               id: 'dealer-role-access',
               label: 'Role Base Access',
@@ -140,16 +140,16 @@ export class SidemenuComponent implements OnInit {
             },
             {
               id: 'retail-legal-messages',
-              label: 'Legal Messages',
+              label: 'Messages',
               icon: '',
-              route: '/retail/legal-messages',
+              route: '/retail/messages',
             },
-            {
-              id: 'retail-error-messages',
-              label: 'Error Messages',
-              icon: '',
-              route: '/retail/error-messages',
-            },
+            // {
+            //   id: 'retail-error-messages',
+            //   label: 'Error Messages',
+            //   icon: '',
+            //   route: '/retail/error-messages',
+            // },
             {
               id: 'retail-role-access',
               label: 'Role Base Access',
@@ -177,16 +177,16 @@ export class SidemenuComponent implements OnInit {
             },
             {
               id: 'commercial-legal-messages',
-              label: 'Legal Messages',
+              label: 'Messages',
               icon: '',
-              route: '/commercial/legal-messages',
+              route: '/commercial/messages',
             },
-            {
-              id: 'commercial-error-messages',
-              label: 'Error Messages',
-              icon: '',
-              route: '/commercial/error-messages',
-            },
+            // {
+            //   id: 'commercial-error-messages',
+            //   label: 'Error Messages',
+            //   icon: '',
+            //   route: '/commercial/error-messages',
+            // },
             {
               id: 'commercial-role-access',
               label: 'Role Base Access',
