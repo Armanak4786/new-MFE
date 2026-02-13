@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface MenuItem {
     id: string;
@@ -44,9 +45,16 @@ Approval is subject to the terms and conditions applicable to your facility. To 
         }
     ];
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Dealer Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
 
     saveMessage(message: LegalMessage): void {

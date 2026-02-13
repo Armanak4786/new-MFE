@@ -6,12 +6,6 @@
             <h1>Brand Manager</h1>
             <p class="subtitle">Customise visual identity and theme settings for the Dealer Portal instance.</p>
         </div>
-        <div class="header-actions">
-            <button class="btn-secondary" (click)="resetToDefault()">Reset to Default</button>
-            <button class="btn-primary" (click)="saveChanges()">
-                <i class="fa fa-save"></i> Save Changes
-            </button>
-        </div>
     </div>
 
     <!-- Main Content Grid -->
@@ -99,9 +93,11 @@
                 </div>
                 <div class="header-controls">
                     <span class="total-count">{{ getTotalLogosCount() }} total logos</span>
-                    <button class="btn-add-brand" (click)="showAddBrandModal = true">
-                        <i class="fa fa-plus"></i> Add New Brand
-                    </button>
+                    <gen-button
+                   
+                        btnLabel="Add New Brand"
+                        (onClick)="showAddBrandModal = true">
+                    </gen-button>
                 </div>
             </div>
             
@@ -211,10 +207,16 @@
                                (keyup.enter)="addNewBrand()" />
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-secondary" (click)="showAddBrandModal = false">Cancel</button>
-                        <button class="btn-primary" (click)="addNewBrand()" [disabled]="!newBrandName.trim()">
-                            <i class="fa fa-plus"></i> Add Brand
-                        </button>
+                        <gen-button
+                            btnLabel="Cancel"
+                            [btnType]="'border-btn'"
+                            (onClick)="showAddBrandModal = false">
+                        </gen-button>
+                        <gen-button
+                            btnLabel="Add Brand"
+                            [disabled]="!newBrandName.trim()"
+                            (onClick)="addNewBrand()">
+                        </gen-button>
                     </div>
                 </div>
             </div>
@@ -278,5 +280,18 @@
                 </p>
             </div>
         </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+        <gen-button
+            btnLabel="Reset to Default"
+            [btnType]="'border-btn'"
+            (onClick)="resetToDefault()">
+        </gen-button>
+        <gen-button
+            btnLabel="Save Changes"
+            (onClick)="saveChanges()">
+        </gen-button>
     </div>
 </div>

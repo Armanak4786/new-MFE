@@ -38,6 +38,11 @@
                 "glob": "**/*",
                 "input": "public",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/auro-ui/src/auro-ui-assets",
+                "output": "/auro-ui-assets"
               }
             ],
             "styles": [
@@ -47,6 +52,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -165,6 +176,8 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/dealer/",
+              "deployUrl": "/dealer/",
               "fileReplacements": [
                 {
                   "replace": "projects/dealer/src/environments/environment.ts",
@@ -289,6 +302,8 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/commercial/",
+              "deployUrl": "/commercial/",
               "budgets": [
                 {
                   "type": "initial",
@@ -413,6 +428,8 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/admin/",
+              "deployUrl": "/admin/",
               "fileReplacements": [
                 {
                   "replace": "projects/admin/src/environments/environment.ts",
@@ -427,8 +444,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "10kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"

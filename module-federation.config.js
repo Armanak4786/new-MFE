@@ -1,13 +1,31 @@
 const { share, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 
-module.exports = withModuleFederationPlugin({
-  name: 'authentication',
+// Get remote URLs from environment variables or use defaults for development
+const getRemoteUrls = () => {
+  const isProduction = process.env['NODE_ENV'] === 'production';
   
-  remotes: {
+  if (isProduction) {
+    // In production, use environment variables or default to same origin with paths
+    const baseUrl = process.env['REMOTE_BASE_URL'] || '';
+    return {
+      dealer: `${baseUrl}/dealer/remoteEntry.js`,
+      commercial: `${baseUrl}/commercial/remoteEntry.js`,
+      admin: `${baseUrl}/admin/remoteEntry.js`,
+    };
+  }
+  
+  // Development defaults
+  return {
     dealer: 'http://localhost:4201/remoteEntry.js',
     commercial: 'http://localhost:4202/remoteEntry.js',
     admin: 'http://localhost:4203/remoteEntry.js',
-  },
+  };
+};
+
+module.exports = withModuleFederationPlugin({
+  name: 'authentication',
+  
+  remotes: getRemoteUrls(),
 
   shared: share({
     "@angular/core": { singleton: true, strictVersion: true, requiredVersion: 'auto' },

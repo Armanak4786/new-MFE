@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface Offer {
     id: string;
@@ -27,9 +28,16 @@ export class CommercialNotificationsComponent implements OnInit {
     bannerFileName: string = '';
     isDragOver: boolean = false;
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Commercial Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
     onFileSelect(event: any): void {
         const file = event.target.files[0];

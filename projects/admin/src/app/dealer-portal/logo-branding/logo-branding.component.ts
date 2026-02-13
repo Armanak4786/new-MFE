@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface ThemeColor {
     label: string;
@@ -69,9 +70,16 @@ export class LogoBrandingComponent implements OnInit {
         { label: 'LG (24px)', value: 24 }
     ];
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Dealer Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
     onMainLogoUpload(event: any): void {
         const file = event.target.files[0];

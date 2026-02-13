@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreadcrumbService } from 'auro-ui';
 
 interface Role {
     id: string;
@@ -83,9 +84,16 @@ export class DealerRoleAccessComponent implements OnInit {
         }
     ];
 
-    constructor() { }
+    constructor(private breadcrumbService: BreadcrumbService) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.breadcrumbService.updateCustomBreadcrumb({
+            action: 'prepend',
+            label: 'Dealer Portal',
+            icon: '',
+            url: '/',
+        });
+    }
 
     getFilteredPermissions(category: PermissionCategory): Permission[] {
         if (!this.searchFilter.trim()) {
