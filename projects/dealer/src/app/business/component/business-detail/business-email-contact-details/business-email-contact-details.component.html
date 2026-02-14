@@ -1,4 +1,4 @@
-<form [formGroup]="emailForm" class="business-email-contact-details-form" [class.disabled]="isDisabled()">
+<form [formGroup]="emailForm" class="business-email-contact-details-form" [class.disabled]="isDisabled() ">
   <ng-container formArrayName="emails">
     <div *ngFor="let email of emails.controls; let i = index">
       <div [formGroupName]="i" class="mt-3">

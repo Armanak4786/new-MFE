@@ -54,12 +54,18 @@ export class FinanceLeaseComponent extends BaseStandardQuoteClass {
   }
 
   updateRetailPriceVisibility() {
-    const condition = this.baseFormData?.conditionDD;
+    const condition =
+      this.baseFormData?.conditionDDValue ?? this.baseFormData?.conditionDD;
     
     if (this.productCode === "FL" || this.productCode === "OL") {
       const retailPriceControl = this.mainForm?.form?.get("retailPriceValue");
       
-      if (condition === 781) { // New condition - SHOW field
+      const isNew =
+        condition === 781 ||
+        condition === "New" ||
+        condition?.value === 781 ||
+        condition?.label === "New";
+      if (isNew) { // New condition - SHOW field
         // First save current value if field is currently hidden but has a value
         if (retailPriceControl && !this.savedRetailPriceValue && retailPriceControl.value) {
           this.savedRetailPriceValue = retailPriceControl.value;
@@ -68,13 +74,12 @@ export class FinanceLeaseComponent extends BaseStandardQuoteClass {
         // Show the field
         this.mainForm?.updateHidden({ retailPriceValue: false });
         
-        // Restore saved value if it exists
-        if (this.savedRetailPriceValue !== null && this.savedRetailPriceValue !== undefined && retailPriceControl) {
-          retailPriceControl.patchValue(this.savedRetailPriceValue);
-        }
+        
+       
         
       } else { // Used condition or other - HIDE field
         // Save current value before hiding (if it has a value)
+        
         if (retailPriceControl && retailPriceControl.value !== null && retailPriceControl.value !== undefined && retailPriceControl.value !== '') {
           this.savedRetailPriceValue = retailPriceControl.value;
         }
@@ -206,14 +211,16 @@ export class FinanceLeaseComponent extends BaseStandardQuoteClass {
   override onFormDataUpdate(res: any): void {
     super.onFormDataUpdate(res);
 
-    // Check if condition changed
-    if (res?.conditionDD !== undefined && res.conditionDD !== this.baseFormData?.conditionDD) {
-      this.baseFormData.conditionDD = res.conditionDD;
-      this.updateRetailPriceVisibility();
-    }
-
-    if (res?.conditionDDValue !== undefined && res.conditionDDValue !== this.baseFormData?.conditionDD) {
-      this.baseFormData.conditionDD = res.conditionDDValue;
+    const nextCondition =
+      res?.conditionDDValue ?? res?.conditionDD;
+    if (
+      nextCondition !== undefined &&
+      nextCondition !== null &&
+      (nextCondition !== this.baseFormData?.conditionDDValue ||
+        nextCondition !== this.baseFormData?.conditionDD)
+    ) {
+      this.baseFormData.conditionDDValue = nextCondition;
+      this.baseFormData.conditionDD = nextCondition;
       this.updateRetailPriceVisibility();
     }
 
@@ -348,6 +355,18 @@ getLeaseDetailsLabel(): string {
         this.savedRetailPriceValue = currentValue;
         // Also update baseFormData to persist the value
         this.baseFormData.retailPriceValue = currentValue;
+      }
+    }
+
+    if(event?.name == "cashPriceValue" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation"){
+      // let APicashPriceValue = this.baseSvc.workflowIncreaseDecreaseValidation()?.find(item => item.cashPriceofAsset != undefined)?.cashPriceofAsset;
+      let currentCashPriceValue = this.mainForm.get("cashPriceValue").value;
+      if(currentCashPriceValue > this.baseFormData?.apicashPriceValue){
+        this.toasterSvc.showToaster({
+          severity: "error",
+          detail: "Cash Price of Asset cannot be increased in Ready for Documentation state.",
+        });
+        // return;
       }
     }
 

@@ -9,7 +9,7 @@
             <div
               class="col-12 md:col-5 lg:col-6 mt-2 ml-2 custom-label-wrapper"
             >
-              <label>Payable to UDC Finance</label>
+              <label>Payable to UDC Finance<span *ngIf="isWorkflowApproved" class="p-error"> *</span></label>
             </div>
 
             <div class="col-12 md:col-4 lg:col-4 col-offset-1 ml-6">
@@ -30,9 +30,13 @@
                 name="payableToUDC"
                 className="currency-amount-input"
                 valueClass="text-right"
-                (ngModelChange)="getValue()"
+                (ngModelChange)="getValue(); validateMandatoryFields()"
                 [disabled]="isDisabled()"
+                [required]="isWorkflowApproved"
               ></amount>
+              <div *ngIf="payableToUDCError" class="p-error" style="font-size: 0.7rem">
+                This field cannot be blank.
+              </div>
             </div>
           </div>
 
@@ -40,7 +44,7 @@
             <div
               class="col-12 md:col-5 lg:col-6 mt-2 ml-2 custom-label-wrapper"
             >
-              <label>Payable to {{ originatorName }}</label>
+              <label>Payable to {{ originatorName }}<span *ngIf="isWorkflowApproved" class="p-error"> *</span></label>
             </div>
             <div class="col-12 md:col-4 lg:col-4 col-offset-1 ml-6">
               <!-- <amount
@@ -56,9 +60,13 @@
                 name="payableToDealer"
                 className="currency-amount-input"
                 valueClass="text-right"
-                (ngModelChange)="getValue()"
+                (ngModelChange)="getValue(); validateMandatoryFields()"
                 [disabled]="isDisabled()"
+                [required]="isWorkflowApproved"
               ></amount>
+              <div *ngIf="payableToDealeError" class="p-error" style="font-size: 0.7rem">
+                This field cannot be blank.
+              </div>
             </div>
           </div>
 

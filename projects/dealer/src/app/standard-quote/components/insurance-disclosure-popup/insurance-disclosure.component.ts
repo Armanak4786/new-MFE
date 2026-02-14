@@ -13,7 +13,8 @@ import { takeUntil } from "rxjs";
 import { KeyInfoPopupComponent } from "../key-info-popup/key-info-popup.component";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ToasterService, ValidationService } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 
 @Component({
@@ -183,10 +184,7 @@ export class InsuranceDisclosureComponent extends BaseStandardQuoteClass {
     super.onFormReady();
   }
 isDisabled(){
-    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
-    return true;
-  }
-  return false;
+    return isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus);
   }
   override async onBlurEvent(event): Promise<void> {
     await this.updateValidation(event);

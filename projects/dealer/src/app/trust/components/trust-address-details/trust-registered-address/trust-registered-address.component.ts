@@ -1,8 +1,9 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   CommonService,
   GenericFormConfig,
+  Mode,
   ToasterService,
   ValidationService,
 } from "auro-ui";
@@ -11,14 +12,15 @@ import { BaseTrustClass } from "../../../base-trust.class";
 import { TrustService } from "../../../services/trust.service";
 import { SearchAddressService } from "../../../../standard-quote/services/search-address.service";
 import { IndividualService } from "../../../../individual/services/individual.service";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, takeUntil } from "rxjs/operators";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-trust-registered-address",
   templateUrl: "./trust-registered-address.component.html",
   styleUrl: "./trust-registered-address.component.scss",
 })
-export class TrustRegisterAddressComponent extends BaseTrustClass {
+export class TrustRegisterAddressComponent extends BaseTrustClass implements OnDestroy {
   optionsdata = [{ label: "icashpro", value: "icp" }];
   privousChecked: any;
   searchAddressList: any[];
@@ -27,11 +29,13 @@ export class TrustRegisterAddressComponent extends BaseTrustClass {
   cityOptions: any = [];
   cityOptionsLocationId: any = [];
   private countryOptions: any[] = [];
+  private copiedPhysicalValues: any = {}; // Store copied values for comparison
+  private reuseRegisterSubs: Subscription;
   override formConfig: GenericFormConfig = {
     autoResponsive: true,
     api: "registeredAddress",
     goBackRoute: "registeredAddress",
-    cardBgColor: "--background-color-secondary",
+    //cardBgColor: "--background-color-secondary",
     cardType: "non-border",
     fields: [
       {
@@ -240,7 +244,7 @@ export class TrustRegisterAddressComponent extends BaseTrustClass {
         label: "Country",
         name: "registerCountry",
         alignmentType: "vertical",
-        labelClass: "w-8 -my-3",
+        labelClass: "w-8 mb-2",
         //validators: [Validators.required],
         className: "px-0 customLabel",
         filter: true,
@@ -251,8 +255,23 @@ export class TrustRegisterAddressComponent extends BaseTrustClass {
         options: [],
         // default: "New Zealand",
         nextLine: false,
-        disabled:true
+        // disabled:true
       },
+      // {
+      //   type: "text",
+      //   label: "Country",
+      //   name: "registerCountry",
+      //   disabled: true,
+      //   inputType: "vertical",
+      //   inputClass: "w-8 mt-2",
+      //   labelClass: "w-8 -my-3",
+      //   //validators: [Validators.required],
+      //   className: "px-0 mt-2 customLabel",
+      //   cols: 2,
+      //   default: "New Zealand",
+      //   nextLine: false,
+      //   mode: Mode.view,
+      // },
     ],
   };
 
@@ -262,6 +281,7 @@ export class TrustRegisterAddressComponent extends BaseTrustClass {
     override trustSvc: TrustService,
     private toasterService: ToasterService,
     public validationSvc: ValidationService,
+    public cdr: ChangeDetectorRef,
     public searchSvc: SearchAddressService,
     private indSvc: IndividualService
   ) {
@@ -363,30 +383,147 @@ override async ngOnInit(): Promise<void> {
     }
   }
 
-  //  Subscribe with proper reset logic that preserves country
-  this.trustSvc.reusePhysicalAsRegister.subscribe((data) => {
-    if (data == "copied" && this.mainForm) {
-      this.fields.forEach((field) => {
-        const registerField = this.mainForm.form.get(`register${field}`);
-        const physicalFieldValue = this.baseFormData[`physical${field}`];
-        if (
-          registerField &&
-          registerField.value !== physicalFieldValue &&
-          physicalFieldValue
-        ) {
-          registerField.enable();
-          registerField.patchValue(physicalFieldValue);
-        }
-      });
-    } else if (data == "undoCopy" && this.mainForm) {
-      //  Reset all fields except country
-      Object.keys(this.mainForm.form.controls).forEach(key => {
-        if (key !== 'registerCountry') {
-          this.mainForm.form.get(key).reset();
-        }
-      });
+  // Initialize subscription to physical address copy signals (like business/sole-trade modules)
+  this.initializeCopySubscription();
+}
+
+// Initializes subscription to physical address copy signals
+private initializeCopySubscription(): void {
+  // Unsubscribe from previous subscription if exists
+  this.reuseRegisterSubs?.unsubscribe();
+  
+  this.reuseRegisterSubs = this.trustSvc.reusePhysicalAsRegister$
+    .pipe(
+      takeUntil(this.destroy$),
+      filter(payload => {
+        if (!payload) return false;
+        if (typeof payload === 'string') return false; // Filter out old string format
+        return true;
+      })
+    )
+    .subscribe((payload: any) => {
+      if (!this.mainForm) return;
+
+      if (payload?.action === 'copiedToRegister' && payload?.data) {
+        this.handleCopyFromPhysical(payload.data);
+      }
+    });
+}
+
+private handleCopyFromPhysical(physicalData: any): void {
+  const isNz = physicalData.registerCountry === "New Zealand";
+
+  // Set flag EARLY to prevent form change listener from triggering during copy operations
+  this.trustSvc.isCopyingToRegister = true;
+
+  // Clear previous copied values and store new ones
+  this.copiedPhysicalValues = {};
+
+  if (!isNz) {
+    this.mainForm.updateHidden({
+      registerUnitType: true,
+      registerFloorNumber: true,
+      registerFloorType: true,
+      registerBuildingName: true,
+      registerRuralDelivery: true,
+      registerStreetDirection: true,
+      registerStreetType: true,
+      registerStreetName: true,
+      registerStreetNumber: true,
+      registerUnitNumber: true,
+      registerStreetArea: false,
+    });
+  } else {
+    this.mainForm.updateHidden({
+      registerUnitType: false,
+      registerFloorNumber: false,
+      registerFloorType: false,
+      registerBuildingName: false,
+      registerRuralDelivery: false,
+      registerStreetDirection: false,
+      registerStreetType: false,
+      registerStreetName: false,
+      registerStreetNumber: false,
+      registerUnitNumber: false,
+      registerStreetArea: true,
+    });
+  }
+
+  // Copy all values from physicalData
+  Object.keys(physicalData).forEach(key => {
+    const control = this.mainForm.form.get(key);
+    if (control && physicalData[key] !== undefined && physicalData[key] !== null) {
+      // Store the copied value for later comparison (including empty strings)
+      this.copiedPhysicalValues[key] = physicalData[key];
+
+      const wasDisabled = control.disabled;
+      if (wasDisabled) control.enable({ emitEvent: false });
+      control.setValue(physicalData[key], { emitEvent: false });
+      if (wasDisabled) control.disable({ emitEvent: false });
     }
   });
+
+  // Update baseFormData with all copied register values so they're included in payload
+  this.baseSvc.setBaseDealerFormData(physicalData);
+
+  // Handle city location ID
+  if (physicalData.registerCityLocationId) {
+    this.baseSvc.setBaseDealerFormData({
+      registerCity: physicalData.registerCity,
+      registerCityLocationId: physicalData.registerCityLocationId,
+    });
+  }
+
+  this.baseFormData.physicalreuseOfRegisterAddress = true;
+  
+  // Immediately enable change detection after copy is complete
+  this.trustSvc.isCopyingToRegister = false;
+  
+  this.cdr.detectChanges();
+}
+
+private checkIfRegisterFieldChanged(event: any): void {
+  // Skip if copying is in progress
+  if (this.trustSvc.isCopyingToRegister) {
+    return;
+  }
+  
+  // Only check if physicalreuseOfRegisterAddress was ON (meaning data was copied) and we have stored copied values
+  if (!this.baseFormData?.physicalreuseOfRegisterAddress || Object.keys(this.copiedPhysicalValues).length === 0) {
+    return;
+  }
+  
+  // Get the field name that was changed
+  const fieldName = event.name;
+  
+  // Check all register fields
+  if (!fieldName || !fieldName.startsWith('register')) {
+    return;
+  }
+  
+  // Get the current value and the copied value
+  const currentValue = event.data !== undefined ? event.data : this.mainForm?.form?.get(fieldName)?.value;
+  const copiedValue = this.copiedPhysicalValues[fieldName];
+  
+  // Skip if this field wasn't copied (might not exist in physical address)
+  if (copiedValue === undefined) {
+    return;
+  }
+  
+  // Normalize values for comparison (handle null, undefined, empty string)
+  const normalizeValue = (val: any) => {
+    if (val === null || val === undefined || val === '') return '';
+    return String(val).trim();
+  };
+  
+  const normalizedCurrent = normalizeValue(currentValue);
+  const normalizedCopied = normalizeValue(copiedValue);
+  
+  // If current value differs from copied value, it's a manual change - toggle off immediately
+  if (normalizedCurrent !== normalizedCopied) {
+    // Immediately notify service to toggle off physicalreuseOfRegisterAddress
+    this.trustSvc.registerAddressManuallyChanged.next(true);
+  }
 }
 
  
@@ -449,6 +586,8 @@ override async ngOnInit(): Promise<void> {
     "Lot",
     "Country",
     "FloorType",
+    "FloorNumber",
+    "UnitType",
     "Postcode",
     "ResidenceType",
     "RuralDelivery",
@@ -460,6 +599,7 @@ override async ngOnInit(): Promise<void> {
     "TimeAtAddress",
     "UnitNumber",
     "Attention",
+    "StreetArea",
   ];
 
   override async onSuccess(data: any) {}
@@ -469,28 +609,35 @@ override async ngOnInit(): Promise<void> {
       this.baseFormData?.physicalreuseOdfRegisterAddress !=
       res?.physicalreuseOdfRegisterAddress
     ) {
+      const dataToSave: any = {};
       this.fields.forEach((field) => {
         // console.log(field, res[`physical${field}`], this.mainForm.form.get(`register${field}`).value);
+        const physicalFieldValue = res[`physical${field}`];
+        const registerField = this.mainForm.form.get(`register${field}`);
 
-        if (
-          this.mainForm.form.get(`register${field}`) &&
-          this.mainForm.form.get(`register${field}`).value !=
-            res[`physical${field}`] &&
-          res[`physical${field}`]
-        ) {
-          if (field == "PostCode") {
-            // console.log(res[`physical${field}`]);
+        if (physicalFieldValue !== undefined && physicalFieldValue !== null && physicalFieldValue !== '') {
+          if (registerField) {
+            // Field exists in form, update it
+            if (registerField.value != physicalFieldValue) {
+              if (field == "PostCode") {
+                // console.log(res[`physical${field}`]);
+              }
+              this.updateDisableValue({
+                key: `register${field}`,
+                value: physicalFieldValue,
+              });
+              registerField.enable();
+              registerField.patchValue(physicalFieldValue);
+            }
           }
-          this.updateDisableValue({
-            key: `register${field}`,
-            value: res[`physical${field}`],
-          });
-          this.mainForm.form.get(`register${field}`).enable();
-          this.mainForm.form
-            .get(`register${field}`)
-            .patchValue(res[`physical${field}`]);
+          // Save to baseFormData for payload (even if field doesn't exist in form)
+          dataToSave[`register${field}`] = physicalFieldValue;
         }
       });
+      // Save all copied values to baseFormData for payload
+      if (Object.keys(dataToSave).length > 0) {
+        this.baseSvc.setBaseDealerFormData(dataToSave);
+      }
     }
   }
 
@@ -506,20 +653,48 @@ override async ngOnInit(): Promise<void> {
         }, 200);
       }
 
-      if (data.country)
+      const dataToSave: any = {};
+      if (data.country) {
         this.mainForm.get("registerCountry").patchValue(data.country);
-      if (data.postcode)
+        dataToSave.registerCountry = data.country;
+      }
+      if (data.postcode) {
         this.mainForm.get("registerPostcode").patchValue(data.postcode);
-      if (data.city) this.mainForm.get("registerCity").patchValue(data.city);
-      if (data.street)
+        dataToSave.registerPostcode = data.postcode;
+      }
+      if (data.city) {
+        this.mainForm.get("registerCity").patchValue(data.city);
+        dataToSave.registerCity = data.city;
+      }
+      if (data.street) {
         this.mainForm.get("registerStreetName").patchValue(data.street);
-      if (data.suburb)
+        dataToSave.registerStreetName = data.street;
+      }
+      if (data.suburb) {
         this.mainForm.get("registerSuburbs").patchValue(data.suburb);
+        dataToSave.registerSuburbs = data.suburb;
+      }
+      
+      // Save all patched values to baseFormData for payload
+      if (Object.keys(dataToSave).length > 0) {
+        this.baseSvc.setBaseDealerFormData(dataToSave);
+      }
     }
   }
 
   tempCity = null;
 override onFormEvent(event: any): void {
+  // Save dropdown/select values to baseFormData for payload
+  if (event.name && event.name.startsWith('register')) {
+    const formControl = this.mainForm?.form?.get(event.name);
+    if (formControl) {
+      const fieldValue = formControl.value;
+      this.baseSvc.setBaseDealerFormData({
+        [event.name]: fieldValue
+      });
+    }
+  }
+
   if (event.name === "registerCity") {
     let locationName = this.mainForm.form.get("registerCity").value;
 
@@ -610,6 +785,33 @@ async getCities() {
 
 
   override onValueChanges(event: any): void {
+    // IMMEDIATE CHANGE DETECTION: Check if user manually changed any copied field
+    // This handles cases where onValueTyped might not fire (e.g., programmatic changes)
+    if (this.baseFormData?.physicalreuseOfRegisterAddress && Object.keys(this.copiedPhysicalValues).length > 0 && !this.trustSvc.isCopyingToRegister) {
+      // Check all register fields in the event
+      Object.keys(event).forEach(fieldName => {
+        if (fieldName.startsWith('register')) {
+          const currentValue = event[fieldName];
+          const copiedValue = this.copiedPhysicalValues[fieldName];
+          
+          if (copiedValue !== undefined) {
+            const normalizeValue = (val: any) => {
+              if (val === null || val === undefined || val === '') return '';
+              return String(val).trim();
+            };
+            
+            if (normalizeValue(currentValue) !== normalizeValue(copiedValue)) {
+              this.trustSvc.registerAddressManuallyChanged.next(true);
+              return; // Exit early once we detect a change
+            }
+          }
+        }
+      });
+    }
+
+    // Sync all changed values to baseFormData for payload
+    this.baseSvc.setBaseDealerFormData({ ...event });
+
     if (event.registerSearchValue && event.registerSearchValue.length >= 4) {
       this.searchSvc
         .searchAddress(event.registerSearchValue)
@@ -649,6 +851,21 @@ override async onFormReady(): Promise<void> {
 
 
 override async onValueTyped(event: any): Promise<void> {
+  // IMMEDIATE CHANGE DETECTION: Check if user manually changed a copied field
+  this.checkIfRegisterFieldChanged(event);
+  
+  // Save typed value to baseFormData for payload
+  // Always get the current form value to ensure we save what the user actually typed
+  if (event.name && event.name.startsWith('register')) {
+    const formControl = this.mainForm?.form?.get(event.name);
+    if (formControl) {
+      const fieldValue = formControl.value;
+      this.baseSvc.setBaseDealerFormData({
+        [event.name]: fieldValue
+      });
+    }
+  }
+
   if (event.name === "registerCity") {
     let locationName = this.mainForm.form.get("registerCity").value;
     let LocationId = this.cityOptionsLocationId.filter(
@@ -683,6 +900,17 @@ override async onValueTyped(event: any): Promise<void> {
 
           // Patch form values first
           this.mainForm.form.patchValue(formValues);
+
+          // Save all patched values to baseFormData for payload
+          const dataToSave: any = {};
+          Object.keys(formValues).forEach(key => {
+            if (key.startsWith('register')) {
+              dataToSave[key] = formValues[key];
+            }
+          });
+          if (Object.keys(dataToSave).length > 0) {
+            this.baseSvc.setBaseDealerFormData(dataToSave);
+          }
 
           // IMPROVED: Better street type handling with proper timing
           // if (formValues.registerStreetType) {
@@ -752,6 +980,8 @@ override async onStepChange(quotesDetails: any): Promise<void> {
   }
 }
 
-
-
+override ngOnDestroy(): void {
+  this.reuseRegisterSubs?.unsubscribe();
+  super.ngOnDestroy();
+}
 }

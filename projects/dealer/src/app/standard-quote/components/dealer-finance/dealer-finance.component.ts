@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  effect,
   ElementRef,
   OnInit,
   QueryList,
@@ -20,8 +21,8 @@ import {
 } from "auro-ui";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import { StandardQuoteService } from "../../services/standard-quote.service";
-import { firstValueFrom, lastValueFrom, map } from "rxjs";
-import configure from "../../../../../public/assets/configure.json";
+import { firstValueFrom, lastValueFrom, map, takeUntil } from "rxjs";
+import configure from "src/assets/configure.json";
 @Component({
   selector: "app-dealer-finance",
   templateUrl: "./dealer-finance.component.html",
@@ -77,6 +78,13 @@ export class DealerFinanceComponent
     private toasterService: ToasterService
   ) {
     super(route, svc, baseSvc);
+
+    effect(async () => {
+      const trigger = this.baseSvc.triggerAllComponentsDuringWorkflowChange();
+      if(trigger > 0){
+        await this.updateValidation("onInit");
+      }
+    }, { allowSignalWrites: true });
 
     const config = this.validationSvc?.validationConfigSubject.getValue();
     const filteredValidations = this.validationSvc?.filterValidation(
@@ -150,6 +158,21 @@ export class DealerFinanceComponent
         kmAllowance: false,
         kmAllowanceAnnum: false,
         assuredFutureValue: false,
+      });
+      if (this.baseSvc.kmAllowanceOptions.length > 0) {
+        this.mainForm?.updateList('kmAllowance', this.baseSvc.kmAllowanceOptions);
+        // Patch saved value from contract
+        const savedValue = this.baseFormData?.kmAllowance;
+        if (savedValue && this.mainForm?.get('kmAllowance')) {
+          this.mainForm.get('kmAllowance').patchValue(String(savedValue), { emitEvent: false });
+        }
+      }
+      
+      // Subscribe to expectedUsagesLoaded - API is called on contract load for AFV
+      this.baseSvc.expectedUsagesLoaded.pipe(takeUntil(this.destroy$)).subscribe((expectedUsages) => {
+        if (expectedUsages && expectedUsages.length > 0) {
+          this.populateKmAllowanceOptions();
+        }
       });
     } else {
       this.mainForm?.updateHidden({
@@ -663,18 +686,7 @@ export class DealerFinanceComponent
     await this.updateValidation(event);
   }
   override onFormEvent(res) {
-    if (res.name == "assuredFutureValue") {
-      if (res?.value) {
-        let amount = this.convertPctToAmount(
-          "assuredFutureValueAmount",
-          res.value
-        );
-        this.baseSvc.setBaseDealerFormData({
-          pctResidualValue: res.value,
-          residualValue: amount,
-        });
-      }
-    }
+    
     if (this.baseFormData) {
       let dealerCommission = Math.abs(this.baseFormData?.dealerCommission) || 0;
       let rawDealerSubsidy = this.baseFormData?.dealerSubsidy;
@@ -728,6 +740,52 @@ export class DealerFinanceComponent
 
     if((sessionStorage.getItem("externalUserType") == "Internal" )){
       this.mainForm.updateHidden({baseRate: false});
+    }
+  }
+
+  // Override to preserve KM Allowance value and options for AFV on preview
+  override onCalledPreview(mode): void {
+    if (this.baseFormData?.productCode === 'AFV') {
+      // Save current KM Allowance value before patching
+      const currentKmAllowance = this.mainForm?.get('kmAllowance')?.value;
+      
+      // Call parent to patch form with baseFormData
+      super.onCalledPreview(mode);
+      
+      // Restore KM Allowance dropdown options and value
+      this.restoreKmAllowance(currentKmAllowance);
+    } else {
+      super.onCalledPreview(mode);
+    }
+  }
+
+  // Override to handle KM Allowance after create/update
+  override renderComponentWithNewData(data?: any): void {
+    if (this.baseFormData?.productCode === 'AFV') {
+      // Save current KM Allowance value before patching
+      const currentKmAllowance = this.mainForm?.get('kmAllowance')?.value;
+      
+      // Call parent to patch form
+      super.renderComponentWithNewData(data);
+      
+      // Restore KM Allowance dropdown options and value
+      this.restoreKmAllowance(currentKmAllowance);
+    } else {
+      super.renderComponentWithNewData(data);
+    }
+  }
+
+  // Helper method to restore KM Allowance dropdown options and value
+  private restoreKmAllowance(currentValue?: string): void {
+    // Restore dropdown options if available
+    if (this.baseSvc.kmAllowanceOptions.length > 0) {
+      this.mainForm?.updateList('kmAllowance', this.baseSvc.kmAllowanceOptions);
+    }
+    
+    // Restore value - prioritize current value, then baseFormData
+    const kmValue = currentValue || this.baseFormData?.kmAllowance;
+    if (kmValue && this.mainForm?.get('kmAllowance')) {
+      this.mainForm.get('kmAllowance').patchValue(String(kmValue), { emitEvent: false });
     }
   }
 
@@ -818,5 +876,41 @@ export class DealerFinanceComponent
       }
     }
     return 0;
+  }
+  /**
+   * Populates KM Allowance dropdown with values from expectedUsages API response
+   */
+  populateKmAllowanceOptions(): void {
+    const expectedUsages = this.baseFormData?.expectedUsages;
+    
+    if (expectedUsages && expectedUsages.length > 0) {
+      // Get the first item's values array (KM allowance values)
+      const usageItem = expectedUsages[0];
+      const values = usageItem?.values || [];
+      console.log('populateKmAllowanceOptions values:', values);
+      if (values.length > 0) {
+        // Create dropdown options from values
+        const kmAllowanceOptions = values.map((value: number) => ({
+          label: String(value),
+          value: String(value)
+        }));
+        
+        // Update the dropdown list
+        this.mainForm?.updateList('kmAllowance', kmAllowanceOptions);
+        
+        // First check if there's a saved kmAllowance value (from existing contract)
+        const savedKmAllowance = this.baseFormData?.kmAllowance;
+        if (savedKmAllowance && this.mainForm?.get('kmAllowance')) {
+          this.mainForm.get('kmAllowance').patchValue(String(savedKmAllowance), { emitEvent: false });
+        } else {
+          // Set default value if no saved value and default is available
+          const defaultValue = usageItem?.defaultExpectedUsage;
+          if (defaultValue && this.mainForm?.get('kmAllowance')) {
+            this.mainForm.get('kmAllowance').patchValue(String(defaultValue), { emitEvent: false });
+            this.baseFormData.kmAllowance = String(defaultValue);
+          }
+        }
+      }
+    }
   }
 }

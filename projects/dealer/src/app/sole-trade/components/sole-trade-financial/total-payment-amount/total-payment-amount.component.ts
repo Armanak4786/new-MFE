@@ -22,7 +22,7 @@ export class TotalPaymentAmountComponent extends BaseSoleTradeClass {
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
+    //cardBgColor: '--background-color-secondary',
     cardType: 'non-border',
     fields: [
       {

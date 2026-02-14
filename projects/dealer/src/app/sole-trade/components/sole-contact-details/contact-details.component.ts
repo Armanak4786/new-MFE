@@ -106,7 +106,7 @@ export class SoleContactDetailsComponent extends BaseSoleTradeClass{
         },
       {
         type: "select",
-        label: "Mobile",
+        label: "Business Number",
         name: "businessMobile",
         alignmentType: "vertical",
         // placeholder: "Code",
@@ -343,6 +343,7 @@ export class SoleContactDetailsComponent extends BaseSoleTradeClass{
         name: 'businessAreaCode',
         labelClass: "hidden",
         cols: 1,
+        placeholder: "Area Code",
         // maxLength: 4,
         // validators: [Validators.pattern('^[0-9]{1,5}$')],
         className: '-mx-3 pt-5 business-area-code',
@@ -694,6 +695,7 @@ export class SoleContactDetailsComponent extends BaseSoleTradeClass{
         // placeholder: 'Area Code',
         name: 'individualAreaCode',
         cols: 1,
+        placeholder: "Area Code",
         // maxLength: 4,
         // validators: [Validators.pattern('^[0-9]{1,5}$')],
         className: '-mx-3 mt-7 pl-3 pr-0 py-0',
@@ -903,7 +905,15 @@ removeReference(reference: any, index: number) {
     pageCode: string = "IndividualComponent";
     modelName: string = "ReferenceDetailsComponent";
   
-    
+     isDisabled(): boolean {
+  const baseFormDataStatus= this.baseFormData?.AFworkflowStatus;
+  const sessionStorageStatus= sessionStorage.getItem('workFlowStatus');
+  return !(
+    baseFormDataStatus=== 'Quote' ||
+    sessionStorageStatus=== 'Open Quote'
+  );
+}
+ 
   
     override async onStepChange(quotesDetails: any): Promise<void> {
       super.onStepChange(quotesDetails);

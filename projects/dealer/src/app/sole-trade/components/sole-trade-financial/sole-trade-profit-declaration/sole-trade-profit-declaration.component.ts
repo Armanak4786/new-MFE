@@ -24,12 +24,12 @@ export class SoleTradeProfitDeclarationComponent extends BaseSoleTradeClass {
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
-    cardType: 'non-border',
+    //cardBgColor: '--background-color-secondary',
+    cardType: 'border',
     fields: [
       {
         type: 'radio',
-        label: 'Did you make a net profit last year?',
+        label: 'Did you make a Net Profit last year?',
         name: 'soleTradeisNetProfitLastYear',
         // validators: [Validators.required],
         cols: 12,
@@ -45,7 +45,7 @@ export class SoleTradeProfitDeclarationComponent extends BaseSoleTradeClass {
       },
       {
         type: 'amount',
-        label: 'Net Profit Last Year',
+        label: 'Net Profit last year',
         name: 'soleTradeAmtLastYearNetProfit',
         // validators: [Validators.required],
         cols: 4,
@@ -53,6 +53,7 @@ export class SoleTradeProfitDeclarationComponent extends BaseSoleTradeClass {
         nextLine: false,
         hidden: true,
         default: 0,
+        inputType: 'vertical',
       },
     ],
   };

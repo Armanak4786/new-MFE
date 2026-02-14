@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import {
   CommonService,
   GenericFormConfig,
+  Mode,
   ToasterService,
   ValidationService,
 } from "auro-ui";
@@ -27,8 +28,8 @@ override formConfig: GenericFormConfig = {
   autoResponsive: true,
   api: "",
   // goBackRoute: '',
-  cardBgColor: "--background-color-secondary",
-  cardType: "non-border",
+  //cardBgColor: "--background-color-secondary",
+  cardType: "border",
   fields: [
     {
       type: "autoSelect",
@@ -331,20 +332,34 @@ override formConfig: GenericFormConfig = {
       cols: 2,
       nextLine: false,
     },
+    // OLD SELECT FIELD CODE - Changed to text field initially (default is NZ Address)
+    // When Overseas Address toggle is ON, it will be changed to select dropdown dynamically
+    // {
+    //   type: "select",
+    //   label: "Country",
+    //   name: "previousCountry",
+    //   //validators: [Validators.required],
+    //   className: "px-0 customLabel",
+    //   filter: true,
+    //   cols: 2,
+    //   // list$: "LookUpServices/locations?LocationType=country",
+    //   // idKey: "name",
+    //   alignmentType: "vertical",
+    //   labelClass: "w-8 -my-3",
+    //   // idName: "name",
+    //   options: [],
+    //   default: "New Zealand",
+    //   nextLine: false,
+    // },
     {
       type: "select",
       label: "Country",
       name: "previousCountry",
-      //validators: [Validators.required],
-      className: "px-0 customLabel",
       filter: true,
+      labelClass: "w-8 mb-2",
+      className: "px-0 customLabel",
       cols: 2,
-      // list$: "LookUpServices/locations?LocationType=country",
-      // idKey: "name",
       alignmentType: "vertical",
-      labelClass: "w-8 -my-3",
-      // idName: "name",
-      options: [],
       default: "New Zealand",
       nextLine: false,
     },
@@ -440,7 +455,10 @@ override formConfig: GenericFormConfig = {
       this.mainForm.updateList("previousUnitType", result?.unitType);
       this.mainForm.updateList("previousStreetType", result?.streetType);
       if (result?.country) {
+        const countryCtrl = this.mainForm?.form?.get("previousCountry");
+        if (countryCtrl && !countryCtrl.disabled) {
         this.mainForm.updateList("previousCountry", result?.country);
+        }
         this.mainForm?.form?.get("previousCountry")?.setValue("New Zealand");
        this.mainForm.updateList("previousCity", result?.city);
 
@@ -692,7 +710,6 @@ override formConfig: GenericFormConfig = {
  override async onFormReady(): Promise<void> {
     //  Handle initial country dropdown state based on overseas toggle
     const overseas = this.mainForm.form.get('overseasAddress')?.value;
-    this.toggleCountryDropdown(!!overseas);
     await this.getCities();  //: ensure cities LocationId loaded
 
     // Restore city/locationId in payload if any
@@ -880,7 +897,6 @@ override formConfig: GenericFormConfig = {
         
         // Step 3: Hide/show appropriate fields for overseas address
         this.hiddenfieldbyOverseas(true);
-        this.toggleCountryDropdown(true);   
         
         // Step 4: DISABLE the search address field
         this.mainForm.form.get("previousSearchValue")?.disable({ emitEvent: false });
@@ -898,7 +914,6 @@ override formConfig: GenericFormConfig = {
         // Step 2: When toggle is set to "No" (false) - NZ Address     
         // Step 3: Hide/show appropriate fields for NZ address
         this.hiddenfieldbyOverseas(false);
-        this.toggleCountryDropdown(false);
         
         // Step 4: ENABLE the search address field
         this.mainForm.form.get("previousSearchValue")?.enable({ emitEvent: false });
@@ -938,12 +953,42 @@ override formConfig: GenericFormConfig = {
 
 
     if (overseas) {
-      // YES → Overseas → allow country selection
+      // YES → Overseas → change to SELECT dropdown (enabled)
+      this.mainForm.updateProps("previousCountry", {
+        type: "select",
+        label: "Country",
+        name: "previousCountry",
+        className: "px-0 customLabel",
+        filter: true,
+        cols: 2,
+        alignmentType: "vertical",
+        labelClass: "w-8 -my-3",
+        // options: this.previousCountryOptions.length > 0 ? this.previousCountryOptions : [],
+      });
+      
+      // Update the countries - sessionStorage cache
+      this.indSvc.updateDropdownData().subscribe((result) => {
+        if (result?.country) {
+          this.mainForm.updateList("previousCountry", result?.country);
+        }
+      });
       countryCtrl.enable({ emitEvent: false });
     } else {
-      // NO → NZ → lock country
-      countryCtrl.disable({ emitEvent: false });
-      countryCtrl.patchValue('New Zealand', { emitEvent: false });
+      // NO → NZ → change to TEXT field (read-only)
+      this.mainForm.updateProps("previousCountry", {
+        type: "text",
+        label: "Country",
+        name: "previousCountry",
+        disabled: true,
+        inputType: "vertical",
+        inputClass: "w-8 mt-2",
+        labelClass: "w-8 -my-3",
+        className: "px-0 mt-2 customLabel",
+        cols: 2,
+        mode: Mode.view,
+      });
+      // Set value to New Zealand
+      countryCtrl.setValue('New Zealand', { emitEvent: false });
       
       this.baseSvc.setBaseDealerFormData({
         previousCountry: 'New Zealand',

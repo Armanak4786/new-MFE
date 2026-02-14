@@ -511,15 +511,19 @@ export class InsuranceDetailsComponent extends BaseAssetClass {
   override async onSuccess(data: any) {}
 
   override onFormDataUpdate(res: any): void {
-    if (
-      res?.costOfAsset != this.baseFormData?.costOfAsset &&
-      this.addType == "addAsset"
-    ) {
-      this.mainForm.updateValidators(
-        "sumInsured",
-        Validators.max(res?.costOfAsset)
-      );
-    }
+    // Handle sumInsured max validator when costOfAsset changes
+    // if (
+    //   res?.costOfAsset != this.baseFormData?.costOfAsset &&
+    //   this.addType == "addAsset"
+    // ) {
+    //   this.mainForm.updateValidators(
+    //     "sumInsured",
+    //     Validators.max(res?.costOfAsset)
+    //   );
+    // }
+
+    // Apply conditional validators based on workflow status and costOfAsset
+    this.applyConditionalValidators();
   }
 
   override async onFormEvent(event: any): Promise<void> {
@@ -594,10 +598,30 @@ export class InsuranceDetailsComponent extends BaseAssetClass {
     //   this.mainForm.get("policyNumber").updateValueAndValidity();
     //   this.mainForm.updateProps("policyNumber", { label: 'Policy Number', errorMessage: "Policy Number Number max length must be 30" });
     // }
+    let sessionWorkFlowState = sessionStorage.getItem("workFlowStatus");
+    if((sessionWorkFlowState == "Approved" || this.baseFormData?.AFworkflowStatus == "Ready for documentation") && this.baseFormData?.costOfAsset > 100000){
+    this.mainForm?.get("sumInsured")?.setValidators(Validators.required);
+    this.mainForm?.get("policyNumber")?.setValidators(Validators.required);
+    }
+    else{
+      this.mainForm?.get("sumInsured")?.clearValidators();
+      this.mainForm?.get("policyNumber")?.clearValidators();
+    }
   }
 
   override async onBlurEvent(event): Promise<void> {
     await this.updateValidation(event);
+
+    // let sessionWorkFlowState = sessionStorage.getItem("workFlowStatus");
+    // if((sessionWorkFlowState == "Approved" || this.baseFormData?.AFworkflowStatus == "Ready for documentation") && this.baseFormData?.costOfAsset > 100000){
+    // this.mainForm?.get("sumInsured")?.setValidators(Validators.required);
+    // this.mainForm?.get("policyNumber")?.setValidators(Validators.required);
+    // }
+    // else{
+    //   this.mainForm?.get("sumInsured")?.clearValidators();
+    //   this.mainForm?.get("policyNumber")?.clearValidators();
+    // }
+    this.applyConditionalValidators();
   }
 
   override async onValueTyped(event: any): Promise<void> {
@@ -608,7 +632,66 @@ export class InsuranceDetailsComponent extends BaseAssetClass {
         ?.get("partyNo")
         .patchValue(this.insurerInfo?.[event?.data]?.partyId);
     }
+
+  
     await this.updateValidation(event);
+
+    // Apply conditional validators after change detection completes
+    this.applyConditionalValidators();
+  }
+
+  private applyConditionalValidators(): void {
+    // Use Promise.resolve() to defer to next microtask (after change detection)
+    Promise.resolve().then(() => {
+      const sessionWorkFlowState = sessionStorage.getItem("workFlowStatus");
+      const sumInsuredControl = this.mainForm?.get("sumInsured");
+      const policyNumberControl = this.mainForm?.get("policyNumber");
+      
+      if (!this.baseFormData?.costOfAsset || !policyNumberControl || !sumInsuredControl) {
+        return;
+      }
+
+      const shouldRequire = 
+        (sessionWorkFlowState === "Approved" || 
+         this.baseFormData?.AFworkflowStatus === "Ready for documentation") && 
+        this.baseFormData?.costOfAsset > 100000;
+
+      // Build validators array for sumInsured to combine max and required validators
+      const sumInsuredValidators = [];
+      
+      // Always include max validator if costOfAsset exists and addType is addAsset
+      if (this.baseFormData?.costOfAsset && this.addType === "addAsset") {
+        sumInsuredValidators.push(Validators.max(this.baseFormData.costOfAsset));
+      }
+      
+      // Add required validator if conditions are met
+      if (shouldRequire) {
+        sumInsuredValidators.push(Validators.required);
+        policyNumberControl.setValidators(Validators.required);
+      } else {
+        policyNumberControl.clearValidators();
+      }
+      
+      // Set combined validators for sumInsured
+      if (sumInsuredValidators.length > 0) {
+        sumInsuredControl.setValidators(sumInsuredValidators);
+      } else {
+        sumInsuredControl.clearValidators();
+      }
+      
+      // Update validity silently without triggering events or view updates
+      sumInsuredControl.updateValueAndValidity({ 
+        onlySelf: true, 
+        emitEvent: false 
+      });
+      policyNumberControl.updateValueAndValidity({ 
+        onlySelf: true, 
+        emitEvent: false 
+      });
+
+      // Manually trigger change detection after validator changes
+      this.cdr.detectChanges();
+    });
   }
   override async onValueEvent(event): Promise<void> {
     await this.updateValidation(event);

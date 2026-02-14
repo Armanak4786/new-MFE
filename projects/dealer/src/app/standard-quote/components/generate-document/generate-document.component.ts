@@ -219,13 +219,13 @@ export class GenerateDocumentComponent extends BaseStandardQuoteClass {
     //   `WorkFlows/get_config_matrix_datset?MatrixName=DO Portal Documents Dataset`
     // );
 
-    // this.baseSvc.formDataCacheableRoute([
-    //   "WorkFlows/get_static_config_matrix",
-    // ]);
+    this.baseSvc.formDataCacheableRoute([
+      "WorkFlows/get_static_config_matrix",
+    ]);
 
-    // this.baseSvc.getFormData(
-    //   `WorkFlows/get_static_config_matrix`
-    // );
+    this.baseSvc.getFormData(
+      `WorkFlows/get_static_config_matrix`
+    );
   }
   responsedData: any;
 
@@ -314,20 +314,17 @@ export class GenerateDocumentComponent extends BaseStandardQuoteClass {
       this.generatedDocuments = [];
     }
     
-    console.log(this.generatedDocuments, "Generated Documents (filtered by source: Generated)");
   }
 
-  // Add these properties
+
 duplicateDocumentsMap: Map<string, any[]> = new Map();
 displayDocuments: any[] = [];
  matrixApiCombinedDetail: any[] = [];
 
-// Updated processing method
 processGeneratedDocuments(documents: any[]): void {
   const nameMap = new Map();
   const duplicatesMap = new Map();
   
-  // First pass: group by name and identify duplicates
   documents.forEach(doc => {
     const docName = doc.name;
     
@@ -337,9 +334,9 @@ processGeneratedDocuments(documents: any[]): void {
     nameMap.get(docName).push(doc);
   });
   
-  // Second pass: find latest and store duplicates
+
   nameMap.forEach((docs, name) => {
-    if (docs.length > 1) {
+    if (docs?.length > 1) {
       // Sort by loaded date descending and get the latest
       const sortedDocs = docs.sort((a, b) => 
         new Date(b.loaded).getTime() - new Date(a.loaded).getTime()
@@ -353,7 +350,7 @@ processGeneratedDocuments(documents: any[]): void {
         checked: false,
         ...sortedDocs[0],
         hasDuplicates: true,
-        totalDuplicates: sortedDocs.length
+        totalDuplicates: sortedDocs?.length
       });
     } else {
       // No duplicates, just add the single document
@@ -516,13 +513,11 @@ private combineMatrixAndGeneratedDocuments(): any[] {
     });
   }
 
-  console.log('Combined Matrix API Details:', matrixApiCombinedDetail);
   return matrixApiCombinedDetail;
 }
 
  onCellClick(event) {
 
-    console.log('onCellClick', event, this.getDuplicatesForDocument(event.rowData.name));
 
     if(event?.colName == "history" && event.rowData?.hasDuplicates) {
       const duplicates = this.getDuplicatesForDocument(event.rowData.name);
@@ -541,9 +536,7 @@ private combineMatrixAndGeneratedDocuments(): any[] {
                 width: "50vw",
               }
             )
-            .onClose.subscribe((res: any) => {
-              console.log(res, "closed");
-            });
+            .onClose.subscribe(() => {});
     }
 
 
@@ -563,9 +556,7 @@ private combineMatrixAndGeneratedDocuments(): any[] {
                 width: "50vw",
               }
             )
-            .onClose.subscribe((res: any) => {
-              console.log(res, "closed");
-            });
+            .onClose.subscribe(() => {});
     }
 
     if (event.actionName == "removeDoc" && this.baseSvc?.accessMode != "view") {
@@ -631,7 +622,7 @@ updateCustRole(event: any): void {
 
       if (this.postdata) {
         let maxDocumentId = 1;
-        if (this.documents.length > 0) {
+        if (this.documents?.length > 0) {
           Math.max(...this.documents.map((doc) => doc.documentId));
         }
 
@@ -679,12 +670,404 @@ updateCustRole(event: any): void {
     return fileText;
   }
 
-  onPreviewFile(dataIndex, type?: any) {
-    // for Generated
-    if (this.generatedDocuments?.[0]) {
-      let displayDoc = this.generatedDocuments?.[0].fileDetails[0].fileContents;
-      const pdfBlob = this.base64ToBlob(displayDoc, "application/pdf");
-      let fileText = this.readFile(pdfBlob);
+  async onPreviewFile(dataIndex, type?: any) {
+    if (this.selectedDocuments?.length === 0) {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: 'Please select at least one document to preview',
+      });
+      return;
+    }
+
+    const contractId = this.baseFormData?.contractId;
+    if (!contractId) {
+      this.toasterService.showToaster({
+        severity: 'error',
+        detail: 'Contract ID not found',
+      });
+      return;
+    }
+
+    // Allow all selected documents to be previewed
+    const docsToPreview = [...this.selectedDocuments];
+    
+    if (docsToPreview?.length === 0) {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: 'Please select a document to preview',
+      });
+      return;
+    }
+
+    // STEP 1: PRE-OPEN ALL TABS SYNCHRONOUSLY (before any async operations)
+    // This must happen in the same synchronous block as the user click to bypass popup blockers
+    const windowRefs: { doc: any; window: Window | null; mimeType: string; docName: string }[] = [];
+    let blockedCount = 0;
+
+    for (const doc of docsToPreview) {
+      const docName = doc?.name || doc['Portal Display Name (Child)'] || 'document.pdf';
+      const mimeType = this.getMimeTypeFromFileName(docName);
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'text/plain'];
+      
+      if (!allowedTypes?.includes(mimeType)) {
+        this.toasterService.showToaster({
+          severity: 'warn',
+          detail: `File type for ${docName} not supported for preview.`,
+        });
+        continue;
+      }
+
+
+      const newTab = window?.open('about:blank', '_blank');
+      
+      if (newTab) {
+        newTab?.document?.write(`
+          <html>
+            <head><title>Loading ${docName}...</title></head>
+            <body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial,sans-serif;margin:0;">
+              <div style="text-align:center;">
+                <div style="font-size:24px;margin-bottom:16px;">Loading document...</div>
+                <div style="color:#666;">${docName}</div>
+              </div>
+            </body>
+          </html>
+        `);
+        windowRefs?.push({ doc, window: newTab, mimeType, docName });
+      } else {
+        blockedCount++;
+      }
+    }
+
+    if (blockedCount > 0) {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: `${blockedCount} tab(s) were blocked. Please allow popups and try again.`,
+      });
+    }
+
+    if (windowRefs?.length === 0) {
+      return;
+    }
+
+    // STEP 2: FETCH DATA AND UPDATE EACH TAB (async operations)
+    let previewedCount = 0;
+
+    for (const ref of windowRefs) {
+      try {
+        const hasValidDocumentId = ref.doc?.documentId && Number(ref.doc?.documentId) > 0;
+        let documentIdToUse = ref.doc?.documentId;
+
+        // Call PrintAndGenerateDocuments API if:
+        // 1. Always Refresh is "true" (regardless of documentId), OR
+        // 2. Always Refresh is "false" AND no valid documentId exists
+        const shouldGenerateDocument = ref?.doc?.['Always Refresh'] == "true" || 
+                                      (!hasValidDocumentId && ref?.doc?.['Always Refresh'] == "false");
+
+        if (shouldGenerateDocument) {
+          const dprName = ref.doc?.['Doc Rule (DPR) Name (UDC Required DPR Name)'] || '';
+          
+          const payload = dprName === "Verification of Customer ID"
+            ? {
+                actionName: "Print",
+                documentRule: "Verification of Customer ID",
+                outputMethod: "Use default",
+                DynamicParameters: [
+                  {
+                    templateName: "VCILV - Verification of Customer ID",
+                    parameterName: "Party No",
+                    parameterValue: "1183889"
+                  }
+                ]
+              }
+            : {
+                actionName: "Print",
+                documentRule: dprName,
+                outputMethod: "Use default"
+              };
+
+          try {
+            const generateResponse: any = await this.svc.data.post(
+              `DocumentServices/PrintAndGenerateDocuments?ContractId=${contractId}`,
+              payload
+            ).toPromise();
+            
+            if (generateResponse?.data?.documentId) {
+              documentIdToUse = generateResponse.data.documentId;
+            } else if (generateResponse?.documentId) {
+              documentIdToUse = generateResponse.documentId;
+            }
+          } catch (genError) {
+            this.showErrorInTab(ref.window, `Failed to generate document: ${ref.docName}`);
+            continue;
+          }
+        }
+
+        // Now call DownloadFile with the documentId
+        if (!documentIdToUse || Number(documentIdToUse) <= 0) {
+          this.showErrorInTab(ref.window, `Document not yet generated: ${ref.docName}`);
+          continue;
+        }
+        
+        const response: any = await this.svc.data.get(
+          `DocumentServices/DownloadFile?ContractId=${contractId}&documentId=${documentIdToUse}`
+        ).toPromise();
+
+        
+        if (response?.data?.fileDetails && response?.data?.fileDetails?.length > 0) {
+          const fileDetail = response?.data?.fileDetails[0];
+          const fileContents = fileDetail?.fileContents;
+          
+          if (fileContents) {
+            const blob = this.base64ToBlob(fileContents, ref.mimeType);
+            
+            if (blob && ref?.window && !ref?.window?.closed) {
+              const fileURL = URL.createObjectURL(blob);
+              ref.window.location.href = fileURL;
+              
+              // Clean up blob URL after a delay
+              setTimeout(() => URL.revokeObjectURL(fileURL), 10000);
+              
+              previewedCount++;
+            }
+          }
+
+          await this.ngOnInit();
+        } else {
+          this.showErrorInTab(ref.window, `No file content received for: ${ref.docName}`);
+        }
+      } catch (error) {
+        this.showErrorInTab(ref.window, `Failed to load: ${ref.docName}`);
+      }
+    }
+    
+    if (previewedCount > 0) {
+      this.toasterService.showToaster({
+        severity: 'success',
+        detail: `Previewed ${previewedCount} document(s)`,
+      });
+    }
+  }
+
+  // Helper method to show error message in a tab
+  private showErrorInTab(windowRef: Window | null, message: string): void {
+    if (windowRef && !windowRef.closed) {
+      windowRef.document.body.innerHTML = `
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial,sans-serif;">
+          <div style="text-align:center;color:#dc3545;">
+            <div style="font-size:24px;margin-bottom:16px;">Error</div>
+            <div>${message}</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+
+  getMimeTypeFromFileName(fileName: string): string {
+    const ext = fileName?.split('.').pop()?.toLowerCase();
+    const types: { [key: string]: string } = {
+      'pdf': 'application/pdf',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'txt': 'text/plain',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'csv': 'text/csv',
+      'tif': 'image/tiff',
+      'tiff': 'image/tiff'
+    };
+    return types[ext!] || 'application/pdf';
+  }
+
+
+  async onDownloadSelectedFiles() {
+    if (this.selectedDocuments?.length === 0) {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: 'Please select at least one document to download',
+      });
+      return;
+    }
+
+    const contractId = this.baseFormData?.contractId;
+    if (!contractId) {
+      this.toasterService.showToaster({
+        severity: 'error',
+        detail: 'Contract ID not found',
+      });
+      return;
+    }
+
+    // Allow all selected documents to be downloaded
+    const docsToDownload = [...this.selectedDocuments];
+    
+    if (docsToDownload?.length === 0) {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: 'Please select a document to download',
+      });
+      return;
+    }
+
+    let downloadedCount = 0;
+    
+    for (const doc of docsToDownload) {
+      try {
+        const docName = doc?.name || doc?.['Portal Display Name (Child)'] || 'document.pdf';
+        const hasValidDocumentId = doc?.documentId && Number(doc?.documentId) > 0;
+        let documentIdToUse = doc?.documentId;
+
+        // Call PrintAndGenerateDocuments API if:
+        // 1. Always Refresh is "true" (regardless of documentId), OR
+        // 2. Always Refresh is "false" AND no valid documentId exists
+        const shouldGenerateDocument = doc?.['Always Refresh'] == "true" || 
+                                      (!hasValidDocumentId && doc?.['Always Refresh'] == "false");
+
+        if (shouldGenerateDocument) {
+          const dprName = doc?.['Doc Rule (DPR) Name (UDC Required DPR Name)'] || '';
+          
+          const payload = dprName === "Verification of Customer ID"
+          ? {
+              actionName: "Print",
+              documentRule: "Verification of Customer ID",
+              outputMethod: "Use default",
+              DynamicParameters: [
+                {
+                  templateName: "VCILV - Verification of Customer ID",
+                  parameterName: "Party No",
+                  parameterValue: "1183889"
+                }
+              ]
+            }
+          : {
+              actionName: "Print",
+              documentRule: dprName,
+              outputMethod: "Use default"
+            };
+          
+          try {
+            const generateResponse: any = await this.svc.data.post(
+              `DocumentServices/PrintAndGenerateDocuments?ContractId=${contractId}`,
+              payload
+            ).toPromise();
+            
+            if (generateResponse?.data?.documentId) {
+              documentIdToUse = generateResponse.data.documentId;
+            } else if (generateResponse?.documentId) {
+              documentIdToUse = generateResponse.documentId;
+            }
+          } catch (genError) {
+            this.toasterService.showToaster({
+              severity: 'error',
+              detail: `Failed to generate document for ${docName}`,
+            });
+            continue;
+          }
+        }
+
+        // Now call DownloadFile with the documentId (either existing or newly generated)
+        if (!documentIdToUse || Number(documentIdToUse) <= 0) {
+          this.toasterService.showToaster({
+            severity: 'warn',
+            detail: `Document not yet generated: ${docName}`,
+          });
+          continue;
+        }
+        
+        const response: any = await this.svc.data
+          .get(
+            `DocumentServices/DownloadFile?ContractId=${contractId}&documentId=${documentIdToUse}`
+          ).toPromise();
+
+        if (response?.data?.fileDetails && response?.data?.fileDetails?.length > 0) {
+          const fileInfo = response?.data?.fileDetails[0];
+          const base64Data = fileInfo?.fileContents;
+          const fileName = fileInfo?.fileDownloadName || doc?.name || doc?.['Portal Display Name (Child)'] || 'document.pdf';
+          
+          if (base64Data) {
+            // Get proper MIME type from filename
+            const contentType = this.getMimeTypeFromFileName(fileName);
+
+            // Convert Base64 to Blob
+            const blob = this.base64ToBlob(base64Data, contentType);
+
+            if (blob) {
+              const downloadUrl = URL.createObjectURL(blob);
+              const downloadLink = document.createElement('a');
+              
+              downloadLink.href = downloadUrl;
+              downloadLink.download = fileName;
+              downloadLink.style.display = 'none';
+              
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+              
+              URL.revokeObjectURL(downloadUrl);
+              downloadLink.remove();
+              
+              downloadedCount++;
+            }
+          }
+          await this.ngOnInit();
+        } else {
+          this.toasterService.showToaster({
+            severity: 'error',
+            detail: `File content not found for ${doc?.name || doc?.['Portal Display Name (Child)']}`,
+          });
+        }
+      } catch (error) {
+        this.toasterService.showToaster({
+          severity: 'error',
+          detail: `Failed to download ${doc?.name || doc?.['Portal Display Name (Child)']}`,
+        });
+      }
+    }
+    
+    if (downloadedCount > 0) {
+      this.toasterService.showToaster({
+        severity: 'success',
+        detail: `Downloaded ${downloadedCount} document(s)`,
+      });
+    }
+  }
+
+
+  onPrintSelectedFiles() {
+    if (this.selectedDocuments?.length === 0) {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: 'Please select at least one document to print',
+      });
+      return;
+    }
+
+
+    const docToPrint = this.selectedDocuments?.find(doc => doc?.fileDetails && doc?.fileDetails?.length > 0);
+    
+    if (docToPrint) {
+      const fileDetails = docToPrint?.fileDetails[0];
+      const blob = this.base64ToBlob(fileDetails?.fileContents, fileDetails?.contentType || 'application/pdf');
+      
+      if (blob) {
+        const fileURL = URL.createObjectURL(blob);
+        const printWindow = window.open(fileURL, '_blank');
+        
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.focus();
+            printWindow.print();
+          };
+        }
+      }
+    } else {
+      this.toasterService.showToaster({
+        severity: 'warn',
+        detail: 'No file available for printing in the selected documents',
+      });
     }
   }
 
@@ -697,7 +1080,7 @@ updateCustRole(event: any): void {
   onPreviewDoc(index) {
     if (this.documents?.[index]?.fileData) {
       let file = this.documents?.[index]?.fileData;
-      const fileDetails = file?.[0].fileContents;
+      const fileDetails = file?.[0]?.fileContents;
 
       // const fileName = formGroup?.get('name')?.value || 'document.pdf';
 
@@ -716,7 +1099,7 @@ updateCustRole(event: any): void {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        const base64String = reader.result?.toString().split(",")[1];
+        const base64String = reader.result?.toString()?.split(",")[1];
         resolve(base64String || "");
       };
       reader.onerror = (error) => reject(error);
@@ -728,14 +1111,14 @@ updateCustRole(event: any): void {
     const byteCharacters = atob(base64);
     const byteArrays = [];
 
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
+    for (let offset = 0; offset < byteCharacters?.length; offset += sliceSize) {
+      const slice = byteCharacters?.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice?.length);
+      for (let i = 0; i < slice?.length; i++) {
+        byteNumbers[i] = slice?.charCodeAt(i);
       }
       const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+      byteArrays?.push(byteArray);
     }
 
     return new Blob(byteArrays, { type: contentType });
@@ -749,15 +1132,15 @@ updateCustRole(event: any): void {
     if (this.documents?.[index]?.fileData) {
       let file = this.documents?.[index]?.fileData;
 
-      const fileDetails = file?.[0].fileContents;
-      const fileName = file?.[0].fileDownloadName;
+      const fileDetails = file?.[0]?.fileContents;
+      const fileName = file?.[0]?.fileDownloadName;
       const blob = this.base64ToBlob(fileDetails, file?.[0].contentType);
 
       if (!blob) {
         return;
       }
       const fileURL = URL.createObjectURL(blob);
-      const downloadLink = document.createElement("a");
+      const downloadLink = document?.createElement("a");
       downloadLink.href = fileURL;
       downloadLink.download = fileName;
       downloadLink.style.display = "none";
@@ -862,35 +1245,18 @@ updateCustRole(event: any): void {
   selectedDocuments: any[] = [];
 
   override async ngOnInit(): Promise<void>{
-
     this.baseSvc.getBaseDealerFormData().pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.baseFormData = data;
-      console.log(this.baseFormData);
-      
     });
 
-  this.documentMatrixData = [];
-  // await this.baseSvc.getFormData(
-  //   `WorkFlows/get_static_config_matrix`
-  // );
+    this.documentMatrixData = await this.baseSvc.getFormData(
+      `WorkFlows/get_static_config_matrix`
+    );
 
-  await this.init();
+    await this.init();
 
-  
-  console.log(this.baseFormData, this.documentMatrixData, "Generate DOcs Implementation");
-    // Process the data to handle parent-child relationships
-    // this.documentsData = [
-    //   ...DUMMY_DOCUMENTS_DATA,
-    //   ...LOAN_CHILD_DOCUMENTS
-    // ];
-    this.documentsData =await this.filterDocumentMatrix();
-
-    console.log(this.documentsData, "SUbhashishsss");
-    
+    this.documentsData = await this.filterDocumentMatrix();
     this.organizeDocumentsData();
-
-    console.log(this.documentsData, "After organizing data");
-    
   }
 
 filterDocumentMatrix() {
@@ -903,7 +1269,6 @@ filterDocumentMatrix() {
   const generatedDocuments = this.generatedDocuments || this.baseFormData?.generatedDocuments || [];
 
   if (!workflowStatus || !productCode) {
-    console.warn('Missing workflow status or product code for filtering');
     return [];
   }
 
@@ -916,7 +1281,7 @@ filterDocumentMatrix() {
       .replace(/\n/g, ',')  // Replace newlines with commas
       .split(',')          // Split by comma
       .map(code => code.trim())  // Trim whitespace from each code
-      .filter(code => code.length > 0);  // Remove empty strings
+      .filter(code => code?.length > 0);  // Remove empty strings
   };
 
   // Helper function to normalize string for comparison (trim and collapse multiple spaces)
@@ -925,33 +1290,50 @@ filterDocumentMatrix() {
     return str.trim().replace(/\s+/g, ' ');
   };
 
-  // Helper function to find matching generated document by documentRuleName
-  // Returns the LATEST document (by loaded date) when multiple documents have the same documentRuleName
-  const findMatchingGeneratedDocument = (dprName: string) => {
-    if (!dprName) return null;
 
+  const findMatchingGeneratedDocument = (templateName: string, dprName: string) => {
+    const normalizedTemplateName = normalizeString(templateName);
     const normalizedDprName = normalizeString(dprName);
 
-    // Find ALL matching documents
-    const matchingDocs = generatedDocuments.filter(generatedDoc => {
-      const matchingGeneratedDocItem = generatedDoc.generatedDocs?.find(
-        (doc) => normalizeString(doc.documentRuleName) === normalizedDprName
-      );
-      return matchingGeneratedDocItem !== undefined;
-    });
+    if (normalizedTemplateName) {
+      const matchingDocsByTemplate = generatedDocuments.filter(generatedDoc => {
+        const matchingGeneratedDocItem = generatedDoc.generatedDocs?.find(
+          (doc) => normalizeString(doc.documentTemplateName) === normalizedTemplateName
+        );
+        return matchingGeneratedDocItem !== undefined;
+      });
 
-    if (matchingDocs.length === 0) {
-      return null;
+      if (matchingDocsByTemplate?.length > 0) {
+        // Sort by loaded date descending (newest first) and return the latest one
+        const sortedDocs = matchingDocsByTemplate.sort((a, b) => {
+          const dateA = new Date(a.loaded).getTime();
+          const dateB = new Date(b.loaded).getTime();
+          return dateB - dateA;
+        });
+        return sortedDocs[0];
+      }
     }
 
-    // Sort by loaded date descending (newest first) and return the latest one
-    const sortedDocs = matchingDocs.sort((a, b) => {
-      const dateA = new Date(a.loaded).getTime();
-      const dateB = new Date(b.loaded).getTime();
-      return dateB - dateA; // Descending order (newest first)
-    });
+    // Fallback: try to match by documentRuleName if templateName didn't match
+    if (normalizedDprName) {
+      const matchingDocsByDpr = generatedDocuments.filter(generatedDoc => {
+        const matchingGeneratedDocItem = generatedDoc.generatedDocs?.find(
+          (doc) => normalizeString(doc.documentRuleName) === normalizedDprName
+        );
+        return matchingGeneratedDocItem !== undefined;
+      });
 
-    return sortedDocs[0]; // Return the latest document
+      if (matchingDocsByDpr?.length > 0) {
+        const sortedDocs = matchingDocsByDpr.sort((a, b) => {
+          const dateA = new Date(a.loaded).getTime();
+          const dateB = new Date(b.loaded).getTime();
+          return dateB - dateA;
+        });
+        return sortedDocs[0];
+      }
+    }
+
+    return null;
   };
 
   // Filter the data by workflowStatus and productCode (dprName matching handled in map step)
@@ -977,13 +1359,16 @@ filterDocumentMatrix() {
     return productMatch;
   });
 
-  // Map filtered items and combine with matching generatedDocuments if dprName matches
+  // Map filtered items and combine with matching generatedDocuments
   const combinedResults = filteredMatrixItems.map(item => {
     const customFields = item.customFields;
+    // Get template name (unique per document - primary matching key)
+    const templateName = customFields["Doc Template Name (UDC Required Template Name)"];
+    // Get DPR name (parent pack identifier - fallback matching key)
     const dprName = customFields["Doc Rule (DPR) Name (UDC Required DPR Name)"];
     
-    // Try to find matching generated document by dprName
-    const matchingGeneratedDoc = findMatchingGeneratedDocument(dprName);
+    // Try to find matching generated document - first by templateName, then by dprName as fallback
+    const matchingGeneratedDoc = findMatchingGeneratedDocument(templateName, dprName);
     
     if (matchingGeneratedDoc) {
       // dprName matched - Combine both objects: matrix customFields + generatedDocument properties
@@ -1076,7 +1461,7 @@ filterDocumentMatrix() {
    * Check if document has child documents
    */
   hasChildDocuments(rowData: any): boolean {
-    return rowData.children && rowData.children.length > 0;
+    return rowData?.children && rowData?.children?.length > 0;
   }
   
   /**
@@ -1138,16 +1523,26 @@ filterDocumentMatrix() {
    * Check if document has duplicates based on DPR Name
    */
   hasDuplicateDocuments(rowData: any): boolean {
-    // Logic to check for duplicates based on Doc Rule (DPR) Name
+    // Logic to check for duplicates based on Doc Template Name
     // This assumes you have access to all documents for comparison
-    const dprName = rowData['Doc Rule (DPR) Name (UDC Required DPR Name)'];
     
-    if (!dprName) return false;
+    const templateName = rowData['Doc Template Name (UDC Required Template Name)'];
     
-    // Count occurrences of this DPR name
-    const count = this.documentsData.filter(doc => 
-      doc['Doc Rule (DPR) Name (UDC Required DPR Name)'] === dprName
-    ).length;
+    // Don't show history if no template name or if View Latest is true
+    if (!templateName || rowData['View Latest'] == "true") return false;
+    
+    // Count occurrences of this template name by checking documentTemplateName in generatedDocs array
+    let count = 0;
+    
+    this.generatedDocuments.forEach(doc => {
+      if (doc?.generatedDocs && Array.isArray(doc?.generatedDocs)) {
+        doc.generatedDocs.forEach(genDoc => {
+          if (genDoc?.documentTemplateName === templateName) {
+            count++;
+          }
+        });
+      }
+    });
     
     return count > 1;
   }
@@ -1228,7 +1623,7 @@ filterDocumentMatrix() {
   updateSelectAllState() {
     const selectableDocs = this.documentsData.filter(doc => !this.shouldDisableCheckbox(doc));
     
-    if (selectableDocs.length === 0) {
+    if (selectableDocs?.length === 0) {
       this.selectAll = false;
       return;
     }
@@ -1284,36 +1679,83 @@ filterDocumentMatrix() {
    * Show document history
    */
   showDocumentHistory(document: any) {
-    console.log('Show history for:', document);
-    // Implement your history viewing logic here
-    // You might want to open a modal or navigate to a history page
+
+    console.log('document', document);
+    // Implement history viewing logic here
+
+      const duplicates = this.getDocumentsByTemplateName(document);
+      
+      this.svc.dialogSvc
+            .show(
+              DocumentHistoryComponent,
+              "Credit Advice",
+              {
+                templates: {
+                  footer: null,
+                },
+                data: {
+                  duplicateDocuments: duplicates,
+                },
+                width: "55vw",
+              }
+            )
+            .onClose.subscribe(() => {});
+  }
+
+  /**
+   * Get all documents that have the same template name as the given document
+   */
+  getDocumentsByTemplateName(document: any): any[] {
+    const templateName = document['Doc Template Name (UDC Required Template Name)'];
+    const portalDisplayName = document['Portal Display Name (Child)'];
+    
+    if (!templateName) return [];
+    
+    const matchingDocuments: any[] = [];
+    
+    this.generatedDocuments.forEach(doc => {
+      if (doc?.generatedDocs && Array.isArray(doc?.generatedDocs)) {
+        const hasMatchingTemplate = doc?.generatedDocs?.some(genDoc => 
+          genDoc?.documentTemplateName === templateName
+        );
+        
+        if (hasMatchingTemplate) {
+          matchingDocuments.push({
+            ...doc,
+            'Portal Display Name (Child)': portalDisplayName
+          });
+        }
+      }
+    });
+    
+    // Sort by loaded date in descending order (newest first)
+    matchingDocuments.sort((a, b) => {
+      const dateA = new Date(a.loaded).getTime();
+      const dateB = new Date(b.loaded).getTime();
+      return dateB - dateA;
+    });
+    
+    return matchingDocuments;
   }
   
   /**
    * Show e-sign status
    */
   showEsignStatus(document: any) {
-    console.log('Show e-sign status for:', document);
-
     this.svc.dialogSvc
-            .show(
-              DocumentEsignDetailsComponent,
-              "e-Signature Details",
-              {
-                templates: {
-                  footer: null,
-                },
-                data: {
-                // eSignDetails: [],
-                documentId: document.documentId,
-                },
-                width: "50vw",
-              }
-            )
-            .onClose.subscribe((res: any) => {
-              console.log(res, "closed");
-            });
-      
-    // Implement your e-sign status viewing logic here
+      .show(
+        DocumentEsignDetailsComponent,
+        "e-Signature Details",
+        {
+          templates: {
+            footer: null,
+          },
+          data: {
+            documentId: document?.documentId,
+          },
+          width: "50vw",
+        }
+      )
+      .onClose.subscribe(() => {});
   }
 }

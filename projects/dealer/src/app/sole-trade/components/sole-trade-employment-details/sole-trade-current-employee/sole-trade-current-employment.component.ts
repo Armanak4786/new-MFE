@@ -20,8 +20,8 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    cardType: "border",
+    //cardBgColor: "--background-color-secondary",
     fields: [
       {
         type: "name",
@@ -29,8 +29,8 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         inputType: "vertical",
         name: "currentEmployer",
         className: "mt-3 mr-2 ",
-        inputClass: "-m-2 mb-0 ml-2",
-        labelClass: "ba pb-5 -mb-3",
+        inputClass: "-m-2 mb-0 ml-2 w-13rem",
+        labelClass: "ba pb-5 -mb-3 pl-2",
         cols: 2,
         nextLine: false,
         //validators: [validators.required],
@@ -50,6 +50,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         // idName: "lookupValue",
         options: [],
         filter: true,
+        inputClass: "w-12rem",
       },
       {
         type: "select",
@@ -57,7 +58,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         alignmentType: "vertical",
         name: "currentEmploymentType",
         cols: 2,
-        className: "mt-2 ",
+        className: "mt-2 ml-2",
         //validators: [validators.required],
         nextLine: false,
         // list$: "LookUpServices/lookups?LookupSetName=EmploymentStatus",
@@ -72,7 +73,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         label: "Time with Current Employer",
         labelClass: "tce pb-3 white-space-nowrap",
         name: "currentEmployeeYear",
-        className: "ml-3 mt-0 py-4 col-fixed w-4rem",
+        className: "ml-2 mt-0 py-4 col-fixed w-3rem",
         inputClass: "-m-2 mb-0 ml-2",
         //validators: [validators.required],
       },
@@ -81,14 +82,14 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         typeOfLabel: "inline",
         label: "Years",
         name: "year",
-        className: "mt-5 py-5 pt-3 col-fixed w-4rem",
+        className: "mt-5 py-5 pt-3 col-fixed w-4rem my-4",
       },
       {
         type: "number",
         inputType: "vertical",
         name: "currentEmployeeMonth",
         className:
-          "ml-3 py-4 mt-4 col-fixed w-4rem timeInBusinessMonthsClass",
+          "py-4 mt-4 col-fixed w-3rem timeInBusinessMonthsClass",
         inputClass: "-m-2 mb-0 ml-2",
       },
       {
@@ -96,7 +97,7 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
         typeOfLabel: "inline",
         label: "Months",
         name: "month",
-        className: "mt-5 py-5 pt-3 col-fixed w-4rem",
+        className: "mt-5 py-5 pt-3 col-fixed w-4rem my-4",
         nextLine: false,
       },
     ],
@@ -401,8 +402,19 @@ export class SoleTradeCurrentEmploymentComponent extends BaseSoleTradeClass {
 }
   override onValueTyped(event: any): void {
     this.updateValidation(event);
+    this.checkTimewithSoleTradeCurrentEmployee();
   }
   override onBlurEvent(event: any): void {
     this.updateValidation(event);
+  }
+  checkTimewithSoleTradeCurrentEmployee(): void {
+    const yCtrl = this.mainForm.get("currentEmployeeYear");
+    const mCtrl = this.mainForm.get("currentEmployeeMonth");
+    const yearValue = yCtrl?.value;
+    const monthValue = mCtrl?.value;
+    if (yearValue == 0 && monthValue == 0) {
+      yCtrl?.setErrors({ required: true });
+      mCtrl?.setErrors({ required: true });
+    } 
   }
 }

@@ -8,7 +8,7 @@ import { IndividualService } from "../../../individual/services/individual.servi
 import { BusinessService } from "../../../business/services/business";
 import { TrustService } from "../../../trust/services/trust.service";
 import { ToasterService, ValidationService } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { SoleTradeService } from "../../../sole-trade/services/sole-trade.service";
 import { takeUntil } from "rxjs";
 

@@ -250,8 +250,8 @@ export class SoleTradePersonalDetailComponent extends BaseSoleTradeClass {
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    //cardBgColor: "--background-color-secondary",
+    cardType: "border",
 
     fields: [
       {

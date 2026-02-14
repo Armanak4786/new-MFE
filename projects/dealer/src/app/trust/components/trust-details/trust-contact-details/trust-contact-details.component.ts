@@ -25,8 +25,8 @@ export class TrustContactDetailsComponent extends BaseTrustClass {
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    cardType: "border",
+    //cardBgColor: "--background-color-secondary",
     fields: [
       {
         type: "array",

@@ -6,7 +6,7 @@
     <i class="pi pi-info-circle ml-2 cursor-pointer" pTooltip="Preferred way to receive documents."
       tooltipPosition="top"></i>
 
-    <p-dropdown [options]="preferredDeliveryMethodOptions" (onChange)="OnDropdownChange($event)" [(ngModel)]="preferredDeliveryMethod" styleClass="w-7rem"></p-dropdown>
+    <p-dropdown [disabled]="isDisabled()" [options]="preferredDeliveryMethodOptions" (onChange)="OnDropdownChange($event)" [(ngModel)]="preferredDeliveryMethod" styleClass="w-7rem"></p-dropdown>
   </div>
 </div>
 

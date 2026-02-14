@@ -20,7 +20,7 @@ import { QuickQuoteService } from "../../services/quick-quote.service";
 import { AssetTypesComponent } from "../../../components/asset-types/asset-types.component";
 import { firstValueFrom, map,  Subject } from "rxjs";
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import {  MessageService } from "primeng/api";
 import { AfvAssetTypesComponent } from "../../../components/afv-asset-types/afv-asset-types.component";
 
@@ -61,6 +61,9 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
   assetFlag: boolean = false;
 
   programlist: any = [];
+  private cachedPromotionalPrograms: any[] = [];
+  private cachedProductIdForPromo: number | null = null;
+  private promotionalProgramsPromise: Promise<any[]> | null = null;
   // productList: any = [];
   // productProgramList: any;
 
@@ -516,7 +519,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       if (!dealer) return;
       this.hideQuote = false;
       const currentRoute = this.router.url;
-      if (currentRoute == "/quick-quote") {
+      if (currentRoute == "/dealer/quick-quote") {
         await this.getProductProgram();
         await this.checkProductProgram();
       }
@@ -557,7 +560,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     //     if (!dealer) return;
     //     this.hideQuote = false;
     //     const currentRoute = this.router.url;
-    //     if (currentRoute == "/quick-quote") {
+    //     if (currentRoute == "/dealer/quick-quote") {
     //       await this.getProductProgram();
     //       await this.checkProductProgram();
     //       // const messages: Message[] = this.errorsMessageArray.map(
@@ -1067,6 +1070,12 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         );
 
         this.calculatedResult = dataMapped;
+        // calculatedResult comes from quick-quote.service.ts -> contractPreview() -> mapPreviewConfigData()
+        
+        // For AFV, patch assuredFutureValue with residualValue from calculate preview (now mapped in mapPreviewConfigData)
+        if (this.sessionProductCode === 'AFV' && dataMapped?.assuredFutureValue) {
+          this.mainForm?.get('assuredFutureValue')?.patchValue(dataMapped.assuredFutureValue, { emitEvent: false });
+        }
         // this.mainForm
         //   .get("firstLeasePayment")
         //   .patchValue(this.calculatedResult?.firstLeasePayment);
@@ -1368,8 +1377,8 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
           allowedInsuranceProducts: loanPurpose?.data?.allowedInsuranceProducts,
         });
 
-        let programOptions = this.baseSvc.productProgramList.programs.filter(
-          (program) => program.productId === event.data
+        let programOptions = await this.getNonPromotionalPrograms(
+          Number(event.data)
         );
 
         if (programOptions && programOptions.length > 0) {
@@ -1456,6 +1465,7 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     if(sessionStorage?.getItem("externalUserType")==="Internal"){
        const product = this.baseSvc?.productProgramList?.products?.
                        find(product => product.productId === event?.data);
+    this.stdSvc.productBusinessModel = product?.businessModel;
     if(product?.businessModel === "Direct"){
       this.mainForm?.updateDisable({'dealerId': true});
       this.mainForm?.updateProps("dealerId", {className: "disable-dealer-dropdown"});
@@ -1471,26 +1481,41 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     if (event.name == "programId") {
       const currentProductId = this.mainForm.form.get("productId")?.value;
       if (currentProductId) {
-        sessionStorage.removeItem("productCode");
-
+        // Re-validate and set productCode in case it was cleared
         const selectedProduct = this.baseSvc.productList.find(
           (product) => product.value === currentProductId
         );
 
         const productLabel = selectedProduct?.label || "";
+        if (productLabel) {
+          const productCode = this.dashboardSvc.getCodeByName(productLabel);
+          sessionStorage.setItem("productCode", productCode);
+          this.sessionProductCode = productCode;
+        }
       }
 
       this.mainForm.updateProps("balloonPct", {
         className: "",
       });
       if (event.data) {
+        // For AFV, preserve asset type before preview
+        let savedAssetType = null;
+        if (this.sessionProductCode === 'AFV') {
+          savedAssetType = {
+            assetTypeDD: this.mainForm?.get('assetTypeDD')?.value,
+            assetTypeId: this.mainForm?.get('assetTypeId')?.value,
+            assetTypeModalValues: this.mainForm?.get('assetTypeModalValues')?.value
+          };
+        }
+
         let defaulting = [];
         let dataMapped = await this.baseSvc.contractPreview(
           this.mainForm.form.value,
           defaulting,
           "program"
         );
-
+        // dataMapped comes from quick-quote.service.ts -> contractPreview() -> mapPreviewConfigData()
+       
         await this.updateFieldBasedOnCondition();
 
         if (dataMapped) {
@@ -1498,6 +1523,64 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
         }
 
         this.mainForm.form.patchValue(dataMapped);
+        
+        // For AFV, restore asset type after patchValue and call getExpectedUsages
+        if (this.sessionProductCode === 'AFV') {
+          // Restore asset type
+          if (savedAssetType?.assetTypeDD) {
+            this.mainForm?.get('assetTypeDD')?.patchValue(savedAssetType.assetTypeDD, { emitEvent: false });
+            this.mainForm?.get('assetTypeId')?.patchValue(savedAssetType.assetTypeId, { emitEvent: false });
+            this.mainForm?.get('assetTypeModalValues')?.patchValue(savedAssetType.assetTypeModalValues, { emitEvent: false });
+          }
+          
+          // Patch assured future value with residual value (now mapped in mapPreviewConfigData)
+          if (dataMapped?.assuredFutureValue) {
+            this.mainForm?.get('assuredFutureValue')?.patchValue(dataMapped.assuredFutureValue, { emitEvent: false });
+          }
+          
+          // Call getExpectedUsages API for KM Allowance dropdown
+          const formValue = this.mainForm.form.value;
+          
+          // Get product name from dropdown options (label)
+          const productOptions = await this.mainForm.getOptions("productId");
+          const selectedProduct = productOptions?.find((p: any) => p.value === formValue?.productId);
+          const productName = selectedProduct?.label || dataMapped?.product?.extName;
+          
+          // Get locationId from preview response (now included in mapPreviewConfigData)
+          const locationId = dataMapped?.locationId || dataMapped?.location?.locationId;
+          
+          // Store locationId in baseFormData for getExpectedUsages API
+          if (locationId) {
+            this.baseFormData.locationId = locationId;
+            this.baseFormData.location = dataMapped?.location;
+          }
+          
+          
+          // const expectedUsagesResult = await this.stdSvc.getExpectedUsages({
+          //   programId: event.data,
+          //   product: productName,
+          //   assetType: savedAssetType?.assetTypeDD || formValue?.assetTypeDD,
+          //   assetDealType: formValue?.assetDealType,
+          //   assetCondition: formValue?.condition,
+          //   locationId: locationId,
+          //   businessUnitId: formValue?.businessUnitId
+          // });
+          
+          // // Save expectedUsages to quick quote baseFormData
+          // if (expectedUsagesResult) {
+          //   this.baseFormData.expectedUsages = expectedUsagesResult;
+          // }
+          
+          // // Populate KM Allowance dropdown
+          // if (this.stdSvc.kmAllowanceOptions.length > 0) {
+          //   this.mainForm?.updateList('kmAllowance', this.stdSvc.kmAllowanceOptions);
+          //   // Patch default value if available
+          //   if (this.stdSvc.kmAllowanceDefaultValue) {
+          //     this.mainForm?.get('kmAllowance')?.patchValue(this.stdSvc.kmAllowanceDefaultValue, { emitEvent: false });
+          //   }
+          // }
+        }
+        
         this.mainForm.get("payment").patchValue(0);
 
         try {
@@ -1729,8 +1812,8 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     if (event.name == "productId" && event?.value) {
       this.mainForm.get("programId").enable();
       // var url = `Program/get_programs?productId=${event.value}`;
-      let programOptions = this.baseSvc.productProgramList.programs.filter(
-        (program) => program.productId === event.value
+      let programOptions = await this.getNonPromotionalPrograms(
+        Number(event.value)
       );
       // this.svc.data.get(url).subscribe((res) => {
       if (programOptions && programOptions.length > 0) {
@@ -1932,12 +2015,27 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       // contractId: null,
     };
 
+    // For AFV, ensure KM Allowance, assured future value, and asset type are included
+    if (this.sessionProductCode === 'AFV') {
+      data.kmAllowance = this.mainForm.value?.kmAllowance || this.calculatedResult?.kmAllowance;
+      data.assuredFutureValue = this.mainForm.value?.assuredFutureValue || this.calculatedResult?.assuredFutureValue;
+      data.assetTypeDD = this.mainForm.value?.assetTypeDD;
+      data.assetTypeId = this.mainForm.value?.assetTypeId;
+      data.assetTypeModalValues = this.mainForm.value?.assetTypeModalValues;
+      data.afvMake = this.baseFormData?.afvMake;
+      data.afvModel = this.baseFormData?.afvModel;
+      data.afvYear = this.baseFormData?.afvYear;
+      data.afvVariant = this.baseFormData?.afvVariant;
+      // Store KM Allowance options for standard quote to use
+      data.expectedUsages = this.baseFormData?.expectedUsages;
+    }
+
     this.stdSvc.mode = "create";
     this.buttonEvent.emit(true);
     this.stdSvc.forceToClickCalculate.next(true);
     this.stdSvc.setBaseDealerFormData(data);
     this.stdSvc.showResult = false;
-    this.router.navigateByUrl("/standard-quote");
+    this.router.navigateByUrl("/dealer/standard-quote");
   }
 
   async selectAsset() {
@@ -2048,6 +2146,60 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
       id: item.assetTypeId,
     }));
     return dropDownData;
+  }
+
+  private async getNonPromotionalPrograms(productId: number): Promise<any[]> {
+    const programs =
+      this.baseSvc.productProgramList?.programs?.filter(
+        (program) => program.productId === productId
+      ) || [];
+    if (!programs.length) return [];
+
+    const promotionalPrograms = await this.getPromotionalPrograms(productId);
+    const promoIds = new Set(
+      promotionalPrograms.map((program) => Number(program.program_id))
+    );
+    return programs.filter(
+      (program) => !promoIds.has(Number(program.programId))
+    );
+  }
+
+  private async getPromotionalPrograms(productId: number): Promise<any[]> {
+    if (this.cachedProductIdForPromo === productId) {
+      if (this.promotionalProgramsPromise) {
+        return this.promotionalProgramsPromise;
+      }
+      return this.cachedPromotionalPrograms;
+    }
+
+    if (
+      this.cachedProductIdForPromo !== null &&
+      this.cachedProductIdForPromo !== productId
+    ) {
+      this.cachedPromotionalPrograms = [];
+      this.cachedProductIdForPromo = null;
+      this.promotionalProgramsPromise = null;
+    }
+
+    this.cachedProductIdForPromo = productId;
+    this.promotionalProgramsPromise = this.fetchPromotionalPrograms(productId);
+    try {
+      this.cachedPromotionalPrograms = await this.promotionalProgramsPromise;
+      return this.cachedPromotionalPrograms;
+    } finally {
+      this.promotionalProgramsPromise = null;
+    }
+  }
+
+  private async fetchPromotionalPrograms(productId: number): Promise<any[]> {
+    const request = {
+      parameterValues: [String(productId)],
+      procedureName: configure.SPPromotionalProgramExtract,
+    };
+    const promoResponse = await this.svc.data
+      .post("LookupServices/CustomData", request)
+      .toPromise();
+    return promoResponse?.data?.table || [];
   }
 
   async updateFieldBasedOnCondition() {
@@ -2196,7 +2348,6 @@ export class CreateQuickQuoteComponent extends BaseFormClass {
     const introducerId = this.dashboardSvc?.userOptions?.find(
       (dealer) => dealer.value.num === originatorNo
     )?.id;
-
     if (introducerId) {
       await this.baseSvc.getFormData(
         `Product/get_programs_products?introducerId=${introducerId}`,

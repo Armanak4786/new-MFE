@@ -131,7 +131,7 @@ describe('AssetInsuranceSummaryComponent', () => {
   //   component.onAssetCellClick(event);
 
   //   expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
-  //     'asset/addAsset/edit'
+  //     'dealer/asset/addAsset/edit'
   //   );
   //   expect(mockDialogRef.close).toHaveBeenCalled();
   // });
@@ -141,7 +141,7 @@ describe('AssetInsuranceSummaryComponent', () => {
   //   component.onTradeCellClick(event);
 
   //   expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
-  //     'trade/addTrade/edit'
+  //     'dealer/trade/addTrade/edit'
   //   );
   //   expect(mockDialogRef.close).toHaveBeenCalled();
   // });

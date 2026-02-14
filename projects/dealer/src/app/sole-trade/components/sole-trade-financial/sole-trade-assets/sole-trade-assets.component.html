@@ -11,7 +11,7 @@
 >
 </base-form> -->
 <!-- [headerText]="'Asset Details'" -->
-<gen-card  [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'">
+<gen-card [cardType]="'non-border'">
 <ng-container body>
     <div class="grid">
       <label class="assetTypelabel mb-3 col-6 text-size-12" style="color: var(--label-color)">Asset Type</label>
@@ -23,7 +23,7 @@
           <div class="grid">
             <div class="col-6 align-content-center">
               <div class="grid">
-                <div class="mt-3 mb-2 col-6">
+                <div class="mt-3 mb-2 col-5">
                   <span class="label-text" *ngIf="i <= 2" style="color: var(--label-color)">{{
                     asset.get("assestType").value
                     }}
@@ -35,10 +35,10 @@
                       <!-- <span class="text-red-500">* </span> -->
                     </span>
                 </div>
-                <div class="col-5 dropdown-allignment">
+                <div class="col-6 -ml-3 dropdown-allignment" style="margin-top: 0.25rem;">
                   @if(i==0){
                   <p-dropdown formControlName="assestHomeOwnerType" [options]="own" optionLabel="label"
-                    optionValue="value" placeholder="Ownership Type" (onChange)="updateAssetDetails(i)"></p-dropdown>
+                    optionValue="value" placeholder="Home Ownership Type" (onChange)="updateAssetDetails(i)"></p-dropdown>
                   <div class="p-error" *ngIf="
                       asset.get('assestHomeOwnerType')?.invalid &&
                       asset.get('assestHomeOwnerType')?.touched
@@ -92,7 +92,7 @@
       <div class="grid">
         <div class="col-6 p-fluid">
           <p-dropdown formControlName="financialAssetType" [options]="asssetTypeOptions" optionLabel="label"
-            optionValue="value" placeholder="Asset Type" [appendTo]="'body'"></p-dropdown>
+            optionValue="value" placeholder="Other" [appendTo]="'body'"></p-dropdown>
         </div>
         <div class="col-5 p-fluid">
           <!-- <amount
@@ -106,8 +106,9 @@
           <p-inputNumber 
             [inputStyle]="{ 'text-align': 'right' }" 
             inputId="currency-add-us" 
-            mode="decimal"
-            [minFractionDigits]="0"
+            mode="currency"
+            currency="USD"
+            [minFractionDigits]="2"
             [maxFractionDigits]="4"
             [min]="0"
             [max]="999999999999999999.9999"

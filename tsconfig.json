@@ -21,6 +21,12 @@
     "paths": {
       "shared-lib": [
         "./projects/shared-lib/src/public-api.ts"
+      ],
+      "src/assets/*": [
+        "./projects/dealer/src/assets/*"
+      ],
+      "src/assets/api-json/*": [
+        "./projects/dealer/src/assets/api-json/*"
       ]
     },
     "importHelpers": true,

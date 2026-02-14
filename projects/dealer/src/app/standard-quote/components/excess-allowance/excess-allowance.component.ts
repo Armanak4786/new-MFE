@@ -5,7 +5,7 @@ import { CommonService, GenericFormConfig, Mode } from 'auro-ui';
 import { StandardQuoteService } from "../../services/standard-quote.service";
 import { Validators } from "@angular/forms";
 import { ToasterService, ValidationService } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
+import configure  from "src/assets/configure.json";
 
 @Component({
   selector: "app-excess-allowance",

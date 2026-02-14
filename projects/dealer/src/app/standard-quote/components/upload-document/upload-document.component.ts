@@ -12,8 +12,9 @@ import {
 import { map } from "rxjs";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import { StandardQuoteService } from "../../services/standard-quote.service";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { NgZone } from "@angular/core";
+import { isWorkflowStatusInView } from "../../utils/workflow-status.utils";
 
 class DocumentData {
   documentId: number;
@@ -155,28 +156,41 @@ export class UploadDocumentComponent extends BaseStandardQuoteClass {
     this.getConfigurationData();
     await super.ngOnInit();
 
+    // Fetch latest documents on component load
+    await this.getDocuments();
+  }
 
-    this.subscriptions.add(
-      this.baseSvc.isDocumentData.subscribe((res) => {
-        if (res && this.baseFormData?.documentsData) {
-          this.documents = this.baseFormData.documentsData.map((ele) => ({
-            ...new DocumentData(),
-            ...ele,
-            dateLoaded: new Date(ele?.loaded)
-          }));
-          this.cd.detectChanges();
-        }
-      })
-    );
+  async getDocuments() {
+    if (!this.baseFormData?.contractId) {
+      return;
+    }
+   
+      const response: any = await this.svc.data
+        .get(`DocumentServices/Documents?ContractId=${this.baseFormData.contractId}&PageNo=1&PageSize=100`)
+        .toPromise();
+
+      const data = response?.items || [];
+      const documentsData = data.filter((ele) => ele.source === "Uploaded" || ele.source === "e-Signature");
+      
+      if (documentsData.length > 0) {
+        this.documents = documentsData.map((ele) => ({
+          ...new DocumentData(),
+          ...ele,
+          dateLoaded: new Date(ele?.loaded)
+        }));
+        this.baseSvc.setBaseDealerFormData({ documentsData: this.documents });
+        this.cd.detectChanges();
+      }
+    
   }
 
 isUploadDisabled() {
-  if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
-    return true;
+    return isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus);
   }
-  return false;
-}
 
+isButtonDisabled() {
+  return isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus);
+}
 
   onCheckboxChange(name, index: any) {
     this.currentIndex = index;

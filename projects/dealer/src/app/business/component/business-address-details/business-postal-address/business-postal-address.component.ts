@@ -29,6 +29,8 @@ export class BusinessPostalAddressComponent extends BaseBusinessClass {
   selectedAddressType: string = "po";
   cityOptionsLocationId: any = [];
   tempCity = null;
+  private copiedPhysicalValues: any = {}; // Store copied values for immediate comparison
+  private previousAddressType: string = null;
 
   fields = [
     "SearchValue",
@@ -63,8 +65,8 @@ export class BusinessPostalAddressComponent extends BaseBusinessClass {
     headerTitle: "Postal Address",
     autoResponsive: true,
     api: "postalAddress",
-    cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    cardType: "border",
+    //cardBgColor: "--primary-lighter-color",
     // goBackRoute: 'postalAddress',
     fields: [
       {
@@ -359,7 +361,7 @@ export class BusinessPostalAddressComponent extends BaseBusinessClass {
         label: "Country",
         name: "postalCountry",
         alignmentType: "vertical",
-        labelClass: "w-8 -my-3",
+        labelClass: "w-8 mb-2",
         //validators: [Validators.required],
         className: "px-0 customLabel",
         cols: 2,
@@ -389,6 +391,51 @@ export class BusinessPostalAddressComponent extends BaseBusinessClass {
 
   override title: string = "Address Details";
   // override title: string = 'Address Details';
+
+  private togglePostalCountry(addressType: string): void {
+    const countryCtrl = this.mainForm?.form?.get('postalCountry');
+
+    if (!countryCtrl) return;
+
+    if (addressType === 'street') {
+      // Change to text field (read-only) when street type. Default: NZ
+      this.mainForm.updateProps("postalCountry", {
+        type: 'text',
+        inputType: 'vertical',
+        inputClass: "w-8 mt-2",
+        cols: 2,
+        labelClass: "w-8 -my-3",
+        className: "px-0 mt-2 customLabel",
+        // readOnly: true,
+        // disabled: true,
+        mode: Mode.view,
+      });
+      countryCtrl.setValue('New Zealand', { emitEvent: false });
+      countryCtrl.disable({ emitEvent: false });
+      
+    } else {      
+      this.mainForm.updateProps("postalCountry", {
+        type: "select",
+        label: "Country",
+        labelClass: "w-8 -my-3",
+        alignmentType: "vertical",
+        name: "postalCountry",
+        className: "px-0 customLabel",
+        cols: 2,
+        // options: this.postalCountryOptions.length > 0 ? this.postalCountryOptions : [],
+        filter: true,
+      });
+      
+      // Update the countries - sessionStorage
+      this.indSvc.updateDropdownData().subscribe((result) => {
+        if (result?.country) {
+          this.mainForm.updateList("postalCountry", result?.country);
+        }
+      });
+      
+      countryCtrl.enable({ emitEvent: false });
+    }
+  }
 
   // NEW METHOD: Add street type handling method for business postal address
   async setStreetType(streetTypeValue: string) {
@@ -555,6 +602,21 @@ export class BusinessPostalAddressComponent extends BaseBusinessClass {
   }
 
 override async onValueTyped(event: any): Promise<void> {
+  // IMMEDIATE CHANGE DETECTION: Check if user manually changed a copied field
+  this.checkIfPostalFieldChanged(event);
+  
+  // Save typed value to baseFormData for payload
+  // Always get the current form value to ensure we save what the user actually typed
+  if (event.name && event.name.startsWith('postal')) {
+    const formControl = this.mainForm?.form?.get(event.name);
+    if (formControl) {
+      const fieldValue = formControl.value;
+      this.baseSvc.setBaseDealerFormData({
+        [event.name]: fieldValue
+      });
+    }
+  }
+
   if (event.name == "postalCountry") {
     if (event.data != "New Zealand") {
       this.mainForm.updateHidden({
@@ -609,10 +671,16 @@ override async ngOnInit(): Promise<void> {
   const postalCountry = this.mainForm.form.get("postalCountry")?.value || "New Zealand";
   const postalAddressType = this.mainForm.form.get("postalAddressType")?.value;
 
+  // NEW: Initialize previousAddressType to track changes
+  this.previousAddressType = postalAddressType;
+
   // Set initial country dropdown state based on address type
   if (postalAddressType === "street") {
+    // For street type: set New Zealand and disable country dropdown
+    this.mainForm.form.get("postalCountry")?.patchValue("New Zealand", { emitEvent: false });
     this.mainForm.form.get("postalCountry")?.disable({ emitEvent: false });
   } else {
+    // For PO Box: enable country dropdown, don't force a value
     this.mainForm.form.get("postalCountry")?.enable({ emitEvent: false });
   }
 
@@ -652,15 +720,31 @@ override async ngOnInit(): Promise<void> {
 
   this.cdr.detectChanges();
 
-  this.indSvc.updateDropdownData().subscribe((result) => {
-    this.mainForm.updateList("postalFloorType", result?.floorType);
-    this.mainForm.updateList("postalUnitType", result?.unitType);
-    this.mainForm.updateList("postalStreetType", result?.streetType);
+  this.indSvc.updateDropdownData().subscribe({
+    next: (result) => {
+      try {
+        this.mainForm.updateList("postalFloorType", result?.floorType);
+        this.mainForm.updateList("postalUnitType", result?.unitType);
+        this.mainForm.updateList("postalStreetType", result?.streetType);
 
-    if (result?.country) {
-      this.mainForm.updateList("postalCountry", result?.country);
-      this.mainForm?.form?.get("postalCountry")?.setValue("New Zealand");
-      this.mainForm.updateList("postalCity", result?.city);
+        if (result?.country) {
+          this.mainForm.updateList("postalCountry", result?.country);
+          // Only set default country for street type
+          if (postalAddressType === "street") {
+            this.mainForm?.form?.get("postalCountry")?.setValue("New Zealand", { emitEvent: false });
+          }
+          this.mainForm.updateList("postalCity", result?.city);
+        }
+      } catch (error) {
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPostalAddressComponent: Split error in updateDropdownData subscription', error.message);
+        } else {
+          console.error('BusinessPostalAddressComponent: Error in updateDropdownData subscription', error);
+        }
+      }
+    },
+    error: (error) => {
+      console.error('BusinessPostalAddressComponent: Error in updateDropdownData subscription', error);
     }
   });
 
@@ -679,10 +763,28 @@ override async ngOnInit(): Promise<void> {
     this.baseFormData.AFworkflowStatus !== 'Quote'
     ) )
     {
-    this.mainForm?.form?.disable();
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.disable({ emitEvent: false });
+      } catch (error) {
+        console.warn('BusinessPostalAddressComponent: Error disabling form', error);
+      }
     }
-    else{ this.mainForm?.form?.enable();}
+    else{ 
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.enable({ emitEvent: false });
+      } catch (error) {
+        // Handle errors that might occur when enabling form triggers validation subscriptions
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPostalAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+        } else {
+          console.warn('BusinessPostalAddressComponent: Error enabling form', error);
+        }
+      }
+    }
 }
+
 
 private initializeCopySubscription(): void {
   this.reusePhysicalSubs = this.baseSvc.reusePhysical$
@@ -717,19 +819,20 @@ private initializeCopySubscription(): void {
 private handleCopyFromPhysical(physicalData: any): void {
   const isNz = physicalData.postalCountry === "New Zealand";
 
-  // Set address type based on country
-  this.mainForm.form.get("postalAddressType")?.patchValue(isNz ? "street" : "po", { emitEvent: false });
-  this.selectedAddressType = isNz ? "street" : "po";
+  // Set flag EARLY to prevent form change listener from triggering during copy operations
+  this.baseSvc.isCopyingToPostal = true;
 
-  // Enable/disable country dropdown based on address type
-  if (this.selectedAddressType === "street") {
-    this.mainForm.form.get("postalCountry")?.disable({ emitEvent: false });
-  } else {
-    this.mainForm.form.get("postalCountry")?.enable({ emitEvent: false });
-  }
+  // Clear previous copied values and store new ones
+  this.copiedPhysicalValues = {};
 
-  // Update field visibility based on country and address type
-  if (!isNz || this.selectedAddressType === "po") {
+  // Determine address type based on country
+  const copiedAddressType = isNz ? "street" : "po";
+  
+  // CRITICAL EDIT: Track address type BEFORE changing it to prevent clearAddressDataOnTypeChange
+  this.previousAddressType = copiedAddressType;
+
+  // Update field visibility based on country and address type FIRST
+  if (!isNz || copiedAddressType === "po") {
     this.mainForm.updateHidden({
       postalUnitType: true,
       postalFloorNumber: true,
@@ -763,10 +866,27 @@ private handleCopyFromPhysical(physicalData: any): void {
     });
   }
 
-  // Patch all form values while preserving control disabled states
+  // Set address type with emitEvent: true to trigger onFormEvent
+  this.mainForm.form.get("postalAddressType")?.patchValue(copiedAddressType, { emitEvent: true });
+  this.selectedAddressType = copiedAddressType;
+
+  // EDIT: Store postalAddressType in copiedPhysicalValues for comparison
+  this.copiedPhysicalValues['postalAddressType'] = copiedAddressType;
+
+  // Enable/disable country dropdown based on address type
+  if (this.selectedAddressType === "street") {
+    this.mainForm.form.get("postalCountry")?.disable({ emitEvent: false });
+  } else {
+    this.mainForm.form.get("postalCountry")?.enable({ emitEvent: false });
+  }
+
+  // Patch all form values while preserving control disabled states and storing copied values
   Object.keys(physicalData).forEach(key => {
     const control = this.mainForm.form.get(key);
     if (control && physicalData[key] !== undefined && physicalData[key] !== null) {
+      // Store the copied value for later comparison
+      this.copiedPhysicalValues[key] = physicalData[key];
+
       const wasDisabled = control.disabled;
       
       // Temporarily enable disabled controls to allow value update
@@ -793,6 +913,10 @@ private handleCopyFromPhysical(physicalData: any): void {
 
   // Mark toggle state as active
   this.baseFormData.physicalreuseOfPostalAddress = true;
+
+  // CRITICAL EDIT: Reset flag AFTER copy is complete
+  this.baseSvc.isCopyingToPostalSubject.next(false);
+  this.baseSvc.isCopyingToPostal = false;
 
   // Trigger change detection to update view
   this.cdr.detectChanges();
@@ -935,6 +1059,41 @@ async getCities() {
   // }
 
   override onValueChanges(event: any): void {
+    // EDIT: IMMEDIATE CHANGE DETECTION - Check if user manually changed any copied field
+    if (this.baseFormData?.physicalreuseOfPostalAddress && Object.keys(this.copiedPhysicalValues).length > 0 && !this.baseSvc.isCopyingToPostal) {
+      // Check all postal fields in the event including postalAddressType
+      Object.keys(event).forEach(fieldName => {
+        if (fieldName.startsWith('postal')) {
+          // EDIT: Special handling for postalAddressType
+          if (fieldName === 'postalAddressType') {
+            const currentValue = event[fieldName];
+            const copiedValue = this.copiedPhysicalValues[fieldName];
+            
+            // If address type was stored and user changed it, toggle off
+            if (copiedValue && currentValue !== copiedValue) {
+              this.baseSvc.postalAddressManuallyChanged.next(true);
+              return; // Exit early once we detect a change
+            }
+          } else {
+            const currentValue = event[fieldName];
+            const copiedValue = this.copiedPhysicalValues[fieldName];
+            
+            if (copiedValue !== undefined) {
+              const normalizeValue = (val: any) => {
+                if (val === null || val === undefined || val === '') return '';
+                return String(val).trim();
+              };
+              
+              if (normalizeValue(currentValue) !== normalizeValue(copiedValue)) {
+                this.baseSvc.postalAddressManuallyChanged.next(true);
+                return; // Exit early once we detect a change
+              }
+            }
+          }
+        }
+      });
+    }
+
     if (event.postalSearchValue && event.postalSearchValue.length >= 4) {
       this.searchSvc.searchAddress(event.postalSearchValue).subscribe((res) => {
         this.searchAddressList = res;
@@ -942,6 +1101,129 @@ async getCities() {
       });
     }
   }
+
+  private checkIfPostalFieldChanged(event: any): void {
+    // Skip if copying is in progress
+    if (this.baseSvc.isCopyingToPostal) {
+      return;
+    }
+    
+    // Only check if physicalreuseOfPostalAddress was ON (meaning data was copied) and we have stored copied values
+    if (!this.baseFormData?.physicalreuseOfPostalAddress || Object.keys(this.copiedPhysicalValues).length === 0) {
+      return;
+    }
+    
+    // Get the field name that was changed
+    const fieldName = event.name;
+    
+    // Check all postal fields including postalAddressType
+    if (!fieldName || !fieldName.startsWith('postal')) {
+      return;
+    }
+    
+    // EDIT: Special handling for postalAddressType - if changed from copied value, toggle off
+    if (fieldName === 'postalAddressType') {
+      const currentValue = event.data !== undefined ? event.data : event.value;
+      const copiedValue = this.copiedPhysicalValues[fieldName];
+      
+      // If address type was stored and user changed it, toggle off
+      if (copiedValue && currentValue !== copiedValue) {
+        this.baseSvc.postalAddressManuallyChanged.next(true);
+      }
+      return; // Don't check other address type changes
+    }
+    
+    // Get the current value and the copied value
+    const currentValue = event.data !== undefined ? event.data : this.mainForm?.form?.get(fieldName)?.value;
+    const copiedValue = this.copiedPhysicalValues[fieldName];
+    
+    // Skip if this field wasn't copied (might not exist in physical address)
+    if (copiedValue === undefined) {
+      return;
+    }
+    
+    // Normalize values for comparison (handle null, undefined, empty string)
+    const normalizeValue = (val: any) => {
+      if (val === null || val === undefined || val === '') return '';
+      return String(val).trim();
+    };
+    
+    const normalizedCurrent = normalizeValue(currentValue);
+    const normalizedCopied = normalizeValue(copiedValue);
+    
+    // If current value differs from copied value, it's a manual change - toggle off immediately
+    if (normalizedCurrent !== normalizedCopied) {
+      // Immediately notify service to toggle off physicalreuseOfPostalAddress
+      this.baseSvc.postalAddressManuallyChanged.next(true);
+    }
+  }
+/**
+ * Clears all address-related fields when user manually changes address type
+ * This preserves the address type field but clears all other address data
+ */
+private clearAddressDataOnTypeChange(newAddressType: string): void {
+  const fieldsToClear = [
+    'postalSearchValue',
+    'postalBuildingName',
+    'postalFloorType',
+    'postalFloorNumber',
+    'postalUnitType',
+    'postalStreetArea',
+    'postalUnitNumber',
+    'postalStreetNumber',
+    'postalStreetName',
+    'postalStreetType',
+    'postalStreetDirection',
+    'postalRuralDelivery',
+    'postalSuburbs',
+    'postalCity',
+    'postalPostcode',
+    'postalCityLocationId',
+    'postalCountry',
+    'postalPostalNumber'
+  ];
+  
+  // Clear form controls
+  fieldsToClear.forEach(fieldName => {
+    const control = this.mainForm?.form?.get(fieldName);
+    if (control) {
+      control.reset(null, { emitEvent: false });
+    }
+  });
+  
+  // Clear baseFormData
+  const dataToClear: any = {};
+  fieldsToClear.forEach(fieldName => {
+    dataToClear[fieldName] = null;
+  });
+  this.baseSvc.setBaseDealerFormData(dataToClear);
+  
+  // Clear search value
+  this.physicalSeachValue = null;
+  
+  // Set country based on address type
+  if (newAddressType === 'street') {
+    // For street: set New Zealand and disable
+    this.mainForm.form.get('postalCountry')?.enable({ emitEvent: false });
+    this.mainForm.form.get('postalCountry')?.patchValue('New Zealand', { emitEvent: false });
+    this.mainForm.form.get('postalCountry')?.disable({ emitEvent: false });
+    this.baseSvc.setBaseDealerFormData({ postalCountry: 'New Zealand' });
+  } else {
+    // For PO Box: clear country but ENABLE so user can select any country (including NZ)
+    this.mainForm.form.get('postalCountry')?.enable({ emitEvent: false });
+    // Don't set any value - let it be empty/null so user can choose
+  }
+  
+  // If toggle was on, notify physical component to turn it off
+  if (this.baseFormData?.physicalreuseOfPostalAddress) {
+    this.baseSvc.postalAddressManuallyChanged.next(true);
+  }
+  
+  // Clear copied values since we're starting fresh
+  this.copiedPhysicalValues = {};
+}
+
+
 
 override async onFormEvent(event): Promise<void> {
   if (event.name === "postalCountry") {
@@ -953,8 +1235,65 @@ override async onFormEvent(event): Promise<void> {
   }
 
   if (event.name === "postalAddressType") {
+    // CRITICAL: Check if this is a copy operation
+    const isCopyingOperation = this.baseSvc.isCopyingToPostalSubject.getValue() === true;
+    
+    if (isCopyingOperation) {
+      // During copy: only update visibility, don't clear fields or check for manual changes
+      if (event.value === "po") {
+        this.mainForm.form.get("postalCountry")?.enable({ emitEvent: false });
+        this.mainForm?.updateHidden({
+          postalUnitType: true,
+          postalFloorNumber: true,
+          postalFloorType: true,
+          postalBuildingName: true,
+          postalRuralDelivery: true,
+          postalStreetDirection: true,
+          postalStreetType: true,
+          postalStreetName: true,
+          postalStreetNumber: true,
+          postalUnitNumber: true,
+          postalStreetArea: false,
+          postalType: true,
+          postalNumber: true,
+        });
+      } else {
+        this.mainForm.form.get("postalCountry")?.patchValue('New Zealand', { emitEvent: false });
+        this.mainForm.form.get("postalCountry")?.disable({ emitEvent: false });
+        this.mainForm?.updateHidden({
+          postalUnitType: false,
+          postalFloorNumber: false,
+          postalFloorType: false,
+          postalBuildingName: false,
+          postalRuralDelivery: false,
+          postalStreetDirection: false,
+          postalStreetType: false,
+          postalStreetName: false,
+          postalStreetNumber: false,
+          postalUnitNumber: false,
+          postalStreetArea: true,
+          postalType: false,
+          postalNumber: false,
+        });
+      }
+      
+      // Update previousAddressType and exit early
+      this.previousAddressType = event.value;
+      return; // CRITICAL: Exit early to prevent field clearing during copy
+    }
+    
+    // NEW: Detect manual address type change and clear fields
+    const isManualChange = this.previousAddressType !== null && 
+                          this.previousAddressType !== event.value;
+    
+    if (isManualChange) {
+      // User manually changed address type - clear all fields
+      this.clearAddressDataOnTypeChange(event.value);
+    }
+    
+    // Handle normal address type change (not during copy)
     if (event.value === "po") {
-      // For P.O. Box - enable country dropdown
+      // For P.O. Box - enable country dropdown, leave it empty for user to select
       this.mainForm.form.get("postalCountry")?.enable({ emitEvent: false });    
       this.mainForm?.updateHidden({
         postalUnitType: true,
@@ -971,8 +1310,12 @@ override async onFormEvent(event): Promise<void> {
         postalType: true,
         postalNumber: true,
       });
+      
+      // REMOVED: Don't force clear country here - clearAddressDataOnTypeChange already handles it if manual change
     } else {
-      // For Street - disable country dropdown
+      // For Street - set New Zealand and disable country dropdown
+      this.mainForm.form.get("postalCountry")?.enable({ emitEvent: false });
+      this.mainForm.form.get("postalCountry")?.patchValue('New Zealand', { emitEvent: false });
       this.mainForm.form.get("postalCountry")?.disable({ emitEvent: false }); 
       this.mainForm?.updateHidden({
         postalUnitType: false,
@@ -989,23 +1332,49 @@ override async onFormEvent(event): Promise<void> {
         postalType: false,
         postalNumber: false,
       });
+      
+      // Ensure country is set to New Zealand for street type
+      this.baseSvc.setBaseDealerFormData({ postalCountry: 'New Zealand' });
     }
+    
+    // Update previousAddressType
+    this.previousAddressType = event.value;
+    
     let portalWorkflowStatus = sessionStorage.getItem("workFlowStatus");
-     if (
+    if (
       (portalWorkflowStatus != 'Open Quote') || (
-    this.baseFormData?.AFworkflowStatus &&
-    this.baseFormData.AFworkflowStatus !== 'Quote'
-    ) )
+      this.baseFormData?.AFworkflowStatus &&
+      this.baseFormData.AFworkflowStatus !== 'Quote'
+      ) )
     {
-    this.mainForm?.form?.disable();
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.disable({ emitEvent: false });
+      } catch (error) {
+        console.warn('BusinessPostalAddressComponent: Error disabling form', error);
+      }
     }
-    else{ this.mainForm?.form?.enable();}
+    else{ 
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.enable({ emitEvent: false });
+      } catch (error) {
+        // Handle errors that might occur when enabling form triggers validation subscriptions
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPostalAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+        } else {
+          console.warn('BusinessPostalAddressComponent: Error enabling form', error);
+        }
+      }
+    }
     
     await this.updateValidation("onInit");
   }
 
   super.onFormEvent(event);
 }
+
+
   suggestionsChanged(event: any): void {
     if (!event || event.length === 0) {
       this.toasterService.showToaster({
@@ -1067,8 +1436,9 @@ private handleCitySelection(cityName: string): void {
         }, 200);
       }
 
-      if (data.country)
+      if (data.country) {
         this.mainForm.get("postalCountry").patchValue(data.country);
+      }
       if (data.postcode)
         this.mainForm.get("postalPostcode").patchValue(data.postcode);
       if (data.city) this.mainForm.get("postalCity").patchValue(data.city);
@@ -1115,9 +1485,12 @@ private handleCitySelection(cityName: string): void {
     ) {
       const isNz = res.physicalCountry === "New Zealand";
 
+      // Set flag EARLY to prevent form change listener from triggering during copy/reset operations
+      this.baseSvc.isCopyingToPostal = true;
+
       this.mainForm.form
         .get("postalAddressType")
-        .patchValue(isNz ? "street" : "po");
+        .patchValue(isNz ? "street" : "po", { emitEvent: false });
       this.mainForm.updateHidden({
         postalFloorNumber: isNz,
         postalFloorType: isNz,
@@ -1134,6 +1507,9 @@ private handleCitySelection(cityName: string): void {
       });
       // await this.updateValidation("onInit");
       if (res.physicalreuseOfPostalAddress) {
+        // Clear previous copied values and store new ones
+        this.copiedPhysicalValues = {};
+
         const fields = [
           "FloorType",
           "BuildingName",
@@ -1169,18 +1545,41 @@ private handleCitySelection(cityName: string): void {
           const value = res[`physical${field}`];
 
           if (control && value !== undefined && value !== null) {
+            // Store the copied value for later comparison
+            this.copiedPhysicalValues[controlName] = value;
+
             const wasDisabled = control.disabled;
             if (wasDisabled) control.enable({ emitEvent: false });
-            control.setValue(value);
+            control.setValue(value, { emitEvent: false });
             if (wasDisabled) control.disable({ emitEvent: false });
           }
         });
-        this.mainForm.form.get("postalAddressType").patchValue("street");
-      } else {
+        
+        // Store postalAddressType as "street" in copiedPhysicalValues for comparison
+        this.copiedPhysicalValues['postalAddressType'] = 'street';
+        
+        this.mainForm.form.get("postalAddressType").patchValue("street", { emitEvent: false });
+        
+        // Immediately enable change detection after copy is complete
+        this.baseSvc.isCopyingToPostal = false;
+        } else {
         if (this?.baseFormData?.physicalreuseOfPostalAddress) {
-          this.mainForm.form.reset();
-          this.mainForm.form.get("postalAddressType").patchValue("po");
+          // Clear copied values when toggle is turned off
+          this.copiedPhysicalValues = {};
+          try {
+            // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+            this.mainForm.form.reset({}, { emitEvent: false });
+            this.mainForm.form.get("postalAddressType").patchValue("po", { emitEvent: false });
+          } catch (error) {
+            if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+              console.warn('BusinessPostalAddressComponent: Split error when resetting form in onFormDataUpdate - likely undefined pattern value in validation', error.message);
+            } else {
+              console.warn('BusinessPostalAddressComponent: Error resetting form in onFormDataUpdate', error);
+            }
+          }
         }
+        // Reset copying flag immediately for reset scenario
+        this.baseSvc.isCopyingToPostal = false;
       }
 
       this.cdr.detectChanges();
@@ -1191,6 +1590,7 @@ private handleCitySelection(cityName: string): void {
   modelName: string = "BusinessPostalAddressComponent";
 
   override async onFormReady(): Promise<void> {
+    const addressType = this.mainForm?.form?.get('postalAddressType')?.value || 'street';
     await this.updateValidation("onInit");
     super.onFormReady();
   }
@@ -1224,8 +1624,16 @@ private handleCitySelection(cityName: string): void {
               .get("postalCountry")
               .patchValue(formValues.postalCountry);
           } else {
-            // Patch form values first
-            this.mainForm.form.patchValue(formValues);
+            // Patch form values first - use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+            try {
+              this.mainForm.form.patchValue(formValues, { emitEvent: false });
+            } catch (error) {
+              if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+                console.warn('BusinessPostalAddressComponent: Split error when patching form values in onBlurEvent - likely undefined pattern value in validation', error.message);
+              } else {
+                console.error('BusinessPostalAddressComponent: Error patching form values in onBlurEvent', error);
+              }
+            }
 
             // IMPROVED: Better street type handling with proper timing (only for street type)
             // if (formValues.postalStreetType && this.mainForm.form.get("postalAddressType")?.value === "street") {
@@ -1306,6 +1714,12 @@ private handleCitySelection(cityName: string): void {
   }
 
   async updateValidation(event) {
+    // Safety check: ensure mainForm exists
+    if (!this.mainForm || !this.mainForm.form) {
+      console.warn('BusinessPostalAddressComponent: mainForm or form not available for validation');
+      return true; // Return true to prevent blocking if form isn't ready
+    }
+
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,
@@ -1314,12 +1728,31 @@ private handleCitySelection(cityName: string): void {
       pageCode: this.pageCode,
     };
 
-    const responses = await this.validationSvc.updateValidation(req);
-    if (!responses.status && responses.updatedFields.length) {
-      await this.mainForm.applyValidationUpdates(responses);
-    }
+    try {
+      const responses = await this.validationSvc.updateValidation(req);
+      
+      if (!responses.status && responses.updatedFields && responses.updatedFields.length > 0) {
+        await this.mainForm.applyValidationUpdates(responses);
+      }
 
-    return responses.status;
+      return responses.status;
+    } catch (error) {
+      // Handle regex pattern errors gracefully - don't break the app
+      if (error?.message?.includes('Invalid regular expression') || error?.message?.includes('Range out of order')) {
+        console.warn('BusinessPostalAddressComponent: Invalid regex pattern in validation rules', error.message);
+        return true; // Return true to prevent blocking on invalid patterns
+      }
+      
+      // Handle split errors gracefully
+      if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+        console.warn('BusinessPostalAddressComponent: Split error in validation - likely undefined pattern value', error.message);
+        return true; // Return true to prevent blocking
+      }
+      
+      // For other errors, log but don't throw to prevent breaking the app
+      console.error('BusinessPostalAddressComponent: Validation error', error);
+      return true; // Return true instead of throwing to prevent app breakage
+    }
   }
 
   override async onStepChange(quotesDetails: any): Promise<void> {

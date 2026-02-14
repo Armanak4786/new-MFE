@@ -22,3 +22,6 @@
   font-weight: bold;
   border-bottom: solid 5px var(--primary-color);
 }
+::ng-deep .documentcard .card-body {
+    padding: 0px !important;
+}

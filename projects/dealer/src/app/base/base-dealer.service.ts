@@ -171,7 +171,9 @@ export abstract class BaseDealerService implements OnInit {
       .get(api)
       .toPromise()
       .then((res) => {
-        if (isCacheable) {
+        // Only cache if there's no API error in the response
+        const hasApiError = res?.apiError?.errors?.length > 0 || res?.Error?.Message ? true : false;
+        if (isCacheable && !hasApiError) {
           sessionStorage.setItem(cacheKey, JSON.stringify(res));
         }
         return mapFunc ? mapFunc(res) : res;

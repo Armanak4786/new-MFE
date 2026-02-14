@@ -10,7 +10,8 @@ import { StandardQuoteService } from "../../../standard-quote/services/standard-
 import { catchError, distinctUntilChanged, map, of, retry, skip, takeUntil } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AssetTradeSummaryService } from "../../../standard-quote/components/asset-insurance-summary/asset-trade.service";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../../../standard-quote/utils/workflow-status.utils";
 
 @Component({
   selector: "app-asset-details",
@@ -387,7 +388,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
 
   assetTypeDD: any;
   addAssetData: any;
-
+private isUpdatingCostFromService = false;
   override async ngOnInit(): Promise<void> {
 
     await super.ngOnInit();
@@ -403,12 +404,28 @@ export class AssetDetailsComponent extends BaseAssetClass {
       .getBaseDealerFormData()
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
+        
         this.standardQuoteBaseFormData = res
         this.AFworkflowStatus = res?.AFworkflowStatus,
           //  this.baseFormData = res;
           this.addAssetData = res?.addAssetData;
-        this.assetTypeDD = res?.assetTypeDD;
-        this.assetTypeId = res?.assetTypeId;
+          // // Convert conditionDD (lookupId) to conditionOfGood (lookupValue string)
+          // // 781 = New, 782 = Used
+          // console.log('[ASSET-DETAILS] SUBSCRIPTION - res.conditionDD:', res?.conditionDD);
+          // console.log('[ASSET-DETAILS] SUBSCRIPTION - current conditionOfGood:', this.mainForm?.get('conditionOfGood')?.value);
+          // if (res?.conditionDD && this.mainForm?.get('conditionOfGood')) {
+          //     const conditionLabel = res.conditionDD == 781 ? 'New' : res.conditionDD == 782 ? 'Used' : null;
+          //     console.log('[ASSET-DETAILS] SUBSCRIPTION - conditionLabel to patch:', conditionLabel);
+          //     if (conditionLabel) {
+          //       this.mainForm.get('conditionOfGood').patchValue(conditionLabel, { emitEvent: false });
+          //       console.log('[ASSET-DETAILS] SUBSCRIPTION - AFTER PATCH conditionOfGood:', this.mainForm.get('conditionOfGood').value);
+          //     }
+          //   }
+        // For AFV, preserve user's selected asset type - don't overwrite from preview
+        if (res?.productCode !== 'AFV') {
+          this.assetTypeDD = res?.assetTypeDD;
+          this.assetTypeId = res?.assetTypeId;
+        }
         this.programId = res?.programId;
       });
 
@@ -421,19 +438,33 @@ export class AssetDetailsComponent extends BaseAssetClass {
       )
     )
     .subscribe((data) => {
+     
       if (data && Object.keys(data).length > 0 && data.vin) {
         const assetType = data.assetType || this.baseFormData?.assetType;
-        this.baseSvc.setBaseDealerFormData({
-          ...data,
-          assetType: assetType,
-        });
-        this.mainForm.form.patchValue({
-          ...data,
-          assetTypeId: assetType?.assetTypeId,
-          assetName: assetType?.assetTypeName,
-          assetPath: assetType?.assetTypePath,
-          costOfAsset: data.costOfAsset || this.baseFormData?.costOfAsset,
-        });
+        // For AFV, don't patch asset type from search results - preserve user selection
+        if (this.standardQuoteBaseFormData?.productCode !== 'AFV') {
+          this.baseSvc.setBaseDealerFormData({
+            ...data,
+            assetType: assetType,
+          });
+          this.mainForm.form.patchValue({
+            ...data,
+            assetTypeId: assetType?.assetTypeId,
+            assetName: assetType?.assetTypeName,
+            assetPath: assetType?.assetTypePath,
+            costOfAsset: data.costOfAsset || this.baseFormData?.costOfAsset,
+          });
+        } else {
+          // For AFV, patch other data but NOT asset type
+         
+          this.baseSvc.setBaseDealerFormData({
+            ...data,
+          });
+          this.mainForm.form.patchValue({
+            ...data,
+            costOfAsset: data.costOfAsset || this.baseFormData?.costOfAsset,
+          });
+        }
       }
     });
 
@@ -473,6 +504,20 @@ export class AssetDetailsComponent extends BaseAssetClass {
         idName: "lookupValue",
       });
       this.mainForm.form?.get("assetCategory")?.patchValue("Other");
+    //   this.tradeSvc.tradeAmountForAddTrade$.pipe(
+    //   takeUntil(this.destroy$),
+    //   distinctUntilChanged()
+    // ).subscribe((tradeAmount) => {
+    //   if (tradeAmount !== null && tradeAmount !== undefined && this.mainForm?.get("costOfAsset")) {
+    //     this.isUpdatingCostFromService = true;
+    //       this.mainForm.get("costOfAsset").patchValue(tradeAmount, { emitEvent: false });
+    //       console.log('Patched costOfAsset with tradeAmount:', tradeAmount);
+    //       this.baseFormData.costOfAsset = tradeAmount;
+    //        this.isUpdatingCostFromService = false;
+
+    //   }
+    // });
+  
     }
     else {
 
@@ -494,13 +539,18 @@ export class AssetDetailsComponent extends BaseAssetClass {
       //   Validators.required
       // ]);
       let assetType = this.baseFormData?.assetType;
+     
 
       if (this.mode != "edit") {
         this.mainForm.get("conditionOfGood").reset();
       } else {
-        this.mainForm?.get("assetTypeId")?.patchValue(assetType?.assetTypeId);
-        this.mainForm?.get("assetName")?.patchValue(assetType?.assetTypeName);
-        this.mainForm?.get("assetPath")?.patchValue(assetType?.assetTypePath);
+        // For AFV, don't patch asset type from baseFormData - preserve user selection
+        if (this.standardQuoteBaseFormData?.productCode !== 'AFV') {
+          this.mainForm?.get("assetTypeId")?.patchValue(assetType?.assetTypeId);
+          this.mainForm?.get("assetName")?.patchValue(assetType?.assetTypeName);
+          this.mainForm?.get("assetPath")?.patchValue(assetType?.assetTypePath);
+        } else {
+        }
         this.countryFirstRegistered =
           this.baseFormData.countryFirstRegistered ?? "New Zealand";
       }
@@ -520,7 +570,7 @@ export class AssetDetailsComponent extends BaseAssetClass {
         assetLeased: false,
       });
 
-      if (this.standardQuoteBaseFormData?.purposeofLoan == configure.LoanPurposeBusiness) {
+      if (this.standardQuoteBaseFormData?.purposeofLoan == configure.LoanPurpose) {
         this.mainForm?.updateHidden({
           assetLeased: true,
         })
@@ -540,8 +590,54 @@ export class AssetDetailsComponent extends BaseAssetClass {
     //     }
     //   }
 
+    if(this.addType == "addAsset"){
+    await this.assetIncreaseDecreaseValidation();
+    }
+    else{
+      await this.tradeIncreaseDecreaseValidation();
+    }
     await this.updateAssetData();
 
+  }
+
+  tradeIncreaseDecreaseValidation(){
+    const matchTrade = this.standardQuoteBaseFormData?.apiTradeAssetData?.find(
+      (trade: any) => trade?.rowNo === this.baseFormData?.rowNo
+    );
+    if(matchTrade){
+      const selectedApiTradeAmount = matchTrade?.tradeAssetValue;
+
+      this.baseSvc.setBaseDealerFormData({
+          selectedApiTradeAmount: selectedApiTradeAmount,
+      });
+
+    }else {
+      console.warn('No matching trade found for tradeRowNo:', this.baseFormData?.rowNo);
+    }
+  }
+
+  assetIncreaseDecreaseValidation() {
+    // Filter the physicalAsset array to find the matching asset based on assetHdrId
+    const matchedAsset = this.standardQuoteBaseFormData?.apiPhysicalAssetData?.find(
+      (asset: any) => {
+        const assetIdentifier = asset?.assetHdrId ?? asset?.id;
+        return assetIdentifier === this.baseFormData?.assetHdrId || assetIdentifier === this.baseFormData?.assetId;
+      }
+    );
+
+    // If a matching asset is found, extract amount and year
+    if (matchedAsset) {
+      const selectedApiAssetAmount = matchedAsset?.amount || matchedAsset?.costOfAsset;
+      const selectedApiAssetYear = matchedAsset?.vehicle?.subModelYear || matchedAsset?.year;
+
+      // Update the base dealer form data with the extracted values
+      this.baseSvc.setBaseDealerFormData({
+        selectedApiAssetAmount: selectedApiAssetAmount,
+        selectedApiAssetYear: selectedApiAssetYear
+      });
+    } else {
+      console.warn('No matching asset found for assetHdrId:', this.baseFormData?.assetHdrId);
+    }
   }
 
  dynamicValidationBasedonAssetType(assetTypeData : any, assetTypeId: any){
@@ -765,6 +861,16 @@ export class AssetDetailsComponent extends BaseAssetClass {
       assetTypeName: asset.value,
       assetTypePath: asset.path,
     };
+    
+    // For AFV, save user's selection to preserve across updates
+    if (this.standardQuoteBaseFormData?.productCode === 'AFV') {
+      this.standardQuoteSvc.afvUserSelectedAssetType = {
+        assetTypeDD: asset.value,
+        assetTypeId: asset.id,
+        assetTypeModalValues: asset.path
+      };
+    }
+    
     if (asset.id !== this.assetTypeId) {
       this.toasterService.showToaster({
         severity: "warn",
@@ -918,6 +1024,15 @@ export class AssetDetailsComponent extends BaseAssetClass {
               assetTypePath: data?.assetTypeValues,
             },
           });
+          
+          // For AFV, save user's selection to preserve across updates
+          if (this.standardQuoteBaseFormData?.productCode === 'AFV') {
+            this.standardQuoteSvc.afvUserSelectedAssetType = {
+              assetTypeDD: data?.assetTypeData,
+              assetTypeId: data?.assetTypeId,
+              assetTypeModalValues: data?.assetTypeValues
+            };
+          }
 
           this.updateAgriculturalValidation();
         }
@@ -953,26 +1068,34 @@ export class AssetDetailsComponent extends BaseAssetClass {
   modelName: string = "AssetDetailsComponent";
 
   override async onFormReady(): Promise<void> {
-    if( (configure?.workflowStatus?.view?.includes(this.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.AFworkflowStatus))){
+    // this.mainForm && this.mainForm?.form.get("assetName").disabled == true
+    if(isWorkflowStatusInViewOrEdit(this.AFworkflowStatus)){
 
       this.mainForm?.updateProps("assetName", { disabled: true });
+    }
+    else{
+      this.mainForm?.updateProps("assetName", { disabled: false });
     }
 
     if (this.addType == "addTrade") {
       this.mainForm.form.get("assetCategory").patchValue("Other");
 
-      this.tradeSvc.tradeAmountForAddTrade$.pipe(
-        takeUntil(this.destroy$),
-        distinctUntilChanged()
-      ).subscribe((tradeAmount) => {
-        if (tradeAmount > 0 && this.mainForm?.get("costOfAsset")) {
-          setTimeout(() => {
-            this.mainForm.get("costOfAsset").patchValue(tradeAmount, { emitEvent: false });
-            this.baseFormData.costOfAsset = tradeAmount;
-
-          }, 0);
-        }
-      });
+      // Only pre-populate costOfAsset for the FIRST trade being added
+      // For subsequent trades, user must enter the value manually
+      const existingActiveTrades = this.tradeSvc.tradeList.filter(t => t.changeAction !== 'delete');
+      if (existingActiveTrades.length === 0 && this.mode !== "edit") {
+        this.tradeSvc.tradeAmountForAddTrade$.pipe(
+          takeUntil(this.destroy$),
+          distinctUntilChanged()
+        ).subscribe((tradeAmount) => {
+          if (tradeAmount > 0 && this.mainForm?.get("costOfAsset")) {
+            
+              this.mainForm.get("costOfAsset").patchValue(tradeAmount, { emitEvent: false });
+              this.baseFormData.costOfAsset = tradeAmount;
+            
+          }
+        });
+      }
     }
 
     await this.updateValidation("onInit");
@@ -988,30 +1111,72 @@ export class AssetDetailsComponent extends BaseAssetClass {
         this.mainForm.get("costOfAsset").patchValue(this.baseFormData.costOfAsset, {
           emitEvent: false
         });
-        console.log("onFormReady - costOfAsset set to:", this.baseFormData.costOfAsset);
       }
     }
     super.onFormReady();
     if (this.mode == "edit" && this.addType == "addAsset") {
-      this.mainForm.form
-        .get("assetName")
-        .patchValue(this.baseFormData?.assetType?.assetTypeName);
+      // For AFV, don't patch asset type from baseFormData - preserve user selection
+      if (this.standardQuoteBaseFormData?.productCode !== 'AFV') {
+        this.mainForm.form
+          .get("assetName")
+          .patchValue(this.baseFormData?.assetType?.assetTypeName);
+      } else {
+       
+      }
     }
   }
 
   override async onBlurEvent(event): Promise<void> {
 
-    if(event.name == "costOfAsset" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation"){
-      let currentcostOfAsset = this.mainForm.get("costOfAsset").value;
-      if(currentcostOfAsset > this.baseFormData?.costOfAsset){        
-        this.toasterSvc.showToaster({
-          severity: "error",
-          detail: "Dealer Origination Fee cannot be increased in Ready for Documentation state.",
-        });
-        // return;
+    // if(event.name == "costOfAsset" && this.baseFormData?.AFworkflowStatus == "Ready for Documentation"){
+    //   let currentcostOfAsset = this.mainForm.get("costOfAsset").value;
+    //   if(currentcostOfAsset > this.baseFormData?.costOfAsset){        
+    //     this.toasterSvc.showToaster({
+    //       severity: "error",
+    //       detail: "Dealer Origination Fee cannot be increased in Ready for Documentation state.",
+    //     });
+    //     // return;
+    //   }
+    // }
+
+    let sessionWorkFlowState = sessionStorage?.getItem("workFlowStatus");
+    
+    if (sessionWorkFlowState == "Approved") {
+      if (this.addType == "addAsset") {
+        if (event.name == "costOfAsset") {
+          const currentCostOfAsset = this.mainForm.get("costOfAsset")?.value;
+          if (currentCostOfAsset > this.baseFormData?.selectedApiAssetAmount) {
+            this.toasterService.showToaster({
+              severity: "error",
+              detail: "Cost of Asset cannot be increased in Ready for Documentation state.",
+            });
+            return;
+          }
+        }
+
+        if (event.name == "year") {
+          const currentYear = this.mainForm.get("year")?.value;
+          if (currentYear < this.baseFormData?.selectedApiAssetYear) {
+            this.toasterService.showToaster({
+              severity: "error",
+              detail: "Year cannot be decreased in Ready for Documentation state.",
+            });
+            return;
+          }
+        }
+      } else {
+        if (event.name == "costOfAsset") {
+          const currentCostOfAsset = this.mainForm.get("costOfAsset")?.value;
+          if (currentCostOfAsset < this.baseFormData?.selectedApiTradeAmount) {
+            this.toasterService.showToaster({
+              severity: "error",
+              detail: "Cost of Trade-in cannot be decreased in Ready for Documentation state.",
+            });
+            return;
+          }
+        }
       }
     }
-
     if (event.name !== "conditionOfGood") {
       const conditionalFields = ['regoNumber', 'vin', 'serialChassisNumber', 'hin'];
 
@@ -1041,6 +1206,19 @@ export class AssetDetailsComponent extends BaseAssetClass {
         }
       }
     }
+    if (event.name === "costOfAsset" && this.addType === "addTrade" && !this.isUpdatingCostFromService) {
+    const costValue = event.data || 0;
+    this.tradeSvc.updateTradeAssetValue(costValue);
+    this.baseFormData.costOfAsset = costValue;
+   if (this.tradeSvc.tradeEditIndex >= 0) {
+      this.tradeSvc.tradeList[this.tradeSvc.tradeEditIndex] = {
+        ...this.tradeSvc.tradeList[this.tradeSvc.tradeEditIndex],
+        tradeAssetValue: costValue
+      };
+    }
+    this.tradeSvc.updateTradeAssetValue(costValue);
+     this.standardQuoteSvc.isAssetTrade = true;
+  }
     // if (event.name != "vin") {
     await this.updateValidation(event);
     // }
@@ -1108,5 +1286,51 @@ export class AssetDetailsComponent extends BaseAssetClass {
       control.clearValidators();
     }
     control.updateValueAndValidity();
+  }
+
+  // Override patchApiData to protect asset type for AFV
+  override patchApiData(data?: any): void {
+    const dataToUse = data || this.baseFormData;
+    
+    // For AFV, preserve current asset type values
+    if (this.standardQuoteBaseFormData?.productCode === 'AFV') {
+      // First check if we have a saved value from the service
+      const savedAssetType = this.standardQuoteSvc.afvUserSelectedAssetType;
+      const currentAssetName = savedAssetType?.assetTypeDD || this.mainForm?.get('assetName')?.value;
+      const currentAssetTypeId = savedAssetType?.assetTypeId || this.mainForm?.get('assetTypeId')?.value;
+      const currentAssetPath = savedAssetType?.assetTypeModalValues || this.mainForm?.get('assetPath')?.value;
+      
+      // Call parent's patch
+      super.patchApiData(dataToUse);
+      
+      // Restore asset type values for AFV
+      if (currentAssetName) {
+        this.mainForm?.get('assetName')?.patchValue(currentAssetName, { emitEvent: false });
+      }
+      if (currentAssetTypeId) {
+        this.mainForm?.get('assetTypeId')?.patchValue(currentAssetTypeId, { emitEvent: false });
+      }
+      if (currentAssetPath) {
+        this.mainForm?.get('assetPath')?.patchValue(currentAssetPath, { emitEvent: false });
+      }
+      this.restoreConditionFromSummary();
+    } else {
+      super.patchApiData(dataToUse);
+      this.restoreConditionFromSummary();
+    }
+  }
+  private restoreConditionFromSummary(): void {
+    const conditionDD = this.standardQuoteBaseFormData?.conditionDD;
+    if (conditionDD && this.mainForm?.get('conditionOfGood')) {
+      let conditionLabel: string | null = null;
+      if (conditionDD === 781) {
+        conditionLabel = "New";
+      } else if (conditionDD === 782) {
+        conditionLabel = "Used";
+      }
+      if (conditionLabel) {
+        this.mainForm.get('conditionOfGood').patchValue(conditionLabel, { emitEvent: false });
+      }
+    }
   }
 }

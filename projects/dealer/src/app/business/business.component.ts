@@ -229,7 +229,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
 
     //   // await this.businessDetailPost();
 
-    //   //   this.commonSvc.router.navigateByUrl('standard-quote');
+    //   //   this.commonSvc.router.navigateByUrl('dealer/standard-quote');
     //   // }
     // }
 
@@ -276,7 +276,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (contactDetailPostResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+              `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
               }`
             );
             this.standardQuoteSvc.activeStep = 1;
@@ -286,7 +286,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (contactDetailPostResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+              `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
               }`
             );
             this.standardQuoteSvc.activeStep = 1;
@@ -1043,7 +1043,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
         amtSpousePay: this.formData.incomeDetails?.[1]?.amount || 0,
         spousePayFrequency: this.formData.incomeDetails?.[1]?.frequency ?? 3533,
         isIncomeLikelyToDecrease:
-          Boolean(this.formData.isIncomeDecrease) || false,
+          this.formData.isIncomeDecrease != null ? Boolean(this.formData.isIncomeDecrease) : false,
         incomeDecrDetail: this.formData.details || "TestBusiness1",
         amtTotalMonthlyExpenditure: 0,
         turnoverLatestYearEndingDt:
@@ -1830,7 +1830,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
           this.standardQuoteSvc.setBaseDealerFormData({
             CustomerID: this.formData.CustomerID,
           });
-          this.commonSvc.router.navigateByUrl("/standard-quote");
+          this.commonSvc.router.navigateByUrl("/dealer/standard-quote");
           this.businessSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
         } else if (this.mode == "edit" || this.mode == "view") {
@@ -1840,7 +1840,7 @@ export class BusinessComponent implements OnInit, OnDestroy {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/standard-quote/${mode}/${params.contractId}`
+            `/dealer/standard-quote/${mode}/${params.contractId}`
           );
           this.businessSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;

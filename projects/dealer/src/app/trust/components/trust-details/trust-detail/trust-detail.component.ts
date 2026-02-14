@@ -11,7 +11,7 @@ import {
 import { TrustService } from "../../../services/trust.service";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../../../../standard-quote/services/standard-quote.service";
-import configure from "../../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { BusinessService } from "../../../../business/services/business";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -35,8 +35,8 @@ private primaryNatureTrustOptions: any[] = [];
     autoResponsive: true,
     api: "trustAddress",
     goBackRoute: "trustAddress",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    //cardBgColor: "--background-color-secondary",
+    cardType: "border",
     fields: [
       {
         type: "select",
@@ -267,7 +267,7 @@ private primaryNatureTrustOptions: any[] = [];
     this.stdsvc.getBaseDealerFormData().subscribe((data) => {
       // this.baseFormData = data.purposeofLoan;
       this.trustSvc.setBaseDealerFormData({
-        loanPurpose: data?.purposeofLoan,
+        loanPurpose: data.purposeofLoan,
       });
     });
     // const natureOfTrustData = this.decodeHtmlEntities(
@@ -559,11 +559,13 @@ private primaryNatureTrustOptions: any[] = [];
   override async onBlurEvent(event): Promise<void> {
     
     await this.updateValidation(event);
+    this.checkTimeinTrust();
   }
 
   override async onValueEvent(event): Promise<void> {
 
-    await this.updateValidation(event?.target?.value || event);
+    await this.updateValidation(event);
+    this.checkTimeinTrust();
   }
 
   override async onValueTyped(event: any): Promise<void> {
@@ -587,4 +589,14 @@ private primaryNatureTrustOptions: any[] = [];
 
     return responses.status;
   }
+  checkTimeinTrust(): void {
+    const yCtrl = this.mainForm.get("timeInTrustYears");
+    const mCtrl = this.mainForm.get("timeInTrustMonths");
+    const yearValue = yCtrl?.value;
+    const monthValue = mCtrl?.value;
+    if (yearValue == 0 && monthValue == 0) {
+      yCtrl?.setErrors({ required: true });
+      mCtrl?.setErrors({ required: true });
+    } 
+  } 
 }

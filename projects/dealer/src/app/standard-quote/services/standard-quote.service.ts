@@ -6,7 +6,7 @@ import { cloneDeep } from "lodash";
 import { AssetTradeSummaryService } from "../components/asset-insurance-summary/asset-trade.service";
 import { DataService, StorageService, ToasterService } from "auro-ui";
 import { DatePipe } from "@angular/common";
-import configure from "../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 
 @Injectable({
   providedIn: "root",
@@ -79,13 +79,26 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
   shouldResetServicePlan: boolean = false;
   resetServicePlanForm = new Subject<boolean>();
   afvProgramsLoaded = new Subject<any[]>();
+  expectedUsagesLoaded = new Subject<any[]>();
   shouldResetAccessories: boolean = false;
+  
+  // Store AFV user-selected asset type to preserve across preview calls
+  afvUserSelectedAssetType: {
+    assetTypeDD?: string;
+    assetTypeId?: number;
+    assetTypeModalValues?: string;
+  } = {};
+  
+  
+  kmAllowanceOptions: { label: string; value: string }[] = [];
+  kmAllowanceDefaultValue: string = '';
   searchResultForSupplier = signal<any[]>([])
 
   public customerRowData = signal<any>(null); //Implemented Signal for passing customer row data to party verification overlay component
   updatedCustomerSummary: Map<number, any> = new Map(); //shifted from borrower/guarantor componet to sevices for multiple component updates
   partyStatusListforIconDisable: string[] = [];
   public triggerAfterPartyWorkflowChange = new BehaviorSubject<any>(null);
+  triggerAllComponentsDuringWorkflowChange = signal<number>(0);
 
   override formStatusArr = [];
   individualData: any[] = [];
@@ -211,7 +224,6 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
   if((sessionStorage.getItem("externalUserType") == "Internal" )){
     internalSalesPerson = contractData?.contractPartyRoles?.find(role=>role.partyRole === "Salesperson")
     }
-
     let DataMapper = {
       // quode Details (Additional Charges and Less Deposit )
       // contractId: null,
@@ -277,11 +289,15 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       totalEstablishmentFee:
         contractData?.financialAssetLease?.totalEstablishmentFee,
       assetTypeId: contractData?.financialAssets[0]?.assetType?.assetTypeId,
+      assetTypeDD: contractData?.financialAssets[0]?.assetType?.assetTypeName,
+      assetTypeModalValues: contractData?.financialAssets[0]?.assetType?.assetTypePath,
+      productName: contractData?.product?.name || contractData?.product?.extName,
+      productExtName: contractData?.product?.extName,
       /// Asset Summary
       cashPriceValue: contractData?.financialAssets[0]?.cost,
       apicashPriceValue: contractData?.financialAssets[0]?.cost,
       cashPriceFinanceLease: contractData?.financialAssets[0]?.cost,
-      conditionDD: contractData?.financialAssets[0]?.condition == 0 ? 782 : 781,
+       conditionDD: contractData?.financialAssets[0]?.condition == 0 ? 782 : 781,
       productCode: productCode,
       taxProfile: taxProfile,
       retailPriceValue:
@@ -406,6 +422,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         contractData?.financialAssetLease?.consumerCreditInsurance
           ?.customFlowID,
       residualValue: contractData?.financialAssetLease?.residualValue || 0,
+      assuredFutureValue: contractData?.financialAssetLease?.residualValue ,
+  afvaPaymentSummaryAmount: contractData?.financialAssetLease?.residualValue || 0,
       afvModel: contractData?.financialAssets[0]?.physicalAsset?.model,
       afvMake: contractData?.financialAssets[0]?.physicalAsset?.make,
       afvYear: contractData?.financialAssets[0]?.physicalAsset?.year,
@@ -418,6 +436,12 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
           contractData?.financialAssets?.[0]?.cost) *
         100 || 0,
       ...contractData?.usageandExcessAllowanceRequest?.[0],
+      // Extract kmAllowance - check top level first (AFV), then usageandExcessAllowanceRequest (OL)
+      kmAllowance: Array.isArray(contractData?.kmAllowance) 
+        ? contractData?.kmAllowance?.[0] 
+        : (Array.isArray(contractData?.usageandExcessAllowanceRequest?.[0]?.kmAllowance) 
+          ? contractData?.usageandExcessAllowanceRequest?.[0]?.kmAllowance?.[0] 
+          : contractData?.usageandExcessAllowanceRequest?.[0]?.kmAllowance || contractData?.kmAllowance),
       flows: contractData?.flows,
       totalCost: contractData?.financialAssetLease?.totalCost,
       term: contractData?.financialAssetLease?.term,
@@ -433,9 +457,16 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
           : contractData?.financialAssetLease?.totalAmountBorrowed || 0,
       includeGst: contractData?.financialAssets?.[0]?.taxesAmt || 0,
       interestCharges: contractData?.financialAssetLease?.interestCharge || 0,
+      
       actualMaintenanceFee: contractData?.loanMaintenanceFee || 0,
-      loanMaintenceFee: contractData?.lMFTotalAmount || 0,
-      apiLoanMaintenceFee: contractData?.lMFTotalAmount || 0,
+      loanMaintenceFee:contractData?.isDraft == true 
+      ? (contractData?.loanMaintenanceFee || 0) * (contractData?.financialAssetLease?.term || 0)
+      : contractData?.lMFTotalAmount || 0,
+      apiLoanMaintenceFee:contractData?.isDraft == true 
+      ? (contractData?.loanMaintenanceFee || 0) * (contractData?.financialAssetLease?.term || 0)
+      : contractData?.lMFTotalAmount || 0,
+      //loanMaintenceFee: contractData?.lMFTotalAmount || 0,
+      //apiLoanMaintenceFee: contractData?.lMFTotalAmount || 0,
       originatorName: contractData?.originatorName,
       fixed: contractData?.isFixed,
       taxOnAsset: contractData?.financialAssets?.[0]?.taxesAmt,
@@ -473,6 +504,17 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       baseRate: contractData?.baseInterestRate,
       interestRate: contractData?.interestRate,
       apiinterestRate: contractData?.interestRate,
+      apiPhysicalAssetData : (() => {
+        const childItems = contractData?.financialAssets[0]?.physicalAsset?.childPhysicalAssetItems;
+        const physicalAsset = contractData?.financialAssets[0]?.physicalAsset;
+        if (childItems && childItems.length > 0) {
+          return childItems;
+        } else if (physicalAsset) {
+          return Array.isArray(physicalAsset) ? physicalAsset : [physicalAsset];
+        }
+        return [];
+      })(),
+      apiTradeAssetData : contractData?.tradeInAssetRequest,
     };
     return DataMapper;
   }
@@ -647,11 +689,9 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
             cost: formData?.cashPriceValue ?? 0,
             financialAssetLease: {
               scheduleTerm: formData?.termOptions ?? formData?.term,
-              pctResidualValue: Number(
-                (formData?.residualValue ?? 0).toFixed(2)
-              ),
+              pctResidualValue: Number((formData?.pctResidualValue ?? 0).toFixed(2)),
               balloonDt: new Date(Date.now() + 86400000).toISOString(),
-              residualValue: formData?.residualAmount ?? 0,
+              residualValue: formData?.residualValue ?? 0,
               amtBalloon: formData?.balloonAmount ?? 0,
               pctBalloon: Number((formData?.balloonPct ?? 0).toFixed(2)),
             },
@@ -801,17 +841,24 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
   ) {
 
     const allServicePlans = formData?.servicePlan || [];
-    const servicePlanItems = allServicePlans.filter(sp => sp.name === "Service Plan");
+    const servicePlanItems = allServicePlans
+      .filter(sp => sp.name === "Service Plan")
+      .map(sp => ({
+        ...sp,
+        amount: sp.amount ?? 0
+      }));
     const otherItemsObject = allServicePlans.filter(sp => sp.name === "Other Service Plan");
     const firstOtherId = otherItemsObject[0]?.id;
     const other = otherItemsObject.map(item => ({
       ...item,
-      id: firstOtherId
+      id: firstOtherId,
+      amount: item.amount ?? 0
     }));
 
     const newRegistration = formData?.registrations?.map((reg: any) => ({
       ...reg,
-      name: "Registration"
+      name: "Registration",
+      amount: reg.amount ?? 0
     })) || [];
 
 
@@ -845,7 +892,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         marginRate: formData?.isDealerChange ? null : formData?.marginRate,
         calcDt: new Date().toISOString(),
         calculateSettlement: 0,
-        cashDeposit: Number(formData?.deposit || 0).toFixed(2),
+         cashDeposit: Number(formData?.deposit || 0).toFixed(2),
         conditionOfGood: "",
         countryFirstRegistered:
           formData?.physicalAsset?.[0]?.countryFirstRegistered || "New Zealand",
@@ -873,7 +920,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
           dealerOriginationFee: formData?.dealerOriginationFee || 0,
           establishmentFeeShare: 0,
           estimatedCommissionSubsidy: 0,
-          accessories:  formData?.accessories || [],
+          accessories: (formData?.accessories || []).map(acc => ({ ...acc, amount: acc?.amount || 0 })),
           consumerCreditInsurance:
             formData?.contractAmount && formData?.contractId
               ? {
@@ -1002,7 +1049,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         lastPayment: "",
         loanAmount: 0,
         loanDate: String(
-          formData?.productCode === "FL"
+          formData?.productCode === "FL" || formData?.productCode === "OL"
             ? formData?.leaseDate || new Date().toISOString()
             : formData?.loanDate || new Date().toISOString()
         ),
@@ -1136,7 +1183,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
     }
 
     this.changedProgram?.pipe().subscribe((res) => {
-      formData.isDealerChange = true;
+      // formData.isDealerChange = true;
     });
 
     let previewRequest = {
@@ -1270,6 +1317,10 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
           assetTypeName: formData?.assetTypeDD || "",
         },
         cashPriceofAnAsset: formData?.cashPriceValue || 0,
+        cashDeposit: formData?.deposit || 0,
+        cashDepositId: formData?.cashDepositId || undefined,
+         udcEstablishmentFee: formData?.udcEstablishmentFee || 0,
+        udcEstablishmentFeeId: formData?.udcEstablishmentFeeId || undefined,
         colour: "",
         condition: formData?.conditionDD,
         cost: formData?.cashPriceValue || formData?.cashPriceFinanceLease || 0,
@@ -1521,6 +1572,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
 
     let DataMapper = {
       // quode Details (Additional Charges and Less Deposit )
+      location: contractData?.location,
+      locationId: contractData?.location?.locationId,
       operatingUnit: contractData?.operatingUnit,
       paymentStructure: contractData?.paymentStructure,
       termMonthAndDays: contractData?.termMonthAndDays,
@@ -1599,9 +1652,10 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       financialAssetInsurance: formData?.financialAssetInsurance,
 
       /// Adds On Accessories
-
+assuredFutureValue:contractData?.financialAssetLease?.residualValue || 0,
+afvaPaymentSummaryAmount:contractData?.financialAssetLease?.residualValue || 0,
       financialAssetPriceSegments:contractData?.financialAssetLease?.financialAssetPriceSegments,
-      residualValue: contractData?.financialAssetLease?.residualValue || 0,
+       residualValue: contractData?.financialAssetLease?.residualValue || 0,
       afvModel: contractData?.financialAssets[0]?.physicalAsset?.model,
       afvMake: contractData?.financialAssets[0]?.physicalAsset?.make,
       afvYear: contractData?.financialAssets[0]?.physicalAsset?.year,
@@ -1611,11 +1665,17 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       afvProvider: "UDC Finance Ltd.",
       interestRate: secContractData?.interestRate,
       apiinterestRate: secContractData?.interestRate,
-      pctResidualValue:
+     pctResidualValue:
         (contractData?.financialAssetLease?.residualValue /
           contractData?.financialAssets?.[0]?.cost) *
         100 || 0,
       ...contractData?.usageandExcessAllowanceRequest?.[0],
+      // Extract kmAllowance - check top level first (AFV), then usageandExcessAllowanceRequest (OL)
+      kmAllowance: Array.isArray(contractData?.kmAllowance) 
+        ? contractData?.kmAllowance?.[0] 
+        : (Array.isArray(contractData?.usageandExcessAllowanceRequest?.[0]?.kmAllowance) 
+          ? contractData?.usageandExcessAllowanceRequest?.[0]?.kmAllowance?.[0] 
+          : contractData?.usageandExcessAllowanceRequest?.[0]?.kmAllowance || contractData?.kmAllowance),
       flows: contractData?.flows,
       totalCost: contractData?.financialAssetLease?.totalCost,
       totalAmountBorrowed:
@@ -1651,19 +1711,24 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
     };
 
     if (onChange == "program" || onChange == "asset") {
+      // For AFV on program change, preserve user's selected asset type - don't overwrite from preview
+      const isAFVProgramChange = onChange == "program" && productCode === "AFV";
+      
       DataMapper = {
         ...DataMapper,
         cashPriceValue: contractData?.financialAssets[0]?.cost,
         apicashPriceValue: contractData?.financialAssets[0]?.cost,
         cashPriceFinanceLease: contractData?.financialAssets[0]?.cost,
-        conditionDD:
+       conditionDD:
           contractData?.financialAssets[0]?.condition == 0 ? 782 : 781,
         productCode: productCode,
         taxProfile: taxProfile,
-        assetTypeId: contractData?.financialAssets[0]?.assetType?.assetTypeId,
-        assetTypeDD: contractData?.financialAssets[0]?.assetType?.assetTypeName,
-        assetTypeModalValues:
-          contractData?.financialAssets[0]?.assetType?.assetTypePath,
+        // Skip asset type binding for AFV on program change to preserve user selection
+        ...(isAFVProgramChange ? {} : {
+          assetTypeId: contractData?.financialAssets[0]?.assetType?.assetTypeId,
+          assetTypeDD: contractData?.financialAssets[0]?.assetType?.assetTypeName,
+          assetTypeModalValues: contractData?.financialAssets[0]?.assetType?.assetTypePath,
+        }),
         registrations: contractData?.financialAssetLease?.registrations,
         /// Adds On Accessories
         accessories: contractData?.financialAssetLease?.accessories,
@@ -1966,7 +2031,8 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
                 costOfAsset: obj?.amount,
                 vin: obj?.vinNo || "",
                 insurer:
-                  obj?.insurancesDetails[0]?.insuranceParty.extName || "-",
+                obj?.insurancesDetails == null ? "-" :
+                  obj?.insurancesDetails?.[0]?.insuranceParty?.extName,
                 actions: this.tradeSvc.actions,
               })
             )
@@ -2193,16 +2259,23 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
       ];
     }
     const allServicePlans = formData?.servicePlan || [];
-    const servicePlan = allServicePlans.filter((sp) => sp.name == "Service Plan");
+    const servicePlan = allServicePlans
+      .filter((sp) => sp.name == "Service Plan")
+      .map(sp => ({
+        ...sp,
+        amount: sp.amount ?? 0
+      }));
     const otherItemsObject = allServicePlans.filter(sp => sp.name === "Other Service Plan");
     const firstOtherId = otherItemsObject[0]?.id;
     const other = otherItemsObject.map(item => ({
       ...item,
-      id: firstOtherId
+      id: firstOtherId,
+      amount: item.amount ?? 0
     }));
     const newRegistration = formData?.registrations?.map((reg: any) => ({
       ...reg,
-      name: "Registration"
+      name: "Registration",
+      amount: reg.amount ?? 0
     }));
     let request = {
       contractpartyRoles: formData?.salePersonDetails,
@@ -2247,7 +2320,7 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
         formData?.financialAssets?.[0]?.physicalAsset?.vehicle?.assetClassId
       ),
       financialAssetLease: {
-        accessories: formData?.accessories || [],
+        accessories: (formData?.accessories || []).map(acc => ({ ...acc, amount: acc?.amount || 0 })),
         amtBaseRepayment: 0,
         amtFinancedTotal: 0,
         amtTotalInterest: 0,
@@ -3294,6 +3367,65 @@ export class StandardQuoteService extends BaseDealerService implements OnInit {
   async getOriginatorNumberByName(partyName: any){
     let response = await this.getFormData(`CustomerDetails/get_partiesdetail?ExteName=${partyName}`);
     return response?.data?.partyNo;
+  }
+
+  // Expected Usages API for AFV product
+  async getExpectedUsages(params: {
+    programId?: number;
+    product?: string;
+    assetType?: number;
+    assetDealType?: string;
+    assetCondition?: string;
+    locationId?: number;
+    businessUnitId?: number;
+  }): Promise<any[]> {
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append('PageNo', '1');
+      queryParams.append('PageSize', '50');
+      
+      if (params.programId) queryParams.append('ProgramId', String(params.programId));
+      if (params.product) queryParams.append('Product', params.product);
+      if (params.assetType) queryParams.append('AssetType', String(params.assetType));
+      if (params.assetDealType) queryParams.append('AssetDealType', params.assetDealType);
+      if (params.assetCondition) queryParams.append('AssetCondition', params.assetCondition);
+      if (params.locationId) queryParams.append('LocationId', String(params.locationId));
+      if (params.businessUnitId) queryParams.append('BusinessUnitId', String(params.businessUnitId));
+
+      const response = await this.data
+        .get(`Contract/get_expected_usages?${queryParams.toString()}`)
+        .pipe(map((res: any) => res?.data?.items || res?.data || res?.items || []))
+        .toPromise();
+
+      const expectedUsagesData = response || [];
+      
+      // Store KM Allowance options in service
+      if (expectedUsagesData.length > 0) {
+        const usageItem = expectedUsagesData[0];
+        const values = usageItem?.values || [];
+        this.kmAllowanceOptions = values.map((value: number) => ({
+          label: String(value),
+          value: String(value)
+        }));
+        this.kmAllowanceDefaultValue = String(usageItem?.defaultExpectedUsage || '');
+      }
+      
+      // Store in baseFormData using setBaseDealerFormData
+      this.setBaseDealerFormData({
+        expectedUsages: expectedUsagesData
+      });
+      
+      // Emit to notify components that expectedUsages is loaded
+      this.expectedUsagesLoaded.next(expectedUsagesData);
+      
+      return expectedUsagesData;
+    } catch (error) {
+      console.error('Error fetching expected usages:', error);
+      this.setBaseDealerFormData({
+        expectedUsages: []
+      });
+      return [];
+    }
   }
 }
 

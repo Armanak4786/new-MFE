@@ -21,6 +21,8 @@ export class SoleTradeService extends BaseDealerService implements OnInit {
   
   reusePhysical = new BehaviorSubject<any>(null);
   reusePhysical$ = this.reusePhysical.asObservable();
+  reuseRegister = new BehaviorSubject<any>(null);
+  reuseRegister$ = this.reuseRegister.asObservable();
   role: any;
   public patchDataOnPreview = new BehaviorSubject<any>(null);
     public appState = new BehaviorSubject<any>(null);
@@ -32,6 +34,20 @@ export class SoleTradeService extends BaseDealerService implements OnInit {
   previousAddressComponentStatus : boolean;
   addingExistingCustomer : boolean = false;
   isPreviousEmployeeVisible: boolean;
+  
+  // Postal address manual change detection
+  public postalAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public postalAddressManuallyChanged$ = this.postalAddressManuallyChanged.asObservable();
+  public isCopyingToPostal$ = new BehaviorSubject<boolean>(false);
+  public isCopyingToPostal: boolean = false;
+  
+  // Register address manual change detection
+  public registerAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public registerAddressManuallyChanged$ = this.registerAddressManuallyChanged.asObservable();
+  public isCopyingToRegister: boolean = false;
+  
+  // Flag to track if reuse toggles have been initialized in this session
+  public reuseTogglesInitialized: boolean = false;
 
   
   componentValidity = {

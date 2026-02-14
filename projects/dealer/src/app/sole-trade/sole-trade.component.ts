@@ -4,7 +4,7 @@ import { SoleTradeService } from "./services/sole-trade.service";
 import { CommonService, MapFunc, Mode, ToasterService } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../standard-quote/services/standard-quote.service";
-import configure from "../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { DashboardService } from "../dashboard/services/dashboard.service";
 import { SearchAddressService } from "../standard-quote/services/search-address.service";
 
@@ -1774,7 +1774,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (referenceDetailResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
+              `/dealer/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
               }`
             );
             this.soleTradeSvc.resetBaseDealerFormData();
@@ -1785,7 +1785,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           let mode = this.standardQuoteSvc.mode;
           if (referenceDetailResponse) {
             this.commonSvc.router.navigateByUrl(
-              `/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
+              `/dealer/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
               }`
             );
             this.soleTradeSvc.resetBaseDealerFormData();
@@ -2089,7 +2089,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
           this.standardQuoteSvc.setBaseDealerFormData({
             CustomerID: this.formData.CustomerID,
           });
-          this.commonSvc.router.navigateByUrl("/standard-quote");
+          this.commonSvc.router.navigateByUrl("/dealer/standard-quote");
           this.soleTradeSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
         } else if (this.mode == "edit" || this.mode == "view") {
@@ -2099,7 +2099,7 @@ export class SoleTradeComponent implements OnInit, OnDestroy {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/standard-quote/${mode}/${params.contractId}`
+            `/dealer/standard-quote/${mode}/${params.contractId}`
           );
           this.soleTradeSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;

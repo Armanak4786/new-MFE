@@ -125,7 +125,7 @@ formData: any;
         },
       {
         type: "select",
-        label: "Mobile",
+        label: "Business Number",
         name: "businessMobile",
         alignmentType: "vertical",
         // placeholder: "Code",
@@ -358,7 +358,7 @@ formData: any;
       // },
       {
         type: 'phone',
-        // placeholder: 'Area Code',
+        placeholder: "Area Code",
         name: 'businessAreaCode',
         labelClass: "hidden",
         cols: 1,
@@ -709,6 +709,7 @@ formData: any;
         labelClass: "hidden",
         // placeholder: 'Area Code',
         name: 'individualAreaCode',
+        placeholder: "Area Code",
         cols: 1,
         // maxLength: 4,
         // validators: [Validators.pattern('^[0-9]{1,5}$')],

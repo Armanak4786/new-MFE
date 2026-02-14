@@ -5,4 +5,6 @@
 :host ::ng-deep .ps-scope thead th.col-end .header-content {
   justify-content: flex-end !important; 
 }
-
+.headerpad .card-header {
+  padding-bottom: 0 !important;
+}

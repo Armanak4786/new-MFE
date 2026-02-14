@@ -116,7 +116,7 @@ async init() {
     supplierAccountName: bank?.name || "",
     supplierAccountNumber: bank?.accountNumber?.replace(/-/g, '') || "",
     supplierBranchCode: bank?.branchCode?.replace(/-/g, '') || "",
-    settlementBankInfoId: bank?.settlementBankInfoId || "",
+    settlementBankInfoId: bank?.settlementBankInfoId || 0,
   };
   const physicalAddress = supplierCustomer?.addressDetails?.find(
     (a: any) =>
@@ -210,7 +210,7 @@ getTimeDifference(
         if (this.formData?.supplierCustomerId) {
         await this.updateBusinessSupplier().subscribe((res) => {
           if (res?.data) {
-            this.svc.router.navigateByUrl("/standard-quote");
+            this.svc.router.navigateByUrl("/dealer/standard-quote");
           }
         });
       }
@@ -263,7 +263,7 @@ getTimeDifference(
       "Any unsaved changes will be lost. Are you sure you want to cancel?",
       "Customer",
       () => {
-        this.svc.router.navigateByUrl("/standard-quote");
+        this.svc.router.navigateByUrl("/dealer/standard-quote");
       }
     );
   }
@@ -334,34 +334,7 @@ getTimeDifference(
         addressDetails: null,
         financialDetails: null,
         contactDetails: null,
-        bankDetails: {
-          settlementBankInfoId: 0,
-          currency: {
-            id: 105,
-            name: "New Zealand Dollars",
-            code: "NZD",
-          },
-          flowDirection: "Payment",
-          flowMethod: {
-            flowMethodId: 0,
-            name: "Direct Credit",
-            paymentMethod: "Direct Credit",
-          },
-          paymentRuleClassification: "",
-          reference: "",
-          bank: {
-            partyId: 28,
-            partyNo: 1000028,
-            reference: "",
-            extName: "Bank Not Required",
-          },
-          name: this.formData?.supplierAccountName,
-          description: "",
-          accountCategory: "",
-          accountNumber: this.formData?.supplierAccountNumber,
-          accountClassification: "Personal",
-          branchCode: this.formData?.supplierBranchCode,
-        },
+        bankDetails: null,
       },
     };
 

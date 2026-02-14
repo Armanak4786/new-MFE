@@ -1,13 +1,19 @@
-<div [class]="isFullWidth2 ? 'card pt-2 pb-0 sm:col-5 applicationOutcome' : 'card pt-2 pb-0 applicationOutcome'">
+<div
+  [class]="
+    isFullWidth2
+      ? 'card pt-2 pb-1 sm:col-5 applicationOutcome'
+      : 'card pt-2 pb-1 applicationOutcome'
+  "
+>
   <div class="grid">
-    @if (!userRole?.functions?.includes('application_outcome')) {
-      <div class="sm:col-12 md:col-7 border-right-1 text-center">
+    @if (!userRole?.functions?.includes("application_outcome")) {
+      <div class="sm:col-12 md:col-7 border-right-1 pb-0 text-center">
         <p class="text-sm font-bold mb-0 ml-4 mt-2">
           <text [mode]="'label'" [label]="'lbl_applicationOutcome'"></text>
         </p>
         <div class="flex justify-content-center flex-wrap">
           <div class="grid">
-            <div class="col-4 pr-0 pl-4">
+            <div class="col-4 pr-2 pl-0">
               <p-chart
                 type="doughnut"
                 [data]="data"
@@ -21,16 +27,14 @@
               <div class="custom-legend">
                 <div
                   class="legend-item text-xs"
-                  *ngFor="let label of data.labels; let i = index"
+                  *ngFor="let item of legendItems"
                 >
                   <span
                     class="legend-color"
-                    [ngStyle]="{
-                      'background-color': data.datasets[0].backgroundColor[i]
-                    }"
+                    [ngStyle]="{ 'background-color': item.color }"
                   ></span>
-                  <span class="legend-text mt-2">
-                    <text [mode]="'label'" [label]="label"></text>
+                  <span class="legend-text pr-2">
+                    <text [mode]="'label'" [label]="item.label"></text>
                   </span>
                 </div>
               </div>
@@ -39,13 +43,23 @@
         </div>
       </div>
     }
-    
-    @if (!userRole?.functions?.includes('online_application_status')) {
-      <div 
-        [class]="!userRole?.functions?.includes('application_outcome') ? 'sm:col-12 md:col-5' : 'sm:col-12 md:col-12'"
+
+    @if (!userRole?.functions?.includes("online_application_status")) {
+      <div
+        [class]="
+          !userRole?.functions?.includes('application_outcome')
+            ? 'sm:col-12 md:col-5 pt-3'
+            : 'sm:col-12 md:col-12 pt-3'
+        "
       >
         <p class="ml-2 text-sm font-bold">Online Application Status</p>
-        <div [class]="isFullWidth2 ? 'flex justify-content-start gap-3 ' : 'grid justify-content-center'">
+        <div
+          [class]="
+            isFullWidth2
+              ? 'flex justify-content-start gap-3 '
+              : 'grid justify-content-center'
+          "
+        >
           <ng-container
             *ngFor="
               let data of applicationStatus;
@@ -54,12 +68,23 @@
             "
           >
             <div
-              [class]="isFullWidth2 ? 'flex-1' : (isLast ? 'sm:col-12 md:col-12 p-0' : 'sm:col-12 md:col-6 p-0')"
+              [class]="
+                isFullWidth2
+                  ? 'flex-1'
+                  : isLast
+                    ? 'sm:col-12 md:col-12 p-0'
+                    : 'sm:col-12 md:col-6 p-0'
+              "
             >
               <div
                 class="flex align-items-center border-0 border-round-lg p-1 justify-content-center"
               >
-                <img src="{{ data?.img }}" alt="{{ data?.name }}" class="mr-2" />
+                <img
+                  src="{{ data?.img }}"
+                  alt="{{ data?.name }}"
+                  class="mr-2"
+                />
+
                 <div>
                   <p class="m-0">
                     {{ isLast ? (data?.count | currency) : data?.count }}

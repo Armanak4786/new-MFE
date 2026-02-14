@@ -49,10 +49,13 @@ export class AssetTradeSummaryService {
   public tradeAmountForAddTrade$ = this.tradeAmountForAddTradeSubject.asObservable();
   
   
-  updateTradeAmountForAddTrade(amount: number) {
-    this.tradeAmountForAddTradeSubject.next(amount);
-    
-  }
+ updateTradeAmountForAddTrade(amount: number) {
+  // Only store the value for when adding first trade
+  // Don't update existing trades - that's handled by less-deposit for single trade
+  this.tradeAmountForAddTradeSubject.next(amount);
+}
+
+
   
   
   getCurrentTradeAmountForAddTrade(): number {
@@ -74,5 +77,18 @@ export class AssetTradeSummaryService {
  
     // this.assetSearchSubject.next(this.assetEditData);
   }
+ updateTradeAssetValue(value: number) {
+  if (this.tradeEditIndex >= 0 && this.tradeList[this.tradeEditIndex]) {
+    const valueAsString = String(value);
+    
+    this.tradeList[this.tradeEditIndex] = {
+      ...this.tradeList[this.tradeEditIndex],
+      tradeAssetValue: valueAsString
+    };
+    
+    this.tradeListSubject.next([...this.tradeList]);
+  }
+}
+
 }
  

@@ -46,3 +46,11 @@ button:disabled {
 ::ng-deep .asset-summary .p-inputgroup .p-inputgroup-addon .p-button-label {
     display: none !important;
 }
+
+// Custom width for usefulLife input (21% instead of default 25% for cols-3)
+:host ::ng-deep .usefullife-width.col-3 {
+  width: 21%;
+
+}
+
+

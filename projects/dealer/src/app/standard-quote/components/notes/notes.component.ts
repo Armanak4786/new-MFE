@@ -19,8 +19,9 @@ import { map } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { ToasterService, ValidationService } from "auro-ui";
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
-import env from "../../../../../public/assets/api-json/en_US.json";
-import configure from "../../../../../public/assets/configure.json";
+import env from "src/assets/api-json/en_US.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInView } from "../../utils/workflow-status.utils";
 
 
 @Component({
@@ -88,11 +89,8 @@ export class NotesComponent extends BaseStandardQuoteClass {
   }
 
   isNotesDisabled() {
-  if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
-    return true;
+    return isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus);
   }
-  return false;
-}
 
   filteredContent: any;
   searchNotes?: string;

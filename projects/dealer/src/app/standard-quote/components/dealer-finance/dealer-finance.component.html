@@ -1,7 +1,7 @@
-<gen-card
-  [cardType]="'shadow-non-border'"
+<gen-card class="no-bottom-pad"
+  class="headerpad"
+  [cardType]="'border'"
   [headerText]="isInternalUser? 'Finance':'Finance'"
-  [cardBgColor]="'--primary-lighter-color'"
   *ngIf="showCard"
 >
   <ng-container body>

@@ -9,7 +9,8 @@ import { cloneDeep } from "lodash";
 import { ToasterService, ValidationService } from "auro-ui";
 import { map } from "rxjs";
 import { TradeInAssetChangeActions } from "../../models/assetsTrade";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 
 @Component({
@@ -35,39 +36,62 @@ export class AssetInsuranceSummaryComponent extends BaseStandardQuoteClass {
 
   AFworkflowStatus:boolean = false;
 
-  override async ngOnInit(): Promise<void> {
-   this.assetList = this.tradeSvc.assetList
-.map(item => ({
-  ...item,
-  regoOrVin: this.getFirstAvailableField([
-    item.regoNumber,
-    item.vin, 
-    item.serialChassisNumber
-  ]) || "-"
-}));
+override async ngOnInit(): Promise<void> {
+  this.assetList = this.tradeSvc.assetList.map(item => ({
+    ...item,
+    regoOrVin: this.getFirstAvailableField([
+      item.regoNumber,
+      item.vin, 
+      item.serialChassisNumber
+    ]) || "-"
+  }));
 
-this.tradeList = this.tradeSvc.tradeList.map(item => ({
-  ...item,
-  regoOrVin: this.getFirstAvailableField([
-    item.tradeRegoNo,
-    item.tradeVinNo, 
-    item.tradeSerialOrChassisNo
-  ]) || "-"
-}));
+  const tradeSource = this.baseFormData?.tradeInAssetRequest?.length > 0 
+    ? this.baseFormData.tradeInAssetRequest 
+    : this.tradeSvc.tradeList;
 
-        this.updateVisibleTradeList()
+  this.tradeList = (tradeSource || []).map(item => ({
+    ...item,
+    tradeName: item.tradeName || `${item?.tradeYear || "-"} ${item?.tradeMake || "-"} ${item?.tradeModel || "-"} ${item?.tradeVariant || "-"}`.trim(),
+    regoOrVin: this.getFirstAvailableField([
+      item.tradeRegoNo,
+      item.tradeVinNo, 
+      item.tradeSerialOrChassisNo
+    ]) || "-",
+    actions: this.tradeSvc.actions
+  }));
 
-     
-     // console.log("assetList",this.assetList);
+  this.tradeSvc.tradeList = [...this.tradeList];
+  this.updateVisibleTradeList();
+  
+  this.tradeSvc.tradeListSubject.subscribe({
+    next: (trades) => {
+      if (!trades || trades.length === 0) {
+        return;
+      }
       
-    this.insuranceList = this.tradeSvc.insuranceList;
-    await super.ngOnInit();
-    
-    //  if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
-    //   this.AFworkflowStatus = true;
-    // }
-    this.baseSvc.isAssetSearch = false;
-  }
+      this.tradeList = trades.map(item => ({
+        ...item,
+        tradeName: item.tradeName || `${item?.tradeYear || "-"} ${item?.tradeMake || "-"} ${item?.tradeModel || "-"} ${item?.tradeVariant || "-"}`.trim(),
+        regoOrVin: this.getFirstAvailableField([
+          item.tradeRegoNo,
+          item.tradeVinNo, 
+          item.tradeSerialOrChassisNo
+        ]) || "-",
+        actions: item.actions || this.tradeSvc.actions
+      }));
+      
+      this.updateVisibleTradeList();
+      this.cdr.detectChanges();
+    }
+  });
+
+  this.insuranceList = this.tradeSvc.insuranceList;
+  await super.ngOnInit();
+  this.baseSvc.isAssetSearch = false;
+}
+
+
 
   columnsAsset = [
     // { field: "assetId", headerName: "Id" },
@@ -147,8 +171,6 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
         )
         .toPromise();
 
-      console.log(res);
-
       if (res) {
         this.tradeSvc.assetList.splice(index, 1);
 
@@ -171,8 +193,6 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
 
   onAssetCellClick(event) {
     if (this.accessMode !== "view") {
-      console.log(this.baseFormData, "asset-insurance");
-      
       if (event.actionName == "edit") {
         if (this.baseFormData?.financialAssetInsurance && [event.index]) {
           this.tradeSvc.assetEditIndex = event.index;
@@ -196,11 +216,11 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
             ...this.baseFormData?.physicalAsset[event.index],
           };
         }
-        this.router.navigateByUrl("asset/addAsset/edit");
+        this.router.navigateByUrl("dealer/asset/addAsset/edit");
         this.ref.close();
       } else if (event.actionName == "delete") {
 
-      if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+      if(isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus)){
         return;
       }
 
@@ -218,34 +238,9 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
       } else if (event.actionName == "copy") {
 
-         if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+         if(isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus)){
             return;
           }
-
-        // if (this.baseFormData?.contractId) {
-        //   this.splitAsset(this.assetList[event.index], event.index);
-        // } else {
-        //   this.assetList.splice(
-        //     event.index + 1,
-        //     0,
-        //     cloneDeep(this.assetList[event.index])
-        //   );
-        //   const cost = this.assetList?.[event.index]?.costOfAsset;
-        //   this.assetList[event.index].costOfAsset = cost / 2;
-        //   this.assetList[event.index + 1].costOfAsset = cost / 2;
-
-        //   this.tradeSvc.assetList = this.assetList;
-        //   this.tradeSvc.assetListSubject.next(this.tradeSvc.assetList);
-
-        //   this.insuranceList.splice(
-        //     event.index + 1,
-        //     0,
-        //     cloneDeep(this.insuranceList[event.index])
-        //   );
-
-        //   this.tradeSvc.insuranceList = this.insuranceList;
-        //   this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
-        // }
 
         this.assetList.splice(
           event.index + 1,
@@ -254,20 +249,11 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
         );
         let assetId = this.assetList?.[event.index]?.assetId
         if (assetId) {
-            // this.assetList[event.index] = {
-            //   ...this.assetList[event.index],
-            //   copyasset: true,
-            // }
-
             this.assetList[event.index + 1] = {
               ...this.assetList[event.index + 1],
               copyasset: true,
             }
         }
-        
-        // const cost = this.assetList?.[event.index]?.costOfAsset;
-        // this.assetList[event.index].costOfAsset = cost / 2;
-        // this.assetList[event.index + 1].costOfAsset = cost / 2;
 
         this.tradeSvc.assetList = this.assetList;
         this.tradeSvc.assetListSubject.next(this.tradeSvc.assetList);
@@ -281,10 +267,7 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
         this.tradeSvc.insuranceList = this.insuranceList;
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
 
-        //clone data
-          if (this.baseFormData?.financialAssetInsurance && [event.index]) {
-          console.log( this.tradeSvc.assetEditIndex,'index data')
-          console.log(event.index,'event index data')
+        if (this.baseFormData?.financialAssetInsurance && [event.index]) {
           this.tradeSvc.assetEditIndex = event.index + 1;
 
           this.tradeSvc.assetEditData = {
@@ -296,7 +279,7 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
             ...this.baseFormData?.physicalAsset[event.index + 1],
           };
         }
-        this.router.navigateByUrl("asset/addAsset/edit");
+        this.router.navigateByUrl("dealer/asset/addAsset/edit");
         this.ref.close();
       }
     }
@@ -305,19 +288,10 @@ private getFirstAvailableField(fields: (string | null | undefined)[]): string | 
   override onStatusChange(statusDetails: any): void {
     super.onStatusChange(statusDetails);
 
-    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
+    if(isWorkflowStatusInViewOrEdit(statusDetails?.currentState)){
       this.isDisable = true;
     }
-
   }
-
-//   isDisabled() {
-//   if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
-//     // this.AFworkflowStatus = true; 
-//     return true;
-//   }
-//   return false;
-// }
 
   onTradeCellClick(event) {
 

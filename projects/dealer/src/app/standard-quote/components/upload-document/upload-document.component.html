@@ -39,7 +39,8 @@
               [btnType]="'non-bg-btn'"
               [btnIcon]="'fas fa-times'"
               aria-label="Delete document"
-              style="line-height: 1">
+              style="line-height: 1"
+              [disabled]="isButtonDisabled()">
             </gen-button>
           </div>
         </div>
@@ -123,7 +124,7 @@
       ></gen-button>
       <p class="text-right mb-0 divider-class mt-2 text-primary">|</p> -->
 
-    <gen-button [btnLabel]="'Delete'" [btnIcon]="'pi pi-trash pr-2'" [btnType]="'non-bg-btn'" (onClick)="deleteFiles()" [disabled]="baseFormData?.AFworkflowStatus == 'Submitted'">
+    <gen-button [btnLabel]="'Delete'" [btnIcon]="'pi pi-trash pr-2'" [btnType]="'non-bg-btn'" (onClick)="deleteFiles()" [disabled]="isButtonDisabled()">
     </gen-button>
 
     <!-- @if (accessGranted?.['generated_documents_docusign']){

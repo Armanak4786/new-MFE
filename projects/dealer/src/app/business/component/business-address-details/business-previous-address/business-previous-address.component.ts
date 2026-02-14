@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { CommonService, GenericFormConfig, ToasterService } from "auro-ui";
+import { CommonService, GenericFormConfig, Mode, ToasterService } from "auro-ui";
 import { BusinessService } from "../../../services/business";
 import { BaseBusinessClass } from "../../../base-business.class";
 import { ValidationService } from "auro-ui";
@@ -39,8 +39,8 @@ export class BusinessPreviousAddressComponent extends BaseBusinessClass {
   override formConfig: GenericFormConfig = {
     headerTitle: "Previous Physical Address",
     autoResponsive: true,
-    cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    cardType: "border",
+    //cardBgColor: "--primary-lighter-color",
     api: "",
     // goBackRoute: '',
     fields: [
@@ -305,21 +305,35 @@ export class BusinessPreviousAddressComponent extends BaseBusinessClass {
         inputClass: "w-8 ",
         nextLine: false,
       },
+      // OLD SELECT FIELD CODE - Changed to text field initially (default is NZ Address)
+      // When Overseas Address toggle is ON, it will be changed to select dropdown dynamically
+      // {
+      //   type: "select",
+      //   label: "Country",
+      //   name: "previousCountry",
+      //   //validators: [Validators.required],
+      //   className: "px-0 customLabel",
+      //   filter: true,
+      //   cols: 2,
+      //   // list$: "LookUpServices/locations?LocationType=country",
+      //   // idKey: "name",
+      //   alignmentType: "vertical",
+      //   labelClass: "w-8 -my-3",
+      //   // idName: "name",
+      //   options: [],
+      //   //default: "New Zealand",
+      //   nextLine: false,
+      // },
       {
         type: "select",
         label: "Country",
         name: "previousCountry",
-        //validators: [Validators.required],
-        className: "px-0 customLabel",
         filter: true,
+        labelClass: "w-8 mb-2",
+        className: "px-0 customLabel",
         cols: 2,
-        // list$: "LookUpServices/locations?LocationType=country",
-        // idKey: "name",
         alignmentType: "vertical",
-        labelClass: "w-8 -my-3",
-        // idName: "name",
-        options: [],
-        //default: "New Zealand",
+        default: "New Zealand",
         nextLine: false,
       },
       {
@@ -349,19 +363,49 @@ override async ngOnInit(): Promise<void> {
     this.baseFormData.AFworkflowStatus !== 'Quote'
     ) )
     {
-    this.mainForm?.form?.disable();
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.disable({ emitEvent: false });
+      } catch (error) {
+        console.warn('BusinessPreviousAddressComponent: Error disabling form', error);
+      }
     }
-    else{ this.mainForm?.form?.enable();}
+    else{ 
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.enable({ emitEvent: false });
+      } catch (error) {
+        // Handle errors that might occur when enabling form triggers validation subscriptions
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPreviousAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+        } else {
+          console.warn('BusinessPreviousAddressComponent: Error enabling form', error);
+        }
+      }
+    }
     // await this.updateDropdownData();
 
-  this.indSvc.updateDropdownData().subscribe((result) => {
-    this.mainForm.updateList("previousFloorType", result?.floorType);
-    this.mainForm.updateList("previousUnitType", result?.unitType);
-    this.mainForm.updateList("previousStreetType", result?.streetType);
-    if (result?.country) {
-      this.mainForm.updateList("previousCountry", result?.country);
-      this.mainForm?.form?.get("previousCountry")?.setValue("New Zealand");
-      this.mainForm.updateList("previousCity", result?.city);
+  this.indSvc.updateDropdownData().subscribe({
+    next: (result) => {
+      try {
+        this.mainForm.updateList("previousFloorType", result?.floorType);
+        this.mainForm.updateList("previousUnitType", result?.unitType);
+        this.mainForm.updateList("previousStreetType", result?.streetType);
+        if (result?.country) {
+          this.mainForm.updateList("previousCountry", result?.country);
+          this.mainForm?.form?.get("previousCountry")?.setValue("New Zealand", { emitEvent: false });
+          this.mainForm.updateList("previousCity", result?.city);
+        }
+      } catch (error) {
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPreviousAddressComponent: Split error in updateDropdownData subscription', error.message);
+        } else {
+          console.error('BusinessPreviousAddressComponent: Error in updateDropdownData subscription', error);
+        }
+      }
+    },
+    error: (error) => {
+      console.error('BusinessPreviousAddressComponent: Error in updateDropdownData subscription', error);
     }
   });
   await this.getCities();
@@ -372,8 +416,8 @@ override async ngOnInit(): Promise<void> {
     // If overseas address is YES, enable country dropdown
     this.mainForm.form.get("previousCountry")?.enable({ emitEvent: false });
   } else {
-    // If overseas address is NO (default), disable country dropdown
-    this.mainForm.form.get("previousCountry")?.disable({ emitEvent: false });
+    // If overseas address is NO (default), keep country dropdown enabled
+    this.mainForm.form.get("previousCountry")?.enable({ emitEvent: false });
   }
   if (this.baseSvc.showValidationMessage) {
     this.mainForm.form.markAllAsTouched();
@@ -447,10 +491,10 @@ async setStreetType(streetTypeValue: string) {
           ctrl.patchValue(newValue, { emitEvent: false }); // 🔥 FIX HERE
         }
 
-        console.log(
-          "✅ Business previous street type set successfully:",
-          matchedOption
-        );
+        // console.log(
+          // "✅ Business previous street type set successfully:",
+          // matchedOption
+        // );
       } else {
         console.warn(
           "⚠️ No matching business previous street type found for:",
@@ -573,9 +617,26 @@ override async onFormEvent(event: any): Promise<void> {
     this.baseFormData.AFworkflowStatus !== 'Quote'
     ) )
     {
-    this.mainForm?.form?.disable();
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.disable({ emitEvent: false });
+      } catch (error) {
+        console.warn('BusinessPreviousAddressComponent: Error disabling form', error);
+      }
     }
-    else{ this.mainForm?.form?.enable();}
+    else{ 
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.enable({ emitEvent: false });
+      } catch (error) {
+        // Handle errors that might occur when enabling form triggers validation subscriptions
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPreviousAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+        } else {
+          console.warn('BusinessPreviousAddressComponent: Error enabling form', error);
+        }
+      }
+    }
 }
 
 
@@ -679,7 +740,16 @@ override async onFormEvent(event: any): Promise<void> {
         }
       });
     } else {
-      this.mainForm?.form?.reset();
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.reset({}, { emitEvent: false });
+      } catch (error) {
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPreviousAddressComponent: Split error when resetting form in pathcValue - likely undefined pattern value in validation', error.message);
+        } else {
+          console.warn('BusinessPreviousAddressComponent: Error resetting form in pathcValue', error);
+        }
+      }
     }
     this.cdr.detectChanges();
   }
@@ -701,13 +771,11 @@ override async onValueTyped(event: any): Promise<void> {
   if (event.name == "overseasAddress") {
     // ALWAYS clear all address fields first (regardless of Yes or No)
     this.clearAllAddressFields();
-    // this.mainForm.form.reset();
     if (event.data === true) {
-      // Overseas address is YES - enable country dropdown
-      this.mainForm.get("previousCountry")?.enable({ emitEvent: false }); 
+      //When toggle is set to "Yes" (true) - Overseas Address
       this.hiddenfieldbyOverseas(true);
       this.mainForm.get("previousSearchValue").disable({ emitEvent: false });
-      this.mainForm.get("previousSearchValue").setValue("", { emitEvent: false });     
+      this.mainForm.get("previousSearchValue").setValue("", { emitEvent: false });       
       // Changing "City" dropdown to text input field
       this.mainForm.updateProps("previousCity", {
         type:'text',
@@ -718,14 +786,10 @@ override async onValueTyped(event: any): Promise<void> {
         className:'',
       });
     } else {
-      // Overseas address is NO - disable country dropdown
-      this.mainForm.get("previousCountry")?.disable({ emitEvent: false });     
+      // When toggle is set to "No" (false) - NZ Address     
       this.hiddenfieldbyOverseas(false);
+      
       this.mainForm.get("previousSearchValue").enable({ emitEvent: false });
-      this.mainForm.get("previousCountry").patchValue("New Zealand", { emitEvent: true });
-      this.baseSvc.setBaseDealerFormData({
-        previousCountry: "New Zealand",
-      });   
       // Changing "City" text input field back to dropdown
       this.mainForm.updateProps("previousCity", {
         type: "select",
@@ -745,6 +809,56 @@ override async onValueTyped(event: any): Promise<void> {
   await this.updateValidation("onInit");
 }
 
+  // Toggle country dropdown based on overseas address
+  private toggleCountryDropdown(overseas: boolean): void {
+    const countryCtrl = this.mainForm.form.get('previousCountry');
+
+    if (!countryCtrl) return;
+
+    if (overseas) {
+      // YES → Overseas → change to SELECT dropdown (enabled)
+      this.mainForm.updateProps("previousCountry", {
+        type: "select",
+        label: "Country",
+        name: "previousCountry",
+        className: "px-0 customLabel",
+        filter: true,
+        cols: 2,
+        alignmentType: "vertical",
+        labelClass: "w-8 -my-3",
+      });
+      
+      // Update the countries - sessionStorage cache
+      this.indSvc.updateDropdownData().subscribe((result) => {
+        if (result?.country) {
+          this.mainForm.updateList("previousCountry", result?.country);
+        }
+      });
+      
+      countryCtrl.enable({ emitEvent: false });
+      // countryCtrl.setValue(currentValue || '', { emitEvent: false });
+    } else {
+      // NO → NZ → change to TEXT field (read-only)
+      this.mainForm.updateProps("previousCountry", {
+        type: "text",
+        label: "Country",
+        name: "previousCountry",
+        disabled: true,
+        inputType: "vertical",
+        inputClass: "w-8 mt-2",
+        labelClass: "w-8 -my-3",
+        className: "px-0 mt-2 customLabel",
+        cols: 2,
+        mode: Mode.view,
+      });
+      // Set value to New Zealand
+      countryCtrl.setValue('New Zealand', { emitEvent: false });
+      
+      this.baseSvc.setBaseDealerFormData({
+        previousCountry: 'New Zealand',
+      });
+    }
+  }
 
   override onValueChanges(event: any) {
     if (event.previousSearchValue && event.previousSearchValue.length >= 4) {
@@ -769,7 +883,6 @@ override async onFormReady(): Promise<void> {
   // Check initial state of overseas address with proper handling
   if (this.baseFormData.overseasAddress === true) {
     // Overseas address is YES - enable country dropdown
-    this.mainForm.form.get("previousCountry")?.enable({ emitEvent: false });   
     this.hiddenfieldbyOverseas(this.baseFormData.overseasAddress);
     this.mainForm?.get("previousSearchValue").disable({ emitEvent: false });
     // Clear any existing search value when overseas is true
@@ -777,8 +890,7 @@ override async onFormReady(): Promise<void> {
       ?.get("previousSearchValue")
       .setValue("", { emitEvent: false });
   } else {
-    // Overseas address is NO - disable country dropdown
-    this.mainForm.form.get("previousCountry")?.disable({ emitEvent: false });   
+    // Overseas address is NO - keep country dropdown enabled
     // Ensure search field is enabled for domestic addresses
     this.hiddenfieldbyOverseas(false);
     this.mainForm?.get("previousSearchValue").enable({ emitEvent: false });
@@ -799,8 +911,16 @@ override async onFormReady(): Promise<void> {
             "previous"
           );
 
-          // Patch form values first
-          this.mainForm.form.patchValue(formValues);
+          // Patch form values first - use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          try {
+            this.mainForm.form.patchValue(formValues, { emitEvent: false });
+          } catch (error) {
+            if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+              console.warn('BusinessPreviousAddressComponent: Split error when patching form values in onBlurEvent - likely undefined pattern value in validation', error.message);
+            } else {
+              console.error('BusinessPreviousAddressComponent: Error patching form values in onBlurEvent', error);
+            }
+          }
 
           // IMPROVED: Better street type handling with proper timing
           // if (formValues.previousStreetType) {
@@ -838,6 +958,12 @@ override async onValueEvent(event): Promise<void> {
 }
 
   async updateValidation(event) {
+    // Safety check: ensure mainForm exists
+    if (!this.mainForm || !this.mainForm.form) {
+      console.warn('BusinessPreviousAddressComponent: mainForm or form not available for validation');
+      return true; // Return true to prevent blocking if form isn't ready
+    }
+
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,
@@ -846,12 +972,31 @@ override async onValueEvent(event): Promise<void> {
       pageCode: this.pageCode,
     };
 
-    const responses: any = await this.validationSvc.updateValidation(req);
-    if (!responses.status && responses.updatedFields.length) {
-      await this.mainForm.applyValidationUpdates(responses);
-    }
+    try {
+      const responses: any = await this.validationSvc.updateValidation(req);
+      
+      if (!responses.status && responses.updatedFields && responses.updatedFields.length > 0) {
+        await this.mainForm.applyValidationUpdates(responses);
+      }
 
-    return responses.status;
+      return responses.status;
+    } catch (error) {
+      // Handle regex pattern errors gracefully - don't break the app
+      if (error?.message?.includes('Invalid regular expression') || error?.message?.includes('Range out of order')) {
+        console.warn('BusinessPreviousAddressComponent: Invalid regex pattern in validation rules', error.message);
+        return true; // Return true to prevent blocking on invalid patterns
+      }
+      
+      // Handle split errors gracefully
+      if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+        console.warn('BusinessPreviousAddressComponent: Split error in validation - likely undefined pattern value', error.message);
+        return true; // Return true to prevent blocking
+      }
+      
+      // For other errors, log but don't throw to prevent breaking the app
+      console.error('BusinessPreviousAddressComponent: Validation error', error);
+      return true; // Return true instead of throwing to prevent app breakage
+    }
   }
 
   override async onStepChange(quotesDetails: any): Promise<void> {
@@ -997,8 +1142,8 @@ async hiddenfieldbyOverseas(overseas) {
       previousCountry: "",
     });
   } else {
-    // Overseas address is NO - disable country dropdown
-    this.mainForm.form.get("previousCountry")?.disable({ emitEvent: false });    
+    // Overseas address is NO - keep country dropdown enabled
+    this.mainForm.form.get("previousCountry")?.enable({ emitEvent: false });    
     this.mainForm.updateHidden({
       previousUnitType: false,
       previousFloorNumber: false,

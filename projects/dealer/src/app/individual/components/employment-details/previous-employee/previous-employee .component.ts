@@ -18,8 +18,8 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    //cardBgColor: "--background-color-secondary",
+    cardType: "border",
     fields: [
       // {
       //   type: "select",
@@ -42,12 +42,12 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         type: "text",
         className: "mt-3 mr-2 ",
         label: "Employer Name",
-        labelClass: "ba pb-5 -mb-3",
+        labelClass: "ba pb-5 -mb-3 pl-2",
         inputType: "vertical",
         name: "previousEmployer",
         cols: 2,
         nextLine: false,
-        inputClass: "-m-2 mb-0 ml-2",
+        inputClass: "-m-2 mb-0 ml-2 w-13rem",
         /* //validators: [
           Validators.required,
           Validators.maxLength(30),
@@ -67,6 +67,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         // idKey: "lookupValue",
         // idName: "lookupValue",
         filter: true,
+        inputClass: "w-12rem",
         options: [],
       },
       {
@@ -74,7 +75,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         label: "Employment Type",
         name: "previousEmploymentType",
         alignmentType: "vertical",
-        className: "mt-2 ",
+        className: "mt-2 ml-2",
         cols: 2,
         //validators: [Validators.required],
         nextLine: false,
@@ -90,7 +91,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         label: "Time with Previous employer",
         name: "previousEmployeeYear",
         labelClass: "tce pb-3",
-        className: "ml-3 mt-0 py-4 col-fixed w-4rem white-space-nowrap",
+        className: "ml-2 mt-0 py-4 col-fixed w-3rem white-space-nowrap",
         inputClass: "-m-2 mb-0 ml-2",
         //validators: [Validators.required, Validators.max(99)],
       },
@@ -99,7 +100,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         typeOfLabel: "inline",
         label: "Years",
         name: "year",
-        className: "mt-5 py-5 pt-3 col-fixed w-4rem",
+        className: "mt-5 my-4 py-5 pt-3 col-fixed w-4rem",
       },
       {
         type: "number",
@@ -107,7 +108,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         name: "previousEmployeeMonth",
 
         className:
-          "ml-3 py-4 mt-4 col-fixed w-4rem white-space-nowrap timeInBusinessMonthsClass",
+          "py-4 mt-4 col-fixed w-3rem white-space-nowrap timeInBusinessMonthsClass",
         inputClass: "-m-2 mb-0 ml-2",
         //validators: [Validators.max(11)],
         errorMessage: "Value should be less than 12",
@@ -117,7 +118,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
         typeOfLabel: "inline",
         label: "Months",
         name: "month",
-        className: "mt-5 py-5 pt-3 col-fixed w-4rem",
+        className: "mt-5 py-5 pt-3 col-fixed w-4rem my-4",
       },
     ],
   };
@@ -192,7 +193,21 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
       this.mainForm
         .get("previousEmploymentType")
         .patchValue(this.baseFormData?.previousEmploymentType || this.baseFormData?.employementDetails[1]?.employmentStatus);
-
+const effectDtFrom = this.baseFormData?.employementDetails[1]?.effectDtFrom;
+    const effectDtTo = this.baseFormData?.employementDetails[1]?.effectDtTO;
+const isValidDates =  new Date(effectDtFrom).getFullYear() == 1900 && 
+                      new Date(effectDtTo).getFullYear() == 9998;
+                     if(isValidDates){
+                      this.mainForm.get("previousEmployeeYear").patchValue(
+        this.baseFormData?.previousEmployeeYear ?? null
+      );
+      this.mainForm.get("previousEmployeeMonth").patchValue(
+        this.baseFormData?.previousEmployeeMonth ?? null
+      );
+      
+    }
+    else {
+      
       const duration = this.calculateYearAndMonthDifference(
         this.baseFormData?.previousEmployeeYear || this.baseFormData?.employementDetails[1]?.effectDtFrom,
         this.baseFormData?.previousEmployeeMonth || this.baseFormData?.employementDetails[1]?.effectDtTO
@@ -200,7 +215,7 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
 
       this.mainForm.get("previousEmployeeYear").patchValue(duration.years);
       this.mainForm.get("previousEmployeeMonth").patchValue(duration.months);
-
+    }
       // this.mainForm
       //   .get("previousEmployeeYear")
       //   .patchValue(
@@ -222,7 +237,8 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
     this.updatedropdowndata();
 
     if(this.baseSvc.showValidationMessage){
-      this.mainForm.form.markAllAsTouched()
+      this.mainForm.form.markAllAsTouched();
+      this.cdr.detectChanges();
     }
   }
 
@@ -288,10 +304,10 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
   // }
 
 
-  override onFormEvent(event: any): void {
+  override async onFormEvent(event: any): Promise<void>{
     super.onFormEvent(event);
     if(event?.name == "previousEmploymentType"){
-      this.updateValidation(event);
+      await this.updateValidation(event);
     }
   }
   // override onFormDataUpdate(res: any): void {
@@ -421,7 +437,6 @@ export class PreviousEmploymentComponent extends BaseIndividualClass {
   }
  
   override async onValueEvent(event): Promise<void> {
-   
     await this.updateValidation(event);
   }
 

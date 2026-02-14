@@ -1,7 +1,6 @@
 <gen-card
-  [cardType]="'non-border'"
+  [cardType]="'border'"
   [headerText]="'Income Details'"
-  [cardBgColor]="'--background-color-secondary'"
 >
   <ng-container body>
     <div class="grid">
@@ -67,7 +66,7 @@
                   Amount should be greater than 0
                 </small>
                 <small *ngIf="income?.get('amount').errors?.max"
-                  >Amount cannot exceed (18,2)</small
+                  >Maximum length should be 18 digits</small
                 >
               </div>
             </div>
@@ -138,7 +137,7 @@
             ">
             <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.required">Amount is required.</small>
             <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.min">Amount should be greater than 0.</small>
-            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.max">Amount cannot exceed (18,2)</small>
+            <small *ngIf="incomeDetailsForm.get('financialIncomeTypeAmount').errors?.max">Maximum length should be 18 digits</small>
           </div>
         </div>
         <div class="col-3 p-fluid">

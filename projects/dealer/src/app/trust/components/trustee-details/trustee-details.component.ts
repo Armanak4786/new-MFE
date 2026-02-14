@@ -166,7 +166,7 @@ export class TrusteeDetailsComponent extends BaseTrustClass {
           },
         {
           type: "select",
-          label: "Mobile",
+          label: "Business Number",
           name: "TrusteebusinessMobile",
           alignmentType: "vertical",
           // placeholder: "Code",
@@ -399,7 +399,7 @@ export class TrusteeDetailsComponent extends BaseTrustClass {
         // },
         {
           type: 'phone',
-          // placeholder: 'Area Code',
+          placeholder: "Area Code",
           name: 'TrusteebusinessAreaCode',
           labelClass: "hidden",
         
@@ -753,6 +753,7 @@ export class TrusteeDetailsComponent extends BaseTrustClass {
           name: 'TrusteeindividualAreaCode',
           labelClass: "hidden",
           cols: 1,
+          placeholder: "Area Code",
           className: '-mx-3 mt-7 pl-3 pr-0 py-0',
           inputType: 'vertical',
         },

@@ -18,7 +18,7 @@ export class BusinessWebsiteContactDetailsComponent extends BaseBusinessClass {
     api: "",
     goBackRoute: "",
     cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    //cardBgColor: "--background-color-secondary",
     fields: [
       {
         type: "text",

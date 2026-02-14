@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { BaseStandardQuoteClass } from "../../../base-standard-quote.class";
 import { CommonService, DataService, GenericFormConfig } from "auro-ui";
 import { ActivatedRoute } from "@angular/router";
@@ -229,8 +229,6 @@ export class IndividualTabComponent extends BaseStandardQuoteClass {
       this.mainForm.form.get("dateOfBirth")?.setErrors(null);
       this.mainForm.form.get("dateOfBirth")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
     }
-    console.log(this.mainForm.form.valid, "mainForm.form.valid");
-    console.log(this.mainForm.form, "mainForm.form.value");
     if (this.mainForm.form.valid) {
       this.callCustomerSearchAPI();
     } else {
@@ -307,9 +305,11 @@ export class IndividualTabComponent extends BaseStandardQuoteClass {
           this.baseFormData?.purposeofLoan?.toLowerCase() === "business";
         const path = isBusiness ? "sole-trade" : "individual";
         //console.log(this.baseFormData, path, "isBusiness");
+        this.svc.router.navigateByUrl(
+          `/dealer/standard-quote/borrower-search-result/${path}`
+        );
         this.mainForm.form.reset();
         this.ref.close();
-        this.svc.router.navigateByUrl(`/search-result/borrower/${path}`);
         // }
       });
   }

@@ -5,7 +5,7 @@ import { CommonService } from "auro-ui";
 import { StandardQuoteService } from "../../services/standard-quote.service";
 import { lastValueFrom, map, takeUntil } from "rxjs";
 import { ToasterService, ValidationService } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
+import configure  from "src/assets/configure.json";
 
 @Component({
   selector: "app-payment-summary-deatils",
@@ -57,7 +57,10 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.formData = res;
-        this.productCode = res.productCode;
+        this.productCode = res?.productCode;
+        if (this.productCode === 'AFV') {
+          this.futureValue = res?.assuredFutureValue || 0;
+        }
         this.cdr.detectChanges();
       });
 
@@ -84,6 +87,8 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
       this.cashPriceValue = this.paymentSummary?.cashPriceValue
       this.totalBorrowedAmount = this.paymentSummary?.totalAmountBorrowed;
       this.lastPaymentDate = this.getLastCalcDt(this.paymentSummary);
+      this.balloonValue = this.paymentSummary?.balloonAmount;
+      this.futureValue = this.paymentSummary?.assuredFutureValue || 0;
     } else {
       this.paymentSummary = this.formData;
       
@@ -112,6 +117,7 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
       this.lastPaymentDate = this.getLastCalcDt(this.paymentSummary);
 
       this.balloonValue = this.paymentSummary?.balloonAmount;
+      this.futureValue = this.paymentSummary?.assuredFutureValue || 0;
     }
     await this.updateValidation("onInit");
   }
@@ -145,7 +151,7 @@ export class PaymentSummaryDeatilsComponent extends BaseStandardQuoteClass {
     let totalInstallments = 0;
     let totalAmtGross = 0;
     flows?.forEach((flow) => {
-      if (flow?.flowType === "Installment" || flow?.flowType === "Balloon Payment") {
+      if (flow?.flowType === "Installment" || flow?.flowType === "Balloon Payment" || flow?.flowType === "Residual Value") {
         totalInstallments += 1;
         totalAmtGross += flow?.amtGross;
       }

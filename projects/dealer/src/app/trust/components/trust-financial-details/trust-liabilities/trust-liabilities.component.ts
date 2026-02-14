@@ -24,7 +24,7 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
     cardType: 'non-border',
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
+    //cardBgColor: '--background-color-secondary',
     fields: [
       {
         type: 'label-only',
@@ -37,7 +37,7 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
       {
         type: 'label-only',
         typeOfLabel: 'inline',
-        label: 'Balance/limit',
+        label: 'Balance / Limit',
         name: 'liabilitesBalanceLimitLabel',
         cols: 3,
         className: '',
@@ -45,7 +45,7 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
       {
         type: 'label-only',
         typeOfLabel: 'inline',
-        label: 'Amount',
+        label: 'Monthly Amount',
         name: 'liabilitesAmountLabel',
         cols: 3,
         className: 'text-center',
@@ -54,7 +54,7 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
       {
         type: 'amount',
         inputType: 'horizontal',
-        label: 'Mortgage/Rent',      //Mortgage
+        label: 'Mortgage / Rent',      //Mortgage
         name: 'trustmortgageBalance',
         cols: 7,
         labelClass: 'col-6',
@@ -127,11 +127,11 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
       {
         type: 'amount',
         inputType: 'horizontal',
-        label: 'Other Liabilities',
+        label: 'Other Liabilities\n(Including Overdrafts, Taxes Due etc)',
         name: 'trustotherBalance',
         cols: 7,
-        labelClass: 'col-6',
-        inputClass: ' col-5 ',
+        labelClass: 'col-6 multi-line-label',
+        inputClass: ' col-5',
         default : 0,
         className:'pl-0'
       },
@@ -141,6 +141,7 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
         cols: 3,
         nextLine: true,
         default: 0,
+        className: 'mt-2'
       },
       {
         type: 'number',
@@ -223,7 +224,7 @@ export class TrustLiabilitiesComponent extends BaseTrustClass {
 
    override onStepChange(stepperDetails: any): void {
       super.onStepChange(stepperDetails);
-      this.trustSvc.updateComponentStatus("Finance Accounts", "TrustLiabilitiesComponent", this.mainForm.form.valid)
+      this.trustSvc.updateComponentStatus("Financial Position", "TrustLiabilitiesComponent", this.mainForm.form.valid)
        if(this.trustSvc.showValidationMessage){
       let invalidPages = this.checkStepValidity()
       this.trustSvc.iconfirmCheckbox.next(invalidPages)

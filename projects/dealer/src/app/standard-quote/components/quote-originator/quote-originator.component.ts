@@ -12,7 +12,7 @@ import {
   ToasterService,
   ValidationService,
 } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { QuickQuoteService } from "../../../quick-quote/services/quick-quote.service";
 import { catchError, map, of, takeUntil } from "rxjs";
 import { AssetTradeSummaryService } from "../asset-insurance-summary/asset-trade.service";
@@ -331,15 +331,15 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
             sessionStorage.setItem("dealerPartyNumber", dealer?.num);
             sessionStorage.setItem("dealerPartyName", dealer?.name);
           }
-
-          if (dealer.num === this.baseFormData.originalDealerId) {
-            this.baseFormData.isDealerChange = false;
-          } else {
-            this.baseFormData.isDealerChange = true;
-            // this.mainForm?.form?.get("salesPerson")?.setValue(null);
-            // this.baseFormData.salesPerson = null;
+          
+          
+         // Only compare when both values are not undefined and not null
+          if (dealer.num !== undefined && dealer.num !== null &&
+              this.baseFormData.originalDealerId !== undefined && this.baseFormData.originalDealerId !== null) {
+            this.baseFormData.isDealerChange = dealer.num != this.baseFormData.originalDealerId
           }
-
+        
+        
           const currentRoute = this.router.url;
           if (
             currentRoute !== "/dealer/quick-quote" &&
@@ -359,6 +359,16 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
     this.promotionalCheckDone = false;
     this.sessionProductCode = sessionStorage.getItem("productCode");
     await super.ngOnInit();
+    
+    let params: any = this.route?.snapshot?.params;
+    this.mode = params?.mode;
+    
+    // Set originalDealerId early in ngOnInit to ensure it's available when effect callback runs
+    if (this.baseFormData && this.mode == "edit") {
+      this.baseFormData.originalDealerId = sessionStorage.getItem("dealerPartyNumber");
+      console.log('Original Dealer ID set to:', this.baseFormData.originalDealerId);
+    }
+    
     // this.mainForm.updateProps("promotionQuote", {
     //   disabled: true,
     //   // mode: Mode.view,
@@ -373,14 +383,16 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
       this.mainForm.get("workFlowStatus").disable();
     }
 
-    let params: any = this.route?.snapshot?.params;
-    this.mode = params?.mode;
-
     if ((sessionStorage.getItem("externalUserType") == "Internal" )) {
       if(this.baseSvc.productBusinessModel === "Direct"){
         this.mainForm.updateHidden({ originatorName: true });
         this.mainForm.updateHidden({ originatorNumber: true });
         this.mainForm.updateHidden({ salesPerson: true });
+      }
+      else if(this.baseSvc.productBusinessModel === "Introduced"){
+        this.mainForm.updateHidden({ originatorName: false });
+        this.mainForm.updateHidden({ originatorNumber: false });
+        this.mainForm.updateHidden({ salesPerson: false });
       }
       this.mainForm?.updateProps("originatorName", {
         type: "select",
@@ -446,9 +458,7 @@ export class QuoteOriginatorComponent extends BaseStandardQuoteClass {
 
         //sessionStorage.removeItem('dealerPartyNumber');
       } else if (this.baseFormData && this.mode == "edit") {
-        this.baseFormData.originalDealerId =
-          sessionStorage.getItem("dealerPartyNumber");
-
+        // originalDealerId is already set earlier in ngOnInit
         this.oldLoanPurpose = this.baseFormData?.purposeofLoan;
       }
 
@@ -563,9 +573,23 @@ if(this.sessionProductCode === "AFV"){
       this.mainForm.updateHidden({ internalSalesperson: false });
       this.mainForm.updateProps("salesPerson", { label: "Dealer Salesperson" });
 
-      if (sessionStorage.getItem("productCode") == "TL") {
+      if (this.baseFormData?.productId && this.productProgramList?.products) {
+        const selectedProduct = this.productProgramList.products.find(
+          (product) => product.productId === this.baseFormData.productId
+        );
+        if (selectedProduct?.businessModel) {
+          this.baseSvc.productBusinessModel = selectedProduct.businessModel;
+        }
+      }
+
+      if (sessionStorage.getItem("productCode") == "TL" && this.baseSvc.productBusinessModel === "Direct") {
         this.mainForm.updateHidden({ privateSales: false });
         this.mainForm?.updateProps("promotionQuote", { className: " " });
+      }
+      else{
+        this.mainForm.updateHidden({ privateSales: true });
+        this.baseFormData.privateSales = false;
+        this.mainForm?.updateProps("promotionQuote", { className: "mr-auto" });
       }
 
       let res = await this.baseSvc?.getFormData(
@@ -835,16 +859,33 @@ if(this.sessionProductCode === "AFV"){
           (p) => p?.productId === event?.data
         );
         this.baseSvc.productBusinessModel = product?.businessModel;
+        
+        // Store full product name in baseFormData
+        if (product) {
+          this.baseSvc.setBaseDealerFormData({
+            productExtName: product?.extName,
+            productName: product?.name || product?.extName
+          });
+        }
 
         if(sessionStorage.getItem("externalUserType") === "Internal" && this.baseSvc.productBusinessModel === "Direct"){
           this.mainForm.updateHidden({ originatorName: true });
           this.mainForm.updateHidden({ originatorNumber: true });
           this.mainForm.updateHidden({ salesPerson: true });
+            if (this.sessionProductCode === "TL") {
+            this.mainForm.updateHidden({ privateSales: false });
+            this.mainForm?.updateProps("promotionQuote", { className: "" });
+          }
         }
         else if(sessionStorage.getItem("externalUserType") === "Internal" && this.baseSvc.productBusinessModel === "Introduced"){
           this.mainForm.updateHidden({ originatorName: false });
           this.mainForm.updateHidden({ originatorNumber: false });
           this.mainForm.updateHidden({ salesPerson: false });
+            if (this.sessionProductCode === "TL") {
+            this.mainForm.updateHidden({ privateSales: true });
+            this.mainForm?.updateProps("promotionQuote", { className: "mr-auto" });
+            this.baseFormData.privateSales = false;
+          }
           this.updateValidation("onInit");
         }
       }
@@ -855,6 +896,12 @@ if(this.sessionProductCode === "AFV"){
       // };
       await this.setProgram(event?.data);
       this.baseSvc.showResult = false;
+      
+      // For AFV product, clear program list - programs will only load after asset type selection
+      if (this.sessionProductCode === 'AFV' || this.productCode === 'AFV') {
+        this.mainForm.updateList('programId', []);
+        this.mainForm.get('programId')?.patchValue(null);
+      }
     }
 
     if (event.name == "programId") {
@@ -910,6 +957,20 @@ if(this.sessionProductCode === "AFV"){
         };
         this.baseSvc.changedProgram.next(event?.data);
         this.baseSvc.showResult = false;
+        
+        // Call expected usages API for AFV product after program change
+          if (this.baseFormData?.productCode === 'AFV') {
+            await this.baseSvc.getExpectedUsages({
+              programId: this.baseFormData?.programId,
+              product: this.baseFormData?.productName,
+              assetType: this.baseFormData?.assetTypeDD,
+              assetDealType: this.baseFormData?.assetDealType,
+              assetCondition: this.baseFormData?.conditionOfGood,
+              locationId: this.baseFormData?.location?.locationId,
+              businessUnitId: this.baseFormData?.businessUnitId
+            });
+          }
+        
         if(sessionStorage.getItem("externalUserType") === "Internal" && this.baseSvc.productBusinessModel === "Introduced"){
           const dealerList = await this.standardService.getDealerForInternalSales(event?.data);
           this.mainForm.updateList("originatorName", dealerList);
@@ -931,6 +992,11 @@ if(this.sessionProductCode === "AFV"){
 
   override async onFormEvent(res: any) {
     if (res.name == "originatorName") {
+         if(sessionStorage.getItem("externalUserType") === "Internal" ){
+        if(this.baseFormData?.salePersonDetails){
+          this.baseFormData.salePersonDetails = null;
+        }
+      }
       const selectedOriginator = this.introObj[Number(res?.value)];
       
       this.baseSvc.setBaseDealerFormData({
@@ -1143,6 +1209,7 @@ if(this.sessionProductCode === "AFV"){
 
     // Get promotional programs (uses cache)
     const promotionalPrograms = await this.getPromotionalPrograms(productId);
+    
 
     // Filter out promotional programs - keep only non-promotional ones
     const filteredOptions = allProgramOptions.filter((option) => {
@@ -1150,7 +1217,8 @@ if(this.sessionProductCode === "AFV"){
         return Number(program.program_id) === Number(option.value);
       });
     });
-
+ console.log('After excluding promotions:', filteredOptions.length);
+  console.log('Filtered options:', filteredOptions);
     await this.mainForm.updateList("programId", filteredOptions);
   }
 async checkIfProgramIsPromotional(programId: number): Promise<void> {
@@ -1238,7 +1306,9 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
     if(statusDetails){
 
       await this.handleWorkflowLogic(statusDetails);
+      this.baseSvc.triggerAllComponentsDuringWorkflowChange.update(val => val + 1);
       super.onStatusChange(statusDetails);
+      await this.updateValidation("onInit");
     } 
   
   }
@@ -1321,6 +1391,14 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
    if(option == "Submit"){
     if(this.baseFormData?.AFworkflowStatus === "Quote") {
     if(this.fieldValidations()){
+      return;
+    }
+
+    if(await this.insuranceDeclarationValidation() == true){
+      this.toasterSvc.showToaster({
+        severity: "error",
+        detail: "Please fill insurance disclosure.",
+      });
       return;
     }
       if(this.checkIfLoanDatePassed()) {
@@ -1453,6 +1531,78 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
       detail: "Invalid workflow option selected.",
     });
    }
+  }
+
+  async insuranceDeclarationValidation() {
+
+    if(this.hasAnyInsuranceSelected()){
+      //logic for Insurance Disclosure API call
+      try {
+        const res = await this.svc.data.get(
+          `Contract/get_insurance_declaration_data?ContractId=${this.baseFormData?.contractId}`
+        ).toPromise();
+
+        let requiredData = res.data.customFieldGroups.find(
+          (group) => group.name === "Insurance Declaration"
+        );
+        
+        // Check if any Declaration Response is empty/missing
+        if (this.hasEmptyDeclarationResponse(requiredData)) {
+          return true; // Validation failed - has empty responses
+        }
+        
+        return false; // Validation passed - all responses filled
+      } catch (error) {
+        console.error("Error fetching insurance declaration data:", error);
+        return true; // Treat API errors as validation failure
+      }
+    }
+    return false;
+    
+  }
+
+  private hasEmptyDeclarationResponse(data: any): boolean {
+    // Check if items array exists and is not empty
+    if (!data?.items || !Array.isArray(data.items)) {
+      return true; // No items means no valid responses
+    }
+
+    // Use .some() to check if ANY item has a missing/empty Declaration Response
+    return data.items.some((item: any) => {
+      // First, check if "Insurance Declaration Type" exists and has a value
+      const declarationTypeField = item?.customFields?.find(
+        (field: any) => field.name === "Insurance Declaration Type"
+      );
+
+      // If Insurance Declaration Type is empty, null, or undefined, skip this item
+      const declarationType = declarationTypeField?.value;
+      if (!declarationType || declarationType === null || declarationType === undefined || declarationType === "") {
+        return false; // Skip this item, continue to next
+      }
+
+      // If Insurance Declaration Type has a value, then validate Declaration Response
+      const declarationField = item?.customFields?.find(
+        (field: any) => field.name === "Declaration Response"
+      );
+
+      // Return true if field is missing or value is null/undefined/empty
+      if (!declarationField) {
+        return true; // Field doesn't exist
+      }
+
+      const value = declarationField.value;
+      
+      // Check if value is null, undefined, or empty string
+      return value === null || value === undefined || value === "";
+    });
+  }
+
+  private hasAnyInsuranceSelected(): boolean {
+    return (this.baseFormData?.extendedAmount && Number(this.baseFormData.extendedAmount) > 0) ||
+           (this.baseFormData?.mechanicalBreakdownInsuranceAmount && Number(this.baseFormData.mechanicalBreakdownInsuranceAmount) > 0) ||
+           (this.baseFormData?.guaranteedAssetProtectionAmount && Number(this.baseFormData.guaranteedAssetProtectionAmount) > 0) ||
+           (this.baseFormData?.motorVehicalInsuranceAmount && Number(this.baseFormData.motorVehicalInsuranceAmount) > 0) ||
+           (this.baseFormData?.contractAmount && Number(this.baseFormData.contractAmount) > 0);
   }
 
    fieldValidations() {
@@ -1629,12 +1779,15 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
           if (data?.btnType == "submit") {
             let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
           
-            if(updateContractRes?.apiError || updateContractRes?.Error?.Message){
+            if(!updateContractRes || updateContractRes?.apiError?.errors?.length > 0 || updateContractRes?.Error?.Message){
               return;
             }
             else{
             
             let updateWorkflow = await this.updateState("Submitted");
+              if( updateWorkflow == false ) {
+                return;
+              }
 
             if ( updateWorkflow !== false &&
               this.baseFormData.contractId &&
@@ -1645,6 +1798,7 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
             ) {
               // alert(JSON.stringify(data?.data?.formData));
               // todo proceed api
+            
               this.svc.dialogSvc
                 .show(FinalConfirmationComponent, "", {
                   data: this.baseFormData,
@@ -1950,9 +2104,20 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
     )?.id;
 
     if (introducerId) {
+      const api = `Product/get_programs_products?introducerId=${introducerId}`;
+      console.log("[QuoteOriginator] getProductProgram API", {
+        api,
+        originatorNo,
+        introducerId,
+      });
       let res = await this.baseSvc.getFormData(
-        `Product/get_programs_products?introducerId=${introducerId}`
+        api
       );
+      console.log("[QuoteOriginator] getProductProgram response", {
+        hasData: !!res?.data,
+        productsCount: res?.data?.products?.length ?? 0,
+        programsCount: res?.data?.programs?.length ?? 0,
+      });
       if (res?.data) {
         this.productProgramList = res?.data;
         let productdata = res?.data?.products;
@@ -1973,6 +2138,9 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
               }))
               .sort((a, b) => a.label.localeCompare(b.label))
           : [];
+        console.log("[QuoteOriginator] programList mapped", {
+          programListCount: this.programList?.length ?? 0,
+        });
       }
     }
 
@@ -1997,12 +2165,20 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
     if (this.mainForm.form.get("productId")?.value) {
       this.setProgram(this.mainForm.form.get("productId")?.value);
     }
+    
+    // For AFV, ensure program list is empty initially - programs load only after asset type selection
+    if (this.sessionProductCode === 'AFV' || this.productCode === 'AFV') {
+      this.mainForm.updateList('programId', []);
+    }
   }
 
   async getProductProgramForInternalSales() {
-    let res = await this.baseSvc.getFormData(
-      `Product/get_programs_products?introducerId=${0}`
-    );
+    const api = `Product/get_programs_products?introducerId=${0}`;
+    console.log("[QuoteOriginator] getProductProgramForInternalSales API", {
+      api,
+    });
+    let res = await this.baseSvc.getFormData(api);
+   
     if (res?.data) {
       this.productProgramList = res?.data;
       let productdata = res?.data?.products;
@@ -2023,6 +2199,7 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
             }))
             .sort((a, b) => a.label.localeCompare(b.label))
         : [];
+     
     }
 
     if (this.productCode || this.sessionProductCode) {
@@ -2046,6 +2223,11 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
     if (this.mainForm.form.get("productId")?.value) {
       this.setProgram(this.mainForm.form.get("productId")?.value);
     }
+    
+    // For AFV, ensure program list is empty initially - programs load only after asset type selection
+    if (this.sessionProductCode === 'AFV' || this.productCode === 'AFV') {
+      this.mainForm.updateList('programId', []);
+    }
   }
 
   async setProgram(productId, applyPromotionalFilter: boolean = true) {
@@ -2056,6 +2238,7 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
     let programOptions = this.productProgramList?.programs?.filter(
       (program) => program.productId === productId
     );
+    
     let programJson = Array.isArray(programOptions)
       ? programOptions
           ?.map((item) => ({
@@ -2076,6 +2259,7 @@ async checkIfProgramIsPromotional(programId: number): Promise<void> {
     this.standardService.setBaseDealerFormData({
       businessModel: selectedProduct?.businessModel,
     });
+    console.log('Program Dropdown Options:', programJson);
     await this.mainForm.updateList("programId", programJson);
 
     // Apply promotional filter based on checkbox state

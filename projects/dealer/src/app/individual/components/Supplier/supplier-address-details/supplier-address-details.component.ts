@@ -161,15 +161,15 @@ export class SupplierAddressDetailsComponent extends BaseIndividualClass {
 
   async loadLookups() {
     // Residence Type
-    await this.baseSvc.getFormData(
-      `LookUpServices/lookups?LookupSetName=PropertyResidenceType`,
-      res => {
-        this.mainForm?.updateList(
-          "residenceType",
-          res?.data?.map(x => ({ label: x.lookupValue, value: x.lookupValue }))
-        );
-      }
-    );
+    // await this.baseSvc.getFormData(
+    //   `LookUpServices/lookups?LookupSetName=PropertyResidenceType`,
+    //   res => {
+    //     this.mainForm?.updateList(
+    //       "residenceType",
+    //       res?.data?.map(x => ({ label: x.lookupValue, value: x.lookupValue }))
+    //     );
+    //   }
+    // );
 
     // Street Type
     await this.baseSvc.getFormData(

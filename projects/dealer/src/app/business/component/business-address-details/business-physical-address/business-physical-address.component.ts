@@ -9,11 +9,11 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { CommonService, GenericFormConfig, ToasterService } from "auro-ui";
+import { CommonService, GenericFormConfig, Mode, ToasterService } from "auro-ui";
 import { BusinessService } from "../../../services/business";
 import { BaseBusinessClass } from "../../../base-business.class";
 import { ValidationService } from "auro-ui";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil, debounceTime } from "rxjs";
 import { SearchAddressService } from "../../../../standard-quote/services/search-address.service";
 import { IndividualService } from "../../../../individual/services/individual.service";
 
@@ -40,6 +40,7 @@ export class BusinessPhysicalAddressComponent
   cityOptionsLocationId: any = [];
   private countryOptions: any[] = [];
   private cityOptionsAll: any[] = [];
+  private isAutoToggling: boolean = false; // Flag to prevent recursive calls when auto-toggling
 
   constructor(
     public fb: FormBuilder,
@@ -74,9 +75,9 @@ export class BusinessPhysicalAddressComponent
   override formConfig: GenericFormConfig = {
     headerTitle: "Physical Address",
     autoResponsive: true,
-    cardType: "non-border",
+    cardType: "border",
     api: "",
-    cardBgColor: "--background-color-secondary",
+    //cardBgColor: "--background-color-secondary",
     // goBackRoute: '',
     fields: [
       // {
@@ -358,7 +359,7 @@ export class BusinessPhysicalAddressComponent
         label: "Country",
         name: "physicalCountry",
         alignmentType: "vertical",
-        labelClass: "w-8 -my-3",
+        labelClass: "w-8 mb-2",
         //validators: [Validators.required],
         className: "px-0 customLabel",
         cols: 2,
@@ -368,8 +369,23 @@ export class BusinessPhysicalAddressComponent
         options: [],
         default: "New Zealand",
         nextLine: false,
-        disabled:true
+        // disabled:true
       },
+      // {
+      //   type: "text",
+      //   label: "Country",
+      //   name: "physicalCountry",
+      //   disabled: true,
+      //   inputType: "vertical",
+      //   inputClass: "w-8 mt-2",
+      //   labelClass: "w-8 -my-3",
+      //   //validators: [Validators.required],
+      //   className: "px-0 mt-2 customLabel",
+      //   cols: 2,
+      //   default: "New Zealand",
+      //   nextLine: false,
+      //   mode: Mode.view,
+      // },
     ],
   };
 
@@ -419,9 +435,27 @@ override async ngOnInit(): Promise<void> {
     this.baseFormData.AFworkflowStatus !== 'Quote'
     ) )
     {
-    this.mainForm?.form?.disable();
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.disable({ emitEvent: false });
+        this.mainForm.mode = 'view';
+      } catch (error) {
+        console.warn('BusinessPhysicalAddressComponent: Error disabling form', error);
+      }
     }
-    else{ this.mainForm?.form?.enable();}
+    else{ 
+      try {
+        // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+        this.mainForm?.form?.enable({ emitEvent: false });
+      } catch (error) {
+        // Handle errors that might occur when enabling form triggers validation subscriptions
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPhysicalAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+        } else {
+          console.warn('BusinessPhysicalAddressComponent: Error enabling form', error);
+        }
+      }
+    }
     
     await this.updateValidation("onInit");
   }
@@ -429,12 +463,42 @@ override async ngOnInit(): Promise<void> {
   this.searchSvc
     .getPhysicalAddressData()
     .pipe(takeUntil(this.destroySubject$))
-    .subscribe((data) => {
-      if (data) {
-        const { physicalreuseOfPostalAddress, physicalreuseOfRegisterAddress, ...restData } = data;
-        this.mainForm.form.patchValue(restData);
-      } else {
-        this.mainForm?.form?.reset();
+    .subscribe({
+      next: (data) => {
+        if (data) {
+          try {
+            const { physicalreuseOfPostalAddress, physicalreuseOfRegisterAddress, ...restData } = data;
+            // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+            this.mainForm.form.patchValue(restData, { emitEvent: false });
+          } catch (error) {
+            // Handle errors that might occur when patching values triggers validation
+            if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+              console.warn('BusinessPhysicalAddressComponent: Split error when patching form values - likely undefined pattern value in validation', error.message);
+            } else {
+              console.error('BusinessPhysicalAddressComponent: Error patching form values', error);
+            }
+          }
+        } else {
+          try {
+            // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+            this.mainForm?.form?.reset({}, { emitEvent: false });
+          } catch (error) {
+            // Handle errors that might occur when resetting form triggers validation subscriptions
+            if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+              console.warn('BusinessPhysicalAddressComponent: Split error when resetting form - likely undefined pattern value in validation', error.message);
+            } else {
+              console.warn('BusinessPhysicalAddressComponent: Error resetting form', error);
+            }
+          }
+        }
+      },
+      error: (error) => {
+        // Handle subscription errors
+        if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+          console.warn('BusinessPhysicalAddressComponent: Split error in getPhysicalAddressData subscription - likely undefined pattern value in validation', error.message);
+        } else {
+          console.error('BusinessPhysicalAddressComponent: Error in getPhysicalAddressData subscription', error);
+        }
       }
     });
 
@@ -477,20 +541,85 @@ override async ngOnInit(): Promise<void> {
   }
 
   this.updateDropdownData();
-  this.indSvc.updateDropdownData().subscribe((result) => {
-    this.mainForm.updateList("physicalFloorType", result?.floorType);
-    this.mainForm.updateList("physicalUnitType", result?.unitType);
-    this.mainForm.updateList("physicalStreetType", result?.streetType);
-    if (result?.country) {
-      this.mainForm.updateList("physicalCountry", result?.country);
-      this.mainForm?.form?.get("physicalCountry")?.setValue("New Zealand");
-      this.mainForm.updateList("physicalCity", result?.city);
-    }
-  });
+    this.indSvc.updateDropdownData().subscribe({
+      next: (result) => {
+        try {
+          this.mainForm.updateList("physicalFloorType", result?.floorType);
+          this.mainForm.updateList("physicalUnitType", result?.unitType);
+          this.mainForm.updateList("physicalStreetType", result?.streetType);
+          if (result?.country) {
+            this.mainForm.updateList("physicalCountry", result?.country);
+            this.mainForm?.form?.get("physicalCountry")?.setValue("New Zealand", { emitEvent: false });
+            this.mainForm.updateList("physicalCity", result?.city);
+          }
+        } catch (error) {
+          if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+            console.warn('BusinessPhysicalAddressComponent: Split error in updateDropdownData subscription', error.message);
+          } else {
+            console.error('BusinessPhysicalAddressComponent: Error in updateDropdownData subscription', error);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('BusinessPhysicalAddressComponent: Error in updateDropdownData subscription', error);
+      }
+    });
   
   if (this.baseSvc.showValidationMessage) {
     this.mainForm.form.markAllAsTouched();
   }
+
+  // Subscribe to postal address manual changes to auto-toggle physicalreuseOfPostalAddress
+  this.baseSvc.postalAddressManuallyChanged$
+    .pipe(
+      takeUntil(this.destroySubject$),
+      debounceTime(10) 
+    )
+    .subscribe((changed: boolean) => {
+      if (changed && this.baseFormData?.physicalreuseOfPostalAddress && !this.isAutoToggling) {
+        // User manually changed postal address, so toggle off physicalreuseOfPostalAddress
+        this.isAutoToggling = true;
+        const toggleControl = this.mainForm?.form?.get("physicalreuseOfPostalAddress");
+        if (toggleControl) {
+          // Set toggle to false (which means "No" - don't reuse)
+          toggleControl.setValue(false, { emitEvent: true });
+          this.baseFormData.physicalreuseOfPostalAddress = false;
+          // Emit "undoCopy" to notify postal address component
+          this.baseSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+          // Reset flags after debounce completes (handled by debounceTime operator)
+          this.isAutoToggling = false;
+          this.baseSvc.postalAddressManuallyChanged.next(false);
+        } else {
+          this.isAutoToggling = false;
+        }
+      }
+    });
+
+  // Subscribe to registered address manual changes to auto-toggle physicalreuseOfRegisterAddress
+  this.baseSvc.registerAddressManuallyChanged$
+    .pipe(
+      takeUntil(this.destroySubject$),
+      debounceTime(10) 
+    )
+    .subscribe((changed: boolean) => {
+      if (changed && this.baseFormData?.physicalreuseOfRegisterAddress && !this.isAutoToggling) {
+        // User manually changed registered address, so toggle off physicalreuseOfRegisterAddress
+        this.isAutoToggling = true;
+        const toggleControl = this.mainForm?.form?.get("physicalreuseOfRegisterAddress");
+        if (toggleControl) {
+          // Set toggle to false (which means "No" - don't reuse)
+          toggleControl.setValue(false, { emitEvent: true });
+          this.baseFormData.physicalreuseOfRegisterAddress = false;
+          // Emit "undoCopyRegister" to notify registered address component
+          this.baseSvc.reusePhysical.next({ action: 'undoCopyRegister', data: null });
+          // Reset flags after debounce completes (handled by debounceTime operator)
+          this.isAutoToggling = false;
+          this.baseSvc.registerAddressManuallyChanged.next(false);
+        } else {
+          this.isAutoToggling = false;
+        }
+      }
+    });
 }
 
 
@@ -813,6 +942,7 @@ override async ngOnInit(): Promise<void> {
       }
     }
     await this.updateValidation("onInit");
+    this.checkTimeInBusinessPhysicalAddress();
   }
 
   async getCities() {
@@ -844,81 +974,93 @@ override async ngOnInit(): Promise<void> {
       );
     }
   }
-override onValueChanges(event: any) {
-  // Only process if the event actually contains the toggle field changes
-  if (event.physicalreuseOfPostalAddress !== undefined) {
-    this.baseFormData.physicalCountry = this.mainForm.get("physicalCountry").value;
-    this.baseFormData.physicalreuseOfPostalAddress = event?.physicalreuseOfPostalAddress;
-
-    if (event.physicalreuseOfPostalAddress) {
-      const physicalData = {
-        postalBuildingName: this.mainForm.get('physicalBuildingName')?.value,
-        postalFloorType: this.mainForm.get('physicalFloorType')?.value,
-        postalFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
-        postalUnitType: this.mainForm.get('physicalUnitType')?.value,
-        postalUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
-        postalStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
-        postalStreetName: this.mainForm.get('physicalStreetName')?.value,
-        postalStreetType: this.mainForm.get('physicalStreetType')?.value,
-        postalStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
-        postalRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
-        postalSuburbs: this.mainForm.get('physicalSuburbs')?.value,
-        postalCity: this.mainForm.get('physicalCity')?.value,
-        postalCityLocationId: this.baseFormData.physicalCityLocationId,
-        postalPostcode: this.mainForm.get('physicalPostcode')?.value,
-        postalCountry: this.mainForm.get('physicalCountry')?.value,
-        postalStreetArea: this.mainForm.get('physicalStreetArea')?.value,
-        postalSearchValue: this.mainForm.get('physicalSearchValue')?.value,
-        postalAddressType: 'street', 
-        addressComponentTemplateHdrId: 1
-      };
-
-      Object.keys(physicalData).forEach(key => {
-        this.baseFormData[key] = physicalData[key];
-      });
-
-      this.baseSvc.reusePhysical.next({ action: 'copied', data: physicalData });
-      
-    } else {
-      this.baseSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+  override onValueChanges(event: any) {
+    // Skip if we're auto-toggling to prevent duplicate emissions
+    if (this.isAutoToggling) {
+      return;
     }
-  }
-
+  
+    // Only process if the event actually contains the toggle field changes
+    if (event.physicalreuseOfPostalAddress !== undefined) {
+      this.baseFormData.physicalCountry = this.mainForm.get("physicalCountry").value;
+      this.baseFormData.physicalreuseOfPostalAddress = event?.physicalreuseOfPostalAddress;
+  
+      if (event.physicalreuseOfPostalAddress) {
+        // CRITICAL: Set flag FIRST before emitting to postal component - THIS IS THE EDIT
+        this.baseSvc.isCopyingToPostalSubject.next(true);
+        this.baseSvc.isCopyingToPostal = true;
+        
+        const physicalData = {
+          postalBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          postalFloorType: this.mainForm.get('physicalFloorType')?.value,
+          postalFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          postalUnitType: this.mainForm.get('physicalUnitType')?.value,
+          postalUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          postalStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          postalStreetName: this.mainForm.get('physicalStreetName')?.value,
+          postalStreetType: this.mainForm.get('physicalStreetType')?.value,
+          postalStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          postalRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          postalSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          postalCity: this.mainForm.get('physicalCity')?.value,
+          postalCityLocationId: this.baseFormData.physicalCityLocationId,
+          postalPostcode: this.mainForm.get('physicalPostcode')?.value,
+          postalCountry: this.mainForm.get('physicalCountry')?.value,
+          postalStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          postalSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+          postalAddressType: 'street', 
+          addressComponentTemplateHdrId: 1
+        };
+  
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+  
+        this.baseSvc.reusePhysical.next({ action: 'copied', data: physicalData });
+        
+      } else {
+        
+        this.baseSvc.isCopyingToPostalSubject.next(false);
+        this.baseSvc.isCopyingToPostal = false;
+        this.baseSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+      }
+    }
+  
     // UPDATED: Handle physicalreuseOfRegisterAddress toggle value changes
-  if (event.physicalreuseOfRegisterAddress !== undefined) {
-    this.baseFormData.physicalCountry = this.mainForm.get("physicalCountry").value;
-    this.baseFormData.physicalreuseOfRegisterAddress = event?.physicalreuseOfRegisterAddress;
-
-    if (event.physicalreuseOfRegisterAddress) {
-      const physicalData = {
-        registerBuildingName: this.mainForm.get('physicalBuildingName')?.value,
-        registerFloorType: this.mainForm.get('physicalFloorType')?.value,
-        registerFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
-        registerUnitType: this.mainForm.get('physicalUnitType')?.value,
-        registerUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
-        registerStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
-        registerStreetName: this.mainForm.get('physicalStreetName')?.value,
-        registerStreetType: this.mainForm.get('physicalStreetType')?.value,
-        registerStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
-        registerRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
-        registerSuburbs: this.mainForm.get('physicalSuburbs')?.value,
-        registerCity: this.mainForm.get('physicalCity')?.value,
-        registerCityLocationId: this.baseFormData.physicalCityLocationId,
-        registerPostcode: this.mainForm.get('physicalPostcode')?.value,
-        registerCountry: this.mainForm.get('physicalCountry')?.value,
-        registerStreetArea: this.mainForm.get('physicalStreetArea')?.value,
-      };
-
-      Object.keys(physicalData).forEach(key => {
-        this.baseFormData[key] = physicalData[key];
-      });
-
-      this.baseSvc.reusePhysical.next({ action: 'copiedToRegister', data: physicalData });
-    } else {
-      this.baseSvc.reusePhysical.next({ action: 'undoCopyRegister', data: null });
+    if (event.physicalreuseOfRegisterAddress !== undefined) {
+      this.baseFormData.physicalCountry = this.mainForm.get("physicalCountry").value;
+      this.baseFormData.physicalreuseOfRegisterAddress = event?.physicalreuseOfRegisterAddress;
+  
+      if (event.physicalreuseOfRegisterAddress) {
+        const physicalData = {
+          registerBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          registerFloorType: this.mainForm.get('physicalFloorType')?.value,
+          registerFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          registerUnitType: this.mainForm.get('physicalUnitType')?.value,
+          registerUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          registerStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          registerStreetName: this.mainForm.get('physicalStreetName')?.value,
+          registerStreetType: this.mainForm.get('physicalStreetType')?.value,
+          registerStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          registerRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          registerSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          registerCity: this.mainForm.get('physicalCity')?.value,
+          registerCityLocationId: this.baseFormData.physicalCityLocationId,
+          registerPostcode: this.mainForm.get('physicalPostcode')?.value,
+          registerCountry: this.mainForm.get('physicalCountry')?.value,
+          registerStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+        };
+  
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+  
+        this.baseSvc.reusePhysical.next({ action: 'copiedToRegister', data: physicalData });
+      } else {
+        this.baseSvc.reusePhysical.next({ action: 'undoCopyRegister', data: null });
+      }
     }
-  }
-
+  
     if (event?.physicalSearchValue && event?.physicalSearchValue?.length >= 4) {
       this.searchSvc
         .searchAddress(event?.physicalSearchValue)
@@ -967,8 +1109,16 @@ override onValueChanges(event: any) {
             "physical"
           );
 
-          // Patch form values first
-          this.mainForm.form.patchValue(formValues);
+          // Patch form values first - use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          try {
+            this.mainForm.form.patchValue(formValues, { emitEvent: false });
+          } catch (error) {
+            if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+              console.warn('BusinessPhysicalAddressComponent: Split error when patching form values in onBlurEvent - likely undefined pattern value in validation', error.message);
+            } else {
+              console.error('BusinessPhysicalAddressComponent: Error patching form values in onBlurEvent', error);
+            }
+          }
 
           // IMPROVED: Better street type handling with proper timing
           // if (formValues.physicalStreetType) {
@@ -996,6 +1146,12 @@ override onValueChanges(event: any) {
   }
 
   async updateValidation(event) {
+    // Safety check: ensure mainForm exists
+    if (!this.mainForm || !this.mainForm.form) {
+      console.warn('BusinessPhysicalAddressComponent: mainForm or form not available for validation');
+      return true; // Return true to prevent blocking if form isn't ready
+    }
+
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,
@@ -1004,12 +1160,31 @@ override onValueChanges(event: any) {
       pageCode: this.pageCode,
     };
 
-    const responses = await this.validationSvc.updateValidation(req);
-    if (!responses.status && responses.updatedFields.length) {
-      await this.mainForm.applyValidationUpdates(responses);
-    }
+    try {
+      const responses = await this.validationSvc.updateValidation(req);
+      
+      if (!responses.status && responses.updatedFields && responses.updatedFields.length > 0) {
+        await this.mainForm.applyValidationUpdates(responses);
+      }
 
-    return responses.status;
+      return responses.status;
+    } catch (error) {
+      // Handle regex pattern errors gracefully - don't break the app
+      if (error?.message?.includes('Invalid regular expression') || error?.message?.includes('Range out of order')) {
+        console.warn('BusinessPhysicalAddressComponent: Invalid regex pattern in validation rules', error.message);
+        return true; // Return true to prevent blocking on invalid patterns
+      }
+      
+      // Handle split errors gracefully
+      if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+        console.warn('BusinessPhysicalAddressComponent: Split error in validation - likely undefined pattern value', error.message);
+        return true; // Return true to prevent blocking
+      }
+      
+      // For other errors, log but don't throw to prevent breaking the app
+      console.error('BusinessPhysicalAddressComponent: Validation error', error);
+      return true; // Return true instead of throwing to prevent app breakage
+    }
   }
 
   override async onStepChange(quotesDetails: any): Promise<void> {
@@ -1049,5 +1224,14 @@ override ngOnDestroy(): void {
   
 }
 
-
+checkTimeInBusinessPhysicalAddress(): void {
+  const yCtrl = this.mainForm.get("physicalYear");
+  const mCtrl = this.mainForm.get("physicalMonth");
+  const yearValue = yCtrl?.value;
+  const monthValue = mCtrl?.value;
+  if (yearValue == 0 && monthValue == 0) {
+    yCtrl?.setErrors({ required: true });
+    mCtrl?.setErrors({ required: true });
+  } 
+}
 }

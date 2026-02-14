@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, effect, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   CloseDialogData,
@@ -15,9 +15,10 @@ import { AssetTypesComponent } from "../../../components/asset-types/asset-types
 import { AssetTradeSummaryService } from "../asset-insurance-summary/asset-trade.service";
 import { ValidationService } from "auro-ui";
 import { firstValueFrom, map, takeUntil } from "rxjs";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { AfvAssetTypesComponent } from "../../../components/afv-asset-types/afv-asset-types.component";
 import { DatePipe } from "@angular/common";
+import { isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 @Component({
   selector: "app-asset-summary",
@@ -181,6 +182,13 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
   ) {
     super(route, svc, baseSvc);
 
+    effect(async () => {
+      const trigger = this.baseSvc.triggerAllComponentsDuringWorkflowChange();
+      if(trigger > 0){
+        await this.updateValidation("onInit");
+      }
+    }, { allowSignalWrites: true });
+
     const config = this.validationSvc?.validationConfigSubject.getValue();
     const filteredValidations = this.validationSvc?.filterValidation(
     config,this.modelName,this.pageCode);
@@ -200,10 +208,10 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
     this.activeStepNum = this.baseSvc?.activeStep || 0;
     await super.ngOnInit();
     
-    this.mainForm.updateProps("assetType", { isRequired: true });
-    this.mainForm.updateProps("condition", { isRequired: true });
+    this.mainForm?.updateProps("assetType", { isRequired: true });
+    this.mainForm?.updateProps("condition", { isRequired: true });
 
-    this.mainForm.updateProps("assetTypeDD", { labelClassName: "hidden" });
+    this.mainForm?.updateProps("assetTypeDD", { labelClassName: "hidden" });
 
     if (this.customerStatment === "Customer Statement") {
       console.log("Customer Statement mode detected in asset-summary");
@@ -274,9 +282,27 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
 
   override onStatusChange(statusDetails: any): void {
     super.onStatusChange(statusDetails);
-    if ((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
+    if (isWorkflowStatusInViewOrEdit(statusDetails?.currentState)){
       this.isBrandEditDisabled = true;
 
+    }
+  }
+
+  // Override to preserve asset type for AFV on preview
+  override onCalledPreview(mode): void {
+    if (this.baseFormData?.productCode === 'AFV') {
+      // Call parent to patch other fields
+      super.onCalledPreview(mode);
+      
+      // For AFV, restore user's selected asset type from saved values
+      const savedAssetType = this.baseSvc.afvUserSelectedAssetType;
+      if (savedAssetType?.assetTypeDD) {
+        this.mainForm?.get('assetTypeDD')?.patchValue(savedAssetType.assetTypeDD, { emitEvent: false });
+        this.mainForm?.get('assetTypeId')?.patchValue(savedAssetType.assetTypeId, { emitEvent: false });
+        this.mainForm?.get('assetTypeModalValues')?.patchValue(savedAssetType.assetTypeModalValues, { emitEvent: false });
+      }
+    } else {
+      super.onCalledPreview(mode);
     }
   }
 
@@ -379,7 +405,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
 
             this.isBrandEditDisabled = res?.Data?.length <= 1;
             
-             if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+             if(isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus)){
                 this.isBrandEditDisabled = true;
               }
 
@@ -450,6 +476,7 @@ export class AssetSummaryComponent extends BaseStandardQuoteClass {
         usefulLifeMonths: true,
         usefulLifeLabel: true,
         usefulLife: true,
+        
       });
       if (this.mode != "edit") {
         this?.mainForm?.form?.get("conditionDD").patchValue(781);
@@ -505,15 +532,19 @@ async getUsefulLife(effectiveDate: any, assetTypeId: number, depreciationRateCur
     // this.cashPriceValue= 2670.3;
 
     if (this.baseFormData?.financialAssets?.length > 0) {
-      val = this.baseFormData?.financialAssets[0]?.assetType?.assetTypeName;
-      this.assetTypeModalValues =
-        this.baseFormData?.financialAssets[0]?.assetType?.assetTypePath;
-      assetid = this.baseFormData?.financialAssets[0]?.assetType?.assetTypeId;
+      // For AFV, preserve user's selected asset type - don't overwrite from preview/financialAssets
+      if (this.baseFormData?.productCode !== 'AFV') {
+        val = this.baseFormData?.financialAssets[0]?.assetType?.assetTypeName;
+        this.assetTypeModalValues =
+          this.baseFormData?.financialAssets[0]?.assetType?.assetTypePath;
+        assetid = this.baseFormData?.financialAssets[0]?.assetType?.assetTypeId;
 
-      this.mainForm
-        ?.get("assetTypeModalValues")
-        ?.patchValue(this.assetTypeModalValues);
-      this.mainForm?.get("assetTypeId")?.patchValue(assetid);
+        this.mainForm
+          ?.get("assetTypeModalValues")
+          ?.patchValue(this.assetTypeModalValues);
+        this.mainForm?.get("assetTypeId")?.patchValue(assetid);
+      }
+      
       cost =
         this.baseFormData?.financialAssets[0]?.cost +
         this.baseFormData?.financialAssets[0]?.taxesAmt;
@@ -524,7 +555,10 @@ async getUsefulLife(effectiveDate: any, assetTypeId: number, depreciationRateCur
       this.loanFee = this.baseFormData?.loanMaintenanceFee;
     }
 
-    if (val) this.mainForm?.get("assetTypeDD")?.patchValue(val);
+    // For AFV, don't overwrite asset type dropdown from preview
+    if (val && this.baseFormData?.productCode !== 'AFV') {
+      this.mainForm?.get("assetTypeDD")?.patchValue(val);
+    }
     // if (cost) this.mainForm.get('cashPriceValue').patchValue(cost);
     // if (condition) this.mainForm.get('conditionDD').patchValue(condition);
 
@@ -629,6 +663,16 @@ async getUsefulLife(effectiveDate: any, assetTypeId: number, depreciationRateCur
     this.baseFormData.assetTypeDD = asset?.value;
     this.baseFormData.assetTypeModalValues = asset?.path;
     this.baseFormData.assetTypeId = asset?.id;
+    
+    // For AFV, save user's selection to preserve across preview calls
+    if (this.baseFormData.productCode === 'AFV') {
+      this.baseSvc.afvUserSelectedAssetType = {
+        assetTypeDD: asset?.value,
+        assetTypeId: asset?.id,
+        assetTypeModalValues: asset?.path
+      };
+    }
+    
     if (this.baseFormData.productCode === 'AFV') {
       if (this.baseFormData?.assetTypeId) {
         this.mainForm?.get('programId')?.patchValue(null);
@@ -693,7 +737,7 @@ async fetchAfvPrograms(): Promise<boolean> {
         afvProgramList: programList  // Add this new field
       });
       
-      this.mainForm.updateList('programId', programList);
+      // this.mainForm?.updateList('programId', programList);
       this.baseSvc.afvProgramsLoaded.next(programList);
       
       return true;
@@ -768,7 +812,7 @@ async fetchAfvPrograms(): Promise<boolean> {
       (this.baseFormData?.productCode == "CSA" ||
         this.baseFormData?.productCode == "FL" ||
         this.baseFormData?.productCode == "TL" ||
-        this.baseFormData?.productCode == "OL") // Add OL here
+        this.baseFormData?.productCode == "OL" || this.baseFormData?.productCode == "AFV") // Add OL here
     ) {
       await this.assetCondition();
       this.baseSvc.setBaseDealerFormData({
@@ -777,11 +821,13 @@ async fetchAfvPrograms(): Promise<boolean> {
 
       // Handle retail price visibility based on condition value
       if (event.value == 781) {
+        
         this.mainForm.updateHidden({
           retailPrice: false,
           retailPriceValue: false,
         });
       } else {
+       
         this.mainForm.updateHidden({
           retailPrice: true,
           retailPriceValue: true,
@@ -930,6 +976,7 @@ async fetchAfvPrograms(): Promise<boolean> {
     }
     
     if (this.baseFormData.productCode === "AFV") {
+     
       this.svc.dialogSvc
         .show(AfvAssetTypesComponent, "Asset Type", {
           templates: {
@@ -953,17 +1000,23 @@ async fetchAfvPrograms(): Promise<boolean> {
               (this.baseFormData.physicalAsset[0].year = data?.data?.afvYear),
               (this.baseFormData.physicalAsset[0].variant =
                 data?.data?.afvVariant);
-            let defaults = [];
             
             (this.baseFormData.afvMake = data?.data?.afvMake),
               (this.baseFormData.afvModel = data?.data?.afvModel),
               (this.baseFormData.afvYear = data?.data?.afvYear),
               (this.baseFormData.afvVariant = data?.data?.afvVariant);
 
-            await this.baseSvc.contractPreview(this.baseFormData, defaults, "");
-            if (this.baseFormData.assetTypeId) {
-            await this.fetchAfvPrograms();
-          }
+            // Save to baseFormData and notify other components - NO preview or get programs calls
+            this.baseSvc.setBaseDealerFormData({
+              afvMake: data?.data?.afvMake,
+              afvModel: data?.data?.afvModel,
+              afvYear: data?.data?.afvYear,
+              afvVariant: data?.data?.afvVariant,
+            });
+            
+            // Trigger form refresh in afv-details and other components
+            this.baseSvc.patchDataOnPreview.next({ mode: 'update' });
+            
             if (this.productCode === "OL" && this.baseFormData.assetTypeId) {
             const effectiveDate = this.baseFormData.leaseDate || this.baseFormData.loanDate;
             const assetTypeId = this.baseFormData.assetTypeId || 0;
@@ -1097,10 +1150,10 @@ async fetchAfvPrograms(): Promise<boolean> {
   modelName: string = "AssetSummaryComponent";
 
   override async onFormReady(): Promise<void> {
-    await this.updateValidation("onInit");
     super.onFormReady();
 
-    if (this.baseFormData?.physicalAsset?.length == 1) {
+    // For AFV, skip patching asset type from assetListSubject to preserve user selection
+    if (this.baseFormData?.physicalAsset?.length == 1 && this.baseFormData?.productCode !== 'AFV') {
       this.tradeSvc.assetListSubject.subscribe((res) => {
         this.mainForm
           ?.get("assetTypeDD")
@@ -1122,6 +1175,7 @@ async fetchAfvPrograms(): Promise<boolean> {
         usefulLife: false,
       });
     }
+    await this.updateValidation("onInit");
   }
 
   override async onBlurEvent(event): Promise<void> {

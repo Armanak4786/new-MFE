@@ -7,7 +7,8 @@ import { StandardQuoteService } from "../../../../services/standard-quote.servic
 import { ToasterService, ValidationService } from "auro-ui";
 import { cloneDeep } from "lodash";
 import { Subject, takeUntil } from "rxjs";
-import configure from "../../../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../../../../utils/workflow-status.utils";
 
 @Component({
   selector: "app-service-plan",
@@ -130,10 +131,7 @@ showHeader : boolean = true;
   }
 
   isDisabled(){
-    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
-    return true;
-  }
-  return false;
+    return isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus);
   }
   override ngAfterViewInit(): void {
     super.ngAfterViewInit();

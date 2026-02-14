@@ -108,7 +108,7 @@ fdescribe('BorrowerSearchResultComponent', () => {
     const customerId = '12345';
     component.addCustomer(customerId);
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
-      `individual/${Mode.create}/${customerId}`
+      `dealer/individual/${Mode.create}/${customerId}`
     );
   });
 
@@ -119,7 +119,7 @@ fdescribe('BorrowerSearchResultComponent', () => {
     expect(mockBusinessService.activeStep).toEqual(0);
     expect(mockTrustService.activeStep).toEqual(0);
 
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/individual');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/dealer/individual');
 
     expect(mockIndividualService.resetBaseDealerFormData).toHaveBeenCalled();
     expect(mockBusinessService.resetBaseDealerFormData).toHaveBeenCalled();

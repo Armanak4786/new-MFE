@@ -1,7 +1,6 @@
 <gen-card
-  [headerText]="'Asset Details'"
-  [cardBgColor]="'--background-color-secondary'"
-  [cardType]="'non-border'"
+  [headerText]="'Assets'"
+  [cardType]="'border'"
 >
   <ng-container body>
     <div class="grid">
@@ -94,7 +93,7 @@
                   >Amount should be greater than 0.</small
                 >
                 <small *ngIf="asset.get('amount').errors?.max"
-                  >Amount cannot exceed (18,2)</small
+                  >Maximum length should be 18 digits</small
                 >
                 <!-- <small *ngIf="asset.get('amount').errors?.pattern">Must have up to 18 digits before and 2 after the decimal.</small> -->
               </div>
@@ -152,7 +151,7 @@
             >
             <small
               *ngIf="assetDetailsForm.get('financialAssetTypeAmount').errors?.max"
-              >Amount cannot exceed (18,2)</small
+              >Maximum length should be 18 digits</small
             >
           </div>
         </div>

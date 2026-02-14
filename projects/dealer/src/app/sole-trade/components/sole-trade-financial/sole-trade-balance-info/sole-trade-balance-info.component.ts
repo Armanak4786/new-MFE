@@ -25,8 +25,8 @@ export class SoleTradeBalanceInfoComponent extends BaseSoleTradeClass {
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
-    cardType: 'non-border',
+    //cardBgColor: '--background-color-secondary',
+    cardType: 'border',
     fields: [
       {
         type: 'label-only',

@@ -4,11 +4,12 @@ import { BaseFormClass, CommonService, GenericFormConfig } from "auro-ui";
 import { ToasterService, ValidationService } from "auro-ui";
 
 @Component({
-  selector: "app-insurance-requirement-form",
+  selector: "app-insurance-requirement",
+
   templateUrl: "./insurance-requirement.component.html",
-  styleUrl: "./insurance-requirement.component.scss",
+  styleUrls: ["./insurance-requirement.component.scss"],
 })
-export class InsuranceRequirementFormComponent extends BaseFormClass { 
+export class StandardInsuranceRequirementComponent extends BaseFormClass {
   constructor(
     public override route: ActivatedRoute,
     public override svc: CommonService,

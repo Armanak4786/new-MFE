@@ -17,6 +17,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CommonDashboardComponent } from './component/common-dashboard/common-dashboard.component';
 import { InternalSalesDashboardComponent } from './component/internal-sales-dashboard/internal-sales-dashboard.component';
 import { FilterApplicationComponent } from './component/filter-application/filter-application.component';
+import { CompactKPipe } from './compact-k.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { FilterApplicationComponent } from './component/filter-application/filte
     AssigneeDiscloserComponent,
     CommonDashboardComponent,
     InternalSalesDashboardComponent,
-    FilterApplicationComponent
+    FilterApplicationComponent,
+    CompactKPipe
   ],
   imports: [CommonModule, DashboardRoutingModule, AuroUiFrameWork,PaginatorModule],
 })

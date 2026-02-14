@@ -1,0 +1,13 @@
+{
+  "locale": "en_US",
+  "messages": {},
+  "labelData": {
+    "portalNote": "Portal Note",
+    "subjectForNotes": "Subject",
+    "securityClassification": "Security Classification",
+    "udcFinance": "UDC Finance",
+    "payableToOriginator": "Payable to Originator",
+    "payableToSupplier": "Payable to Supplier",
+    "payableToUDCFinance": "Payable to UDC Finance"
+  }
+}

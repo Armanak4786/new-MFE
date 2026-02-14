@@ -7,6 +7,25 @@
   { 
     background-color: var(--secondary-light-color); 
     height: 38px; 
+
+
+    .label-fixed {
+      flex: 0 0 70px;
+      flex-shrink: 0;   
+      width: 70px;
+      min-width: 70px;
+    }
+
+    .amount-section {
+      flex: 1 1 auto;
+      min-width: 0; 
+      p:first-child {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
     .borderunit { 
       font-size: 8px; 
       font-weight: 400;

@@ -4,6 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import {
   CommonService,
   GenericFormConfig,
+  Mode,
   ToasterService,
   ValidationService,
 } from "auro-ui";
@@ -13,6 +14,7 @@ import { SearchAddressService } from "../../../../standard-quote/services/search
 import { Subject, takeUntil } from "rxjs";
 import { IndividualService } from "../../../../individual/services/individual.service";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { OnDestroy } from "@angular/core";
 
 @Component({
   selector: "app-sole-trade-physical-address",
@@ -21,10 +23,11 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 })
 export class SoleTradePhysicalAddressComponent
   extends BaseSoleTradeClass
-  implements OnChanges
+  implements OnChanges, OnDestroy
 {
   optionsdata = [{ label: "icashpro", value: "icp" }];
   private destroySubject$ = new Subject<void>();
+  private isAutoToggling: boolean = false; // Flag to prevent recursive calls when auto-toggling
   @Input() copyToPreviousAddress = false;
   privousChecked: any;
   borrowedAmount: any;
@@ -42,8 +45,8 @@ export class SoleTradePhysicalAddressComponent
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    cardType: "border",
+    //cardBgColor: "--background-color-secondary",
     fields: [
       // {
       //   type: 'checkbox',
@@ -364,7 +367,7 @@ export class SoleTradePhysicalAddressComponent
         name: "physicalCountry",
         disabled: true,
         // mode: Mode.view,
-        labelClass: "w-8 -my-3",
+        labelClass: "w-8 mb-2",
         alignmentType: "vertical",
         // validators: [Validators.required],   -- Auro UI
         className: "px-0 customLabel",
@@ -377,6 +380,21 @@ export class SoleTradePhysicalAddressComponent
         filter: true,
         nextLine: false,
       },
+      // {
+      //   type: "text",
+      //   label: "Country",
+      //   name: "physicalCountry",
+      //   disabled: true,
+      //   inputType: "vertical",
+      //   inputClass: "w-8 mt-2",
+      //   labelClass: "w-8 -my-3",
+      //   // validators: [Validators.required],   -- Auro UI
+      //   className: "px-0 mt-2 customLabel",
+      //   cols: 2,
+      //   default: "New Zealand",
+      //   nextLine: false,
+      //   mode: Mode.view,
+      // },
       {
         type: "text",
         label: "physicalSearchCountry",
@@ -534,6 +552,58 @@ export class SoleTradePhysicalAddressComponent
 
       }
     });
+
+    // Subscribe to postal address manual changes to auto-toggle physicalReuseOff
+    this.baseSvc.postalAddressManuallyChanged$
+      .pipe(
+        takeUntil(this.destroySubject$),
+        debounceTime(10)
+      )
+      .subscribe((changed: boolean) => {
+        if (changed && this.baseFormData?.physicalReuseOff && !this.isAutoToggling) {
+          // User manually changed postal address, so toggle off physicalReuseOff
+          this.isAutoToggling = true;
+          const toggleControl = this.mainForm?.form?.get("physicalReuseOff");
+          if (toggleControl) {
+            // Set toggle to false (which means "No" - don't reuse)
+            toggleControl.setValue(false, { emitEvent: true });
+            this.baseFormData.physicalReuseOff = false;
+            // Emit "undoCopy" to notify postal address component
+            this.baseSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+            // Reset flags after debounce completes
+            this.isAutoToggling = false;
+            this.baseSvc.postalAddressManuallyChanged.next(false);
+          } else {
+            this.isAutoToggling = false;
+          }
+        }
+      });
+
+    // Subscribe to register address manual changes to auto-toggle physicalreuseOfRegisterAddress
+    this.baseSvc.registerAddressManuallyChanged$
+      .pipe(
+        takeUntil(this.destroySubject$),
+        debounceTime(10)
+      )
+      .subscribe((changed: boolean) => {
+        if (changed && this.baseFormData?.physicalreuseOfRegisterAddress && !this.isAutoToggling) {
+          // User manually changed register address, so toggle off physicalreuseOfRegisterAddress
+          this.isAutoToggling = true;
+          const toggleControl = this.mainForm?.form?.get("physicalreuseOfRegisterAddress");
+          if (toggleControl) {
+            // Set toggle to false (which means "No" - don't reuse)
+            toggleControl.setValue(false, { emitEvent: true });
+            this.baseFormData.physicalreuseOfRegisterAddress = false;
+            // Emit "undoCopyRegister" to notify register address component
+            this.baseSvc.reuseRegister.next({ action: 'undoCopyRegister', data: null });
+            // Reset flags after debounce completes
+            this.isAutoToggling = false;
+            this.baseSvc.registerAddressManuallyChanged.next(false);
+          } else {
+            this.isAutoToggling = false;
+          }
+        }
+      });
   }
 
   async updateDropdownData() {
@@ -652,6 +722,28 @@ export class SoleTradePhysicalAddressComponent
   override async onFormReady(): Promise<void> {
     // await this.getCities();
     await this.updateValidation("onInit");
+    
+    // Only reset reuse toggles on fresh page load/refresh, NOT on tab navigation
+    // The flag resets automatically on page refresh since service re-initializes
+    if (!this.baseSvc.reuseTogglesInitialized) {
+      // Reset "Reuse for Postal Address" toggle to No on page load/refresh
+      const reuseToggle = this.mainForm?.form?.get("physicalReuseOff");
+      if (reuseToggle) {
+        reuseToggle.setValue(false, { emitEvent: false });
+        this.baseFormData.physicalReuseOff = false;
+      }
+      
+      // Also reset "Reuse for Register Address" toggle to No on page load/refresh
+      const reuseRegisterToggle = this.mainForm?.form?.get("physicalreuseOfRegisterAddress");
+      if (reuseRegisterToggle) {
+        reuseRegisterToggle.setValue(false, { emitEvent: false });
+        this.baseFormData.physicalreuseOfRegisterAddress = false;
+      }
+      
+      // Mark as initialized so tab navigation won't reset the toggles
+      this.baseSvc.reuseTogglesInitialized = true;
+    }
+    
     super.onFormReady();
   }
   tempCity = null;
@@ -683,12 +775,91 @@ export class SoleTradePhysicalAddressComponent
     super.onFormEvent(event);
   }
   override async onValueChanges(event: any) {
-    if (event.physicalReuseOff) {
+    // Skip if we're auto-toggling to prevent duplicate emissions
+    if (this.isAutoToggling) {
+      return;
+    }
+    
+    // Handle postal address reuse toggle
+    if (event.physicalReuseOff !== undefined) {
       this.baseFormData.physicalCountry =
         this.mainForm.get("physicalCountry").value;
-      this.baseSvc.reusePhysical.next("copied");
-    } else {
-      this.baseSvc.reusePhysical.next("undoCopy");
+      this.baseFormData.physicalReuseOff = event.physicalReuseOff;
+
+      if (event.physicalReuseOff) {
+        this.baseSvc.isCopyingToPostal$.next(true);
+        
+        // Send actual data in the signal (like business module)
+        const physicalData = {
+          postalBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          postalFloorType: this.mainForm.get('physicalFloorType')?.value,
+          postalFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          postalUnitType: this.mainForm.get('physicalUnitType')?.value,
+          postalUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          postalStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          postalStreetName: this.mainForm.get('physicalStreetName')?.value,
+          postalStreetType: this.mainForm.get('physicalStreetType')?.value,
+          postalStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          postalRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          postalSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          postalCity: this.mainForm.get('physicalCity')?.value,
+          postalCityLocationId: this.baseFormData.physicalCityLocationId,
+          postalPostcode: this.mainForm.get('physicalPostcode')?.value,
+          postalCountry: this.mainForm.get('physicalCountry')?.value,
+          postalStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          postalSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+          postalAddressType: 'street',
+        };
+
+        // Update baseFormData with all postal values
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+
+        this.baseSvc.reusePhysical.next({ action: 'copied', data: physicalData });
+      } else {
+        this.baseSvc.isCopyingToPostal$.next(false);
+        this.baseSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+      }
+    }
+    
+    // Handle register address reuse toggle
+    if (event.physicalreuseOfRegisterAddress !== undefined) {
+      this.baseFormData.physicalCountry =
+        this.mainForm.get("physicalCountry").value;
+      this.baseFormData.physicalreuseOfRegisterAddress = event.physicalreuseOfRegisterAddress;
+
+      if (event.physicalreuseOfRegisterAddress) {
+        // Send actual data in the signal (like business module)
+        const physicalData = {
+          registerBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          registerFloorType: this.mainForm.get('physicalFloorType')?.value,
+          registerFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          registerUnitType: this.mainForm.get('physicalUnitType')?.value,
+          registerUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          registerStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          registerStreetName: this.mainForm.get('physicalStreetName')?.value,
+          registerStreetType: this.mainForm.get('physicalStreetType')?.value,
+          registerStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          registerRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          registerSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          registerCity: this.mainForm.get('physicalCity')?.value,
+          registerCityLocationId: this.baseFormData.physicalCityLocationId,
+          registerPostcode: this.mainForm.get('physicalPostcode')?.value,
+          registerCountry: this.mainForm.get('physicalCountry')?.value,
+          registerStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          registerSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+        };
+
+        // Update baseFormData with all register values
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+
+        this.baseSvc.reuseRegister.next({ action: 'copiedToRegister', data: physicalData });
+      } else {
+        this.baseSvc.reuseRegister.next({ action: 'undoCopyRegister', data: null });
+      }
     }
     if (event.physicalSearchValue && event.physicalSearchValue.length >= 4) {
       this.searchSvc
@@ -761,12 +932,86 @@ export class SoleTradePhysicalAddressComponent
     if (event.name == "physicalReuseOff") {
       this.baseFormData.physicalCountry =
         this.mainForm.get("physicalCountry").value;
-      if (event.data) {
-        this.baseSvc.reusePhysical.next("copied");
+      // UPDATED: Save the toggle value to baseFormData to persist across tab navigation
+      this.baseFormData.physicalReuseOff = event?.data;
+
+      if (event?.data) {
+        this.baseSvc.isCopyingToPostal$.next(true);
+        
+        // Send actual data in the signal (like business module)
+        const physicalData = {
+          postalBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          postalFloorType: this.mainForm.get('physicalFloorType')?.value,
+          postalFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          postalUnitType: this.mainForm.get('physicalUnitType')?.value,
+          postalUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          postalStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          postalStreetName: this.mainForm.get('physicalStreetName')?.value,
+          postalStreetType: this.mainForm.get('physicalStreetType')?.value,
+          postalStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          postalRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          postalSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          postalCity: this.mainForm.get('physicalCity')?.value,
+          postalCityLocationId: this.baseFormData.physicalCityLocationId,
+          postalPostcode: this.mainForm.get('physicalPostcode')?.value,
+          postalCountry: this.mainForm.get('physicalCountry')?.value,
+          postalStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          postalSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+          postalAddressType: 'street',
+        };
+
+        // Update baseFormData with all postal values
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+
+        this.baseSvc.reusePhysical.next({ action: 'copied', data: physicalData });
       } else if (!event.data) {
-        this.baseSvc.reusePhysical.next("undoCopy");
+        this.baseSvc.isCopyingToPostal$.next(false);
+        this.baseSvc.reusePhysical.next({ action: 'undoCopy', data: null });
       }
     }
+    
+    // Handle register address reuse toggle
+    if (event.name == "physicalreuseOfRegisterAddress") {
+      this.baseFormData.physicalCountry =
+        this.mainForm.get("physicalCountry").value;
+      // UPDATED: Save the toggle value to baseFormData to persist across tab navigation
+      this.baseFormData.physicalreuseOfRegisterAddress = event.data;
+
+      if (event.data) {
+        // Send actual data in the signal (like business module)
+        const physicalData = {
+          registerBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          registerFloorType: this.mainForm.get('physicalFloorType')?.value,
+          registerFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          registerUnitType: this.mainForm.get('physicalUnitType')?.value,
+          registerUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          registerStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          registerStreetName: this.mainForm.get('physicalStreetName')?.value,
+          registerStreetType: this.mainForm.get('physicalStreetType')?.value,
+          registerStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          registerRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          registerSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          registerCity: this.mainForm.get('physicalCity')?.value,
+          registerCityLocationId: this.baseFormData.physicalCityLocationId,
+          registerPostcode: this.mainForm.get('physicalPostcode')?.value,
+          registerCountry: this.mainForm.get('physicalCountry')?.value,
+          registerStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          registerSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+        };
+
+        // Update baseFormData with all register values
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+
+        this.baseSvc.reuseRegister.next({ action: 'copiedToRegister', data: physicalData });
+      } else if (!event.data) {
+        this.baseSvc.reuseRegister.next({ action: 'undoCopyRegister', data: null });
+      }
+    }
+    
     if (event.name == "physicalCountry") {
       if (event.data != "New Zealand") {
         this.mainForm.updateHidden({
@@ -803,6 +1048,7 @@ export class SoleTradePhysicalAddressComponent
     //   this.getCities()
     // }
     await this.updateValidation("onInit");
+    this.checkTimeinSoleTradePhysicalAddress();
   }
 
   async getCities() {
@@ -942,5 +1188,22 @@ this.mainForm.updateList("physicalCity", filteredCities);
       let invalidPages = this.checkStepValidity();
       this.baseSvc.iconfirmCheckbox.next(invalidPages);
     }
+  }
+
+  override ngOnDestroy(): void {
+    // Clean up all subscriptions using destroySubject$
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+    super.ngOnDestroy();
+  }
+  checkTimeinSoleTradePhysicalAddress(): void {
+    const yCtrl = this.mainForm.get("physicalYear");
+    const mCtrl = this.mainForm.get("physicalMonth");
+    const yearValue = yCtrl?.value;
+    const monthValue = mCtrl?.value;
+    if (yearValue == 0 && monthValue == 0) {
+      yCtrl?.setErrors({ required: true });
+      mCtrl?.setErrors({ required: true });
+    } 
   }
 }

@@ -1,0 +1,19 @@
+{
+  "SPProgramListExtract": "SPProgramListExtract",
+  "SPPromotionalProgramExtract": "SPPromotionalProgramExtract",
+  "SPWorkflowExtract": "SPWorkflowExtract",
+  "SPContractCfdLuExtract": "SPContractCfdLuExtract",
+  "SPPartyCfdLuExtract": "SPPartyCfdLuExtract",
+  "SPIndustryTypeExtract": "SPIndustryTypeExtract",
+  "SPAssetHdrCfdLuExtract": "SPAssetHdrCfdLuExtract",
+  "LoanPurpose": "Personal",
+  "LoanPurposeBusiness": "Business",
+  "operatingUnitForWorkflowStatusInternalSales": "InternalSales",
+  "workflowStatus": {
+    "view": ["Submitted", "Approved", "Declined", "Cancelled", "Completed"],
+    "edit": ["Draft", "Pending", "In Progress", "Review"]
+  },
+  "financialPosition": {
+    "defaultFrequency": "Monthly"
+  }
+}

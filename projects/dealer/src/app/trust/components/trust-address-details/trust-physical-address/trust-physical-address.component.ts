@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BaseTrustClass } from "../../../base-trust.class";
 import { TrustService } from "../../../services/trust.service";
@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import {
   CommonService,
   GenericFormConfig,
+  Mode,
   ToasterService,
   ValidationService,
 } from "auro-ui";
@@ -19,7 +20,7 @@ import { IndividualService } from "../../../../individual/services/individual.se
   templateUrl: "./trust-physical-address.component.html",
   styleUrl: "./trust-physical-address.component.scss",
 })
-export class TrustPhysicalAddressComponent extends BaseTrustClass {
+export class TrustPhysicalAddressComponent extends BaseTrustClass implements OnDestroy {
   @Input() copyToPreviousAddress = false;
   optionsdata = [{ label: "icashpro", value: "icp" }];
   privousChecked: any;
@@ -31,12 +32,13 @@ export class TrustPhysicalAddressComponent extends BaseTrustClass {
   cityOptionsLocationId: any = [];
   year: boolean;
   cityOptionsAll: any = [];
+  private isAutoToggling: boolean = false; // Flag to prevent recursive calls when auto-toggling
 
   override formConfig: GenericFormConfig = {
     // headerTitle: 'Physical Address',
     autoResponsive: true,
     cardType: "non-border",
-    cardBgColor: "--background-color-secondary",
+    //cardBgColor: "--background-color-secondary",
     api: "",
     // goBackRoute: '',
     fields: [
@@ -346,7 +348,7 @@ export class TrustPhysicalAddressComponent extends BaseTrustClass {
         type: "select",
         label: "Country",
         name: "physicalCountry",
-        labelClass: "w-8 -my-3",
+        labelClass: "w-8 mb-2",
         alignmentType: "vertical",
         // validators: [Validators.required],   -- Auro UI
         className: "px-0 customLabel",
@@ -357,8 +359,24 @@ export class TrustPhysicalAddressComponent extends BaseTrustClass {
         options: [],
         default: "New Zealand",
         nextLine: false,
-        disabled:true
+        // disabled:true
       },
+      // {
+      //   type: "text",
+      //   label: "Country",
+      //   name: "physicalCountry",
+      //   disabled: true,
+        
+      //   inputType: "vertical",
+      //   inputClass: "w-8 mt-2",
+      //   labelClass: "w-8 -my-3",
+      //   // validators: [Validators.required],   -- Auro UI
+      //   className: "px-0 mt-2 customLabel",
+      //   cols: 2,
+      //   default: "New Zealand",
+      //   nextLine: false,
+      //   mode: Mode.view,
+      // },
     ],
   };
   constructor(
@@ -449,9 +467,64 @@ export class TrustPhysicalAddressComponent extends BaseTrustClass {
         }
       });
 
-   // this?.mainForm?.get("physicalreuseOfRegisterAddress")?.patchValue(false);
-   // this?.mainForm?.get("physicalreuseOfPostalAddress")?.patchValue(false);
-  
+    // Only reset reuse toggles on fresh page load/refresh, NOT on tab navigation
+    if (!this.trustSvc.reuseTogglesInitialized) {
+      const postalToggle = this.mainForm?.form?.get("physicalreuseOfPostalAddress");
+      const registerToggle = this.mainForm?.form?.get("physicalreuseOfRegisterAddress");
+      if (postalToggle) {
+        postalToggle.setValue(false, { emitEvent: false });
+        this.baseFormData.physicalreuseOfPostalAddress = false;
+      }
+      if (registerToggle) {
+        registerToggle.setValue(false, { emitEvent: false });
+        this.baseFormData.physicalreuseOfRegisterAddress = false;
+      }
+      this.trustSvc.reuseTogglesInitialized = true;
+    }
+
+    // Subscribe to postal address manual changes to auto-toggle physicalreuseOfPostalAddress
+    this.trustSvc.postalAddressManuallyChanged$
+      .pipe(
+        takeUntil(this.destroySubject$),
+        debounceTime(10)
+      )
+      .subscribe((changed: boolean) => {
+        if (changed && this.baseFormData?.physicalreuseOfPostalAddress && !this.isAutoToggling) {
+          this.isAutoToggling = true;
+          const toggleControl = this.mainForm?.form?.get("physicalreuseOfPostalAddress");
+          if (toggleControl) {
+            toggleControl.setValue(false, { emitEvent: true });
+            this.baseFormData.physicalreuseOfPostalAddress = false;
+            this.trustSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+            this.isAutoToggling = false;
+            this.trustSvc.postalAddressManuallyChanged.next(false);
+          } else {
+            this.isAutoToggling = false;
+          }
+        }
+      });
+
+    // Subscribe to registered address manual changes to auto-toggle physicalreuseOfRegisterAddress
+    this.trustSvc.registerAddressManuallyChanged$
+      .pipe(
+        takeUntil(this.destroySubject$),
+        debounceTime(10)
+      )
+      .subscribe((changed: boolean) => {
+        if (changed && this.baseFormData?.physicalreuseOfRegisterAddress && !this.isAutoToggling) {
+          this.isAutoToggling = true;
+          const toggleControl = this.mainForm?.form?.get("physicalreuseOfRegisterAddress");
+          if (toggleControl) {
+            toggleControl.setValue(false, { emitEvent: true });
+            this.baseFormData.physicalreuseOfRegisterAddress = false;
+            this.trustSvc.reusePhysicalAsRegister.next({ action: 'undoCopyRegister', data: null });
+            this.isAutoToggling = false;
+            this.trustSvc.registerAddressManuallyChanged.next(false);
+          } else {
+            this.isAutoToggling = false;
+          }
+        }
+      });
   }
   
 
@@ -695,15 +768,84 @@ this.mainForm.updateList("physicalCity", this.cityOptions);
   }
 
   override onValueChanges(event: any): void {
-    // if (event == "physicalreuseOfPostalAddress") {
-    //   this.baseFormData.physicalCountry =
-    //     this.mainForm?.get("physicalCountry")?.value;
-    //   if (event.physicalreuseOfPostalAddress) {
-    //     this.trustSvc.reusePhysical.next("copied");
-    //   } else if (!event.physicalreuseOfPostalAddress) {
-    //     this.trustSvc.reusePhysical.next("undoCopy");
-    //   }
-    // }
+    if (this.isAutoToggling) {
+      return;
+    }
+    
+    if (event.physicalreuseOfPostalAddress !== undefined) {
+      this.baseFormData.physicalCountry = this.mainForm.get("physicalCountry").value;
+      this.baseFormData.physicalreuseOfPostalAddress = event.physicalreuseOfPostalAddress;
+  
+      if (event.physicalreuseOfPostalAddress) {
+        this.trustSvc.isCopyingToPostal$.next(true);
+        
+        const physicalData = {
+          postalBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          postalFloorType: this.mainForm.get('physicalFloorType')?.value,
+          postalFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          postalUnitType: this.mainForm.get('physicalUnitType')?.value,
+          postalUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          postalStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          postalStreetName: this.mainForm.get('physicalStreetName')?.value,
+          postalStreetType: this.mainForm.get('physicalStreetType')?.value,
+          postalStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          postalRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          postalSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          postalCity: this.mainForm.get('physicalCity')?.value,
+          postalCityLocationId: this.baseFormData.physicalCityLocationId,
+          postalPostcode: this.mainForm.get('physicalPostcode')?.value,
+          postalCountry: this.mainForm.get('physicalCountry')?.value,
+          postalStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          postalSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+          postalAddressType: 'street',
+        };
+  
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+  
+        this.trustSvc.reusePhysical.next({ action: 'copied', data: physicalData });
+      } else {
+        this.trustSvc.isCopyingToPostal$.next(false);
+        this.trustSvc.reusePhysical.next({ action: 'undoCopy', data: null });
+      }
+    }
+    
+    if (event.physicalreuseOfRegisterAddress !== undefined) {
+      this.baseFormData.physicalCountry = this.mainForm.get("physicalCountry").value;
+      this.baseFormData.physicalreuseOfRegisterAddress = event.physicalreuseOfRegisterAddress;
+  
+      if (event.physicalreuseOfRegisterAddress) {
+        const physicalData = {
+          registerBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          registerFloorType: this.mainForm.get('physicalFloorType')?.value,
+          registerFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          registerUnitType: this.mainForm.get('physicalUnitType')?.value,
+          registerUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          registerStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          registerStreetName: this.mainForm.get('physicalStreetName')?.value,
+          registerStreetType: this.mainForm.get('physicalStreetType')?.value,
+          registerStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          registerRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          registerSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          registerCity: this.mainForm.get('physicalCity')?.value,
+          registerCityLocationId: this.baseFormData.physicalCityLocationId,
+          registerPostcode: this.mainForm.get('physicalPostcode')?.value,
+          registerCountry: this.mainForm.get('physicalCountry')?.value,
+          registerStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          registerSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+        };
+  
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+  
+        this.trustSvc.reusePhysicalAsRegister.next({ action: 'copiedToRegister', data: physicalData });
+      } else {
+        this.trustSvc.reusePhysicalAsRegister.next({ action: 'undoCopyRegister', data: null });
+      }
+    }
+  
     if (event.physicalSearchValue && event.physicalSearchValue.length >= 4) {
       this.searchSvc
         .searchAddress(event.physicalSearchValue)
@@ -717,6 +859,8 @@ this.mainForm.updateList("physicalCity", this.cityOptions);
         });
     }
   }
+  
+  
 
   override async onValueTyped(event: any): Promise<void> {
     if (event.name === "physicalCity") {
@@ -724,7 +868,7 @@ this.mainForm.updateList("physicalCity", this.cityOptions);
       let LocationId = this.cityOptionsLocationId.filter(
         (l) => l.name === locationName
       );
-
+  
       this.baseSvc.setBaseDealerFormData({
         physicalCityLocationId: LocationId[0]?.locationId,
       });
@@ -737,28 +881,84 @@ this.mainForm.updateList("physicalCity", this.cityOptions);
         36
           ? true
           : false;
-
+  
       this.trustSvc.previousAddressHiddenStatus$.next(this.year);
       this.trustSvc.previousAddressComponentStatus = this.year;
     }
-
+  
     if (event.name == "physicalreuseOfPostalAddress") {
       this.baseFormData.physicalCountry =
         this.mainForm.get("physicalCountry").value;
-      if (event.data) {
-        this.trustSvc.reusePhysical.next("copied");
+      this.baseFormData.physicalreuseOfPostalAddress = event?.data;
+  
+      if (event?.data) {
+        this.trustSvc.isCopyingToPostal$.next(true);
+        
+        const physicalData = {
+          postalBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          postalFloorType: this.mainForm.get('physicalFloorType')?.value,
+          postalFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          postalUnitType: this.mainForm.get('physicalUnitType')?.value,
+          postalUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          postalStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          postalStreetName: this.mainForm.get('physicalStreetName')?.value,
+          postalStreetType: this.mainForm.get('physicalStreetType')?.value,
+          postalStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          postalRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          postalSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          postalCity: this.mainForm.get('physicalCity')?.value,
+          postalCityLocationId: this.baseFormData.physicalCityLocationId,
+          postalPostcode: this.mainForm.get('physicalPostcode')?.value,
+          postalCountry: this.mainForm.get('physicalCountry')?.value,
+          postalStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          postalSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+          postalAddressType: 'street',
+        };
+  
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+  
+        this.trustSvc.reusePhysical.next({ action: 'copied', data: physicalData });
       } else if (!event.data) {
-        this.trustSvc.reusePhysical.next("undoCopy");
+        this.trustSvc.isCopyingToPostal$.next(false);
+        this.trustSvc.reusePhysical.next({ action: 'undoCopy', data: null });
       }
     }
-
+  
     if (event.name == "physicalreuseOfRegisterAddress") {
       this.baseFormData.physicalCountry =
         this.mainForm.get("physicalCountry").value;
+      this.baseFormData.physicalreuseOfRegisterAddress = event.data;
+  
       if (event.data) {
-        this.trustSvc.reusePhysicalAsRegister.next("copied");
+        const physicalData = {
+          registerBuildingName: this.mainForm.get('physicalBuildingName')?.value,
+          registerFloorType: this.mainForm.get('physicalFloorType')?.value,
+          registerFloorNumber: this.mainForm.get('physicalFloorNumber')?.value,
+          registerUnitType: this.mainForm.get('physicalUnitType')?.value,
+          registerUnitNumber: this.mainForm.get('physicalUnitNumber')?.value,
+          registerStreetNumber: this.mainForm.get('physicalStreetNumber')?.value,
+          registerStreetName: this.mainForm.get('physicalStreetName')?.value,
+          registerStreetType: this.mainForm.get('physicalStreetType')?.value,
+          registerStreetDirection: this.mainForm.get('physicalStreetDirection')?.value,
+          registerRuralDelivery: this.mainForm.get('physicalRuralDelivery')?.value,
+          registerSuburbs: this.mainForm.get('physicalSuburbs')?.value,
+          registerCity: this.mainForm.get('physicalCity')?.value,
+          registerCityLocationId: this.baseFormData.physicalCityLocationId,
+          registerPostcode: this.mainForm.get('physicalPostcode')?.value,
+          registerCountry: this.mainForm.get('physicalCountry')?.value,
+          registerStreetArea: this.mainForm.get('physicalStreetArea')?.value,
+          registerSearchValue: this.mainForm.get('physicalSearchValue')?.value,
+        };
+  
+        Object.keys(physicalData).forEach(key => {
+          this.baseFormData[key] = physicalData[key];
+        });
+  
+        this.trustSvc.reusePhysicalAsRegister.next({ action: 'copiedToRegister', data: physicalData });
       } else if (!event.data) {
-        this.trustSvc.reusePhysicalAsRegister.next("undoCopy");
+        this.trustSvc.reusePhysicalAsRegister.next({ action: 'undoCopyRegister', data: null });
       }
     }
     if (event.name == "physicalCountry") {
@@ -790,11 +990,13 @@ this.mainForm.updateList("physicalCity", this.cityOptions);
           physicalUnitNumber: false,
           physicalStreetArea: true,
         });
-        //await this.updateValidation("onInit");
       }
     }
     await this.updateValidation("onInit");
+    this. checkTimeInTrustPhysicalAddress();
   }
+  
+  
 
   // UPDATED METHOD: Enhanced place selection with street type auto-population
   async placeSelected(event: any, index: any) {
@@ -960,4 +1162,18 @@ this.mainForm.updateList("physicalCity", this.cityOptions);
       this.trustSvc.iconfirmCheckbox.next(invalidPages);
     }
   }
+
+  override ngOnDestroy(): void {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+  }
+  checkTimeInTrustPhysicalAddress(): void {
+  const y = this.mainForm.get('physicalYear');
+  const m = this.mainForm.get('physicalMonth');
+
+  if (y?.value == 0 && m?.value == 0) {
+    y?.setErrors({ required: true });
+    m?.setErrors({ required: true });
+  }
+}
 }

@@ -5,9 +5,10 @@ import { CommonService } from "auro-ui";
 import { StandardQuoteService } from "../../services/standard-quote.service";
 import { map, takeUntil } from "rxjs";
 import { ToasterService, ValidationService } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
-import env from "../../../../../public/assets/api-json/en_US.json";
+import configure from "src/assets/configure.json";
+import env from "src/assets/api-json/en_US.json";
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
+import { isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 @Component({
   selector: "app-dealer-disbursment-details",
@@ -29,6 +30,9 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
   originatorName: string;
   originatorNameFromApi: boolean = false; // Flag to prevent effect from overwriting API value
   headerText = "Disbursement Details";
+  isWorkflowApproved: boolean = false;
+  payableToUDCError: boolean = false;
+  payableToDealeError: boolean = false;
 
   constructor(
     public override route: ActivatedRoute,
@@ -82,6 +86,9 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
     if (this.baseFormData?.data?.amoutFinanced) {
       this.amountFinanced = this.baseFormData?.data?.amoutFinanced;
     }
+
+    this.setMandatoryFieldsForApprovedWorkflow();
+    
     const request = {
       parameterValues: ["Disbursement Type"],
       procedureName: configure.SPContractCfdLuExtract,
@@ -105,10 +112,29 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
 
   
  isDisabled() {
-  if(configure?.workflowStatus?.view?.includes(this.formData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.formData?.AFworkflowStatus))){
-    return true;
+    return isWorkflowStatusInViewOrEdit(this.formData?.AFworkflowStatus);
   }
-  return false;
+
+setMandatoryFieldsForApprovedWorkflow(): void {
+  const workflowStatus = sessionStorage?.getItem('workFlowStatus');
+  if (workflowStatus && workflowStatus.toLowerCase() === 'approved') {
+    this.isWorkflowApproved = true;
+  }
+  else
+  {
+    this.isWorkflowApproved = false;
+  }
+}
+
+validateMandatoryFields(): boolean {
+  if (this.isWorkflowApproved) {
+    this.payableToUDCError = !this.payableToUDC.amount || this.payableToUDC.amount <= 0;
+    this.payableToDealeError = !this.payableToDealer.amount || this.payableToDealer.amount <= 0;
+    return !this.payableToUDCError && !this.payableToDealeError;
+  }
+  this.payableToUDCError = false;
+  this.payableToDealeError = false;
+  return true;
 }
  
   // bindApiDisbursementDetails() {
@@ -168,7 +194,7 @@ export class DealerDisbursmentDetailsComponent extends BaseDealerClass {
 
   addSupplier() {
 
-     if((configure?.workflowStatus?.view?.includes(this.formData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.formData?.AFworkflowStatus))){
+     if(isWorkflowStatusInViewOrEdit(this.formData?.AFworkflowStatus)){
         return;
       }
 

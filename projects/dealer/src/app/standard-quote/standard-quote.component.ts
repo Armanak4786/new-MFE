@@ -28,11 +28,11 @@ import {
   StorageService,
   ToasterService,
 } from "auro-ui";
-import configure from "../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { DashboardService } from "../dashboard/services/dashboard.service";
 import { SoleTradeService } from "../sole-trade/services/sole-trade.service";
 import { Message } from "primeng/api";
-import { LayoutService } from "../../../../shared-lib/src/lib/layout.service";
+import { LayoutService } from "shared-lib";
 
 @Component({
   selector: "app-standard-quote",
@@ -184,7 +184,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       //     // this.btnStatus = true;
 
       //     this.commonSvc.router.navigateByUrl(
-      //       `/standard-quote/${params.mode}/${this.formData?.contractId}`
+      //       `/dealer/standard-quote/${params.mode}/${this.formData?.contractId}`
       //     );
       //   } else {
       //     //  this.standardQuoteSvc.activeStep = 0;
@@ -230,6 +230,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
   }
 
   hideNext: boolean;
+  hideSubmit: boolean;
   customLabel = null;
 
   statusChange(statusDetails) {
@@ -251,8 +252,8 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       // } else {
       //   this.hideDraft = false;
       // }
-      this.hideNext = false;
-      this.customLabel = null;
+      // this.hideNext = false;
+      // this.customLabel = null;
     }
   }
 
@@ -384,6 +385,37 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       this.standardQuoteSvc?.assetSummaryData(this.formData);
       this.sumAccessories();
       this.getProductCustomFlow(this.formData?.productId);
+      
+      // For AFV product, call getExpectedUsages API to populate KM Allowance dropdown
+      if (this.formData?.productCode === 'AFV' && this.formData?.programId) {
+        // Fetch product list to get the dropdown label (name) for the product
+        let productName = this.formData?.productName;
+        try {
+          const productRes = await this.standardQuoteSvc.getFormData(`Product/get_programs_products?introducerId=0`);
+          if (productRes?.data?.products) {
+            const matchingProduct = productRes.data.products.find(
+              (p: any) => p.productId === this.formData?.productId
+            );
+            if (matchingProduct?.name) {
+              productName = matchingProduct.name;
+              // Store the correct product name in baseFormData
+              this.standardQuoteSvc.setBaseDealerFormData({ productName: matchingProduct.name });
+            }
+          }
+        } catch (e) {
+          console.error('Error fetching product list:', e);
+        }
+        
+        this.standardQuoteSvc.getExpectedUsages({
+          programId: this.formData?.programId,
+          product: productName,
+          assetType: this.formData?.assetTypeDD,
+          assetDealType: this.formData?.assetDealType,
+          assetCondition: this.formData?.condition,
+          locationId: this.formData?.location?.locationId,
+          businessUnitId: this.formData?.businessUnitId
+        });
+      }
     }
     if (!this.id) {
 
@@ -645,6 +677,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
             ) {
               // alert(JSON.stringify(data?.data?.formData));
               // todo proceed api
+              
               this.commonSvc.dialogSvc
                 .show(FinalConfirmationComponent, "", {
                   data: this.formData,
@@ -663,6 +696,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
                   }
                 });
             } else if (data?.btnType == "submit" && this.formData.contractId) {
+              
               this.commonSvc.dialogSvc
                 .show(FinalConfirmationComponent, "", {
                   data: {
@@ -717,16 +751,19 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
   }
   async changeStep(params) {
     if (params.activeStep == 0) {
+      this.hideNext = false;
       this.layOutSvc.setActiveTab("asset_details");
     } else if (params.activeStep == 1) {
+      this.hideNext = false;
       this.layOutSvc.setActiveTab("customer_details");
     } else if (params.activeStep == 2) {
+      this.hideSubmit = true;
       this.layOutSvc.setActiveTab("contract_summary");
     }
 
     if (params.activeStep == 1) {
       this.showSupplier =
-        (sessionStorage.getItem("externalUserType") == "Internal") &&
+        ((sessionStorage.getItem("externalUserType") == "Internal") && (sessionStorage.getItem("productCode") == "TL")) &&
           this.formData?.privateSales
           ? true
           : false;
@@ -1017,6 +1054,13 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
                 // }
 
                 if (!this.btnStatus) {
+                  if (sessionStorage.getItem("externalUserType") === "Internal" && !this.formData?.internalSalesperson) {
+                    this.toasterService.showToaster({
+                      severity: "error",
+                      detail: "Internal Salesperson is required.",
+                    });
+                    return;
+                  }
                   this.contractCreation(params, false);
                 } else {
                   this.toasterService.showToaster({
@@ -1038,6 +1082,13 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
             }
           } else {
             if (!this.btnStatus) {
+              if (sessionStorage.getItem("externalUserType") === "Internal" && !this.formData?.internalSalesperson) {
+                this.toasterService.showToaster({
+                  severity: "error",
+                  detail: "Internal Salesperson is required.",
+                });
+                return;
+              }
               this.contractCreation(params, false);
             } else {
               this.toasterService.showToaster({
@@ -1085,6 +1136,13 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
             .onClose.subscribe(async (data: any) => {
               if (data.btnType === 'saveBtn') {
                 if (!this.btnStatus) {
+                  if (sessionStorage.getItem("externalUserType") === "Internal" && !this.formData?.internalSalesperson) {
+                    this.toasterService.showToaster({
+                      severity: "error",
+                      detail: "Internal Salesperson is required.",
+                    });
+                    return;
+                  }
                   let res = await this.contractCreation(params, true);
                   if (res?.contractId) {
                     this.toasterService.showToaster({
@@ -1145,6 +1203,13 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
 
           else {
             if (!this.btnStatus) {
+              if (sessionStorage.getItem("externalUserType") === "Internal" && !this.formData?.internalSalesperson) {
+                this.toasterService.showToaster({
+                  severity: "error",
+                  detail: "Internal Salesperson is required.",
+                });
+                return;
+              }
               let res = await this.contractCreation(params, true);
               if (res?.contractId) {
                 this.toasterService.showToaster({
@@ -1280,7 +1345,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
           return res.items || [];
         }
       );
-      documentsData = data?.filter((ele) => ele.source === "Uploaded" || ele.source === "Electronically signed");
+      documentsData = data?.filter((ele) => ele?.source === "Uploaded" || ele?.source === "e-Signature");
       generatedDocuments = data?.filter((ele) => ele.source === "Generated");
       this.standardQuoteSvc.setBaseDealerFormData({
         documentsData: documentsData,
@@ -1594,7 +1659,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
           lastLeasePayment: 0, // For FL
           totalNoofpaymnets: 0, // For FL
           isFixed: this.formData?.fixed || false,
-          loanMaintenanceFee: 0,
+          //loanMaintenanceFee: 0,
           numberofPayments: 0,
           matureDate: new Date().toISOString(),
           mechanicalBreakdownInsurance: this.formData
@@ -1960,7 +2025,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
       weiveLMF: this.formData?.weiveLMF,
       loanMaintenanceFee: this.formData?.loanMaintenceFee,
       preferredDeliveryMethod: this.formData?.preferredDeliveryMethod || null,
-
+     
       totalMaintenanceHdrId: createRes?.totalMaintenanceHdrId || 0,
       totalMaintenanceAmount: this.formData?.maintainanceCost,
       financedMaintenanceHdrId: createRes?.financedMaintenanceHdrId || 0,
@@ -1999,7 +2064,7 @@ export class StandardQuoteComponent implements OnInit, OnDestroy {
 
     if (updateRes?.contractId) {
       this.router.navigate([
-        `/standard-quote/create/${updateRes?.contractId}`
+        `/dealer/standard-quote/create/${updateRes?.contractId}`
       ], {replaceUrl:true});
       let dataMapped = this.standardQuoteSvc?.mapConfigData(updateRes);
 

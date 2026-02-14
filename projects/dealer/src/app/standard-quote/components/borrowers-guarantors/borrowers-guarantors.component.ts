@@ -26,7 +26,8 @@ import { SoleTradeService } from "../../../sole-trade/services/sole-trade.servic
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
 import { PartyVerificationComponent } from "../party-verification/party-verification.component";
 import { BankStatementVerificationComponent } from "../bank-statement-verification/bank-statement-verification.component";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInView, isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 
 @Component({
@@ -181,7 +182,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       columnHeaderClass: "justify-content-center",
       overlayPanel: PartyVerificationComponent,
       width: "40px",
-      disabled : (row) => this.partyStatusListforIconDisable.includes(row?.currentWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus),
+      disabled : (row) => this.partyStatusListforIconDisable.includes(row?.currentWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus),
       // disabled: (row) => row.currentWorkflowStatus.toLowerCase() === "start verification"
     },
 
@@ -221,7 +222,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       columnHeaderClass: "justify-content-center",
       overlayPanel: BankStatementVerificationComponent,
       // width: "50px"
-      disabled : (row) => this.bankWorkflowDisableStatus.includes(row?.currentBankStatementWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus),
+      disabled : (row) => this.bankWorkflowDisableStatus.includes(row?.currentBankStatementWorkflowStatus.toLowerCase()) || this.baseFormData?.AFworkflowStatus === 'Submitted' || isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus),
     },
     {
       field: "delete",
@@ -1070,7 +1071,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
   override onStatusChange(statusDetails: any): void {
     if (statusDetails?.currentState) {
       if (
-        (configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))
+        isWorkflowStatusInViewOrEdit(statusDetails?.currentState)
       ) {
         // this?.mainForm?.form?.disable();
         this.disableState = true;
@@ -1112,7 +1113,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
   // onCellClick(event) {
   //   let id = event?.rowData?.QuoteID;
   //   this.commonSvc.router.navigateByUrl(
-  //     `/standard-quote/${event.actionName}/${id}`
+  //     `/dealer/standard-quote/${event.actionName}/${id}`
   //   );
   // }
   async onCellClick(event) {
@@ -1164,7 +1165,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
     if (event?.colName == "customerName") {
       if (event?.rowData?.customerType == "Business") {
         this.router.navigateByUrl(
-          `business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
         this.businessService.activeStep = 0;
       }
@@ -1174,7 +1175,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
         const path = isBusiness ? "sole-trade" : "individual";
 
         this.router.navigateByUrl(
-          `${path}/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/${path}/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
 
         if (isBusiness) {
@@ -1186,7 +1187,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
 
       if (event.rowData.customerType == "Trust") {
         this.router.navigateByUrl(
-          `trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
         this.trustSvc.activeStep = 0;
       }
@@ -1202,7 +1203,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.individualService.activeStep = 3;
         this.router.navigateByUrl(
-          `individual/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/individual/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       } else if (
         // event.rowData.financialPosition == "Financial Position" &&
@@ -1211,7 +1212,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.soleService.activeStep = 3;
         this.router.navigateByUrl(
-          `sole-trade/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/sole-trade/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       } else if (
         // event.rowData.financialPosition == "Financial Position" &&
@@ -1219,7 +1220,7 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.businessService.activeStep = 2;
         this.router.navigateByUrl(
-          `business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/business/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       } else if (
         // event.rowData.financialPosition == "Financial Position" &&
@@ -1227,14 +1228,14 @@ export class BorrowersGuarantorsComponent extends BaseStandardQuoteClass {
       ) {
         this.trustSvc.activeStep = 2;
         this.router.navigateByUrl(
-          `trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
+          `dealer/trust/${Mode?.edit}/${this.baseFormData?.contractId}/${event.rowData.customerNo}`
         );
       }
     }
 
     if (event.colName == "delete" && event.actionName == "delete") {
 
-      if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
+      if(isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus)){
         return;
       }
       if (this.mode != "view") {

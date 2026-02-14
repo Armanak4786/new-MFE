@@ -11,7 +11,7 @@ import {
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { BaseBusinessClass } from "../../../base-business.class";
 import { BusinessService } from "../../../services/business";
-import configure from "../../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { firstValueFrom } from "rxjs";
 
 @Component({
@@ -29,8 +29,8 @@ private organisationTypeOptions: any[] = [];
     autoResponsive: true,
     api: "businessDetails",
     goBackRoute: "businessDetails",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    //cardBgColor: "--background-color-secondary",
+    cardType: "border",
     fields: [
       {
         type: "select",
@@ -543,7 +543,7 @@ private natureOfBusinessOptions: any[] = [];
   modelName: string = "BusinessDetailsComponent";
 
   override async onFormEvent(event: any): Promise<void> {
-      await this.updateValidation("onInit");
+    //this.updateValidation("onInit");
     super.onFormEvent(event?.target?.value || event);
   }
 
@@ -579,12 +579,12 @@ private natureOfBusinessOptions: any[] = [];
   }
 
   override async onValueEvent(event): Promise<void> {
-    
-    await this.updateValidation(event?.target?.value || event);
+    await this.updateValidation(event);
   }
 
   override async onValueTyped(event: any): Promise<void> {
-    await this.updateValidation(event?.target?.value || event);
+    await this.updateValidation(event);
+    this.checkTimeInBusiness();
   }
 
   async updateValidation(event) {
@@ -619,4 +619,14 @@ private natureOfBusinessOptions: any[] = [];
   //     }
   //   }
   // }
+    checkTimeInBusiness(): void {
+    const yCtrl = this.mainForm.get("timeInBusinessYears");
+    const mCtrl = this.mainForm.get("timeInBusinessMonths");
+    const yearValue = yCtrl?.value;
+    const monthValue = mCtrl?.value;
+    if (yearValue == 0 && monthValue == 0) {
+      yCtrl?.setErrors({ required: true });
+      mCtrl?.setErrors({ required: true });
+    } 
+  }
 }

@@ -453,6 +453,7 @@ export class QuickQuoteService extends BaseDealerService implements OnInit {
         financialAssetPriceSegments:
           contractData?.financialAssetLease?.financialAssetPriceSegments,
         residualValue: contractData?.financialAssetLease?.residualValue || 0, //amount
+        assuredFutureValue: contractData?.financialAssetLease?.residualValue || 0, // AFV: same as residualValue
         afvModel: contractData?.financialAssets[0]?.physicalAsset?.model,
         afvMake: contractData?.financialAssets[0]?.physicalAsset?.make,
         afvYear: contractData?.financialAssets[0]?.physicalAsset?.year,
@@ -622,6 +623,8 @@ export class QuickQuoteService extends BaseDealerService implements OnInit {
         })(),
 
         programExtName: contractData?.program?.extName,
+        location: contractData?.location,
+        locationId: contractData?.location?.locationId,
       };
     return DataMapper;
   }
