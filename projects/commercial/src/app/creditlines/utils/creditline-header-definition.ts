@@ -32,19 +32,19 @@ export const paymentForecastColumnDefs = [
   },
   {
     field: 'principal',
-    headerName: 'principal_due',
+    headerName: 'principal',
     sortable: true,
     format: '#currency',
   },
   {
     field: 'interest',
-    headerName: 'interest_due',
+    headerName: 'interest',
     format: '#currency',
     sortable: true,
   },
   {
     field: 'amount',
-    headerName: 'total_payments',
+    headerName: 'total_payment',
     format: '#currency',
     sortable: true,
   },
@@ -200,6 +200,15 @@ export const loansColumnDefs = [
     headerName: 'start_date',
     format: '#date',
     sortable: true,
+  },
+  {
+    field: 'principal',
+    headerName: 'principal',
+    sortable: true,
+    format: '#currency',
+    maxWidth: '20%',
+    width: '20%',
+    cols: 2,
   },
   {
     field: 'actions',

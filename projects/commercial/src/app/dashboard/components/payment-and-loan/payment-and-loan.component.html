@@ -12,7 +12,7 @@
         <p-divider></p-divider>
       </div>
       <div class="grid mb-1">
-        <div class="col-6">
+        <div class="col-6 ml-2">
           <amount
             [value]="total?.totalRepaymentsDueToday || 0"
             [label]="'total_repayment_label'"
@@ -51,9 +51,11 @@
           <dropdown
             [options]="frequencyOptionData"
             [value]="frequency"
+            [clearable]="false"
             [labelType]="'vertical'"
             [labelClass]="'label-xs label-color'"
             (change)="onFrequencyChange($event)"
+            [clearable]="false"
           ></dropdown>
         </div>
       </div>

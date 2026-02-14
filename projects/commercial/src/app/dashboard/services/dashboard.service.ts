@@ -10,6 +10,7 @@ export class DashboardService {
   public financialSummary: any;
   public userInfo: any;
   public facilityType;
+  reportList: any;
 
   setFinancialSummaryData(data: any) {
     this.financialSummary = data;

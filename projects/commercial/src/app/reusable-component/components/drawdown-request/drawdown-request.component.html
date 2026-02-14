@@ -15,7 +15,7 @@
           {{ "Drawdown Details" | translate }}
         </p>
         <div class="grid">
-          <div class="col-7 drawdown_details_field pb-4">
+          <div class="col-6 pb-4">
             <amount class="align-left" [label]="'purchase_price'" labelType="vertical" mode="edit"
               [labelClass]="'disburstment-details-label drawdown-label'" formControlName="purchasePrice">
             </amount>
@@ -36,17 +36,7 @@
               </p>
             </div>
           </div>
-          <div class="col-5 drawdown_details_field pb-4">
-            <!-- <label for="lessDeposit" class="mt-3 text-sm">
-              {{ "less_deposite" | translate }}
-            </label>
-
-            <amount
-              id="lessDeposit"
-              formControlName="lessDeposit"
-              inputType="vertical"
-              maxLength="15"
-            ></amount> -->
+          <div class="col-5 ml-4 pb-4">
             <amount [label]="'less_deposite'" labelType="vertical" mode="edit"
               [labelClass]="'disburstment-details-label drawdown-label'" formControlName="lessDeposit">
             </amount>
@@ -72,7 +62,7 @@
           </div>
 
           <!-- Working Capital -->
-          <div class="col-7 drawdown_details_field pb-4">
+          <div class="col-6 pb-4">
             <amount [label]="'working_capital'" labelType="vertical" [mode]="selectedFacility === 'AssetLink' ? 'edit' : 'view'"
               [labelClass]="'disburstment-details-label drawdown-label'" formControlName="workingCapital">
             </amount>
@@ -89,9 +79,9 @@
               </p>
             </div>
           </div>
-          <div class="col-5 mt-1 pb-4">
+          <div class="col-5 ml-4 pb-4">
             <date id="reqDate" [label]="'request_date'" labelType="vertical"
-              [labelClass]="'drawdown-label text-sm mb-2'" formControlName="reqDate" [required]="true">
+              [labelClass]="'drawdown-label text-sm mb-3'" formControlName="reqDate" [required]="true">
             </date>
 
             <!-- Error -->
@@ -106,7 +96,7 @@
           </div>
 
           <!-- Pay Drawdown Out on -->
-          <div class="col-7 pb-4">
+          <div class="col-6 pb-4">
             <date [min]="minDate" id="payDrawdownDate" [label]="'pay_drawdown_out_on'" labelType="vertical"
               [labelClass]="'drawdown-label text-sm mb-3'" formControlName="payDrawdownDate" [required]="true">
             </date>
@@ -133,7 +123,7 @@
             </div>
           </div>
 
-          <div class="col-5 drawdown_details_field pb-4">
+          <div class="col-5 ml-4 pb-4">
             <amount [label]="'total_drawdown_amount'" labelType="vertical" mode="edit"
               [labelClass]="'disburstment-details-label drawdown-label'" formControlName="totalDrawdownAmt">
             </amount>

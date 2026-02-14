@@ -10,11 +10,13 @@ import {
   calculateForecastForOneMonth,
   calculateForecastRangeForYear,
   formatDate,
+  formatToYear,
   getOneMonthPrior,
   isValidDateFormat,
+  transformDateToDayMonth,
   updateColumnHeaders,
 } from '../../../utils/common-utils';
-import { frequencyOptionData } from '../../../dashboard/utils/dashboard-header.util';
+import { facilityFrequencyOptions } from '../../../dashboard/utils/dashboard-header.util';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 
 @Component({
@@ -25,7 +27,7 @@ import { CommonSetterGetterService } from '../../../services/common-setter-gette
 export class PaymentForcastComponent {
   @Input() paymentForcastDataList;
   @Input() paymentForecastColumnDefs;
-  frequencyOptionData = frequencyOptionData;
+  frequencyOptionData = facilityFrequencyOptions;
   toDate: any = new Date();
   fromDate: string;
   date: string;
@@ -33,14 +35,13 @@ export class PaymentForcastComponent {
   partyId: number;
   frequency: string = 'm';
   showFilterOptions;
-  private firstEmissionDone = false;
   @Input() selectedSubFacility;
   @Input() disableDate;
   @Output() paramsEmit = new EventEmitter<any>();
   previousFromDate: string;
   previousToDate: string;
-  currentDate: string;
-  maxDate: string;
+  currentDate: Date;
+  maxDate: Date;
   payloadDates: { toDate: string; fromDate: string };
 
   constructor(
@@ -69,6 +70,23 @@ export class PaymentForcastComponent {
     this.emitParams();
   }
 
+  ngOnChanges(changes) {
+    if (changes['paymentForcastDataList']) {
+      //API not present
+      if (this.frequency === 'y') {
+        this.paymentForcastDataList.paymentForecasts = formatToYear(
+          this.paymentForcastDataList.paymentForecasts
+        );
+      } else if (this.frequency === 'd') {
+        this.paymentForcastDataList.paymentForecasts = transformDateToDayMonth(
+          this.paymentForcastDataList.paymentForecasts
+        );
+      } else if (this.frequency === 'm') {
+        this.paymentForcastDataList = this.paymentForcastDataList;
+      }
+    }
+  }
+
   public emitParams() {
     this.paramsEmit.emit({
       fromDate: this.fromDate,
@@ -88,7 +106,7 @@ export class PaymentForcastComponent {
       return; // Don't emit if the date format is invalid
     }
     const dates = calculateForecastRangeForYear(event);
-    this.maxDate = dates.forecastEnd;
+    this.maxDate = new Date(dates.forecastEnd);
     this.fromDate = event;
     this.emitParams();
   }
@@ -101,10 +119,48 @@ export class PaymentForcastComponent {
     this.date = event;
     this.emitParams();
   }
+  // onFrequencyChange(event) {
+  //   debugger
+  //   const { value } = event;
+  //   if (!value) return;
+  //   this.frequency = value;
+  //   this.disableDate = value === 'd';
+  //   if (this.disableDate) {
+  //     const dates = calculateForecastForOneMonth(new Date());
+  //     this.toDate = dates.lastDayOfMonth;
+  //     this.fromDate = dates.firstDayOfMonth;
+  //     this.payloadDates = {
+  //       toDate: dates.lastDayOfMonth,
+  //       fromDate: dates.firstDayOfMonth,
+  //     };
+  //   } else if (this.frequency === 'y') {
+  //     this.paymentForcastDataList.paymentForecasts = formatToYear(
+  //       this.paymentForcastDataList.paymentForecasts
+  //     );
+  //   }
+  //   else {
+  //     const dates = calculateForecastRangeForYear(new Date());
+  //     this.toDate = dates.forecastEnd;
+  //     this.fromDate = dates.today;
+  //     this.currentDate = new Date(dates.today);
+  //     this.payloadDates = {
+  //       toDate: dates.forecastEnd,
+  //       fromDate: dates.today,
+  //     };
+  //   }
+
+  //   this.paymentForecastColumnDefs = updateColumnHeaders(
+  //     value,
+  //     this.paymentForecastColumnDefs
+  //   );
+  //   this.emitParams();
+  // }
+
   onFrequencyChange(event) {
     const { value } = event;
     if (!value) return;
     this.frequency = value;
+    sessionStorage.setItem('forecastFrequency', this.frequency);
     this.disableDate = value === 'd';
     if (this.disableDate) {
       const dates = calculateForecastForOneMonth(new Date());
@@ -118,7 +174,6 @@ export class PaymentForcastComponent {
       const dates = calculateForecastRangeForYear(new Date());
       this.toDate = dates.forecastEnd;
       this.fromDate = dates.today;
-      this.currentDate = dates.today;
       this.payloadDates = {
         toDate: dates.forecastEnd,
         fromDate: dates.today,

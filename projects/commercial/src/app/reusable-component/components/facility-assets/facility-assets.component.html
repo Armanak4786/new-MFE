@@ -27,17 +27,24 @@
             [value]="searchfacilityAssetErrorMessage"
           ></text>
         </div>
-        <gen-button
+        <div class="btn-uniform">
+
+          <gen-button
+          [btnWidth]="'full'"
           (click)="onAssetSearch()"
           class="ml-4 pr-4"
           [btnType]="'bg-btn'"
           [btnLabel]="'view'"
-        ></gen-button>
-        <gen-button
+          ></gen-button>
+        </div>
+        <div class="btn-uniform ml-6">
+          <gen-button
+          [btnWidth]="'full'"
           [btnType]="'border-btn'"
           (click)="reset()"
           [btnLabel]="'Reset'"
-        ></gen-button>
+          ></gen-button>
+        </div>
       </div>
     </div>
     <div class="sm:col-4 md:col-4 lg:col-4 mt-3">

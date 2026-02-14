@@ -138,6 +138,17 @@ export const formatToQuarter = (list) => {
   return list;
 };
 
+export const formatToYear = (list) => {
+  list.forEach((item) => {
+    const date = new Date(item.month);
+    item.transformDate = isNaN(date.getTime())
+      ? ''
+      : date.getFullYear().toString();
+  });
+
+  return list;
+};
+
 export const print = () => {
   const scale = 2; // Increase scale for better print quality
   html2canvas(document.body, { scale })

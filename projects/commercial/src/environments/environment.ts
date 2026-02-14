@@ -22,6 +22,7 @@ export const environment = {
         Motocheck: 'Motocheck',
         customerCommercial: 'CustomerDetailsCommercial',
         WorkFlowsCommercial: 'WorkFlowsCommercial',
+        DocumentService: 'DocumentServices',
     },
     // apiUrl: 'https://portalgateway/gateway',
     // apiUrl: 'https://portalgatewaydev:447/gateway',

@@ -28,18 +28,17 @@
       </p-overlayPanel>
       <div class="flex flex-wrap justify-between gap-2 mb-2">
         <div class="flex-1 min-w-[150px]">
-          <!-- <text [mode]="'label'" [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-2'" [label]="'product'"
-            [valueClass]="'text-xs flex ml-2 mt-1'" [value]="loanData?.productType"></text> -->
           <text
             [mode]="'label'"
             [className]="'trim_label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color  mt-2 ml-2'"
+            [labelClass]="'loan-dash-text loan-dash-text-color  mt-3 ml-2'"
             [label]="'product'"
           ></text>
           <text
             [mode]="'label'"
             [valueClass]="'text-xs ml-2 mt-1'"
             [className]="'trim_label'"
+            [labelClass]="'mt-1'"
             [value]="loanData?.productType"
             [title]="loanData?.productType"
           ></text>
@@ -47,9 +46,10 @@
         <div class="flex-1 min-w-[150px]">
           <amount
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-2'"
+            [labelClass]="'loan-dash-text loan-dash-text-color text-right mt-3 mb-1'"
             [label]="'amount_financed'"
-            [valueClass]="'text-xs flex ml-2 mt-1'"
+            [labelType]="'vertical'"
+            [valueClass]="'text-xs'"
             [value]="loanData?.initialLoanAmount"
           >
           </amount>
@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap justify-between gap-3">
+      <div class="flex flex-wrap justify-between gap-7 mb-3">
         <div
           class="min-w-[150px] mr-5"
           *ngIf="
@@ -136,7 +136,7 @@
         <div class="min-w-[150px]">
           <date
             [mode]="'label'"
-            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 ml-1'"
+            [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2'"
             [label]="'next_reprice_rate'"
             [valueClass]="'text-xs block w-full'"
             [value]="loanData?.nextRepriceDate"
@@ -186,10 +186,10 @@
           </div>
         </div>
         <div class="grid">
-          <div class="col-5">
+          <div class="col-4">
             <text
               [mode]="'label'"
-              [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2'"
+              [labelClass]="'loan-dash-text loan-dash-text-color flex mt-2 mb-1'"
               [label]="
                 ('gross_balance' | translate) +
                 ' ' +
@@ -199,11 +199,12 @@
             <amount
               [mode]="'label'"
               [valueClass]="'text-xs'"
+              [labelType]="'vertical'"
               [value]="currentPosition?.[0]?.grossBalanceAsOfToday"
             >
             </amount>
           </div>
-          <div class="col-3">
+          <div class="col-4">
             <text
               [mode]="'label'"
               [labelClass]="'loan-dash-text loan-dash-text-color'"
@@ -271,7 +272,7 @@
   >
     <div class="sm:col-5 md:col-5 lg:col-5">
       <div class="card p-2">
-        <div class="grid">
+        <div class="grid mb-1">
           <div class="col-4 flex">
             <text
               [mode]="'label'"
@@ -287,100 +288,79 @@
             </span>
           </div>
         </div>
-        <div class="flex flex-wrap justify-between gap-2 mb-1">
-          <div class="min-w-[150px]">
-            <!-- <amount
+        <div class="grid mb-1">
+          <div class="col-5">
+            <amount
               [mode]="'label'"
               [labelClass]="
-                'loan-dash-text loan-dash-text-color flex mt-2 ml-2'
-              "
-              [label]="'gross_balance' | translate : +toDate"
-              [valueClass]="'text-xs flex ml-2 mt-1'"
-              [value]="currentPosition[0]?.grossBalanceAsOfToday"
-            ></amount> -->
-
-            <text
-              [mode]="'label'"
-              [labelClass]="
-                'loan-dash-text loan-dash-text-color flex mt-2 ml-2'
+                'loan-dash-text loan-dash-text-color text-right'
               "
               [label]="
                 ('gross_balance' | translate) +
                 ' ' +
                 (toDate | date : 'MM/dd/yyyy')
               "
-            ></text>
-
-            <amount
-              [mode]="'label'"
-              [valueClass]="'text-xs flex ml-2 mt-1'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
               [value]="currentPosition?.[0]?.grossBalanceAsOfToday"
             ></amount>
           </div>
-          <div class="min-w-[150px] ml-4">
+          <div class="col-3">
             <amount
               [mode]="'label'"
               [labelClass]="
-                'loan-dash-text loan-dash-text-color flex flex mt-2 ml-2'
+                'loan-dash-text loan-dash-text-color text-right'
               "
               [label]="'outstanding_balance'"
-              [valueClass]="'text-xs flex ml-2 mt-1 block w-full'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
               [value]="currentPosition?.[0]?.outStandingBalance"
             >
             </amount>
           </div>
-          <div class="min-w-[150px] ml-6">
+          <div class="col-3">
             <amount
               [mode]="'label'"
               [labelClass]="
-                'loan-dash-text loan-dash-text-color flex mt-2 ml-2'
+              'loan-dash-text loan-dash-text-color text-right'
               "
               [label]="'remaining_interest'"
-              [valueClass]="'text-xs flex ml-2 mt-1'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs'"
               [value]="currentPosition?.[0]?.remainingInterest"
             ></amount>
           </div>
+          <div class="col-1"></div>
         </div>
-        <div class="flex flex-wrap justify-between mb-1">
-          <div class="min-w-[150px] mr-1">
+        <div class="grid mb-1">
+          <div class="col-2"></div>
+          <div class="col-4 mr-1">
             <text
               [mode]="'label'"
-              [labelClass]="
-                'loan-dash-text loan-dash-text-color flex mt-2 ml-2'
-              "
+              [labelClass]="'loan-dash-text loan-dash-text-color flex'"
               [label]="'remaining_term'"
-              [valueClass]="'text-xs flex ml-2 mt-1'"
+              [labelType]="'vertical'"
+              [valueClass]="'text-xs flex mt-1'"
               [value]="currentPosition?.[0]?.remainingTerm"
             ></text>
           </div>
-          <div class="flex-1 min-w-[150px] ml-7">
-            <!-- <text
-              [mode]="'label'"
-              [labelClass]="
-                'loan-dash-text loan-dash-text-color flex mt-2 ml-2'
-              "
-              [label]="'overdue_amount'"
-              [valueClass]="'text-xs flex ml-2 mt-1'"
-              [value]="
-                currentPosition?.[0]?.overdueAmount +
-                '/' +
-                currentPosition?.[0]?.overduedays +
-                ' days'
-              "
-            ></text> -->
+          <div class="col-5">
             <text
               [mode]="'label'"
-              [labelClass]="'loan-dash-text loan-dash-text-color'"
+              [labelType]="'vertical'"
+              [labelClass]="'loan-dash-text loan-dash-text-color align-right text-right'"
               [label]="'overdue_amount'"
             ></text>
-            <div class="flex">
+            <div class="flex justify-content-end gap-2">
               <amount
                 [mode]="'label'"
                 [valueClass]="'text-xs'"
+                [labelType]="'vertical'"
                 [value]="currentPosition?.[0]?.overdueAmount"
               ></amount>
               <text
                 [mode]="'label'"
+                [labelType]="'vertical'"
                 [labelClass]="'text-xs'"
                 [label]="' / ' + currentPosition?.[0]?.overduedays + ' days'"
               ></text>

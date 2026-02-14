@@ -57,25 +57,21 @@ export const paymentForecastColumnDefs = [
   {
     field: 'transformDate',
     headerName: 'months',
-    columnHeaderClass: 'p-1',
     class: 'text-bold',
   },
   {
     field: 'principal',
     headerName: 'principal_due',
-    columnHeaderClass: 'p-1',
     format: '#currency',
   },
   {
     field: 'interest',
     headerName: 'interest_due',
-    columnHeaderClass: 'p-1',
     format: '#currency',
   },
   {
     field: 'amount',
     headerName: 'total_payments',
-    columnHeaderClass: 'p-1',
     format: '#currency',
   },
 ];
@@ -84,13 +80,11 @@ export const paymentForecastInterestOnlyColumnDefs = [
   {
     field: 'transformDate',
     headerName: 'months',
-    columnHeaderClass: 'p-1',
     class: 'text-bold',
   },
   {
     field: 'interest',
     headerName: 'interest_due',
-    columnHeaderClass: 'p-1',
     format: '#currency',
   },
 ];

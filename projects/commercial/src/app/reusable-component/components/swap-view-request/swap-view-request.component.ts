@@ -8,7 +8,7 @@ import { AssetsParams } from '../../../utils/common-interface';
   //standalone: true,
   //imports: [],
   templateUrl: './swap-view-request.component.html',
-  styleUrls: ['./swap-view-request.component.scss'],
+  styleUrl: './swap-view-request.component.scss',
 })
 export class SwapViewRequestComponent {
   @Input() swapDetails;

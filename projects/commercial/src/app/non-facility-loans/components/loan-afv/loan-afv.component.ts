@@ -121,12 +121,12 @@ export class LoanAfvComponent {
   }
 
   navigateToNonFacility() {
-    this.router.navigate(['non-facility-loan']);
+    this.router.navigate(['commercial/non-facility-loan']);
   }
 
   navigateToLoansDashboard() {
     this.nonFacilityService.navigateToLoan = true;
-    this.router.navigate([`non-facility-loan`]);
+    this.router.navigate([`commercial/non-facility-loan`]);
   }
 
   getNonFacilityData() {

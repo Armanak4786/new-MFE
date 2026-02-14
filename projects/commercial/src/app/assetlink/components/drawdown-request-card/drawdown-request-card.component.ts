@@ -8,11 +8,10 @@ import { Validators } from '@angular/forms';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DrawdownService } from '../../../drawdown.service';
-
 @Component({
   selector: 'app-drawdown-request-card',
   templateUrl: './drawdown-request-card.component.html',
- styleUrls: ['./drawdown-request-card.component.scss'],
+  styleUrl: './drawdown-request-card.component.scss',
 })
 export class DrawdownRequestCardComponent extends BaseAssetlinkClass {
   facilityType;

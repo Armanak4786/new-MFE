@@ -22,7 +22,7 @@
           {{ "new_loan_details" | translate }}
         </p>
         <div class="grid">
-          <div class="col-7 drawdown_details_field pb-4">
+          <div class="col-6 pb-4">
             <amount
               class="align-left"
               [label]="'purchase_price_for_new_loan'"
@@ -58,7 +58,7 @@
               </p>
             </div>
           </div>
-          <div class="col-5 drawdown_details_field pb-4">
+          <div class="col-5 ml-4 pb-4">
             <amount
               [label]="'less_deposite'"
               labelType="vertical"
@@ -98,7 +98,7 @@
           </div>
 
           <!-- Working Capital -->
-          <div class="col-7 drawdown_details_field pb-4">
+          <div class="col-6 pb-4">
             <amount
               [label]="'working_capital'"
               labelType="vertical"
@@ -126,7 +126,7 @@
               </p>
             </div>
           </div>
-          <div class="col-5 mt-1 pb-4">
+          <div class="col-5 ml-4 pb-4">
             <date
               id="reqDate"
               [label]="'request_date'"
@@ -152,7 +152,7 @@
           </div>
 
           <!-- Pay Drawdown Out on -->
-          <div class="col-7 pb-4">
+          <div class="col-6 pb-4">
             <date
               [min]="minDate"
               id="payDrawdownDate"
@@ -195,7 +195,7 @@
             </div>
           </div>
 
-          <div class="col-5 drawdown_details_field pb-4">
+          <div class="col-5 ml-4 pb-4">
             <amount
               [label]="'total_new_loan_amount'"
               labelType="vertical"

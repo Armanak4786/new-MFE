@@ -9,8 +9,12 @@
         </label>
     </div>
     <input type="text" [(ngModel)]="searchValue" class="border p-2 p-inputtext p-component" />
-    <gen-button [btnWidth]="'full'" [btnType]="'bg-btn'" [btnLabel]="'search'" (onClick)="search()"></gen-button>
-    <gen-button [btnWidth]="'full'" [btnType]="'non-bg-btn'" [btnLabel]="'reset'" (onClick)="reset()"></gen-button>
+    <div class="btn-uniform">
+        <gen-button [btnWidth]="'full'" [btnType]="'bg-btn'" [btnLabel]="'search'" (onClick)="search()"></gen-button>
+    </div>
+    <div class="btn-uniform">
+        <gen-button [btnWidth]="'full'" [btnType]="'border-btn'" [btnLabel]="'reset'" (onClick)="reset()"></gen-button>
+    </div>
 </div>
 
 

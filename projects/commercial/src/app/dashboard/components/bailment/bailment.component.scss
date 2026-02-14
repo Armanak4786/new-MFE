@@ -18,14 +18,6 @@
   .p-datatable.p-datatable-striped
   .p-datatable-tbody
   > tr
-  .row-class-bailment {
-  pointer-events: none !important;
-}
-
-::ng-deep
-  .p-datatable.p-datatable-striped
-  .p-datatable-tbody
-  > tr
   .row-class-bailment
   .fa-circle-info {
   pointer-events: auto !important;
@@ -38,9 +30,4 @@
   .row-class-bailment
   .fa-circle-info {
   pointer-events: auto !important;
-}
-
-.scrollable-100 {
-  max-height: 150px;
-  overflow-y: auto;
 }

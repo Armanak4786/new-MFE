@@ -98,6 +98,7 @@ export class ReleaseSecurityConfirmationComponent implements OnInit {
 
   ngOnInit(): void {
     let SSV = 0;
+    //this.partyId = JSON.parse(sessionStorage.getItem('currentParty'));
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
     this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
 

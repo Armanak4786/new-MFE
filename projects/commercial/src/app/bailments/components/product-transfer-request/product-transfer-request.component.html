@@ -6,7 +6,7 @@
       [label]="'product_transfer_to_lbl'"
     ></text>
   </div>
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-5">
     <div class="pt-2 flex gap-2 radio_label_class">
       <input
         class="productTransferToClass"
@@ -61,7 +61,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-3 ml-2">
+  <div class="col-12 md:col-5">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color text-sm'"
@@ -69,7 +69,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-3 ml-5">
+  <div class="col-12 md:col-3">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color pr-1 text-sm'"
@@ -78,7 +78,7 @@
   </div>
 </div>
 
-<div class="grid flex pl-1 pt-1">
+<div class="grid flex pl-1 pt-1 facility-dropdown-container">
   <div class="col-12 md:col-2">
     <text
       [mode]="'label'"
@@ -87,22 +87,24 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-2 ml-2 mr-4">
-     <div class="">
+  <div class="col-12 md:col-5 facility-dropdown-container">
+    <div class="">
       <p-dropdown
         [options]="subFailityOptionList"
         [(ngModel)]="selectedSubFacility"
         optionLabel="label"
         optionValue="value"
         (onChange)="subFacilityChange($event)"
-      >
-        <ng-template let-item pTemplate="item">
-          <div [title]="item.label">{{ item.label }}</div>
+        class="flat-dropdown facility-dropdown-container"
+        [panelStyleClass]="'dropdown-panel-color'"      
+        >
+         <ng-template let-item pTemplate="selectedItem">
+          <div [pTooltip]="item.label" tooltipPosition="bottom">{{ item.label }}</div>
         </ng-template>
       </p-dropdown>
     </div>
   </div>
-  <div class="col-12 md:col-4 col-offset-1">
+  <div class="col-12 md:col-4 facility-dropdown-container">
     <span class="p-input-icon-left w-full">
       <i class="pi pi-search"></i>
       <input

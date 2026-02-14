@@ -470,7 +470,7 @@ export class EasylinkCurrentAccountComponent {
       );
     }
 
-    if (tableId === 'PaymentForcast' && this.PaymentForcast) {
+    if (tableId === 'paymentForcast' && this.PaymentForcast) {
       const dataListWithoutMonth =
         this.PaymentForcast.paymentForcastDataList?.paymentForecasts.map(
           ({ month, ...rest }) => rest,

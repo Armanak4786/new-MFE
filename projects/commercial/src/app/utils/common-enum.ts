@@ -25,6 +25,7 @@ export const FacilityType = {
   AssetLink_N_type: 'AssetLink N type',
   AssetLink_S_type: 'AssetLink S type',
   Current_Account: 'Current Account',
+  Easylink_Current_Account: 'Current Account - Easylink'
 } as const;
 
 export const requestType = {
@@ -378,7 +379,7 @@ export const FacilityTypeDropdown = {
   'Floating FloorPlan': 'Floating Floorplan',
   'BuyBack Facility': 'Buyback',
   'Introducer Transaction Summary': 'Introducer Transaction Summary',
-  NonFacilityLoan: 'Non-Facility Loan',
+  'Non-Facility Loan': 'Non-Facility Loan',
   OperatingLease: 'Operating Lease',
 } as const;
 
@@ -397,3 +398,7 @@ export const transactionHeaders = [
   'Payment',
   'Payment Id',
 ];
+export const PAYMENT_OPTIONS = {
+  DEBIT_BANK: 'Debit by nominated bank account',
+  PAY_DIRECTLY: 'I would like to pay UDC directly',
+} as const;

@@ -16,6 +16,7 @@ export class PaymentDetailsComponent {
   paymentAllocatedDetails;
   partyId: number;
   allocatedTransactions;
+  paymentIdFromSync;
   constructor(
     private commonApiService: CommonApiService,
     public commonSetterGetterSvc: CommonSetterGetterService
@@ -29,12 +30,15 @@ export class PaymentDetailsComponent {
     this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
       this.partyId = currentParty?.id;
     });
+    this.commonSetterGetterSvc.getPaymentIdData().subscribe(paymentId => {
+                    this.paymentIdFromSync = paymentId;
+});
 
-    const paymentIdFromSync = this.commonSetterGetterSvc.getPaymentIdData();
+    // const paymentIdFromSync = this.commonSetterGetterSvc.getPaymentIdData()
 
-    if (paymentIdFromSync) {
-      this.paymentId = paymentIdFromSync;
-      this.fetchAllocatedPaymentsTab({ paymentId: this.paymentId });
+    if (this.paymentIdFromSync) {
+      // this.paymentId = this.paymentIdFromSync;
+      this.fetchAllocatedPaymentsTab({ paymentId: this.paymentIdFromSync });
     }
 
     this.commonSetterGetterSvc.paymentId

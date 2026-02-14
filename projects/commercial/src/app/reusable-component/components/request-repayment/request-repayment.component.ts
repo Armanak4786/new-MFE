@@ -88,7 +88,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         name: 'facilityType',
         alignmentType: 'vertical',
         cols: 4,
-        className: 'pt-0.5 ml-4 mr-4 w-12rem mt-2',
+        className: 'pt-0.5 ml-4 mr-4 w-12rem mt-2 flat-dropdown dropdown-panel-color',
         validators: [Validators.required],
         // nextLine: false,
         options: this.facilityTypeOptionList,
@@ -102,7 +102,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         labelClass: 'mb-4',
         alignmentType: 'vertical',
         validators: [Validators.required],
-        className: 'my-custom-dropdown pt-0.5 ml-6  mr-4 w-20rem mt-2',
+        className: 'my-custom-dropdown pt-0.5 ml-6  mr-4 w-20rem mt-2 flat-dropdown dropdown-panel-color',
         cols: 5,
         nextLine: false,
         options: this.facilityOptions,
@@ -114,7 +114,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         label: 'loan',
         labelClass: 'mb-4',
         name: 'loan',
-        className: 'pt-0.5 ml-6 mr-4 w-10rem mt-2',
+        className: 'pt-0.5 ml-6 mr-4 w-10rem mt-2 flat-dropdown dropdown-panel-color',
         alignmentType: 'vertical',
         cols: 3,
         validators: [Validators.required],
@@ -129,7 +129,7 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         label: 'payment_amount',
         labelClass: 'mb-1',
         cols: 4,
-        className: 'mt-3 mr-6',
+        className: 'ml-4 mt-3 mr-5',
         hidden: false,
         validators: [Validators.required, Validators.min(0.01)],
         // errorMessage: 'payment_error_msg',
@@ -203,8 +203,8 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
       {
         sectionName: 'Section1',
         headerTitle: 'repayment_details',
-        sectionClass: 'section-class p-4 pb-8',
-        headerClass: 'text-sm font-bold',
+        sectionClass: 'section-class p-2 pb-7',
+        headerClass: 'text-sm font-bold ml-4 mt-3',
         cols: 6,
       },
       {
@@ -234,25 +234,12 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
   }
 
   override async ngOnInit() {
-    // this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-    //   this.partyId = currentParty.id;
-    //   this.customerName = currentParty.name;
-    // });
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
-    this.customerName = JSON.parse(
-      sessionStorage.getItem('currentParty')
-    )?.name;
-    // this.commonSetterGetterSvc.userDetails$.subscribe((userDtl) => {
-    //   this.userDetails = userDtl;
-    // });
+    this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
     this.userDetails = JSON.parse(sessionStorage.getItem('userDetails'));
     if (this.dynamicDialogConfig?.data) {
-      console.log(
-        'this.dynamicDialogConfig?.data',
-        this.dynamicDialogConfig?.data
-      );
-      this.selectedFacility = this.dynamicDialogConfig?.data?.facilityType;
-      console.log('this.selectedFacility', this.selectedFacility);
+      // this.selectedFacility = this.dynamicDialogConfig?.data?.facilityType;
+      this.selectedFacility = sessionStorage.getItem('currentFacilityType');
       this.facilityTypeOptionList.push(this.selectedFacility);
       this.facilityType = this.selectedFacility;
       this.selectedSubFacility =
@@ -641,14 +628,13 @@ export class RequestRepaymentComponent extends BaseCommercialClass {
         this.floatingRepaymentObject
       );
       const taskId = res.data?.referenceNumber;
-      const subject = 'Repayment Request';
       const formattedDate = new Date(
         this.floatingRepaymentObject.payDrawdownOutOnDt
       ).toLocaleDateString('en-GB');
       const message =
         keys.labelData
           .floating_floorplan_repayment_your_request_has_been_submitted_successfully_request_number_is +
-        `${taskId} ` +
+        `${this.contractId} ` +
         keys.labelData
           .repayment_will_be_direct_debited_from_your_nominated_bank_account_on_the +
         ` ${formattedDate}`;

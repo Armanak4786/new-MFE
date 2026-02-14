@@ -7,14 +7,14 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-4 -ml-6">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color text-sm'"
       [label]="'facility'"
     ></text>
   </div>
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-2">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color text-sm'"
@@ -22,7 +22,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-3 ml-6">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color text-sm pr-1'"
@@ -40,7 +40,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-4 -ml-6">
     <div class="">
       <p-dropdown
         [options]="subFailityOptionList"
@@ -50,15 +50,17 @@
         optionValue="value"
         placeholder="Select Facility"
         appendTo="body"
-        class="w-full customDropdown"
+        class="w-full customDropdown flat-dropdown"
+        [panelStyleClass]="'dropdown-panel-color'"
+        styleClass="dynamic-dropdown"
       >
-        <ng-template let-item pTemplate="item">
-          <div [title]="item.label">{{ item.label }}</div>
+        <ng-template let-item pTemplate="selectedItem">
+          <div [pTooltip]="item.label" tooltipPosition="bottom">{{ item.label }}</div>
         </ng-template>
       </p-dropdown>
     </div>
   </div>
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-2 facility-dropdown-container">
     <div class="">
       <p-dropdown
         [options]="programOptions"
@@ -68,15 +70,17 @@
         optionValue="label"
         placeholder="Select Program"
         appendTo="body"
-        class="w-full customDropdown"
+        class="w-full customDropdown flat-dropdown"
+        [panelStyleClass]="'dropdown-panel-color'"
+        styleClass="dynamic-dropdown"    
       >
-        <ng-template let-item pTemplate="item">
-          <div [title]="item.label">{{ item.label }}</div>
+        <ng-template let-item pTemplate="selectedItem">
+          <div [pTooltip]="item.label" tooltipPosition="bottom">{{ item.label }}</div>
         </ng-template>
       </p-dropdown>
     </div>
   </div>
-  <div class="col-12 md:col-3">
+  <div class="col-12 md:col-3 ml-6">
     <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
       <input

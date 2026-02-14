@@ -234,7 +234,7 @@ export class UpdateContactDetailsComponent extends BaseFormClass {
       })
       .onClose.subscribe((data: any) => {
         if (data?.data == 'cancel') {
-          this.router.navigateByUrl('/dashboard/update-party-details');
+          this.router.navigate(['/commercial/dashboard/update-party-details']);
         }
       });
   }

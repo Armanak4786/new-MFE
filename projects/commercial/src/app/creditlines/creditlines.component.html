@@ -1,6 +1,6 @@
 <div class="grid card m-2">
   <div class="sm:col-6 md:col-6 lg:col-3 border-round-md p-2">
-    <div class="asset-link-bg p-2 border-round-md">
+    <div class="asset-link-bg p-2 border-round-md" *ngIf="showChart">
       <dropdown
         [options]="optionData"
         [value]="facilityTypeDropdown"

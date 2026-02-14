@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService, CurrencyService, PrintService } from 'auro-ui';
 import { NonFacilityLoansComponentLoaderService } from '../../services/non-facility-loans-component-loader.service';
@@ -10,14 +10,15 @@ import {
 } from '../../../utils/common-interface';
 import { CommonSetterGetterService } from '../../../services/common-setter-getter/common-setter-getter.service';
 import { FacilityType } from '../../../utils/common-enum';
-import { assetlinkLoansColumnDefs } from '../../../assetlink/utils/assetlink-header.util';
 import {
+  clearSession,
   filterByFacilityType,
   transformHistoryData,
 } from '../../../utils/common-utils';
 import { CreditlineDrawdownRequestComponent } from '../../../creditlines/components/creditline-drawdown-request/creditline-drawdown-request.component';
 import {
   facilityColumnDefs,
+  nonFacilityLoansColumnDefs,
   requestHistoryColumnDefs,
 } from '../../utils/non-facility-header-definition';
 @Component({
@@ -25,11 +26,11 @@ import {
   templateUrl: './reducing-loans.component.html',
   styleUrl: './reducing-loans.component.scss',
 })
-export class ReducingLoansComponent {
+export class ReducingLoansComponent implements OnDestroy {
   @Input() facilityType;
   @Input() selectedSubFacility;
   loansDataList = [];
-  loansColumnDefs = assetlinkLoansColumnDefs;
+  loansColumnDefs = nonFacilityLoansColumnDefs;
   facilityAsssetsDatalist: IFacilityAssetResponse[] = [];
   columnsFacilityAsset = facilityColumnDefs;
   currentComponent: string | null = null;
@@ -79,9 +80,16 @@ export class ReducingLoansComponent {
   // }
 
   ngOnInit() {
-    const current = sessionStorage.getItem('currentComponent');
-    this.currentComponent = current ? current : 'Loans';
-    sessionStorage.setItem('currentComponent', this.currentComponent);
+    const validTabs = ['Loans', 'FacilityAssets', 'Documents', 'requestHistory'];
+    const storedComponent = sessionStorage.getItem('reducingLoansCurrentComponent');
+
+    if (storedComponent && validTabs.includes(storedComponent)) {
+      this.currentComponent = storedComponent;
+    } else {
+      this.currentComponent = 'Loans';
+      sessionStorage.setItem('reducingLoansCurrentComponent', this.currentComponent);
+    }
+
     const roleBased = JSON.parse(sessionStorage.getItem('RoleBasedActions'));
     if (
       roleBased &&
@@ -98,22 +106,22 @@ export class ReducingLoansComponent {
     const partyData = sessionStorage.getItem('currentParty');
     const party = partyData ? JSON.parse(partyData) : null;
     this.partyId = party?.id;
-    const stored = sessionStorage.getItem('selectedNonFacilitySubFacility');
-    this.selectedSubFacility = stored ? JSON.parse(stored) : [];
-    if (this.partyId) {
-      const params = {
-        partyId: this.partyId,
-        OperatingLeaseProductGroup: FacilityType.OperatingLease_Group,
-      };
-      this.fetchLoans(params);
-    }
+    
+    const storedFacilityType = sessionStorage.getItem('currentFacilityType');
+    this.facilityType = storedFacilityType || this.facilityType;
+    
+    const stored = sessionStorage.getItem('selectedNonFacilityLoanSubFacility');
+    this.selectedSubFacility = stored ? JSON.parse(stored) : this.selectedSubFacility;
 
-    const params = {
-      partyId: this.partyId,
-      facilityType: FacilityType.Assetlink_Group,
-      subFacilityId: this.selectedSubFacility?.id,
-    };
-    this.fetchAssociatedAssets(params);
+    if (this.currentComponent === 'Loans') {
+      this.showLoansTab();
+    } else if (this.currentComponent === 'FacilityAssets') {
+      this.showAssetsTab();
+    } else if (this.currentComponent === 'Documents') {
+      this.showDocuments();
+    } else if (this.currentComponent === 'requestHistory') {
+      this.requestHistory();
+    }
 
     this.componentLoaderService.component$.subscribe((componentName) => {
       this.currentComponent = componentName;
@@ -144,9 +152,11 @@ export class ReducingLoansComponent {
   }
 
   requestHistory() {
+    this.currentComponent = 'requestHistory';
     const params = { partyNo: this.partyId };
     this.fetchRequestHistory(params);
     this.componentLoaderService.loadComponent('requestHistory');
+    sessionStorage.setItem('reducingLoansCurrentComponent', this.currentComponent);
   }
 
   async fetchRequestHistory(params: RequestHistoryParams) {
@@ -192,14 +202,37 @@ export class ReducingLoansComponent {
   }
 
   showLoansTab() {
+    this.currentComponent = 'Loans';
+    if (this.partyId) {
+      const params = {
+        partyId: this.partyId,
+        OperatingLeaseProductGroup: FacilityType.OperatingLease_Group,
+      };
+      this.fetchLoans(params);
+    }
     this.componentLoaderService.loadComponent('Loans');
+    sessionStorage.setItem('reducingLoansCurrentComponent', this.currentComponent);
   }
 
   showAssetsTab() {
+    this.currentComponent = 'FacilityAssets';
+    const params = {
+      partyId: this.partyId,
+      facilityType: FacilityType.Assetlink_Group,
+      subFacilityId: this.selectedSubFacility?.id,
+    };
+    this.fetchAssociatedAssets(params);
     this.componentLoaderService.loadComponent('FacilityAssets');
+    sessionStorage.setItem('reducingLoansCurrentComponent', this.currentComponent);
   }
 
   showDocuments() {
+    this.currentComponent = 'Documents';
     this.componentLoaderService.loadComponent('Documents');
+    sessionStorage.setItem('reducingLoansCurrentComponent', this.currentComponent);
+  }
+
+  ngOnDestroy() {
+    clearSession('reducingLoansCurrentComponent');
   }
 }

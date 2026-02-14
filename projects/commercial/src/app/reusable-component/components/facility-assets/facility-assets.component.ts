@@ -26,7 +26,7 @@ export class FacilityAssetsComponent {
   @Input() columnsFacilityAsset;
   @Input() facilityAsssetsDatalist;
   @Input() facilityType;
-  @Input() searchLabel: string = 'asset_id';
+  @Input() searchLabel: string = 'assetNumber';
   @ViewChild('dt')
   dt: GenTableComponent;
   rowData: any[] = [];
@@ -164,7 +164,7 @@ export class FacilityAssetsComponent {
       }
     } else {
       this.facilityAsssetsDatalist = this.rowData;
-      this.searchfacilityAssetErrorMessage = '';
+      this.searchfacilityAssetErrorMessage = 'Please enter valid asset number';
     }
   }
   reset() {

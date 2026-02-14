@@ -40,9 +40,9 @@
   <div class="mt-4 ml-1">
     <amount
       [mode]="'label'"
-      [valueClass]="'text-xs font-bold ml-2'"
+      [valueClass]="'text-xs font-bold ml-2 mt-2'"
       [label]="'total_payment_amount'"
-      [labelClass]="'text-xs font-bold label-color p-2 flex'"
+      [labelClass]="'text-xs font-bold label-color p-2'"
       [value]="seletedRecoredData['Amount']"
     ></amount>
   </div>
@@ -105,7 +105,7 @@
         <td class="p-2">
           <amount
             [mode]="'label'"
-            [valueClass]="'text-xs'"
+            [valueClass]="'text-xs mt-2'"
             [value]="detail?.amtPaymentRequest"
           ></amount>
         </td>
@@ -173,6 +173,15 @@
           [labelClass]="'text-xs font-bold label-color mr-4'"
           [label]="'vin'"
           [value]="facilityAssset?.vehicleIdentificationNumber"
+          [valueClass]="'text-xs'"
+        ></text>
+      </div>
+      <div class="mb-2">
+        <text
+          [mode]="'label'"
+          [labelClass]="'text-xs font-bold label-color mr-4'"
+          [label]="'variant'"
+          [value]="facilityAssset?.variant"
           [valueClass]="'text-xs'"
         ></text>
       </div>

@@ -163,7 +163,7 @@ export class FixedFloorPlanDrawdownRequestComponent
     public commonSetterGetterSvc: CommonSetterGetterService,
     public dashboardSetterGetterSvc: DashboardSetterGetterService,
     private fb: FormBuilder,
-    public baseCommSvc: BaseCommercialService,
+    public baseCommSvc: BaseCommercialService
   ) {
     super(route, svc);
     this.form = this.fb.group({
@@ -239,9 +239,7 @@ export class FixedFloorPlanDrawdownRequestComponent
     //   this.customerName = currentParty.name;
     // });
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
-    this.customerName = JSON.parse(
-      sessionStorage.getItem('currentParty'),
-    )?.name;
+    this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
 
     const params = {
       partyNo: this.partyId,
@@ -517,7 +515,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       } else {
         // Fallback to the original logic if getProgramDefault fails
         const selectedProgram = this.programOptions.find(
-          (program) => program.value === event.value?.value,
+          (program) => program.value === event.value?.value
         );
         if (selectedProgram && selectedProgram.assetTypePath) {
           this.selectedProgramAssetType = selectedProgram.assetTypePath;
@@ -552,8 +550,9 @@ export class FixedFloorPlanDrawdownRequestComponent
 
   async getProgramCustomField(params) {
     try {
-      const response =
-        await this.commonapiService.getCustomFieldProgram(params);
+      const response = await this.commonapiService.getCustomFieldProgram(
+        params
+      );
       const customFields =
         response?.customFields ?? response?.data?.customFields ?? [];
       const programresponse = customFields.map((field) => ({
@@ -607,23 +606,18 @@ export class FixedFloorPlanDrawdownRequestComponent
         this.form.patchValue({
           programname: this.programOptions[0],
         });
-      }
-      // Manually trigger the program selection logic
       const assetType = this.assetForm.get('assetType')?.value;
       if (assetType !== 'multiple' && this.programOptions[0]?.value) {
         const programParams = { programId: this.programOptions[0].value };
-        this.programCustomFields =
-          await this.getProgramCustomField(programParams);
-        const programDefaults = await this.getProgramDefault(
-          this.programOptions[0].value,
-        );
-
+        this.programCustomFields = await this.getProgramCustomField(programParams);
+        const programDefaults = await this.getProgramDefault(this.programOptions[0].value);
+        
         if (programDefaults && programDefaults.assetTypePath) {
           this.selectedProgramAssetType = programDefaults.assetTypePath;
-          this.isMotorVehicle =
-            programDefaults.assetTypePath.includes('Motor Vehicles');
+          this.isMotorVehicle = programDefaults.assetTypePath.includes('Motor Vehicles');
           this.vehicleDetails.reset();
         }
+      }
       }
       // this.mainForm.updateList('programname', this.programOptions);
     } catch (error) {
@@ -834,10 +828,10 @@ export class FixedFloorPlanDrawdownRequestComponent
       const gstRate = Number(this.taxrate);
       const programDrawdownPercent = Number(
         this.programCustomFields.find((field) => field.name === 'Drawdown %')
-          ?.value,
+          ?.value
       );
       const fundGst = this.programCustomFields.find(
-        (field) => field.name === 'Fund GST',
+        (field) => field.name === 'Fund GST'
       )?.value;
 
       const invoiceAmountInc = invoiceAmount;
@@ -856,7 +850,7 @@ export class FixedFloorPlanDrawdownRequestComponent
           ...invoiceAmountControl?.errors,
           advanceExceedsProgram: {
             message: `Advance (${advanceAmount}) exceeds max (${programLevelAmount.toFixed(
-              2,
+              2
             )})`,
           },
         });
@@ -867,7 +861,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         if (errors) {
           delete errors['advanceExceedsProgram'];
           invoiceAmountControl?.setErrors(
-            Object.keys(errors).length ? errors : null,
+            Object.keys(errors).length ? errors : null
           );
         }
       }
@@ -877,10 +871,10 @@ export class FixedFloorPlanDrawdownRequestComponent
       const gstRate = Number(this.taxrate);
       const programDrawdownPercent = Number(
         this.programCustomFields.find((field) => field.name === 'Drawdown %')
-          ?.value,
+          ?.value
       );
       const fundGst = this.programCustomFields.find(
-        (field) => field.name === 'Fund GST',
+        (field) => field.name === 'Fund GST'
       )?.value;
 
       const invoiceAmountEx = invoiceAmount;
@@ -897,7 +891,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         invoiceAmountControl?.setErrors({
           advanceExceedsProgram: {
             message: `Advance amount (${advanceAmount}) exceeds maximum allowed (${programLevelAmount.toFixed(
-              2,
+              2
             )})`,
           },
         });
@@ -908,7 +902,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         if (errors && errors['advanceExceedsProgram']) {
           delete errors['advanceExceedsProgram'];
           invoiceAmountControl?.setErrors(
-            Object.keys(errors).length ? errors : null,
+            Object.keys(errors).length ? errors : null
           );
         }
       }
@@ -933,7 +927,7 @@ export class FixedFloorPlanDrawdownRequestComponent
           this.dynamicDialogConfig?.data.facilityType,
         wholesaleAccountId:
           this.facilityTypeOptions.find(
-            (option) => option.value === facilityTypeData?.value,
+            (option) => option.value === facilityTypeData?.value
           )?.contractId || null,
         isSupplierDisbursement:
           drawdownDetailsData.disburseFundsTo === 'Supplier' ||
@@ -990,7 +984,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       };
       const floorplanLabel =
         this.subFacilityOptions.find(
-          (option) => option.value === floorplanNameData,
+          (option) => option.value === floorplanNameData
         )?.label || '';
       const drawdownTaskPostBody: FixedFloorPlanDrawdownTaskBody = {
         party: { partyNo: this.partyId },
@@ -1023,7 +1017,7 @@ export class FixedFloorPlanDrawdownRequestComponent
                   : [],
               nominatedBankAccount: {
                 amountToNominatedBank: Number(
-                  drawdownDetailsData.nominatedAmount,
+                  drawdownDetailsData.nominatedAmount
                 ),
               },
             },
@@ -1064,7 +1058,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       this.uploadeddocsfortask = await this.getDocumentDataForTask();
       const floorplanLabel =
         this.subFacilityOptions.find(
-          (option) => option.value === floorplanNameData,
+          (option) => option.value === floorplanNameData
         )?.label || '';
 
       const drawdownPostBody: AssetDrawdownRequestBodyTask = {
@@ -1099,7 +1093,7 @@ export class FixedFloorPlanDrawdownRequestComponent
                   : [],
               nominatedBankAccount: {
                 amountToNominatedBank: Number(
-                  drawdownDetailsData.nominatedAmount,
+                  drawdownDetailsData.nominatedAmount
                 ),
               },
             },
@@ -1129,16 +1123,16 @@ export class FixedFloorPlanDrawdownRequestComponent
                     },
                   }
                 : assetFormData.assetType === 'multiple' &&
-                    assetFormData.multipleAssets?.length
-                  ? {
-                      multipleAsset: assetFormData.multipleAssets.map(
-                        (asset) => ({
-                          stockNumber: asset.stockNo,
-                          assetDescription: asset.description,
-                        }),
-                      ),
-                    }
-                  : {},
+                  assetFormData.multipleAssets?.length
+                ? {
+                    multipleAsset: assetFormData.multipleAssets.map(
+                      (asset) => ({
+                        stockNumber: asset.stockNo,
+                        assetDescription: asset.description,
+                      })
+                    ),
+                  }
+                : {},
 
             additionalInformation: this.remarks,
           },
@@ -1153,7 +1147,7 @@ export class FixedFloorPlanDrawdownRequestComponent
 
   async submitDrawdownRequest(
     params: AssetDrawdownRequestBody,
-    drawdownTaskPostBody,
+    drawdownTaskPostBody
   ) {
     try {
       const newAssetDrawdownRequestResponse =
@@ -1162,8 +1156,9 @@ export class FixedFloorPlanDrawdownRequestComponent
         wholesaleAssetContract: { ...newAssetDrawdownRequestResponse },
         ...params,
       };
-      this.referenceNumber =
-        await this.commonapiService.assetDrawdownRequest(assetDrawdownPayload);
+      this.referenceNumber = await this.commonapiService.assetDrawdownRequest(
+        assetDrawdownPayload
+      );
       await this.commonapiService.postTaskRequest(drawdownTaskPostBody);
       const taskId = this.referenceNumber?.data.referenceNumber;
       this.message =
@@ -1190,7 +1185,7 @@ export class FixedFloorPlanDrawdownRequestComponent
         supplierInfo: this.drawdownDetails.value.supplierDetails?.length
           ? this.drawdownDetails.value.supplierDetails
               .filter(
-                (supplier: any) => supplier.supplierName || supplier.amount,
+                (supplier: any) => supplier.supplierName || supplier.amount
               )
               .map((supplier: any) => ({
                 supplierName: supplier.supplierName,
@@ -1203,7 +1198,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       };
       await this.commonapiService.postContractNotes(
         contractNotesParams,
-        contractNoteBody,
+        contractNoteBody
       );
       this.svc.dialogSvc
         .show(AcknowledgmentPopupComponent, ' ', {
@@ -1227,7 +1222,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your request. Please try again or contact UDC on ',
         '',
-        () => {},
+        () => {}
       );
       console.log('Error release error', error);
     }
@@ -1235,8 +1230,9 @@ export class FixedFloorPlanDrawdownRequestComponent
 
   async submitDrawdownRequestTask(params: AssetDrawdownRequestBodyTask) {
     try {
-      this.referenceNumber =
-        await this.commonapiService.postTaskRequest(params);
+      this.referenceNumber = await this.commonapiService.postTaskRequest(
+        params
+      );
       const taskId = this.referenceNumber?.taskId;
       this.subject = extractSubjectValue(this.referenceNumber?.subject);
       this.message =
@@ -1269,7 +1265,7 @@ export class FixedFloorPlanDrawdownRequestComponent
       this.svc?.ui?.showOkDialog(
         'There was an error submitting your request. Please try again or contact UDC on ',
         '',
-        () => {},
+        () => {}
       );
       console.log('Error release error', error);
     }
@@ -1301,7 +1297,7 @@ export class FixedFloorPlanDrawdownRequestComponent
             documentId: 0,
             name: file.fileData.name.substring(
               0,
-              file.fileData.name.lastIndexOf('.'),
+              file.fileData.name.lastIndexOf('.')
             ),
             category: 'Other Correspondence',
             description: '',
@@ -1315,14 +1311,14 @@ export class FixedFloorPlanDrawdownRequestComponent
             reference: '',
             generatedDocs: [],
           };
-        }),
+        })
       );
 
       return documentData;
     } catch (error) {
       console.error(
         'Error converting files to DocumentUploadRequest format:',
-        error,
+        error
       );
       return [];
     }
@@ -1332,14 +1328,14 @@ export class FixedFloorPlanDrawdownRequestComponent
 
     try {
       const binaryFiles = await Promise.all(
-        files.map((file) => convertFileToBase64(file.fileData)),
+        files.map((file) => convertFileToBase64(file.fileData))
       );
       return files.map(
         (file, index): uploadedFiles => ({
           file: binaryFiles[index],
           fileName: file.fileData.name,
           fileType: file.type,
-        }),
+        })
       );
     } catch (error) {
       console.error('Error converting files to binary:', error);

@@ -1,8 +1,34 @@
 div label{
-    color: #000000;
+    color: var(primary-black-color);
     font-weight: 700;
     font-size: 12px;
     line-height: 24px;
     letter-spacing: -2%;
+}
+
+.downtime-banner {
+    background-color: var(--subfacility-bg-color);
+    color: var(--primary-header-color);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #cfe8f6;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.downtime-title {
+    font-weight: 700;
+}
+
+.downtime-message {
+    font-weight: 400;
+    color: var(--primary-black-color);
 }
  

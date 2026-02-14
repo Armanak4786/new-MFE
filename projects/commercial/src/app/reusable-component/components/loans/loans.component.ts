@@ -343,7 +343,7 @@ export class LoansComponent {
         });
       }
     } else {
-      this.searchLoanErrorMessage = '';
+      this.searchLoanErrorMessage = 'Please enter valid Loan ID';
       this.filteredLoanDataList = this.loansDataList; // Show all if input is empty
     }
   }

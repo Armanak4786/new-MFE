@@ -10,7 +10,16 @@ import { UpdateAddressDetailsComponent } from './components/update-address-detai
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, data: { breadcrumb: '' } },
- 
+  {
+    path: 'request-history',
+    component: RequestHistoryComponent,
+    data: { breadcrumb: 'Request History' },
+  },
+  {
+    path: 'documents',
+    component: DocumentsComponent,
+    data: { breadcrumb: 'Documents' },
+  },
   {
     path: 'update-party-details',
     component: UpdatePartyDetailsComponent,

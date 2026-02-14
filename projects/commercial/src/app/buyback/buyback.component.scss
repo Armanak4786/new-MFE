@@ -10,3 +10,21 @@
     font-weight: 700;
   }
 }
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr:nth-child(1) {
+  .row-class-buyback {
+    font-weight: 700;
+  }
+}
+
+::ng-deep
+  .p-datatable.p-datatable-striped
+  .p-datatable-tbody
+  > tr
+  .row-class-buyback
+  .fa-circle-info {
+  pointer-events: auto !important;
+}

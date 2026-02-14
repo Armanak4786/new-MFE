@@ -123,6 +123,7 @@ export class FloatingFloorPlanDrawdownRequestComponent extends BaseCommercialCla
         validators: [Validators.required, Validators.min(0.01)],
         sectionName: 'Section2',
         inputType: 'vertical',
+        errorMessage: 'Advance Requested is Required',
       },
       {
         type: 'dates',
@@ -170,10 +171,6 @@ export class FloatingFloorPlanDrawdownRequestComponent extends BaseCommercialCla
   }
 
   override async ngOnInit() {
-    // this.commonSetterGetterSvc.party$.subscribe((currentParty) => {
-    //   this.partyId = currentParty.id;
-    //   this.customerName = currentParty.name;
-    // });
     this.partyId = JSON.parse(sessionStorage.getItem('currentParty'))?.id;
     this.customerName = JSON.parse(sessionStorage.getItem('currentParty'))?.name;
     if (this.dynamicDialogConfig?.data) {
@@ -400,9 +397,9 @@ export class FloatingFloorPlanDrawdownRequestComponent extends BaseCommercialCla
         this.mainForm.value.paydrawdownouton
       ).toLocaleDateString('en-GB');
       if (this.contractStatus?.data?.contractStatus === 'Active') {
-        this.message = `Floating Floorplan Drawdown Your Request has been submitted to UDC Finance for processing and approval. Request Number is:${this.referenceNumber?.data?.contractRestructureId}`;
+        this.message = `Floating Floorplan Drawdown Your Request has been submitted to UDC Finance for processing and approval. Request Number is:${this.referenceNumber?.data?.contractId}`;
       } else {
-        this.message = `Floating Floorplan Drawdown Your Request has been submitted successfully. Request Number is: ${this.referenceNumber?.data?.contractRestructureId} The Advance will be direct credited to your nominated bank account on ${formattedDate}.`;
+        this.message = `Floating Floorplan Drawdown Your Request has been submitted successfully. Request Number is: ${this.referenceNumber?.data?.contractId} The Advance will be direct credited to your nominated bank account on ${formattedDate}.`;
       }
 
       this.svc.dialogSvc

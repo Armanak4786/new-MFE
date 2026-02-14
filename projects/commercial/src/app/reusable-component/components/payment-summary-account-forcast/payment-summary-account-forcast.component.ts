@@ -14,6 +14,7 @@ import {
   calculateForecastForOneMonth,
   calculateForecastRangeForYear,
   formatToQuarter,
+  formatToYear,
   isValidDateFormat,
   transformDateToDayMonth,
   updateColumnHeaders,
@@ -97,12 +98,12 @@ export class PaymentSummaryAccountForcastComponent {
     if (changes['paymentForcastDataList']) {
       this.totalAmt = this.getTotalAmount();
       //API not present
-      if (this.frequency === 'q') {
-        this.paymentForcastDataList.paymentForecasts = formatToQuarter(
+      if (this.frequency === 'y') {
+        this.paymentForcastDataList.paymentForecasts = formatToYear(
           this.paymentForcastDataList.paymentForecasts
         );
-      } else if (this.frequency === 'd') {
-        this.paymentForcastDataList.paymentForecasts = transformDateToDayMonth(
+      } else if (this.frequency === 'q') {
+        this.paymentForcastDataList.paymentForecasts = formatToQuarter(
           this.paymentForcastDataList.paymentForecasts
         );
       } else if (this.frequency === 'm') {

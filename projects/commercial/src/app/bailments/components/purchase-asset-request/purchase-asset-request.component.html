@@ -1,4 +1,4 @@
-<div class="grid flex pl-2">
+<div class="grid flex">
   <div class="col-12 md:col-2">
     <text
       [mode]="'label'"
@@ -7,7 +7,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-4 ml-2">
+  <div class="col-12 md:col-5">
     <text
       [mode]="'label'"
       [labelClass]="'request-settle-text label-color text-sm'"
@@ -23,7 +23,7 @@
   </div>
 </div>
 
-<div class="grid flex pl-1 pt-1">
+<div class="grid flex pt-1">
   <div class="col-12 md:col-2">
     <text
       [mode]="'label'"
@@ -32,7 +32,7 @@
     ></text>
   </div>
 
-  <div class="col-12 md:col-4 ml-2">
+  <div class="col-12 md:col-5">
     <div class="">
       <p-dropdown
         [options]="subFacilityOptionList"
@@ -40,9 +40,11 @@
         optionLabel="label"
         optionValue="value"
         (onChange)="onSubFacilityChange($event)"
+        class="flat-dropdown"
+        [panelStyleClass]="'dropdown-panel-color'"
       >
-        <ng-template let-item pTemplate="item">
-          <div [title]="item.label">{{ item.label }}</div>
+        <ng-template let-item pTemplate="selectedItem">
+          <div [pTooltip]="item.label" tooltipPosition="bottom">{{ item.label }}</div>
         </ng-template>
       </p-dropdown>
     </div>
