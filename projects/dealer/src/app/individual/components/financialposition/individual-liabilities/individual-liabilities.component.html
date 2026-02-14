@@ -1,4 +1,4 @@
-<gen-card [cardType]="'non-border'" [headerText]="'Liabilities'" [cardBgColor]="'--background-color-secondary'">
+<gen-card [cardType]="'border'" [headerText]="'Liabilities'">
   <ng-container body>
     <div class="grid">
       <label class="assetTypelabel col-4 text-size-12 pl-3">Liabilities Type</label>
@@ -42,7 +42,7 @@
                   ">
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="liabilities?.get('amtBalanceLimit').errors?.max">Amount cannot exceed (18,2)</small>
+                <small *ngIf="liabilities?.get('amtBalanceLimit').errors?.max">Maximum length should be 18 digits</small>
               </div>
             </div>
             <div class="col-2 p-fluid">
@@ -73,7 +73,7 @@
                 ">
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="liabilities?.get('amtLiability').errors?.max">Amount cannot exceed (18,2)</small>
+                <small *ngIf="liabilities?.get('amtLiability').errors?.max">Maximum length should be 18 digits</small>
               </div>
             </div>
             <div class="col-3 p-fluid">

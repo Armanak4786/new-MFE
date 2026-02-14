@@ -131,7 +131,7 @@ export class SupplierSearchResultComponent extends BaseStandardQuoteClass {
     if (this.ref) this.ref.close();
 
     this.baseSvc.activeStep = 1;
-    this.svc.router.navigateByUrl("/standard-quote");
+    this.svc.router.navigateByUrl("/dealer/standard-quote");
   }
 
   onClose(){

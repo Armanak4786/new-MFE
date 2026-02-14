@@ -24,6 +24,7 @@ import { PaymentSummaryComponent } from './components/payment-summary/payment-su
 import { QuoteOriginatorComponent } from './components/quote-originator/quote-originator.component';
 import { DealerInventoryTabComponent } from './components/search-asset/dealer-inventory-tab.component';
 import { MotocheckTabComponent } from './components/search-asset/motocheck-tab/motocheck-tab.component';
+import { AppMotocheckTabComponent } from './components/search-asset/motocheck-tab.component';
 import { SearchAssetComponent } from './components/search-asset/search-asset.component';
 import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
 import { BusinessTabComponent } from './components/search-customer/searchTabs/business-tab.component';
@@ -72,8 +73,7 @@ import { SupplierSearchResultComponent } from './components/supplier-search-resu
 import { DocumentHistoryComponent } from './components/document-history/document-history.component';
 import { DocumentEsignDetailsComponent } from './components/document-esign-details/document-esign-details.component';
 import { ContractSummeryTabsComponent } from './components/contract-summery-tabs/contract-summery-tabs.component';
-import { MotocheckSearchTabComponent } from './components/search-asset/motocheck-tab.component';
-import { InsuranceRequirementFormComponent } from './components/insurance-requirement/insurance-requirement.component';
+import { StandardInsuranceRequirementComponent } from './components/insurance-requirement/insurance-requirement.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +108,7 @@ import { InsuranceRequirementFormComponent } from './components/insurance-requir
     ReadNotesComponent,
     EditNotesComponent,
     MotocheckTabComponent,
+    AppMotocheckTabComponent,
     DealerInventoryTabComponent,
     AdditionalApprovalComponent,
     SettlementPopupComponent,
@@ -146,8 +147,7 @@ import { InsuranceRequirementFormComponent } from './components/insurance-requir
      DocumentHistoryComponent,
      DocumentEsignDetailsComponent,
      ContractSummeryTabsComponent,
-     MotocheckSearchTabComponent,
-     InsuranceRequirementFormComponent
+     StandardInsuranceRequirementComponent
   ],
   imports: [CommonModule, StandardQuoteRoutingModule, AuroUiFrameWork, IndividualModule],
   exports: [

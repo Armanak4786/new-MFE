@@ -1,7 +1,6 @@
 <gen-card
-  [cardType]="'non-border'"
+  [cardType]="'border'"
   [headerText]="'Regular Recurring Essential Outgoings'"
-  [cardBgColor]="'--background-color-secondary'"
 >
   <ng-container body>
     <div class="grid">
@@ -72,7 +71,7 @@
                 >
                   Amount should be greater than 0
                 </small>
-                <small *ngIf="regularOutgoing?.get('amtRecurring').errors?.max">Amount cannot exceed (18,2)</small>
+                <small *ngIf="regularOutgoing?.get('amtRecurring').errors?.max">Maximum length should be 18 digits</small>
               </div>
             </div>
             <div class="col-3 p-fluid">
@@ -155,7 +154,7 @@
             "
           >
             <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.min">Amount should be greater than 0</small>
-            <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.max">Amount cannot exceed (18,2)</small>
+            <small *ngIf="regularOutgoingForm.get('amtRecurring').errors?.max">Maximum length should be 18 digits</small>
           </div>
         </div>
         <div class="col-3 p-fluid">

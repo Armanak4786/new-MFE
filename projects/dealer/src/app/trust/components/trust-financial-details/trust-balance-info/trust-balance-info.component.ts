@@ -23,8 +23,8 @@ export class TrustBalanceInfoComponent extends BaseTrustClass {
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
-    cardType: 'non-border',
+    //cardBgColor: '--background-color-secondary',
+    cardType: 'border',
     fields: [
       {
         type: 'label-only',
@@ -124,7 +124,7 @@ export class TrustBalanceInfoComponent extends BaseTrustClass {
 
   override async onStepChange(quotesDetails: any): Promise<void> {
     super.onStepChange(quotesDetails);
-    this.trustSvc.updateComponentStatus("Finance Accounts", "TrustBalanceInfoComponent", this.mainForm.form.valid)
+    this.trustSvc.updateComponentStatus("Financial Position", "TrustBalanceInfoComponent", this.mainForm.form.valid)
   }
  override async onBlurEvent(event): Promise<void> {
     await this.updateValidation(event);
@@ -245,6 +245,40 @@ export class TrustBalanceInfoComponent extends BaseTrustClass {
   override renderComponentWithNewData(data?: any) {
     super.renderComponentWithNewData(data);
     this.normalizeMinDateFields();
+  }
+
+  /**
+   * Listens for changes baseformdata.
+   * When turnoverLatestYearEndingDt changes, auto-populates all balance date fields.
+   */
+  override onFormDataUpdate(res: any): void {
+    // Check if turnoverLatestYearEndingDt was the changed field
+    if (res?.changedField?.turnoverLatestYearEndingDt) {
+      const turnoverDate = res.changedField.turnoverLatestYearEndingDt;
+      if (turnoverDate && !this.isPlaceholderMinDate(turnoverDate)) {
+        this.populateAllDatesWithTurnoverDate(new Date(turnoverDate));
+      }
+    }
+  }
+
+  /**
+   * Populates all balance date fields with the turnover latest year date.
+   * Always syncs balance dates when turnover date changes.
+   */
+  private populateAllDatesWithTurnoverDate(turnoverDate: Date): void {
+    const dateFields = [
+      'cashBalLatestYrEndDt',
+      'debtorBalLatestYrEndDt',
+      'creditorBalLatestYrEndDt',
+      'overdraftBalLastYrEndDt'
+    ];
+
+    dateFields.forEach(fieldName => {
+      const control = this.mainForm?.get(fieldName);
+      if (control) {
+        control.patchValue(new Date(turnoverDate), { emitEvent: false });
+      }
+    });
   }
   
 }

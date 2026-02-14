@@ -165,6 +165,11 @@
               },
               {
                 "glob": "**/*",
+                "input": "projects/dealer/src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "**/*",
                 "input": "node_modules/auro-ui/src/auro-ui-assets",
                 "output": "/auro-ui-assets"
               }

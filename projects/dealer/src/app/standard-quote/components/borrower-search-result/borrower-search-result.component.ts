@@ -182,7 +182,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
 
   // addCustomer(customerNumber: any) {
   //   this.commonSvc.router.navigateByUrl(
-  //     `${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
+  //     `dealer/${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
   //   );
   // }
 
@@ -205,7 +205,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
 
     // Only navigate if no match
     this.commonSvc.router.navigateByUrl(
-      `${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
+      `dealer/${this.searchType}/${Mode.edit}/${this.baseFormData.contractId}/${customerNumber}`
     );
 
     if(this.searchType === "individual") {
@@ -233,7 +233,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
       this.searchType = path;
     }
     
-    this.commonSvc.router.navigateByUrl(`/${this.searchType}`);
+    this.commonSvc.router.navigateByUrl(`/dealer/${this.searchType}`);
     this.individualSvc.resetBaseDealerFormData();
     this.businessSvc.resetBaseDealerFormData();
     this.trustSvc.resetBaseDealerFormData();
@@ -289,8 +289,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
 
   redirectToHome() {
     this.baseSvc.activeStep = 1;
-    this.svc.router.navigateByUrl("/standard-quote");
-
+    this.svc.router.navigateByUrl("/dealer/standard-quote");
     this.svc.dialogSvc
           .show(SearchCustomerComponent, "Search Customer", {
             templates: {
@@ -452,11 +451,11 @@ customerQuoteOptions: { [key: string]: any[] } = {};
     if ($event.actionName === "redirectToQuoteDetails") {
     const quoteId = $event.cellData;
     // this.svc.router.navigateByUrl(
-    //   `/standard-quote/edit/${quoteId}`
+    //   `dealer/standard-quote/edit/${quoteId}`
     // );
     // this.baseSvc.mode = 'restricted';
      this.svc.router.navigateByUrl(
-       `/standard-quote/edit/${quoteId}`
+       `dealer/standard-quote/edit/${quoteId}`
      );
    }
 
@@ -476,7 +475,7 @@ customerQuoteOptions: { [key: string]: any[] } = {};
     customerStatementData: customerStatementData,
   });
     this.svc.router.navigate(
-      ["/customer-statement", loanNo],
+      ["/dealer/customer-statement", loanNo],
       { queryParams: { productCode: this.productCode } }
     );
   }

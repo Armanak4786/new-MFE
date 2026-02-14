@@ -237,8 +237,8 @@ export class TrustComponent implements OnInit, OnDestroy {
           trustCustomer?.financialDetails?.financialPositionBase
             ?.amtFurnitureValue,
         isNetProfitLastYear:
-          trustCustomer?.financialDetails?.financialPositionBase
-            ?.isNetProfitLastYear || false,
+  trustCustomer?.financialDetails?.financialPositionBase
+    ?.isNetProfitLastYear ?? null,  
         amtLastYearNetProfit:
           trustCustomer?.financialDetails?.financialPositionBase
             ?.amtLastYearNetProfit,
@@ -831,6 +831,13 @@ export class TrustComponent implements OnInit, OnDestroy {
 
     let params: any = this.route.snapshot.params;
 
+    const existingAmtFurnitureValue =
+      this.formData?.financialPositionBase?.amtFurnitureValue ??
+      this.formData?.amtFurnitureValue ??
+      this.formData?.TrustFinancialDetailRes?.data?.financialDetails
+        ?.financialPositionBase?.amtFurnitureValue ??
+      0;
+
     const financialDetailbody = {
       financialPositionBase: {
         financialPositionBaseId: this.formData?.financialPositionBaseId || (this.formData.TrustFinancialDetailRes?.data?.financialDetails?.financialPositionBase?.financialPositionBaseId) || 0,
@@ -845,8 +852,9 @@ export class TrustComponent implements OnInit, OnDestroy {
         homeOwnership: this.formData.assestHomeOwnerType || 0,
         amtHomeValue: this.formData.financialAssetDetails?.[0]?.amount || 0,
         amtVehicleValue: this.formData.financialAssetDetails?.[1]?.amount || 0,
-        amtFurnitureValue:
-          this.formData.financialAssetDetails?.[2]?.amount || 0,
+        // Trust SSOP should not map "Other" assets into Furniture & Effects Value.
+        // Preserve any existing backend value, otherwise default to 0.
+        amtFurnitureValue: existingAmtFurnitureValue,
         amtTakeHomePay: this.formData.incomeDetails?.[0]?.amount,
         takeHomePayFrequency: this.formData.incomeDetails?.[0]?.frequency,
         amtSpousePay: this.formData.incomeDetails?.[1]?.amount,
@@ -1458,7 +1466,7 @@ export class TrustComponent implements OnInit, OnDestroy {
   steps = [
     { label: "Trust Details" },
     { label: "Address Details" },
-    { label: "Finance Accounts" },
+    { label: "Financial Position" },
     { label: "Trustee Details" },
     { label: "Contact Details" },
   ];
@@ -1532,7 +1540,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             let mode = this.standardQuoteSvc.mode;
             if (trusteeContactUpdateResponse) {
               this.commonSvc.router.navigateByUrl(
-                `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+                `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
                 }`
               );
               this.standardQuoteSvc.activeStep = 1;
@@ -1542,7 +1550,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             let mode = this.standardQuoteSvc.mode;
             if (trusteeContactUpdateResponse) {
               this.commonSvc.router.navigateByUrl(
-                `/standard-quote/edit/${this.contractId || Number(this.params.contractId)
+                `/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)
                 }`
               );
               this.standardQuoteSvc.activeStep = 1;
@@ -2206,11 +2214,11 @@ export class TrustComponent implements OnInit, OnDestroy {
         this.trustSvc.showValidationMessage = false; //this flag is for mark all as read for all the customer components
         // if (this.mode == "create") {
         //   this.standardQuoteSvc.mode = "create";
-        //   this.commonSvc.router.navigateByUrl(`/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
+        //   this.commonSvc.router.navigateByUrl(`/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
         //   this.standardQuoteSvc.activeStep = 1;
         // } else if (this.mode == "edit" || this.mode == "view") {
         //   this.standardQuoteSvc.mode = "edit";
-        //   this.commonSvc.router.navigateByUrl(`/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
+        //   this.commonSvc.router.navigateByUrl(`/dealer/standard-quote/edit/${this.contractId || Number(this.params.contractId)}`);
         //   this.standardQuoteSvc.activeStep = 1;
         // }
 
@@ -2219,7 +2227,7 @@ export class TrustComponent implements OnInit, OnDestroy {
           this.standardQuoteSvc.setBaseDealerFormData({
             CustomerID: this.formData.CustomerID,
           });
-          this.commonSvc.router.navigateByUrl("/standard-quote");
+          this.commonSvc.router.navigateByUrl("/dealer/standard-quote");
           this.trustSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
         } else if (this.mode == "edit" || this.mode == "view") {
@@ -2229,7 +2237,7 @@ export class TrustComponent implements OnInit, OnDestroy {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/standard-quote/${mode}/${params.contractId}`
+            `/dealer/standard-quote/${mode}/${params.contractId}`
           );
           this.trustSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;

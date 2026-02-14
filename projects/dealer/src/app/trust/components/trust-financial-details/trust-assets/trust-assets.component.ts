@@ -127,7 +127,6 @@ export class TrustAssetsComponent extends BaseTrustClass {
       const getAssetfromAPI = [
         { assestType: 'Personal Property', amount: this.baseFormData?.financialPositionBase?.amtHomeValue},
         { assestType: 'Vehicle Value', amount: this.baseFormData?.financialPositionBase?.amtVehicleValue },
-        { assestType: 'Furniture & Effects Value', amount: this.baseFormData?.financialPositionBase?.amtFurnitureValue },
       ];
       getAssetfromAPI.forEach((asset) => this.addAssetToForm(asset));
 
@@ -136,7 +135,7 @@ export class TrustAssetsComponent extends BaseTrustClass {
       
 
 
-      if(this.assetDetails.length === 3){
+      if(this.assetDetails.length === 2){
       this.baseFormData?.financialPositionAsset.forEach((asset: any) => {
         const assetType = asset.assetDescription
         this.addAssetToForm({
@@ -166,7 +165,6 @@ export class TrustAssetsComponent extends BaseTrustClass {
       const initialAssets = [
         { assestType: 'Personal Property',assestHomeOwnerType: this.baseFormData.assestHomeOwnerType, amount: this.baseFormData.financialAssetDetails?.[0]?.amount || 0 },
         { assestType: 'Vehicle Value', amount: this.baseFormData.financialAssetDetails?.[1]?.amount || 0 },
-        { assestType: 'Furniture & Effects Value', amount: this.baseFormData.financialAssetDetails?.[2]?.amount || 0 },
       ];
       initialAssets.forEach((asset) => this.addAssetToForm(asset));
 
@@ -345,7 +343,7 @@ isDisabled(): boolean {
       let newAssetDetails : any[] = []
   
       this.assetDetails.value.forEach((item, index) => {
-        if(index > 2){
+        if(index > 1){
         const additionalAsset = {
               financialPositionAssetId: item.financialPositionAssetId,
               // financialPositionBaseId: 0,
@@ -486,7 +484,7 @@ isDisabled(): boolean {
         }
       }
       super.onStepChange(stepperDetails);
-      this.trustSvc.updateComponentStatus("Finance Accounts", "TrustAssetsComponent", this.assetDetails.valid)
+      this.trustSvc.updateComponentStatus("Financial Position", "TrustAssetsComponent", this.assetDetails.valid)
     }
 
 

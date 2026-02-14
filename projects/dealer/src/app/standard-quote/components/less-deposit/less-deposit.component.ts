@@ -3,6 +3,7 @@ import {
   Output,
   EventEmitter,
   ChangeDetectorRef,
+  effect,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { CloseDialogData, CommonService, GenericFormConfig, Mode } from "auro-ui";
@@ -14,7 +15,8 @@ import { Validators } from "@angular/forms";
 import { SettlementQuotePopupComponent } from "../settlement-quote-popup/settlement-quote-popup.component";
 import { ToasterService, ValidationService } from "auro-ui";
 import { AssetTradeSummaryService } from "../asset-insurance-summary/asset-trade.service";
-import configure from "../../../../../public/assets/configure.json";
+// import configure from "../../../../../../../../../src/assets/configure.json";
+import { takeUntil } from "rxjs";
 
 
 @Component({
@@ -25,10 +27,11 @@ import configure from "../../../../../public/assets/configure.json";
 export class LessDepositComponent extends BaseStandardQuoteClass {
   @Output() updateAmount: EventEmitter<number> = new EventEmitter();
   cashPrice: any;
+  
   contractactivationStatus:boolean=true;
   override title: string = "Less Deposit";
   private userModifiedSettlement = false;
-
+private isUpdatingFromTrade = false;
 // Do not remove below commented code - kept for reference
   // override formConfig: GenericFormConfig = {
   //   // headerTitle: "Less Deposit",
@@ -158,6 +161,14 @@ export class LessDepositComponent extends BaseStandardQuoteClass {
   ) {
     super(route, svc, baseSvc);
 
+    effect(async () => {
+      const trigger = this.baseSvc.triggerAllComponentsDuringWorkflowChange();
+      if(trigger > 0){
+        await this.updateValidation("onInit");
+        this.settlementValidationCheck();
+      }
+    }, { allowSignalWrites: true });
+
     const config = this.validationSvc?.validationConfigSubject.getValue();
     const filteredValidations = this.validationSvc?.filterValidation(
     config,this.modelName, this.pageCode);
@@ -178,40 +189,52 @@ const cashPerInHundredths = Math.floor((depositCents * 10000) / cashPriceCents);
 const roundedCashPer = cashPerInHundredths / 100;
 
         this.mainForm.get("depositPct").patchValue(isNaN(roundedCashPer) ? "" : roundedCashPer);
-        this.tradeSvc.tradeListSubject.subscribe((res)=>{
+        
+        // INITIAL LOAD: Calculate trade amount from existing trades when loading contract
+        // This runs regardless of isAssetTrade flag (for existing contracts from dashboard)
+        if (this.baseFormData?.tradeInAssetRequest?.length > 0) {
+          let initialTradeTotal = 0;
+          const activeTrades = this.baseFormData.tradeInAssetRequest.filter(t => t.changeAction !== 'delete');
+          activeTrades.forEach((trade: any) => {
+            if (trade.tradeAssetValue) {
+              initialTradeTotal += Number(trade.tradeAssetValue);
+            }
+          });
+          if (initialTradeTotal > 0) {
+            this.mainForm.get("tradeAmountPrice").patchValue(initialTradeTotal, { emitEvent: false });
+            this.baseFormData.tradeAmountPrice = initialTradeTotal;
+            this.baseFormData.netTradeAmount = initialTradeTotal;
+            this.mainForm.get("netTradeAmount").patchValue(initialTradeTotal, { emitEvent: false });
+          }
+        }
+        
+        // SUBSEQUENT UPDATES: Subscribe for real-time updates when trades are added/edited/deleted
+        this.tradeSvc.tradeListSubject.pipe(takeUntil(this.destroy$)).subscribe((res)=>{
       if (this.baseFormData.tradeInAssetRequest) {
         let totalTradeAssetValue = 0; 
-       const tradeInAssetRequest = res.filter(t => t.changeAction !== 'delete');       
+        const tradeInAssetRequest = res.filter(t => t.changeAction !== 'delete');       
         tradeInAssetRequest.forEach((asset: any) => {
           if (asset.tradeAssetValue) {
-            totalTradeAssetValue += Number(asset.tradeAssetValue); // Convert to number and add
+            totalTradeAssetValue += Number(asset.tradeAssetValue);
           }
         });
         if(this.baseSvc.isAssetTrade){
-          this.mainForm.get("tradeAmountPrice").patchValue(totalTradeAssetValue);
+          this.isUpdatingFromTrade = true;
+          this.mainForm.get("tradeAmountPrice").patchValue(totalTradeAssetValue, { emitEvent: false });
           this.baseFormData.tradeAmountPrice = totalTradeAssetValue;
-          this.baseFormData.netTradeAmount = totalTradeAssetValue
-        }else{
-           this.mainForm.get("tradeAmountPrice").patchValue(this.baseFormData?.tradeAmount || 0);
+          this.baseFormData.netTradeAmount = totalTradeAssetValue;
+          this.mainForm.get("netTradeAmount").patchValue(totalTradeAssetValue, { emitEvent: false });
+          this.isUpdatingFromTrade = false;
+        } else if (totalTradeAssetValue > 0) {
+          // For existing contracts: update if trades exist but isAssetTrade is false
+          this.mainForm.get("tradeAmountPrice").patchValue(totalTradeAssetValue, { emitEvent: false });
+          this.baseFormData.tradeAmountPrice = totalTradeAssetValue;
+          this.baseFormData.netTradeAmount = totalTradeAssetValue;
+          this.mainForm.get("netTradeAmount").patchValue(totalTradeAssetValue, { emitEvent: false });
         }
-        
-        //comented as per new calcualtion that net trade amount value is not depend on cash deposit value
-        // if (totalTradeAssetValue > 0) {
-        //   console.log("totalTradeAssetValue ---------------",this.baseFormData)
-        //   this.mainForm.get("netTradeAmount").patchValue(Math.abs(totalTradeAssetValue) - 
-        //       (this.mainForm.get("deposit").value > 1 ? this.mainForm.get("deposit").value: 0)
-        //     );
-        //     this.baseFormData.netTradeAmount = Math.abs(totalTradeAssetValue) -
-        //         (this.mainForm.get("deposit").value > 1
-        //           ? this.mainForm.get("deposit").value
-        //           : 0);
-
-        // }
       } 
       else {
-         this.mainForm
-          .get("tradeAmountPrice")
-          .patchValue(0);
+        this.mainForm.get("tradeAmountPrice").patchValue(0);
         this.mainForm.get("netTradeAmount").patchValue(0);
       }
     })
@@ -296,12 +319,8 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
     //   });
     // }
 
-    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
-          this.settlementButtonClickable = false;
-            this.mainForm.updateDisable({
-              settlementButton: true,
-            });
-          }
+    // Re-evaluate settlement button state whenever workflow status changes
+    this.settlementValidationCheck();
   }
 
   async init() {
@@ -375,7 +394,7 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
             getSettlementAmountData: data?.data,
           });
           this.svc.router.navigateByUrl(
-            "/standard-quote/settlement-quote-details"
+            "/dealer/standard-quote/settlement-quote-details"
           );
         }
 
@@ -389,7 +408,7 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
             })
             .onClose.subscribe((data: CloseDialogData) => {
               this.svc.router.navigateByUrl(
-                "/standard-quote/settlement-quote-details"
+                "/dealer/standard-quote/settlement-quote-details"
               );
               // if(data?.data?.checkboxs)
               // {
@@ -412,8 +431,9 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
       });
   }
 
- override onValueTyped(event: any) {
+override onValueTyped(event: any) {
   this.baseSvc?.forceToClickCalculate.next(true);
+  
   if (event.name == "deposit" && this.baseFormData?.cashPriceValue > 0) {
     this.convertAmountToPct("depositPct", event.data);
     this.baseSvc?.forceCalculateBeforeSchedule.next(true);
@@ -424,37 +444,57 @@ this.baseSvc.getBaseDealerFormData().subscribe((res) => {
     this.convertPctToAmount("deposit", event.data);
   }
   
-  
   if (event.name == "cashPriceValue" || event.name == "cashPrice") {
     const currentPct = this.mainForm?.get("depositPct")?.value;
     if (currentPct && currentPct > 0 && event.data > 0) {
-
       this.cashPrice = event.data;
       this.convertPctToAmount("deposit", currentPct);
     }
   }
-  if (event.name == "tradeAmountPrice" ) {
-        let tradeAmountPrice = this.mainForm.get("tradeAmountPrice").value || 0;
-      if ( tradeAmountPrice >= 0 ) {
-      this.baseFormData.netTradeAmount = this.mainForm.get("netTradeAmount").patchValue(
-            Math.abs(
-              tradeAmountPrice - 0
-            )
-          );
-          this.tradeSvc.updateTradeAmountForAddTrade(tradeAmountPrice);
-          ;
+  
+  if (event.name == "tradeAmountPrice" && !this.isUpdatingFromTrade) {
+    let tradeAmountPrice = event.data || 0;
+    
+    if (tradeAmountPrice >= 0) {
+      this.mainForm.get("netTradeAmount").patchValue(Math.abs(tradeAmountPrice), { emitEvent: false });
+      this.baseFormData.netTradeAmount = Math.abs(tradeAmountPrice);
+      this.baseFormData.tradeAmountPrice = tradeAmountPrice;
+      
+      // Store value in service for when adding first trade
+      this.tradeSvc.updateTradeAmountForAddTrade(tradeAmountPrice);
+      
+      // Only update individual trade value if there's exactly ONE trade
+      // For multiple trades, the trade amount is the SUM - don't overwrite individual values
+      const activeTrades = this.tradeSvc.tradeList.filter(t => t.changeAction !== 'delete');
+      if (activeTrades.length === 1) {
+        const tradeAmountString = String(tradeAmountPrice);
+        this.tradeSvc.tradeList = this.tradeSvc.tradeList.map(trade => {
+          if (trade.changeAction !== 'delete') {
+            return { ...trade, tradeAssetValue: tradeAmountString };
+          }
+          return trade;
+        });
+        this.tradeSvc.tradeListSubject.next([...this.tradeSvc.tradeList]);
+        
+        if (this.baseFormData.tradeInAssetRequest && this.baseFormData.tradeInAssetRequest.length === 1) {
+          this.baseFormData.tradeInAssetRequest = this.baseFormData.tradeInAssetRequest.map(trade => ({
+            ...trade,
+            tradeAssetValue: tradeAmountString
+          }));
+        }
       }
     }
+  }
 
-    if (event.name === "settlementAmount") {
-    this.userModifiedSettlement = true; // Set flag when user modifies
+  if (event.name === "settlementAmount") {
+    this.userModifiedSettlement = true;
     this.baseFormData.settlementAmount = event.data;
     this.baseSvc.setBaseDealerFormData({
       settlementAmount: event.data
     });
   }
- 
 }
+
 
 
  convertPctToAmount(name: string, val: number) {
@@ -664,23 +704,28 @@ convertAmountToPct(name: string, val: number) {
   private settlementButtonClickable:boolean=false;
   settlementValidationCheck()
   {
-    if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus)))
-     {
-       this.settlementButtonClickable = false;
-     this.mainForm.updateDisable({
-        settlementButton: true,
-      });
+   // Check workflow status FIRST - if in view/edit states, disable and return early
+   if(this.mainForm?.get("settlementButton")?.disabled)
+    {
+      this.settlementButtonClickable = false;
+      this.mainForm?.updateProps("settlementButton", { disabled: true });
       return;
-     }
-
+    }
+    
+   // Only enable if contractId exists AND workflow status check passed
    if(this.baseFormData.hasOwnProperty('contractId') && this.baseFormData.contractId != undefined)//'contractId' in this.baseFormData  !=undefined 
      {
       this.settlementButtonClickable = true;
-      this.mainForm.updateDisable({
-        settlementButton: false,
-      });
+        // this.mainForm.updateDisable({
+        //   settlementButton: false,
+        // });
+        this.mainForm?.updateProps("settlementButton", { disabled: false });
      }
-     
+     else {
+      // If no contractId, disable the button
+      this.settlementButtonClickable = false;
+      this.mainForm?.updateProps("settlementButton", { disabled: true });
+     }
     }
 
   async updateValidation(event) {

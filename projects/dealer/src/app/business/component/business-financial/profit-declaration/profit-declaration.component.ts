@@ -24,12 +24,12 @@ export class ProfitDeclarationComponent extends BaseBusinessClass {
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
-    cardType: "non-border",
+    //cardBgColor: '--background-color-secondary',
+    cardType: "border",
     fields: [
       {
         type: 'radio',
-        label: 'Did you make a net profit last year?',
+        label: 'Did you make a Net Profit last year?',
         // name: 'isProfit',
         name: 'isNetProfitLastYear',
         // validators: [Validators.required],
@@ -46,7 +46,7 @@ export class ProfitDeclarationComponent extends BaseBusinessClass {
       },
       {
         type: 'amount',
-        label: 'Net Profit Last Year',
+        label: 'Net Profit last year',
         // name: 'netProfit',
         name: 'amtLastYearNetProfit',
         // validators: [Validators.required],
@@ -54,6 +54,7 @@ export class ProfitDeclarationComponent extends BaseBusinessClass {
         className : 'px-0',
         nextLine: false,
         default: 0,
+        inputType:'vertical',
         hidden: true
       },
     ],
@@ -126,6 +127,17 @@ export class ProfitDeclarationComponent extends BaseBusinessClass {
   // }
 
   override async onFormReady(): Promise<void> {
+    const isNetProfitValue = this.mainForm.get('isNetProfitLastYear')?.value;
+    if (isNetProfitValue === true) {
+      this.mainForm.updateHidden({
+        amtLastYearNetProfit: false
+      });
+    } else {
+      this.mainForm.updateHidden({
+        amtLastYearNetProfit: true
+      });
+    }
+    
     await this.updateValidation("onInit");
     super.onFormReady();
   }

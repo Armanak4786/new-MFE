@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { BaseTrustClass } from '../../../base-trust.class';
 import { TrustService } from '../../../services/trust.service';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,8 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
     public override route: ActivatedRoute,
     public override svc: CommonService,
     override baseSvc: TrustService,
-    public validationSvc: ValidationService
+    public validationSvc: ValidationService,
+     private cdr: ChangeDetectorRef,
   ) {
     super(route, svc, baseSvc);
   }
@@ -24,12 +25,12 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
-    cardType: "non-border",
+    //cardBgColor: '--background-color-secondary',
+    cardType: "border",
     fields: [
       {
         type: 'radio',
-        label: 'Did you make a net profit last year?',
+        label: 'Did you make a Net Profit last year?',
         // name: 'isProfit',
         name: 'isNetProfitLastYear',
         // validators: [Validators.required],
@@ -52,6 +53,7 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
         // validators: [Validators.required],
         cols: 4,
         nextLine: false,
+        inputType:'vertical',
         hidden: true,
         className: 'px-0',
         default: 0,
@@ -82,25 +84,22 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
   }
 
     override onFormEvent(event: any) {
-      // console.log(event)
-      if(event.name === "isNetProfitLastYear" && event.value === false){
+    if (event.name === "isNetProfitLastYear" && event.value === false) {
       this.mainForm.updateHidden({
-        amtLastYearNetProfit : true
-      })
-      this.mainForm.get('amtLastYearNetProfit').patchValue(0)
-      // console.log("test",this.mainForm.value)
+        amtLastYearNetProfit: true
+      });
+      this.mainForm.get('amtLastYearNetProfit').patchValue(0);
+      this.cdr.detectChanges();
     }
-    if(event.name === "isNetProfitLastYear" && event.value === true){
+    if (event.name === "isNetProfitLastYear" && event.value === true) {
       this.mainForm.updateHidden({
-        amtLastYearNetProfit : false
-      })
-      // this.mainForm.get("amtLastYearNetProfit").setValidators([Validators.required, Validators.min(1)])
-      // this.mainForm.updateProps("amtLastYearNetProfit",  { errorMessage: "Amount is required"})
-      }
-      super.onFormEvent(event);
-      this.updateValidation('onInit');
-
-     }
+        amtLastYearNetProfit: false
+      });
+      this.cdr.detectChanges();
+    }
+    super.onFormEvent(event);
+    this.updateValidation('onInit');
+  }
 
     // override onFormDataUpdate(res: any): void {          //For retention of value during step change
     //   // console.log(res)
@@ -124,7 +123,7 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
   
    override async onStepChange(quotesDetails: any): Promise<void> {
     super.onStepChange(quotesDetails);
-    this.trustSvc.updateComponentStatus("Finance Accounts", "TrustProfitDeclarationComponent", this.mainForm.form.valid)
+    this.trustSvc.updateComponentStatus("Financial Position", "TrustProfitDeclarationComponent", this.mainForm.form.valid)
 
     if(this.trustSvc.showValidationMessage){
       let invalidPages = this.checkStepValidity()
@@ -140,6 +139,17 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
   // }
 
   override async onFormReady(): Promise<void> {
+    const isNetProfitValue = this.mainForm.get('isNetProfitLastYear')?.value;
+    if (isNetProfitValue === true) {
+      this.mainForm.updateHidden({
+        amtLastYearNetProfit: false
+      });
+    } else {
+      this.mainForm.updateHidden({
+        amtLastYearNetProfit: true
+      });
+    }
+    
     await this.updateValidation("onInit");
     super.onFormReady();
   }
@@ -149,12 +159,15 @@ export class TrustProfitDeclarationComponent extends BaseTrustClass {
   }
 
   override async onValueEvent(event): Promise<void> {
-    
-    await this.updateValidation(event);
+    if(event.name === "isNetProfitLastYear"){
+      await this.updateValidation(event);
+    }
   }
   
   override async onValueTyped(event: any): Promise<void> {
+    if(event.name === "isNetProfitLastYear"){
       await this.updateValidation(event);
+    }
   }
 
   async updateValidation(event) {

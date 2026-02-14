@@ -110,7 +110,7 @@ export class NotificationComponent implements OnInit {
     this.standardQuoteSvc.mode = "create";
     this.standardQuoteSvc.accessMode = "create";
 
-    this.router.navigateByUrl("/standard-quote");
+    this.router.navigateByUrl("/dealer/standard-quote");
     this.standardQuoteSvc.calculatedOnce = false;
   }
   quickquote(data: any) {
@@ -133,7 +133,7 @@ export class NotificationComponent implements OnInit {
     //   productCode: data.code,
     // });
     // sessionStorage.setItem("productCode", data.code || null);
-    this.router.navigateByUrl("/quick-quote");
+    this.router.navigateByUrl("/dealer/quick-quote");
     //this.standardQuoteSvc.calculatedOnce = false;
   }
 }

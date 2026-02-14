@@ -1,7 +1,6 @@
 <gen-card
   [headerText]="'Expenditure'"
-  [cardBgColor]="'--background-color-secondary'"
-  [cardType]="'non-border'"
+  [cardType]="'border'"
 >
   <ng-container body>
     <div class="grid">
@@ -73,7 +72,7 @@
                   Amount should be greater than 0
                 </small>
                 <small *ngIf="expenditure?.get('amtExpenditure').errors?.max"
-                  >Amount cannot exceed (18,2)</small
+                  >Maximum length should be 18 digits</small
                 >
               </div>
             </div>

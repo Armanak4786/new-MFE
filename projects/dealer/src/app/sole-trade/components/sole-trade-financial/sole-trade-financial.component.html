@@ -1,6 +1,6 @@
 <div class="grid">
   <div class="col-12" *ngIf="formData?.role === 2 && showSSOP">
-    <gen-card [cardType]="'non-border'">
+    <gen-card [cardType]="'border'">
       <div body>
         <div class="flex align-items-center">
           <label class="mr-3">Is all income and expenses shared between Borrower and Co-borrower?</label>
@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="col-12 md:col-6 lg:col-6 sm:col-12">
-        <gen-card [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'" [headerText]="'Personal Statement of Position'">
+        <gen-card [cardType]="'border'" [headerText]="'Personal Statement of Position'">
           <ng-container body>
             <!-- <p class="m-0 p-0">(Sole Trader/Individual)</p> -->
             <p-divider></p-divider>
@@ -53,7 +53,7 @@
   <ng-template #guarantorLayout>
     <div class="grid mt-2">
       <div class="col-12 md:col-6 lg:col-6 sm:col-12">
-        <gen-card [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'">
+        <gen-card [cardType]="'border'">
           <ng-container body>
             <p class="p-0 font-bold">Assets</p>
             <app-sole-trade-assets></app-sole-trade-assets>
@@ -61,7 +61,7 @@
         </gen-card>
       </div>
       <div class="col-12 md:col-6 lg:col-6 sm:col-12">
-        <gen-card [cardBgColor]="'--background-color-secondary'" [cardType]="'non-border'">
+        <gen-card [cardType]="'border'">
           <ng-container body>
             <p class="p-0 font-bold">Liabilities</p>
             <app-sole-trade-liabilities></app-sole-trade-liabilities>

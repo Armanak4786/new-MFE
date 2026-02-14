@@ -5,7 +5,7 @@ import { DynamicDialogConfig } from "primeng/dynamicdialog";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../../services/standard-quote.service";
 import { Validators } from "@angular/forms";
- 
+import { isWorkflowStatusInEdit } from "../../utils/workflow-status.utils";
  
 @Component({
   selector: "app-add-existing-contact-signatories",
@@ -15,7 +15,7 @@ import { Validators } from "@angular/forms";
 })
 export class AddExistingContactSignatoriesComponent extends BaseStandardQuoteClass {
   @Input() signatoriesData: any;
- 
+
    customerContactId:any
    contactPartyId: any
    contactPartyNo:any
@@ -28,6 +28,7 @@ export class AddExistingContactSignatoriesComponent extends BaseStandardQuoteCla
    classification: any
    legalName:any
    maxSigningOrder:any = 0
+   isSignatoryDisabled: boolean = false;
  
   override formConfig: GenericFormConfig = {
     api: "",
@@ -367,7 +368,9 @@ export class AddExistingContactSignatoriesComponent extends BaseStandardQuoteCla
   }
  
   override async ngOnInit(): Promise<void> {
-    super.ngOnInit();
+    super.ngOnInit();  
+    // Check workflow status to disable signatory toggle
+    this.isSignatoryDisabled = isWorkflowStatusInEdit(this.baseFormData?.AFworkflowStatus);
   }
  
   override async onFormReady(): Promise<void> {
@@ -396,8 +399,19 @@ export class AddExistingContactSignatoriesComponent extends BaseStandardQuoteCla
 });
  
   // await this.updateValidation("onInit");
+  // Disable signatory toggle when workflow status is in edit list
+  this.applySignatoryToggleDisabledState();
   super.onFormReady();
- 
+
+  }
+
+  // Helper method to apply signatory toggle disabled state
+  private applySignatoryToggleDisabledState(): void {
+    const shouldDisable = this.isSignatoryDisabled || isWorkflowStatusInEdit(this.baseFormData?.AFworkflowStatus);
+    if (shouldDisable) {
+      this.isSignatoryDisabled = true; 
+      this.mainForm?.updateProps("existingSignatory", { mode: Mode.view});
+    }
   }
  
   override async onFormEvent(event: any): Promise<void> {

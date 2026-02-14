@@ -89,6 +89,8 @@ export class DashboardComponent extends BaseStandardQuoteClass implements OnInit
     this.storageSvc.removeItem("contractEtag");
     this.storageSvc.removeItem("updatedCustomerSummary");
     this.standardQuoteSvc.activeStep = 0;
+    this.storageSvc.removeItem("workFlowStatus");
+    this.storageSvc.removeItem("assetType");
 
     this.showCommonDashboard = sessionStorage?.getItem("externalUserType") === "Internal" ? false : true;
 

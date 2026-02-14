@@ -303,7 +303,7 @@ describe("SearchCustomerComponent", () => {
     expect(trustSvc.activeStep).toBe(0);
 
     // Assert: Check that the router navigated to the expected URL
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith("/individual");
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith("/dealer/individual");
 
     // Assert: Check that resetBaseDealerFormData was called for each service
     expect(individualSvc.resetBaseDealerFormData).toHaveBeenCalled();

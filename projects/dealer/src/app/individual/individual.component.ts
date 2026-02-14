@@ -1715,7 +1715,7 @@ async employmentDetailsPost() {
             let mode = this.standardQuoteSvc.mode;
             if (referenceDetailResponse) {
               this.commonSvc.router.navigateByUrl(
-                `/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
+                `/dealer/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
                 }`
               );
               this.standardQuoteSvc.activeStep = 1;
@@ -1725,7 +1725,7 @@ async employmentDetailsPost() {
             let mode = this.standardQuoteSvc.mode;
             if (referenceDetailResponse) {
               this.commonSvc.router.navigateByUrl(
-                `/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
+                `/dealer/standard-quote/edit/${this.contractId || Number(paramsUrl?.contractId)
                 }`
               );
               this.standardQuoteSvc.activeStep = 1;
@@ -2028,7 +2028,7 @@ async employmentDetailsPost() {
           this.standardQuoteSvc.setBaseDealerFormData({
             CustomerID: this.formData.CustomerID,
           });
-          this.commonSvc.router.navigateByUrl("/standard-quote");
+          this.commonSvc.router.navigateByUrl("/dealer/standard-quote");
           this.individualSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;
         } else if (this.mode == "edit" || this.mode == "view") {
@@ -2038,7 +2038,7 @@ async employmentDetailsPost() {
             CustomerID: this.formData.CustomerID,
           });
           this.commonSvc.router.navigateByUrl(
-            `/standard-quote/${mode}/${params.contractId}`
+            `/dealer/standard-quote/${mode}/${params.contractId}`
           );
           this.individualSvc.resetBaseDealerFormData();
           this.standardQuoteSvc.activeStep = 1;

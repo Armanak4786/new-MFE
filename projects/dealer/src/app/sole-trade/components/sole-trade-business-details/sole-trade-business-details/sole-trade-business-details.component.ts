@@ -3,7 +3,7 @@ import { BaseSoleTradeClass } from "../../../base-sole-trade.class";
 import { ActivatedRoute } from "@angular/router";
 import { CommonService, GenericFormConfig, ValidationService } from "auro-ui";
 import { SoleTradeService } from "../../../services/sole-trade.service";
-import configure from "../../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { SoleTradeCitizenshipDetailComponent } from "../sole-trade-citizenship-detail/sole-trade-citizenship-detail.component";
 
 @Component({
@@ -32,8 +32,8 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
     headerTitle: "Business Details",
     api: "soleTradeBusinessDetail",
     goBackRoute: "soleTradeBusinessDetail",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    //cardBgColor: "--background-color-secondary",
+    cardType: "border",
     fields: [
       {
         type: "text",
@@ -68,7 +68,7 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
 
       {
         type: "select",
-        label: "Primary Nature Of Business",
+        label: "Primary Nature of Business",
         name: "natureOfBusiness",
         alignmentType: "vertical",
         // options: [
@@ -140,10 +140,10 @@ export class SoleTradeBusinessDetailsComponent extends BaseSoleTradeClass {
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
 
+    await this.loadNatureOfBusinessOptions();
     if(this.baseSvc.showValidationMessage){
-      this.mainForm.form.markAllAsTouched()
+      this.mainForm?.form?.markAllAsTouched()
     }
-   await this.loadNatureOfBusinessOptions();
   }
 
   async loadNatureOfBusinessOptions(): Promise<void> {
@@ -201,6 +201,10 @@ this.mainForm?.updateList("natureOfBusiness", natureOfBusinesslist);
         this.mainForm?.form?.disable();
       }
       else{ this.mainForm?.form?.enable();}
+
+      if(this.baseSvc?.showValidationMessage){
+       this.mainForm?.form?.markAllAsTouched()
+      }
   }
   override onFormEvent(event: any): void {
     super.onFormEvent(event);
@@ -228,6 +232,7 @@ this.mainForm?.updateList("natureOfBusiness", natureOfBusinesslist);
   }
 override async onBlurEvent(event): Promise<void> {
     await this.updateValidation(event);
+    this.checkTimeinBusinessSoleTrade();
   }
 
   
@@ -235,6 +240,7 @@ override async onBlurEvent(event): Promise<void> {
 
   override async onValueEvent(event): Promise<void> {
     await this.updateValidation(event?.target?.value || event);
+    this.checkTimeinBusinessSoleTrade();
   }
 
   override async onValueTyped(event: any): Promise<void> {
@@ -261,4 +267,16 @@ override async onBlurEvent(event): Promise<void> {
     }
 
     return responses.status;
-  }}
+  }
+  checkTimeinBusinessSoleTrade(): void {
+    const yCtrl = this.mainForm.get("timeInBusinessYears");
+    const mCtrl = this.mainForm.get("timeInBusinessMonths");
+    const yearValue = yCtrl?.value;
+    const monthValue = mCtrl?.value;
+    if (yearValue == 0 && monthValue == 0) {
+      yCtrl?.setErrors({ required: true });
+      mCtrl?.setErrors({ required: true });
+    } 
+  }
+}
+

@@ -92,7 +92,7 @@ export class ReferenceDetailsComponent extends BaseIndividualClass {
       },
       {
         type: "select",
-        label: "Mobile",
+        label: "Business Number",
         name: "businessMobile",
         alignmentType: "vertical",
         // placeholder: "Code",
@@ -325,7 +325,7 @@ export class ReferenceDetailsComponent extends BaseIndividualClass {
       // },
       {
         type: "phone",
-        // placeholder: 'Area Code',
+        placeholder: "Area Code",
         name: "businessAreaCode",
         labelClass: "hidden",
         cols: 1,
@@ -669,6 +669,7 @@ export class ReferenceDetailsComponent extends BaseIndividualClass {
         // placeholder: 'Area Code',
         name: "individualAreaCode",
         cols: 1,
+        placeholder: "Area Code",
         // maxLength: 4,
         // validators: [Validators.pattern('^[0-9]{1,5}$')],
         className: "mt-7 pt-2 pr-3",

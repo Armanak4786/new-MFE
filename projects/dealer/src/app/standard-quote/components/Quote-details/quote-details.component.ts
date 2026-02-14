@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, SimpleChanges } from "@angular/core";
+import { ChangeDetectorRef, Component, effect, Input, SimpleChanges } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { CommonService, GenericFormConfig, Mode } from "auro-ui";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
@@ -276,6 +276,15 @@ export class QuoteDetailsComponent extends BaseStandardQuoteClass {
     public validationSvc: ValidationService
   ) {
     super(route, svc, standardQuoteSvc);
+
+    effect(async () => {
+      const trigger = this.standardQuoteSvc.triggerAllComponentsDuringWorkflowChange();
+      if(trigger > 0){
+        await this.updateValidation("onInit");
+      }
+    }, { allowSignalWrites: true });
+
+    
     const config = this.validationSvc?.validationConfigSubject.getValue();
     this.filteredValidations = this.validationSvc?.filterValidation(
     config,this.modelName,this.pageCode);
@@ -528,11 +537,11 @@ if (!productId || !programId || !physicalAsset?.length || !physicalAsset[0]?.ass
         let id = params.get("id");
         if (id) {
           this.svc.router.navigateByUrl(
-            "/standard-quote/add-on-accessories"
+            "/dealer/standard-quote/add-on-accessories"
           );
         } else {
           this.svc.router.navigateByUrl(
-            `/standard-quote/add-on-accessories`
+            `/dealer/standard-quote/add-on-accessories`
           );
         }
       });

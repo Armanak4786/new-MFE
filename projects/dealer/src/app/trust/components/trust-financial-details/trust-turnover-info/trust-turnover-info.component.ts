@@ -25,8 +25,8 @@ export class TrustTurnoverInfoComponent extends BaseTrustClass implements OnDest
     autoResponsive: true,
     api: '',
     goBackRoute: '',
-    cardBgColor: '--background-color-secondary',
-    cardType: 'non-border',
+    //cardBgColor: '--background-color-secondary',
+    cardType: 'border',
     fields: [
       {
         type: 'label-only',
@@ -178,7 +178,7 @@ export class TrustTurnoverInfoComponent extends BaseTrustClass implements OnDest
 
   override async onStepChange(quotesDetails: any): Promise<void> {
     super.onStepChange(quotesDetails);
-    this.trustSvc.updateComponentStatus("Finance Accounts", "TrustTurnoverInfoComponent", this.mainForm.form.valid)
+    this.trustSvc.updateComponentStatus("Financial Position", "TrustTurnoverInfoComponent", this.mainForm.form.valid)
   }
    override async onBlurEvent(event): Promise<void> {
     await this.updateValidation(event);

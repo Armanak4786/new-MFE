@@ -59,7 +59,7 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
         });
         this.mainForm.updateProps("paymentAmountRes", {
           cols: 4,
-          className: "pl-2 leftAlignText",
+          className: "pl-2 leftAlignText payment-amount-label-left-FL",
           inputClass: "leftAlignText pl-2",
         });
         this.mainForm.updateProps("numberofFlows", {
@@ -80,6 +80,8 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
           className:
             "col-fixed m-0 p-0 pl-3 w-7rem ng-star-inserted rightAlignText",
           inputClass: "pr-1",
+                  labelClass: "col-fixed pr-0 m-0 pl-3",
+
         });
         this.mainForm.updateProps("advancePaymentAmountRes", {
           cols: 3,
@@ -286,10 +288,11 @@ export class PaymentSummaryResultComponent extends BaseStandardQuoteClass {
     }
 
     if (productCode == "AFV") {
+      
       this.mainForm.updateHidden({
         afvaPaymentSummaryAmount: false,
       });
-      this.mainForm.form.get("afvaPaymentSummaryAmount").patchValue(0);
+      this.mainForm.form.get("afvaPaymentSummaryAmount").patchValue(this.baseFormData?.assuredFutureValue || 0);
       this.mainForm.updateProps("totalCostRes", {
         cols: 2,
         className: "text-right p-0 m-0 col-fixed w-10rem pr-0 mr-2",

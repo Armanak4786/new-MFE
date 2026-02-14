@@ -129,7 +129,7 @@ export class QuoteListActionsComponent extends BaseStandardQuoteClass {
             contractData,
           });
           this.svc.router.navigateByUrl(
-            "/standard-quote/settlement-quote-details"
+            "/dealer/standard-quote/settlement-quote-details"
           );
         }
 
@@ -143,7 +143,7 @@ export class QuoteListActionsComponent extends BaseStandardQuoteClass {
             })
             .onClose.subscribe((data: CloseDialogData) => {
               this.svc.router.navigateByUrl(
-                "/standard-quote/settlement-quote-details"
+                "/dealer/standard-quote/settlement-quote-details"
               );
               // if(data?.data?.checkboxs)
               // {

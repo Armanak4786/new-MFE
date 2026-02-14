@@ -6,12 +6,12 @@ import { SoleTradeService } from "../../services/sole-trade.service";
 import { Validators } from "@angular/forms";
 
 @Component({
-  selector: "app-sole-trade-contact-form",
+  selector: "app-sole-trade-business-contact-detail",
 
   templateUrl: "./sole-trade-business-contact-detail.component.html",
-  styleUrl: "./sole-trade-business-contact-detail.component.scss",
+  styleUrls: ["./sole-trade-business-contact-detail.component.scss"],
 })
-export class SoleTradeContactFormComponent extends BaseSoleTradeClass {
+export class SoleTradeBusinessContactDetail2Component extends BaseSoleTradeClass {
   optionsdata: any[] = ["aa"];
   privousChecked: any;
   borrowedAmount: any;

@@ -219,8 +219,25 @@ export class TrustService extends BaseDealerService implements OnInit {
     { label: "+998"; value: "+998" }
   ];
   public reusePhysical = new BehaviorSubject<any>(null);
+  public reusePhysical$ = this.reusePhysical.asObservable();
   public reusePhysicalAsRegister = new BehaviorSubject<any>(null);
+  public reusePhysicalAsRegister$ = this.reusePhysicalAsRegister.asObservable();
   public reusePhysicalAsPrevious = new BehaviorSubject<any>(null);
+  public isCopyingToPostal$ = new BehaviorSubject<boolean>(false);
+  
+  // Postal address manual change detection
+  public postalAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public postalAddressManuallyChanged$ = this.postalAddressManuallyChanged.asObservable();
+  public isCopyingToPostal: boolean = false;
+  
+  // Register address manual change detection
+  public registerAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public registerAddressManuallyChanged$ = this.registerAddressManuallyChanged.asObservable();
+  public isCopyingToRegister: boolean = false;
+  
+  // Flag to track if reuse toggles have been initialized in this session
+  public reuseTogglesInitialized: boolean = false;
+  
   iconfirmCheckbox = new BehaviorSubject<any>(null);
   showValidationMessage : boolean = false;
   public previousAddressHiddenStatus$ = new BehaviorSubject<boolean>(null);
@@ -240,7 +257,7 @@ export class TrustService extends BaseDealerService implements OnInit {
       { TrustPreviousAddressComponent: true },
       { TrustRegisterAddressComponent: false },
     ],
-    "Finance Accounts": [
+    "Financial Position": [
       { TrustProfitDeclarationComponent: false },
       { TrustTurnoverInfoComponent: false },
       { TrustBalanceInfoComponent: false },

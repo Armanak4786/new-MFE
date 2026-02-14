@@ -57,7 +57,7 @@ export class AddOnAccessoriesComponent extends BaseStandardQuoteClass {
       "Any unsaved changes will be lost. Are you sure you want to cancel?",
       "Cancel Add Ons ",
       () => {
-    this.svc.router.navigateByUrl("/standard-quote");
+    this.svc.router.navigateByUrl("/dealer/standard-quote");
       })
   }
 
@@ -215,13 +215,7 @@ if (this.insuranceRequirementComponent) {
       detail: "Add ons & accessories saved successfully",
       life: 3000
     });
-    
-    const contractId = this.baseSvc.contractId;
-    if (contractId) {
-      this.svc.router.navigate(["/standard-quote/edit", contractId]);
-    } else {
-      this.svc.router.navigateByUrl("/standard-quote");
-    }
+    this.svc.router.navigateByUrl("/dealer/standard-quote");
   }
   pageCode: string = "AddOnAccessoriesComponent";
   modelName: string = "AddOnAccessoriesComponent";

@@ -19,7 +19,7 @@ import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import { CalculationService } from "./calculation.service";
 import { StandardQuoteService } from "../../services/standard-quote.service";
 import { catchError, lastValueFrom, map, of } from "rxjs";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
 import { effect } from '@angular/core';
 import { DealerUdcDeclarationComponent } from "../dealer-udc-declaration/dealer-udc-declaration.component";
@@ -31,6 +31,7 @@ import { SoleTradeService } from "../../../sole-trade/services/sole-trade.servic
 import { TrustService } from "../../../trust/services/trust.service";
 import { AssetTradeSummaryService } from "../asset-insurance-summary/asset-trade.service";
 import { QuickQuoteService } from "../../../quick-quote/services/quick-quote.service";
+import { isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 @Component({
   selector: "app-payment-summary",
@@ -204,8 +205,10 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
          cols: 3,
         className: 'mt-1',
         labelClass: 'mb-0 mt-1',
+        inputClass: "mt-3",
       })
-      this.mainForm.updateProps("paymentCalculatebtn", { className: "mt-2 ml-4"});
+      this.mainForm.updateProps("paymentCalculatebtn", { className: "col-2 mt-2 ml-4"});
+      this.mainForm.updateProps("leaseDate", { inputClass: "mt-3" });
     } else if (this.baseFormData?.productCode == "AFV") {
       this.mainForm?.updateHidden({
         paymentStructure: true,
@@ -236,7 +239,7 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
   override onStatusChange(statusDetails: any): void {
     super.onStatusChange(statusDetails);
 
-    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
+    if(isWorkflowStatusInViewOrEdit(statusDetails?.currentState)){
       this.isDisable = true;
     }
     if (this.isDisable) {
@@ -471,6 +474,13 @@ export class PaymentSummaryComponent extends BaseStandardQuoteClass {
   ) {
     super(route, svc, baseSvc);
 
+    effect(async () => {
+      const trigger = this.baseSvc.triggerAllComponentsDuringWorkflowChange();
+      if(trigger > 0){
+        await this.updateValidation("onInit");
+      }
+    }, { allowSignalWrites: true });
+
     const config = this.validationSvc?.validationConfigSubject.getValue();
     const filteredValidations = this.validationSvc?.filterValidation(
     config,this.modelName, this.pageCode);
@@ -607,13 +617,16 @@ effect(() => {
             if (data?.btnType == "submit") {
             let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
           
-            if(updateContractRes?.apiError || updateContractRes?.Error?.Message){
+            if(!updateContractRes || updateContractRes?.apiError || updateContractRes?.Error?.Message){
               return;
             }
 
             else {
 
                let updateWorkflow = await this.updateState("Submitted");
+              if( updateWorkflow == false ) {
+                return;
+              }
 
               if (
                 updateWorkflow !== false &&
@@ -645,7 +658,12 @@ effect(() => {
               } 
               else if (data?.btnType == "submit" && this.baseFormData.contractId) {
 
-                await this.baseSvc.contractModification(this.baseFormData, false);
+                
+                let updateContractRes = await this.baseSvc.contractModification(this.baseFormData, false);
+
+                if(!updateContractRes || updateContractRes?.apiError || updateContractRes?.Error?.Message){
+                  return;
+                }            
                 this.svc.dialogSvc
                   .show(FinalConfirmationComponent, "", {
                     data: {
@@ -754,13 +772,13 @@ effect(() => {
         
         // If successful response with data
         if (stateData) {
+          this.baseSvc.triggerAllComponentsDuringWorkflowChange.update(val => val + 1);
           this.baseSvc?.appStatus?.next({
             currentState: stateData?.currentState?.name,
             nextState: stateData?.defaultNextState?.name,
           });
           return stateData;
         }
-        
         return false;
         
       } catch (error) {
@@ -827,7 +845,7 @@ effect(() => {
     //       )
     //     }
 
-    if (res?.productCode === "FL") {
+    if (res?.productCode === "FL" || res?.productCode === "OL") {
       this.mainForm.get("firstPaymentDate").disable()
         const leaseDate = this.mainForm.form.get("leaseDate")?.value;
         if (leaseDate) {
@@ -1180,7 +1198,7 @@ async setTermOverride(res) {
 
   override async onButtonClick(event: any): Promise<void> {
     if (event?.field?.name == "paymentCalculatebtn") {
-      if(this.isDisable || ((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus)))){
+      if(this.isDisable || isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus)){
         return;
       }
       if (!(this.baseFormData?.productId && this.baseFormData?.programId)) {
@@ -1278,8 +1296,8 @@ async setTermOverride(res) {
         // }
 
         //Increase Decreasew Validations:
-
-        if(this.baseFormData?.AFworkflowStatus === "Ready for Documentation") {
+        let sessionWorkFlowState = sessionStorage?.getItem("workFlowStatus");
+        if(this.baseFormData?.AFworkflowStatus?.toLowerCase() === "ready for documentation" || sessionWorkFlowState?.toLocaleLowerCase() === "approved") {
       
           const errors = [];
     

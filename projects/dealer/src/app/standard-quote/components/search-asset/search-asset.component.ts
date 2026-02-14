@@ -50,10 +50,10 @@ export class SearchAssetComponent implements OnInit {
 
   redirectToAsset() {
     if (this.modalType == "Search Asset") {
-      this.router.navigateByUrl("/asset/addAsset");
+      this.router.navigateByUrl("dealer/asset/addAsset");
     }
     if (this.modalType == "Search Trade in Asset") {
-      this.router.navigateByUrl("/asset/addTrade");
+      this.router.navigateByUrl("dealer/asset/addTrade");
     }
 
     this.ref.close({

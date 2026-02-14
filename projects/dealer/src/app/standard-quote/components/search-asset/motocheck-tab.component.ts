@@ -11,7 +11,7 @@ import { PhysicalAsset } from "../../models/assetsTrade";
 import { ValidationService } from "auro-ui";
 
 @Component({
-  selector: "app-motocheck-search-tab",
+  selector: "app-motocheck-tab",
   template: `
 <div class="motocheck-tab">
       <base-form
@@ -30,7 +30,7 @@ import { ValidationService } from "auro-ui";
 </div>
   `,
 })
-export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
+export class AppMotocheckTabComponent extends BaseStandardQuoteClass {
   assetData: any = {};
   param: any;
   searchBy: any;
@@ -50,7 +50,7 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
     super(route, svc, baseSvc);
   }
 
-  override formConfig: GenericFormConfig = {
+override formConfig: GenericFormConfig = {
     cardType: "non-border",
     autoResponsive: true,
     api: "addAsset",
@@ -66,7 +66,7 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
           { label: "Rego Number", value: "regoNumber" },
           { label: "VIN Number", value: "vinNumber" },
         ],
-        className: "pl-0"
+        className:"pl-0"
       },
       {
         type: "text",
@@ -117,7 +117,7 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
   override onChildValueChanges(event: any): void {
     this.assetData = { ...event };
   }
-  override onFormEvent(event: any): void { }
+  override onFormEvent(event: any): void {}
   override async onButtonClick(event: any): Promise<void> {
     if (event?.field?.name == "searchBtn") {
       const validation = this.checkValidate();
@@ -169,19 +169,19 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
             odometer: Number(
               data.vehicleDescription?.latestOdometerReading || null
             ),
-            features: '',
-            description: '',
+          features : '',
+          description :'',
           };
           mappedData.push(asset);
           this.assetTradeSvc.assetSearchResult = mappedData;
           //  this.dataList = extractedValues;
           if (this.addType == "Add Asset") {
             this.svc.router.navigateByUrl(
-              "/standard-quote/asset-search-result"
+              "/dealer/standard-quote/asset-search-result"
             );
           } else {
             this.svc.router.navigateByUrl(
-              "/standard-quote/trade-search-result"
+              "/dealer/standard-quote/trade-search-result"
             );
           }
 
@@ -199,14 +199,14 @@ export class MotocheckSearchTabComponent extends BaseStandardQuoteClass {
         //call api
         // this.dataSvc.post('assets', this.assetData);
         // this.svc.router.navigateByUrl(
-        //   '/standard-quote/asset-search-result'
+        //   '/dealer/standard-quote/asset-search-result'
         // );
         // this.ref.close();
       }
     }
 
     if (event.field.name == "resetBtn") {
-      this.mainForm.form.reset();
+        this.mainForm.form.reset();
     }
   }
 

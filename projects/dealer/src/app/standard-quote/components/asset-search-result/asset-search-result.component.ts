@@ -65,11 +65,11 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
   }
 
   redirectToHome() {
-    this.svc.router.navigateByUrl('/standard-quote');
+    this.svc.router.navigateByUrl('/dealer/standard-quote');
   }
 
   redirectToSearch() {
-    this.svc.router.navigateByUrl('/standard-quote');
+    this.svc.router.navigateByUrl('/dealer/standard-quote');
     this.svc.dialogSvc
       .show(SearchAssetComponent, 'Search Asset', {
         templates: {
@@ -90,10 +90,10 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
 
   onClickAdd() {
     let url = this.router.url;
-    if (url == "/standard-quote/asset-search-result") {
+    if (url == "/dealer/standard-quote/asset-search-result") {
       this.addAsset();
     }
-    if (url == "/standard-quote/trade-search-result") {
+    if (url == "/dealer/standard-quote/trade-search-result") {
       this.addTrade();
     }
   }
@@ -224,7 +224,7 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
             ...matchedAsset,
           };
           this.baseSvc.isAssetSearch = true;
-          this.svc.router.navigateByUrl("asset/addAsset/edit");
+          this.svc.router.navigateByUrl("dealer/asset/addAsset/edit");
         }
       })
       )
@@ -363,7 +363,7 @@ export class AssetSearchResultComponent implements AfterViewInit, OnInit {
       this.tradeSvc.tradeListSubject.next(this.tradeSvc.tradeList);
 
       // Navigate to the desired route
-      this.svc.router.navigateByUrl("/standard-quote");
+      this.svc.router.navigateByUrl("/dealer/standard-quote");
     }
   }
 

@@ -77,7 +77,7 @@ this.dashboardSvc.currentRowData$.subscribe((data)=>{
       this.standardQuoteSvc.mode = "edit";
 
       this.commonSvc.router.navigateByUrl(
-        `/standard-quote/${menu}/${this.rowData.contractId}`
+        `/dealer/standard-quote/${menu}/${this.rowData.contractId}`
       );
     } 
     
@@ -103,7 +103,7 @@ this.dashboardSvc.currentRowData$.subscribe((data)=>{
         this.standardQuoteSvc.mode = "edit";
         this.standardQuoteSvc.calculatedOnce = true;
         this.commonSvc.router.navigateByUrl(
-          `/standard-quote/edit/${copyResponse?.contractId}`
+          `/dealer/standard-quote/edit/${copyResponse?.contractId}`
         );
       } 
     

@@ -11,7 +11,8 @@ import { StandardQuoteService } from "../../services/standard-quote.service";
 import { Subject, takeUntil } from "rxjs";
 import { AddContactsComponent } from "../../../components/add-contacts/add-contacts.component";
 import { OverlayPanel } from "primeng/overlaypanel";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInView } from "../../utils/workflow-status.utils";
 
 
 @Component({
@@ -80,7 +81,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         name: "individualLastName",
         cols: 2,
         inputType: "vertical",
-        className: "mt-2 pl-7 mr-1 -ml-1",
+        className: "mt-2 pl-6 mr-1 -ml-1",
         labelClass: "mb-3",
       },
       {
@@ -91,9 +92,9 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         className: "pr-2 mt-0 ",
         inputType: "vertical",
         inputClass: "mt-3",
-        maxDate: new Date(
-          new Date().setFullYear(new Date().getFullYear() - 18)
-        ),
+        // maxDate: new Date(
+        //   new Date().setFullYear(new Date().getFullYear() - 18)
+        // ),
       },
       {
         type: "select",
@@ -101,9 +102,9 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         name: "individualContactType",
         cols: 2,
         options: [],
-        className: " ml-2 pr-0 py-1 pl-5  ",
+        className: " ml-2 pr-0 py-2 pl-5  ",
         alignmentType: "vertical",
-        labelClass:"pt-1 ctsig",
+        labelClass:"pt-0 ctsig",
         
       },
 
@@ -112,7 +113,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         label: "Signatory",
         name: "individualSignatory",
         cols: 2,
-        className: "mt-0 -ml-4 py-2 pl-3",
+        // className: "mt-0 -ml-4 py-2 pl-3",
+        className: "mt-3 -ml-4 py-2 pl-3",
         labelClass: " togsig",
         offLabel: "Yes",
         onLabel: "No",
@@ -337,7 +339,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
           { label: "+998", value: "+998" },
         ],
 
-        className: "-ml-3 mb-2  pl-5 pr-4 py-0 mt-2",
+        className: "-ml-3  pl-5 pr-4 py-0 mt-4",
         // labelClass: "col-12 -my-4",
         // inputClass: "col-12 -my-5",
         cols: 2,
@@ -350,16 +352,18 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         name: "individualAreaCode",
         cols: 2,
         maxLength: 4,
-        className: "-ml-4 col-1 col-2 mb-5 pr-8 mt-5 ",
+        className: " col-1 col-2 mb-5 pr-8  iac ",
         // inputType: "vertical",
         labelClass: "hidden",
+        placeholder: "Area Code",
+        inputType: "vertical",
       },
       {
         type: "phone",
         name: "individualPhoneNumber",
         cols: 2,
         maxLength: 10,
-        className: "-ml-8 col-2 mb-5 pr-4 mt-5",
+        className: "-ml-8 col-2  pr-4 mt-6",
         // inputType: "vertical",
         labelClass: "hidden",
       },
@@ -369,7 +373,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         label: "Email",
         name: "individualEmail",
         cols: 2,
-        className: "-mr-3 ml-3 mt-3 pr-0 pl-1 ",
+        className: "-mr-3 ml-3 mt-5 pr-0 pl-1 ",
         labelClass: "-mt-3 mb-3",
         inputType: "vertical",
         inputClass: " eml",
@@ -379,7 +383,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         label: "Signing Order",
         name: "individualSigningOrder",
         cols: 2,
-        className: "ml-6 pl-5 pr-2 mt-2",
+        className: "ml-6 pl-5 pr-2 mt-4",
         inputClass: " soi",
         labelClass:"mb-2",
         mode: Mode.view,
@@ -438,7 +442,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         label: "Signatory",
         name: "businessSignatory",
         cols: 2,
-        className: "mt-0 -ml-3 py-2",
+        className: "mt-3 -ml-3 py-2",
+        labelClass: " togsig",
         offLabel: "Yes",
         onLabel: "No",
         alignmentType: "vertical",
@@ -446,7 +451,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
       },
       {
         type: "select",
-        label: "Mobile",
+        label: "Business Number",
         name: "businessMobile",
         alignmentType: "vertical",
         options: [
@@ -660,7 +665,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
           { label: "+996", value: "+996" },
           { label: "+998", value: "+998" },
         ],
-        className: "ml-7 my-2 py-0 pl-4 pr-5 ",
+        // className: "ml-7 my-2 py-0 pl-4 pr-5 ",
+        className: "ml-7 mt-4 py-0 pl-4 pr-5 ",
         // labelClass: "col-12 -my-4",
         // inputClass: "col-12 -my-4",
         cols: 2,
@@ -673,11 +679,14 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         name: "businessAreaCode",
         // cols: 2,
         maxLength: 4,
+        placeholder: "Area Code",
         // validators: [Validators.pattern('^[0-9]{1,5}$')],
-        className: "-ml-4 col col-1 mb-5 mt-5",
+        // className: "-ml-4 col col-1 mb-5 mt-5",
+        className: " col-1 -ml-4 mb-5 iac ",
         // inputType: "vertical",
         //regexPattern: "^[0-9]{1,5}$*",
         labelClass: "hidden",
+        inputType: "vertical",
       },
 
       {
@@ -686,7 +695,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         // cols: 2,
         maxLength: 10,
         // validators: [Validators.pattern('^[0-9]{1,10}$')],
-        className: " col-2 -ml-1 mb-5 pr-5 mt-5",
+        // className: " col-2 -ml-1 mb-5 pr-5 mt-5",
+        className: " col-2 -ml-1 my-6 pr-5",
         // inputType: "vertical",
         labelClass: "hidden",
       },
@@ -696,7 +706,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         label: "Email",
         name: "businessEmail",
         // cols: 3,
-        className: "-mr-3 col-3 ml-1 mr-1 mt-3 pr-7",
+        // className: "-mr-3 col-3 ml-1 mr-1 mt-3 pr-7",
+        className: "-mr-3 col-3 ml-1 mr-1 mt-5 pr-7",
         inputType: "vertical",
         labelClass: "-mt-3 mb-3",
       },
@@ -705,7 +716,8 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
         label: "Signing Order",
         name: "businessSigningOrder",
         cols: 2,
-        className: "  -ml-2 pl-3 mt-2",
+        // className: "  -ml-2 pl-3 mt-2",
+        className: "  -ml-3 pl-3 mt-4",
         mode: Mode.view,
         showButtons: true,
         inputType: "vertical",
@@ -1451,14 +1463,11 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
   }
 
   isDisabled(){
-    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
-    return true;
-  }
-  return false;
+    return isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus);
   }
 
   workflowViewonlyField(rowData:any){
-    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || this.baseSvc?.partyStatusListforIconDisable?.includes(rowData?.currentWorkflowStatus.toLowerCase())){
+    if(isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus) || this.baseSvc?.partyStatusListforIconDisable?.includes(rowData?.currentWorkflowStatus.toLowerCase())){
       return true;
     }
     return false;
@@ -1585,7 +1594,7 @@ export class SignatoriesComponent extends BaseStandardQuoteClass {
     rowIndex: number,
     contactIndex: number
   ) {
-    if((configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus))){
+    if(isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus)){
       return;
     }
     this.svc.data

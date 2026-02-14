@@ -1,11 +1,14 @@
 import { ChangeDetectorRef, Injectable, signal } from "@angular/core";
-import { DataService, StorageService } from "auro-ui";
+import { DataService, environment, StorageService } from "auro-ui";
 import {
   BehaviorSubject,
+  catchError,
   firstValueFrom,
   map,
   Observable,
+  shareReplay,
   Subject,
+  throwError,
 } from "rxjs";
 import { StandardQuoteService } from "../../standard-quote/services/standard-quote.service";
 import { jwtDecode } from "jwt-decode";
@@ -31,6 +34,7 @@ export class DashboardService {
   dealerAnimate: boolean = false;
   userType: "Internal" | "External" = "Internal";
   introducers: any;
+  reportList: any;
 
   // public onOriginatorChange = new BehaviorSubject<any>(null);
   public onOriginatorChange = signal<any>(null);
@@ -106,6 +110,9 @@ export class DashboardService {
   ) {
     this.loadProducts();
   }
+
+  private readonly widgetGraphCache = new Map<string, Observable<any>>();
+  private readonly workflowCache = new Map<string, Observable<any>>();
 
   async getQuoteListById(contractId) {
     let quoteList = await this.standardQuoteSvc.getFormData(
@@ -1133,5 +1140,68 @@ async getCustomerStatement(contractId: string | number, productCode: string): Pr
     throw error;
   }
 }
-
+getMonthlyVolumes(payload: { dealerId: number | null; userId: string; year?: number }): Observable<any> {
+  return this.data.post("Dashboard/get_widget_graph_data", payload);
 }
+
+getWorkflowStatus(payload: { dealerId: number | null; userId: string }): Observable<any> {
+  return this.data.post("Dashboard/get_widget_workflow_data", payload);
+}
+
+  async getMonthlyVolumesOnceAsync(payload: { dealerId: number | null; userId: string; year: number }): Promise<any> {
+    return await firstValueFrom(this.getMonthlyVolumesOnce(payload));
+  }
+
+  async getWorkflowStatusOnceAsync(payload: { dealerId: number | null; userId: string }): Promise<any> {
+    return await firstValueFrom(this.getWorkflowStatusOnce(payload));
+  }
+
+  private getWidgetGraphCacheKey(payload: { dealerId: number | null; userId: string; year: number }): string {
+    const dealerId = payload?.dealerId ?? "null";
+    const userId = payload?.userId ?? "";
+    const year = payload?.year ?? -1;
+    return `widgetGraph:${userId}:${dealerId}:${year}`;
+  }
+
+  private getWorkflowCacheKey(payload: { dealerId: number | null; userId: string }): string {
+    const dealerId = payload?.dealerId ?? "null";
+    const userId = payload?.userId ?? "";
+    return `workflow:${userId}:${dealerId}`;
+  }
+
+  getMonthlyVolumesOnce(payload: { dealerId: number | null; userId: string; year: number }): Observable<any> {
+    const key = this.getWidgetGraphCacheKey(payload);
+    const cached = this.widgetGraphCache.get(key);
+    if (cached) return cached;
+
+    const req$ = this.data.post("Dashboard/get_widget_graph_data", payload).pipe(
+      catchError((err) => {
+        this.widgetGraphCache.delete(key);
+        return throwError(() => err);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+
+    this.widgetGraphCache.set(key, req$);
+    return req$;
+  }
+
+  getWorkflowStatusOnce(payload: { dealerId: number | null; userId: string }): Observable<any> {
+    const key = this.getWorkflowCacheKey(payload);
+    const cached = this.workflowCache.get(key);
+    if (cached) return cached;
+
+    const req$ = this.data.post("Dashboard/get_widget_workflow_data", payload).pipe(
+      catchError((err) => {
+        this.workflowCache.delete(key);
+        return throwError(() => err);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+
+    this.workflowCache.set(key, req$);
+    return req$;
+  }
+}
+
+

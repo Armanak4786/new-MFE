@@ -21,6 +21,14 @@ export class BusinessService extends BaseDealerService implements OnInit {
   previousAddressComponentStatus: boolean;
   public previousAddressHiddenStatus$ = new BehaviorSubject<boolean>(null);
   addingExistingCustomer: boolean = false;
+  public postalAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public postalAddressManuallyChanged$ = this.postalAddressManuallyChanged.asObservable();
+  public registerAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public registerAddressManuallyChanged$ = this.registerAddressManuallyChanged.asObservable();
+  public isCopyingToPostalSubject = new BehaviorSubject<boolean>(false);
+  public isCopyingToPostal$ = this.isCopyingToPostalSubject.asObservable();
+  public isCopyingToPostal: boolean = false;
+  public isCopyingToRegister: boolean = false;
 
   componentValidity = {
     "Business Details": [

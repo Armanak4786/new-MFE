@@ -48,22 +48,27 @@ export class AfvAssetTypesComponent extends BaseFormClass {
 
     this.assetTypeData = this.config?.data?.assetTypeData;
     this.assetTypeModalValues = this.config?.data?.assetTypeModalValues;
+    
   }
   destroy$ = new Subject<void>();
 
   mapDataToDD(valList) {
     if (valList.length > 1) {
-      this.assetMakeDataList = this.filterAssetTypeData(valList[2]); // options
+     
+      this.assetMakeDataList = this.filterAssetTypeData(valList[1]); // options
       this.mainForm.updateList("afvMake", this.assetMakeDataList);
-      this.mainForm.get("afvMake").patchValue(valList[3]);
+      this.mainForm.get("afvMake").patchValue(valList[2]);
+      
 
-      this.assetModelDataList = this.filterAssetTypeData(valList[3]);
+      this.assetModelDataList = this.filterAssetTypeData(valList[2]);
       this.mainForm.updateList("afvModel", this.assetModelDataList);
-      this.mainForm.get("afvModel").patchValue(valList[4]);
+      this.mainForm.get("afvModel").patchValue(valList[3]);
 
-      this.assetVarientDataList = this.filterAssetTypeData(valList[4]);
+      this.assetVarientDataList = this.filterAssetTypeData(valList[3]);
+     
       this.mainForm.updateList("afvVariant", this.assetVarientDataList);
-      this.mainForm.get("afvVariant").patchValue(valList[5]);
+      this.mainForm.get("afvVariant").patchValue(valList[4]);
+      
     }
   }
   override formConfig: GenericFormConfig = {
@@ -209,7 +214,7 @@ export class AfvAssetTypesComponent extends BaseFormClass {
         this.mapDataToDD(val);
       }
     }
-    this.mainForm.get("assetType").patchValue("AFV");
+    this.mainForm?.get("assetType")?.patchValue("AFV");
   }
 
   filterAssetTypeData(ownerId) {
@@ -233,11 +238,13 @@ export class AfvAssetTypesComponent extends BaseFormClass {
   }
 
   override onButtonClick(event): void {
+   
     if (event.field.name === "cancelBtn") {
       this.ref.close({});
     }
 
     if (event.field.name === "selectBtn") {
+    
       let val =
         this.mainForm.get("afvVariant").value ||
         this.mainForm.get("afvModel").value ||
@@ -248,6 +255,7 @@ export class AfvAssetTypesComponent extends BaseFormClass {
         this.assetVarientDataList.length !== 0 &&
         !this.mainForm.get("afvVariant").value
       ) {
+       
         val = "undefined";
       }
       if (

@@ -3,7 +3,7 @@
     [activeIndex]="baseSvc.standardValueAccordianValue"
     (activeIndexChange)="activeIndexChange($event)"
   >
-    <p-accordionTab header="{{ headerText }}">
+    <p-accordionTab header="{{ headerText }}" headerStyleClass="payment-accordion-header">
       <gen-card [cardType]="'non-border'">
         <ng-container body>
           <gen-table

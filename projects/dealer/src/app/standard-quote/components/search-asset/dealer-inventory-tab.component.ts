@@ -259,7 +259,7 @@ export class DealerInventoryTabComponent extends BaseStandardQuoteClass {
   //         console.log("mapped data", mappedData);
   //         this.assetTradeSvc.assetSearchResult = mappedData;
   //         this.svc.router.navigateByUrl(
-  //           "/standard-quote/asset-search-result"
+  //           "/dealer/standard-quote/asset-search-result"
   //         );
   //         this.ref.close({
   //           action: "closeAssetInsuranceSummaryTable",
@@ -272,7 +272,7 @@ export class DealerInventoryTabComponent extends BaseStandardQuoteClass {
   //         // });
   //         this.assetTradeSvc.assetSearchResult = [];
   //         this.svc.router.navigateByUrl(
-  //           "/standard-quote/asset-search-result"
+  //           "/dealer/standard-quote/asset-search-result"
   //         );
   //         this.ref.close({
   //           action: "closeAssetInsuranceSummaryTable",
@@ -350,7 +350,7 @@ export class DealerInventoryTabComponent extends BaseStandardQuoteClass {
           this.assetTradeSvc.searchAssetData = data;
           this.assetTradeSvc.assetSearchResult = mappedData;
           this.svc.router.navigateByUrl(
-            "/standard-quote/asset-search-result"
+            "/dealer/standard-quote/asset-search-result"
           );
           this.ref.close({
             action: "closeAssetInsuranceSummaryTable",
@@ -364,7 +364,7 @@ export class DealerInventoryTabComponent extends BaseStandardQuoteClass {
           this.assetTradeSvc.assetSearchResult = [];
           this.assetTradeSvc.searchAssetData = [];
           this.svc.router.navigateByUrl(
-            "/standard-quote/asset-search-result"
+            "/dealer/standard-quote/asset-search-result"
           );
           this.ref.close({
             action: "closeAssetInsuranceSummaryTable",

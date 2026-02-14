@@ -21,9 +21,9 @@
         </tr>
 
         <tr>
-          <td *ngFor="let customer of customersToDisplay">
+           <td *ngFor="let customer of customersToDisplay">
            <p-dropdown class="small-dropdown" [style]="{'width':'100px'}" [options]="[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]"
-                  optionLabel="label" optionValue="value"   [disabled]="isDisabled()"> [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[0]?.id].declarationResponse"></p-dropdown>
+                  optionLabel="label" optionValue="value"   [disabled]="isDisabled()" [(ngModel)]="declarationMap[customer.name + ' Insurance Q' + resData[0]?.id].declarationResponse"></p-dropdown>
            </td>
         </tr>
 

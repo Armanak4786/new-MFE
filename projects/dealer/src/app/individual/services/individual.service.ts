@@ -15,6 +15,7 @@ export class IndividualService extends BaseDealerService implements OnInit {
   public copyBorrowerAddress$ = this.copyBorrowerAddress.asObservable();
   public reusePhysicalAsPrevious = new BehaviorSubject<any>(null);
   public previousAddressHiddenStatus$ = new BehaviorSubject<boolean>(null);
+  public syncAddressFormValues = new BehaviorSubject<boolean>(false);
 
   showValidationMessage: boolean = false;
   EmploymentDetailChangedSlider: boolean = false;
@@ -73,6 +74,10 @@ export class IndividualService extends BaseDealerService implements OnInit {
   iconfirmCheckbox = new BehaviorSubject<any>(null);
   reusePhysical = new BehaviorSubject<any>(null);
   reusePhysical$ = this.reusePhysical.asObservable();
+  public postalAddressManuallyChanged = new BehaviorSubject<boolean>(false);
+  public postalAddressManuallyChanged$ = this.postalAddressManuallyChanged.asObservable();
+  public isCopyingToPostal$ = new BehaviorSubject<boolean>(false);
+  public isCopyingToPostal: boolean = false;
   public appState = new BehaviorSubject<any>(null);
   override formStatusArr = [];
   role: any;

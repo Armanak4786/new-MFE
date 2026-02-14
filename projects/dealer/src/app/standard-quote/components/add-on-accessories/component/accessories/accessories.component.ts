@@ -12,7 +12,8 @@ import { StandardQuoteService } from "../../../../services/standard-quote.servic
 import { ToasterService, ValidationService } from "auro-ui";
 import { cloneDeep } from "lodash";
 import { Subject, takeUntil } from "rxjs";
-import configure from "../../../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../../../../utils/workflow-status.utils";
 
 @Component({
   selector: "app-accessories",
@@ -168,10 +169,7 @@ showError :boolean= false;
   }
 
   isDisabled(){
-     if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.baseFormData?.AFworkflowStatus))){
-    return true;
-  }
-  return false;
+     return isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus);
   }
 
   override ngAfterViewInit(): void {
@@ -234,8 +232,10 @@ private forceResetAccessoriesForm(resetData?: any): void {
 
 
   async callApi() {
-  if(this.baseFormData.physicalAsset) {
-    const assetTypeId = this.baseFormData?.physicalAsset[0]?.assetType?.assetTypeId;
+  if(this.baseFormData.physicalAsset || this.baseFormData?.productCode === 'AFV') {
+    const assetTypeId = this.baseFormData?.productCode === 'AFV' 
+      ? this.baseFormData?.assetTypeId 
+      : this.baseFormData?.physicalAsset[0]?.assetType?.assetTypeId;
     const savedAccessories = this.baseFormData?.accessories ?? [];
     
     let res = await this.baseSvc.getFormData(

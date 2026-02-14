@@ -15,7 +15,8 @@ import { ToasterService, ValidationService } from "auro-ui";
 import { SearchAssetComponent } from "../standard-quote/components/search-asset/search-asset.component";
 import { AssetInsuranceSummaryComponent } from "../standard-quote/components/asset-insurance-summary/asset-insurance-summary.component";
 import { DashboardService } from "../dashboard/services/dashboard.service";
-import configure from "../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../standard-quote/utils/workflow-status.utils";
 
 
 export class Vehicle {
@@ -242,6 +243,16 @@ export class AssetComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.standardQuoteData = res;
+        
+        // For AFV in create mode, map afvMake/Model/Variant/Year to asset-details fields
+        if (this.mode === 'create' && res?.productCode === 'AFV' && this.addType === 'addAsset') {
+          this.baseSvc.setBaseDealerFormData({
+            make: res?.afvMake || res?.physicalAsset?.[0]?.make || '',
+            model: res?.afvModel || res?.physicalAsset?.[0]?.model || '',
+            variant: res?.afvVariant || res?.physicalAsset?.[0]?.variant || '',
+            year: res?.afvYear || res?.physicalAsset?.[0]?.year || '',
+          });
+        }
       });
 
     await this.baseSvc
@@ -264,10 +275,7 @@ export class AssetComponent implements OnInit {
 
 
   isDisabled(){
-    if(configure?.workflowStatus?.view?.includes(this.standardQuoteData?.AFworkflowStatus) || (configure?.workflowStatus?.edit?.includes(this.standardQuoteData?.AFworkflowStatus))){
-    return true;
-  }
-  return false;
+    return isWorkflowStatusInViewOrEdit(this.standardQuoteData?.AFworkflowStatus);
   }
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -284,14 +292,13 @@ export class AssetComponent implements OnInit {
         if (this.standardQuoteData?.contractId) {
           this.standardQuoteSvc.isAssetSearch = false;
           this.svc?.router?.navigateByUrl(
-            `/standard-quote/edit/${this.standardQuoteData?.contractId}`
+            `/dealer/standard-quote/edit/${this.standardQuoteData?.contractId}`
           );
         } else {
-          this.svc?.router?.navigateByUrl("/standard-quote");
+          this.svc?.router?.navigateByUrl("/dealer/standard-quote");
         }
       }
     ); // Ensure the event is passed here
-    //this.svc?.router?.navigateByUrl("/standard-quote");
   }
 
   async redirectToAssetDetails() {
@@ -473,6 +480,25 @@ export class AssetComponent implements OnInit {
             ...insurance,
           });
         }
+
+        let sessionWorkFlowState = sessionStorage?.getItem("workFlowStatus");
+        // if(this.formData?.costOfAsset > this.formData?.apicostOfAsset && sessionWorkFlowState == "Approved"){
+        if(this.formData?.costOfAsset > this.formData?.selectedApiAssetAmount && sessionWorkFlowState == "Approved"){
+        this.toasterService.showToaster({
+            severity: "error",
+            detail: "Cost of Asset cannot be increased in Ready for Documentation state.",
+          });
+          return;
+        }
+
+        if(this.formData?.year < this.formData?.selectedApiAssetYear && sessionWorkFlowState == "Approved"){
+          this.toasterService.showToaster({
+            severity: "error",
+            detail: "Year cannot be decreased in Ready for Documentation state.",
+          });
+          return;
+        }
+
         this.tradeSvc.assetListSubject.next(this.tradeSvc.assetList);
         
         this.tradeSvc.insuranceListSubject.next(this.tradeSvc.insuranceList);
@@ -489,18 +515,35 @@ export class AssetComponent implements OnInit {
         if (!validateTrade) {
           return;
         }
+// Only use service value as fallback when EDITING and no trades exist yet
+
+        // For NEW trades, only use formData.costOfAsset (what user entered)
+
+        let tradeAssetValue = this.formData?.costOfAsset || 0;
+
+        if (this.mode !== "edit" && this.tradeSvc.tradeList.length === 0) {
+
+          // First trade being added - can use less-deposit value as fallback
+
+          tradeAssetValue = this.formData?.costOfAsset || this.tradeSvc.getCurrentTradeAmountForAddTrade() || 0;
+
+        }
+ 
+        let sessionWorkFlowState = sessionStorage?.getItem("workFlowStatus");
+
+        if(this.formData?.costOfAsset < this.formData?.selectedApiTradeAmount && sessionWorkFlowState == "Approved"){
+          this.toasterService.showToaster({
+            severity: "error",
+            detail: "Cost of Trade-in cannot be decreased in Ready for Documentation state.",
+          });
+          return;
+        }
         let trade: TradeAsset = {
            id: 0,
           tradeId: this.formData.assetId || 0,
           tradeName:  `${this.formData?.year || '-'} ${this.formData?.make || '-'} ${this.formData?.model || '-'} ${this.formData?.variant || '-'}`.trim(),
           tradePath: this.formData?.assetPath || "",
-          // tradeType: {
-          //   //////
-          //   tradeTypeId: this.formData.assetTypeId || 0,
-          //   tradeTypeName: this.formData?.assetName,
-          //   tradeTypePath: this.formData?.assetPath,
-          // },
-          tradeAssetValue: String(this.formData?.costOfAsset || 0),
+          tradeAssetValue: String(tradeAssetValue),
           tradeCCNo: String(this.formData?.ccRating || 0),
           tradeColour: this.formData?.colour || "",
           // conditionOfGood: this.formData?.conditionOfGood,
@@ -547,7 +590,7 @@ export class AssetComponent implements OnInit {
       this.standardQuoteSvc.isFinancialAssetPriceValueDetails = true
       this.standardQuoteSvc.isAssetSubmit = true;
       this.baseSvc.resetBaseDealerFormData();
-      this.svc.router.navigateByUrl("/standard-quote");
+      this.svc.router.navigateByUrl("/dealer/standard-quote");
     }
   }
 
@@ -772,7 +815,7 @@ export class AssetComponent implements OnInit {
   }
 
   redirectToAssetSummery() {
-    this.svc.router.navigateByUrl('/standard-quote');
+    this.svc.router.navigateByUrl('/dealer/standard-quote');
    this.svc.dialogSvc
          .show(AssetInsuranceSummaryComponent, "Asset & Insurance Summary", {
            templates: {

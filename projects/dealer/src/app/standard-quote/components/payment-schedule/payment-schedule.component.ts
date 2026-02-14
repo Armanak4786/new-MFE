@@ -8,7 +8,8 @@ import { EditPaymentScheduleTableComponent } from "./edit-payment-schedule-table
 import { StandardQuoteService } from "../../services/standard-quote.service";
 import { PaymentScheduleService } from "./payment-schedule.service";
 import { ToasterService, ValidationService } from "auro-ui";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInViewOrEdit } from "../../utils/workflow-status.utils";
 
 
 @Component({
@@ -258,7 +259,7 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
   }
 
   override onStatusChange(statusDetails: any): void {
-    if((configure?.workflowStatus?.view?.includes(statusDetails?.currentState)) || (configure?.workflowStatus?.edit?.includes(statusDetails?.currentState))){
+    if(isWorkflowStatusInViewOrEdit(statusDetails?.currentState)){
       this.isDisable = true
     }
   }
@@ -312,7 +313,8 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
           (item) =>
             item.flowType === "Installment" ||
             item.flowType === "Balloon Payment" ||
-            item.flowType === "Interest Only"
+            item.flowType === "Interest Only" ||
+            (this.productCode === "AFV" && item.flowType === "Residual Value")
         );
 
         // Optionally sort filtered installments by installment number
@@ -370,7 +372,9 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
       const installment = filteredInstallments[i];
 
       const installmentFrequency =
-        installment.flowType === "Balloon Payment" ? "Once" : frequency;
+        installment.flowType === "Balloon Payment" || installment.flowType === "Residual Value" 
+          ? "Once" 
+          : frequency;
 
       paymentScheduleList.push({
         date: installment.calcDt,
@@ -379,14 +383,16 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
         payment:
           installment.amount == 0 ? installment.amount : installment.amtGross,
         actualMaintenanceFee: this.baseFormData?.actualMaintenanceFee,
+        flowType: installment.flowType, 
       });
     }
     if (paymentScheduleList.length >= 2) {
       const lastIndex = paymentScheduleList.length - 1;
       const lastRow = paymentScheduleList[lastIndex];
       const secondLastRow = paymentScheduleList[lastIndex - 1];
-
-      if (lastRow.number === secondLastRow.number) {
+      if (lastRow.number === secondLastRow.number && 
+          lastRow.flowType !== "Residual Value" && 
+          secondLastRow.flowType !== "Residual Value") {
         secondLastRow.payment =
           Number(secondLastRow.payment || 0) + Number(lastRow.payment || 0);
 
@@ -593,6 +599,21 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
        let paymentDate= filteredInstallments[index + 1]?.calcDt;
         this.paymentSchedule[index+1].paymentScheduleDate =paymentDate;
     }
+    if (this.productCode === "AFV") {
+      const residualFlow = (this.baseFormData?.flows || []).find(
+        (f) => f.flowType === "Residual Value"
+      );
+      if (residualFlow) {
+        this.paymentSchedule.push({
+          paymentScheduleDate: residualFlow.calcDt,
+          paymentScheduleNumber: 1,
+          paymentScheduleFrequency: "Once",
+          paymentAmount: residualFlow.amtGross || residualFlow.amount,
+          segmentType: "Residual Value",
+          isCustomised: false,
+        });
+      }
+    }
 
     // residual mapping - only for FL
     if (this.productCode === "FL") {
@@ -601,7 +622,7 @@ export class PaymentScheduleComponent extends BaseStandardQuoteClass {
       );
 
       this.residualValueList = residualFlows.map((residual) => ({
-        residualEndDate: this.baseFormData?.residualValueDelayDt,
+        residualEndDate: this.baseFormData?.residualValueDelayDt || residual?.lastLeasePaymentDate || residual?.calcDt || null,
         residualGstExcl: residual.gstExclMonthly,
         residualGST: residual.gstMonthly,
         residualGstIncl: residual.gstInclMonthly,

@@ -54,7 +54,7 @@ export class DealerUdcDeclarationComponent extends BaseStandardQuoteClass {
       .getBaseDealerFormData()
       .pipe()
       .subscribe((res) => {
-        this.contractId = res?.contractId;
+        this.contractId = res.contractId;
       });
     //  this.svc.data.get(`https://portalgateway/gateway/Declaration/get_origination_declarations?MessageType=${OriginatorDeclaration}`)
     this.svc.data

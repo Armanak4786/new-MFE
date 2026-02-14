@@ -27,7 +27,7 @@
               ></amount>
             </p>
 
-            <p class="px-3" *ngIf="productCode !== 'CSA' && productCode !== 'TL'">
+            <p class="px-3" *ngIf="productCode !== 'CSA' && productCode !== 'TL' && productCode !== 'AFV'">
               <small class="block">
                 <amount
                   class="value"
@@ -67,7 +67,7 @@
       <number
         [mode]="'label'"
         className="flex justify-content-between"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         [label]="'lbl_term_only'"
         [value]="term"
       ></number>
@@ -77,7 +77,7 @@
     <p class="text-sm text-color-normal">
       <text
         [mode]="'label'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
         [label]="'lbl_frequency'"
         [value]="frequency"
@@ -87,7 +87,7 @@
     <p class="text-sm text-color-normal">
       <percentage
         [mode]="'label'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
         [label]="'lbl_interestRate'"
         [value]="interestRate"
@@ -98,7 +98,7 @@
       <date
         [mode]="'label'"
         [label]="'lbl_loanDate'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
         [value]="loanDate"
       ></date>
@@ -108,17 +108,30 @@
       <date
         [mode]="'label'"
         [label]="'lbl_firstPayment'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
         [value]="firstPaymentDate"
       ></date>
     </p>
-
-    <p class="text-sm text-color-normal">
+    <p class="text-sm text-color-normal" *ngIf="productCode === 'AFV'">
       <amount
         class="value"
         [mode]="'label'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        labelClass="ml-2"
+        valueClass="text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between mt-1"
+        [label]="'lbl_assuredFutureValue'"
+        [value]="futureValue || 0"
+      ></amount>
+    </p>
+
+    
+    <p class="text-sm text-color-normal" *ngIf="productCode !== 'AFV'">
+      <amount
+        class="value"
+        [mode]="'label'"
+        labelClass="ml-2"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
         [label]="'lbl_balloonAmount'"
         [value]="balloonValue || 0"
@@ -129,8 +142,8 @@
       <date
         [mode]="'label'"
         [label]="'lbl_lastPayment'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
-        className="flex justify-content-between"
+        valueClass="text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between pb-1"
         [value]="lastPaymentDate"
       ></date>
     </p>
@@ -139,8 +152,9 @@
       <amount
         class="value"
         [mode]="'label'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
-        className="flex justify-content-between"
+        valueClass="text-color-dark-shade-3 font-bold"
+        labelClass="ml-2"
+        className="flex justify-content-between pb-1"
         [label]="'lbl_paymentAmount'"
         [value]="paymentAmount || 0"
       ></amount>
@@ -149,8 +163,9 @@
     <p class="text-sm text-color-normal">
       <amount
         class="value"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
-        className="flex justify-content-between"
+        valueClass="text-color-dark-shade-3 font-bold"
+        className="flex justify-content-between pb-2"
+        labelClass="ml-2"
         [label]="'lbl_interestCharge'"
         [mode]="'label'"
         [value]="interestCharges || 0"
@@ -160,8 +175,9 @@
     <p class="text-sm text-color-normal">
       <amount
         class="value"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
+        labelClass="ml-2"
         [label]="'lbl_totalAmountRepay'"
         [mode]="'label'"
         [value]="totalAmountToRepay || 0"
@@ -171,7 +187,7 @@
     <p class="text-sm text-color-normal">
       <number
         [mode]="'label'"
-        valueClass="float-right text-color-dark-shade-3 font-bold"
+        valueClass="text-color-dark-shade-3 font-bold"
         className="flex justify-content-between"
         [label]="'lbl_totalPaymentst'"
         [value]="totalInstallments || 0"
@@ -180,32 +196,40 @@
   </div>
 </div>
 
-<ng-container *ngIf="productCode === 'AFV'">
+<!-- AFV Options Section -->
+<!-- <ng-container *ngIf="productCode === 'AFV'">
   <div class="grid justify-content-center">
     <div class="col-11">
       <p class="mt-3 text-base font-bold">
-        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
+        <text [mode]="'label'" [label]="'lbl_assuredFutureValue'"></text>
       </p>
     </div>
     <div class="col-11">
       <p class="text-sm text-color-normal">
-        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
-        <span class="float-right text-color-dark-shade-3 font-bold">
-          <amount class="value" [mode]="'label'" [value]="futureValue"></amount>
-        </span>
+        <amount
+          class="value"
+          [mode]="'label'"
+          valueClass="text-color-dark-shade-3 font-bold"
+          className="flex justify-content-between"
+          [label]="'lbl_assuredFutureAmt'"
+          [value]="futureValue || 0"
+        ></amount>
       </p>
 
       <p class="text-sm text-color-normal">
-        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
-        <span class="float-right text-color-dark-shade-3 font-bold">
-          <date [mode]="'label'" [value]="futureValueDate"></date>
-        </span>
+        <date
+          [mode]="'label'"
+          [label]="'lbl_futureValueDate'"
+          valueClass="text-color-dark-shade-3 font-bold"
+          className="flex justify-content-between"
+          [value]="futureValueDate"
+        ></date>
       </p>
     </div>
 
     <div class="col-11">
       <p class="mt-3 text-base font-bold">
-        <text [mode]="'label'" [label]="'lbl_totalPaymentst'"></text>
+        <text [mode]="'label'" [label]="'lbl_endOfTermsOptions'"></text>
       </p>
     </div>
     <div class="col-11">
@@ -219,4 +243,4 @@
       </p-dropdown>
     </div>
   </div>
-</ng-container>
+</ng-container> -->

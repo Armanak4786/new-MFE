@@ -9,15 +9,17 @@
 }
 
 .custom-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 8px;
+  align-items: flex-start;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  margin: 5px 10px;
+  margin: 0;
+  min-width: 0;
 }
 
 .legend-color {
@@ -29,6 +31,11 @@
 
 .legend-text {
   color: var(--text-color);
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 ::ng-deep .applicationOutcome p-chart canvas {

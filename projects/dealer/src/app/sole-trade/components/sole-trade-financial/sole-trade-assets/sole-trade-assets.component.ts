@@ -184,9 +184,9 @@ export class SoleTradeAssetsComponent extends BaseSoleTradeClass {
   
       if (this.baseFormData?.financialPositionBase) {
         const getAssetfromAPI = [
-          { assestType: 'Personal Property', assestHomeOwnerType: this.baseFormData?.financialAssetDetails?.[0]?.assestHomeOwnerType || this.baseFormData?.financialPositionBase?.homeOwnership || this.baseFormData.assestHomeOwnerType, amount: this.baseFormData?.financialAssetDetails?.[0].amount || this.baseFormData?.financialPositionBase?.amtHomeValue},
+          { assestType: 'Home Ownership Type', assestHomeOwnerType: this.baseFormData?.financialAssetDetails?.[0]?.assestHomeOwnerType || this.baseFormData?.financialPositionBase?.homeOwnership || this.baseFormData.assestHomeOwnerType, amount: this.baseFormData?.financialAssetDetails?.[0].amount || this.baseFormData?.financialPositionBase?.amtHomeValue},
           { assestType: 'Vehicle Value', amount: this.baseFormData?.financialAssetDetails?.[1].amount ||  this.baseFormData?.financialPositionBase?.amtVehicleValue },
-          { assestType: 'Furniture & Effects', amount: this.baseFormData?.financialAssetDetails?.[2].amount || this.baseFormData?.financialPositionBase?.amtFurnitureValue },
+          { assestType: 'Furniture & Effects Value', amount: this.baseFormData?.financialAssetDetails?.[2].amount || this.baseFormData?.financialPositionBase?.amtFurnitureValue },
         ];
         getAssetfromAPI.forEach((asset) => this.addAssetToForm(asset));
   
@@ -217,9 +217,9 @@ export class SoleTradeAssetsComponent extends BaseSoleTradeClass {
   
       if (!assetsLoaded) {
         const initialAssets = [
-          { assestType: 'Personal Property',assestHomeOwnerType: this.baseFormData.financialAssetDetails?.[0]?.assestHomeOwnerType || this.baseFormData.assestHomeOwnerType, amount: this.baseFormData.financialAssetDetails?.[0]?.amount || 0 },
+          { assestType: 'Home Ownership Type',assestHomeOwnerType: this.baseFormData.financialAssetDetails?.[0]?.assestHomeOwnerType || this.baseFormData.assestHomeOwnerType, amount: this.baseFormData.financialAssetDetails?.[0]?.amount || 0 },
           { assestType: 'Vehicle Value', amount: this.baseFormData.financialAssetDetails?.[1]?.amount || 0 },
-          { assestType: 'Furniture & Effects', amount: this.baseFormData.financialAssetDetails?.[2]?.amount || 0 },
+          { assestType: 'Furniture & Effects Value', amount: this.baseFormData.financialAssetDetails?.[2]?.amount || 0 },
         ];
         initialAssets.forEach((asset) => this.addAssetToForm(asset));
   

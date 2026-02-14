@@ -360,7 +360,7 @@ fdescribe('BusinessComponent', () => {
       component.mode = 'create';
       const params = { type: 'submit' };
 
-      commonService.router.navigateByUrl('standard-quote');
+      commonService.router.navigateByUrl('dealer/standard-quote');
 
       // Act
       component.changeStep(params);
@@ -372,7 +372,7 @@ fdescribe('BusinessComponent', () => {
       expect(businessService.stepper.next).toHaveBeenCalledWith(params);
       expect(component.contactDetailPost).toHaveBeenCalled();
       expect(commonService.router.navigateByUrl).toHaveBeenCalledWith(
-        'standard-quote'
+        'dealer/standard-quote'
       );
     });
 

@@ -78,7 +78,7 @@ describe('QuoteDetailsComponent', () => {
 
   //   component.onButtonClick(event);
 
-  //   expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/standard-quote/add-on-accessories');
+  //   expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/dealer/standard-quote/add-on-accessories');
   // });
 
   // Additional test cases can be written similarly for other methods

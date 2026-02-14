@@ -19,8 +19,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    cardType: "border",
     fields: [
       // {
       //   type: "select",
@@ -42,10 +41,10 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         inputType: "vertical",
         label: "Employer Name",
         name: "currentEmployer",
-        labelClass: "ba pb-5 -mb-3",
+        labelClass: "ba pb-5 -mb-3 pl-2",
         cols: 2,
         nextLine: false,
-        inputClass: "-m-2 mb-0 ml-2",
+        inputClass: "-m-2 mb-0 ml-2 w-13rem",
         // maxLength: 30,
         // validators: [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],  --Auro
       },
@@ -69,11 +68,12 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         // idKey: "lookupValue",
         // idName: "lookupValue",
         options: [],
+        inputClass: "w-12rem",
         filter: true,
       },
       {
         type: "select",
-        className: "mt-2 ",
+        className: "mt-2 ml-2",
         alignmentType: "vertical",
         label: "Employment Type",
         name: "currentEmploymentType",
@@ -93,7 +93,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         label: "Time with Current Employer",
         name: "currentEmployeeYear",
         labelClass: "tce pb-3",
-        className: "ml-3 mt-0 py-4 col-fixed w-4rem white-space-nowrap",
+        className: "ml-2 mt-0 py-4 col-fixed w-3rem white-space-nowrap",
         inputClass: "-m-2 mb-0 ml-2",
         // validators: [Validators.required, Validators.max(99)],   --Auro
       },
@@ -102,7 +102,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         typeOfLabel: "inline",
         label: "Years",
         name: "year",
-        className: "mt-5 py-5 pt-3 col-fixed w-4rem",
+        className: "mt-5 py-5 pt-3 col-fixed w-4rem my-4",
       },
       {
         type: "number",
@@ -111,7 +111,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         maxLength: 2,
         // validators: [Validators.max(11)],   --Auro
         className:
-          "ml-3 py-4 mt-4 col-fixed w-4rem white-space-nowrap timeInBusinessMonthsClass",
+          "py-4 mt-4 col-fixed w-3rem white-space-nowrap timeInBusinessMonthsClass",
         inputClass: "-m-2 mb-0 ml-2",
         errorMessage: "Value should be less than 12",
       },
@@ -120,7 +120,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
         typeOfLabel: "inline",
         label: "Months",
         name: "month",
-        className: "mt-5 py-5 pt-3 col-fixed w-4rem",
+        className: "mt-5 py-5 pt-3 col-fixed w-4rem my-4",
       },
     ],
   };
@@ -181,15 +181,29 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
           this.baseFormData?.employementDetails[0]?.employmentStatus
         );
       // this.mainForm.get('checkPreviousEmployee').patchValue(!this.baseFormData?.currentEmployment?.isCurrent)
-
-      const duration = this.calculateYearAndMonthDifference(
+       const effectDtFrom = this.baseFormData?.employementDetails[0]?.effectDtFrom;
+    const effectDtTo = this.baseFormData?.employementDetails[0]?.effectDtTO;
+const isValidDates =  new Date(effectDtFrom).getFullYear() == 1900 && 
+                      new Date(effectDtTo).getFullYear() == 9998;
+                     if(isValidDates){
+                     
+                       this.mainForm.get("currentEmployeeYear").patchValue(
+        this.baseFormData?.currentEmployeeYear ?? null
+      );
+      this.mainForm.get("currentEmployeeMonth").patchValue(
+        this.baseFormData?.currentEmployeeMonth ?? null
+      );
+     
+    }else {
+      
+       const duration = this.calculateYearAndMonthDifference(
         this.baseFormData?.employementDetails[0]?.effectDtFrom,
         this.baseFormData?.employementDetails[0]?.effectDtTO
       );
 
       this.mainForm.get("currentEmployeeYear").patchValue(this.baseFormData?.currentEmployeeYear ?? duration.years ?? null);
       this.mainForm.get("currentEmployeeMonth").patchValue(this.baseFormData?.currentEmployeeMonth ?? duration.months ?? null);
-
+    }
       // this.mainForm
       //   .get("currentEmployeeYear")
       //   .patchValue(
@@ -210,6 +224,9 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
 
     this.updatedropdowndata();
     // await this.updateValidation("onInit");
+    if(this.baseSvc.showValidationMessage){
+      this.mainForm.form.markAllAsTouched()
+    }
   }
 
   async updatedropdowndata() {
@@ -269,7 +286,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
   
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
   if (changes['checkPreviousEmployees']) {
-    this.mainForm.form.patchValue(this.baseFormData);
+    this.mainForm?.form?.patchValue(this.baseFormData);
     if (this.mainForm && this.mainForm.form) {
       await this.updateValidation("onInit");
       if (!changes['checkPreviousEmployees'].currentValue && 
@@ -427,6 +444,7 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
   }
   override onValueTyped(event: any): void {
     this.updateValidation(event);
+    this.checkTimewithIndividualCurrentEmployee();
   }
   override onBlurEvent(event: any): void {
     this.updateValidation(event);
@@ -434,4 +452,14 @@ export class CurrentEmploymentComponent extends BaseIndividualClass {
   override async onValueEvent(event: any): Promise<void> {
   await this.updateValidation(event);
 }
+checkTimewithIndividualCurrentEmployee(): void {
+    const yCtrl = this.mainForm.get("currentEmployeeYear");
+    const mCtrl = this.mainForm.get("currentEmployeeMonth");
+    const yearValue = yCtrl?.value;
+    const monthValue = mCtrl?.value;
+    if (yearValue == 0 && monthValue == 0) {
+      yCtrl?.setErrors({ required: true });
+      mCtrl?.setErrors({ required: true });
+    } 
+  }
 }

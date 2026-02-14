@@ -21,8 +21,8 @@ export class PersonalDriverLicenceDetailComponent extends BaseIndividualClass {
     autoResponsive: true,
     api: "",
     goBackRoute: "",
-    cardBgColor: "--background-color-secondary",
-    cardType: "non-border",
+    //cardBgColor: "--background-color-secondary",
+    cardType: "border",
     createData: {
       countryOfIssue: "New Zealand",
     },

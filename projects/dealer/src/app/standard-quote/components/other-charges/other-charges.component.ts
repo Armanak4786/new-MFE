@@ -5,7 +5,7 @@ import { StandardQuoteService } from "../../services/standard-quote.service";
 import { BaseStandardQuoteClass } from "../../base-standard-quote.class";
 import { ToasterService, ValidationService } from "auro-ui";
 import { DashboardService } from "../../../dashboard/services/dashboard.service";
-import configure from "../../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
 
 @Component({
   selector: "app-other-charges",
@@ -102,7 +102,7 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
         className: "mt-1",
         cols: 12,
         inputType: "horizontal",
-        labelClass: "col-6",
+        labelClass: "col-6 pl-0",
         styleType: "labelType",
         inputClass: " font-bold col-3 py-0",
         disabled: true,
@@ -130,7 +130,7 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
         cols: 12,
         styleType: "labelType",
         inputType: "horizontal",
-        labelClass: "col-6",
+        labelClass: "col-6 pl-0",
         inputClass: "  col-3  py-0",
         disabled: true,
       },
@@ -143,8 +143,8 @@ export class OtherChargesComponent extends BaseStandardQuoteClass {
         className: "mt-0 pt-1 pb-0",
         cols: 9,
         inputType: "horizontal",
-        labelClass: "col-6",
-        inputClass: " text-right ml-1 py-0 col-6",
+        labelClass: "mr-0 col-6 pl-0",
+        inputClass: " text-right ml-0 py-0 col-6",
         disabled: true,
         styleType: "labelType",
         hidden: true,

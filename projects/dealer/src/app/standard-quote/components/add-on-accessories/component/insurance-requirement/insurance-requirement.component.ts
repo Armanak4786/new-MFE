@@ -4,6 +4,7 @@ import { BaseStandardQuoteClass } from "../../../../base-standard-quote.class";
 import { ActivatedRoute } from "@angular/router";
 import { StandardQuoteService } from "../../../../services/standard-quote.service";
 import { Subject, takeUntil } from "rxjs";
+import configure from "src/assets/configure.json";
 import {
   BaseFormComponent,
   CommonService,
@@ -12,6 +13,7 @@ import {
 } from "auro-ui";
 import { DashboardService } from "../../../../../dashboard/services/dashboard.service";
 import { Validators } from "@angular/forms";
+import { isWorkflowStatusInViewOrEdit } from "../../../../utils/workflow-status.utils";
 
 @Component({
   selector: "app-insurance-requirement",
@@ -1218,6 +1220,13 @@ export class InsuranceRequirementComponent extends BaseStandardQuoteClass {
        }
   }
   this.setTotal(this.mainForm.form.value);
+}
+const isDisabled = isWorkflowStatusInViewOrEdit(this.baseFormData?.AFworkflowStatus);
+
+if (isDisabled) {
+  this.mainForm?.form?.disable({ emitEvent: false });
+} else {
+  this.mainForm?.form?.enable({ emitEvent: false });
 }
   }
 

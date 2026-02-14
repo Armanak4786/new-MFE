@@ -29,7 +29,7 @@ private originalInputValues: { [key: string]: string } = {};
   override formConfig: GenericFormConfig = {
     headerTitle: '',
     autoResponsive: true,
-    cardBgColor: '--background-color-secondary',
+    //cardBgColor: '--background-color-secondary',
     cardType: 'non-border',
     api: '',
     goBackRoute: '',
@@ -46,14 +46,14 @@ private originalInputValues: { [key: string]: string } = {};
       {
         type: 'label-only',
         typeOfLabel: 'inline',
-        label: 'Balance/limit',
+        label: 'Balance / Limit',
         name: 'liabilitesBalanceLimitLabel',
         cols: 3,
       },
       {
         type: 'label-only',
         typeOfLabel: 'inline',
-        label: 'Monthly Payment',
+        label: 'Monthly Amount',
         name: 'liabilitesAmountLabel',
         cols: 3,
         className:'text-center',
@@ -63,7 +63,7 @@ private originalInputValues: { [key: string]: string } = {};
       {
         type: 'amount',
         inputType: 'horizontal',
-        label: 'Mortgage/Rent',
+        label: 'Mortgage / Rent',
         name: 'soleTrademortgageBalance',
         cols: 7,
         labelClass: 'col-6',
@@ -217,7 +217,7 @@ private originalInputValues: { [key: string]: string } = {};
   }
 
   // ——— validation handler ———
-  pageCode = 'SoleTradeFinancialComponent';
+  pageCode = 'soleTradeFinancialComponent';
   modelName = 'SoleTradeLiabilitiesComponent';
 
   async updateValidation(event: any) {

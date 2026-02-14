@@ -105,7 +105,7 @@ export class AddSupplierIndividualComponent implements OnDestroy {
       supplierAccountName: bank?.name || "",
       supplierAccountNumber: bank?.accountNumber?.replace(/-/g, '') || "",
       supplierBranchCode: bank?.branchCode?.replace(/-/g, '') || "",
-      settlementBankInfoId: bank?.settlementBankInfoId || "",
+      settlementBankInfoId: bank?.settlementBankInfoId || 0,
     };
 
     const physicalAddress = supplierCustomer?.addressDetails?.find(
@@ -198,7 +198,7 @@ getTimeDifference(
       if (this.formData?.supplierCustomerId) {
         await this.updateSupplier().subscribe((res) => {
           if (res?.data) {
-            this.svc.router.navigateByUrl("/standard-quote");
+            this.svc.router.navigateByUrl("/dealer/standard-quote");
           }
         });
       }
@@ -261,7 +261,7 @@ getTimeDifference(
       "Any unsaved changes will be lost. Are you sure you want to cancel?",
       "Customer",
       () => {
-        this.svc.router.navigateByUrl("/standard-quote");
+        this.svc.router.navigateByUrl("/dealer/standard-quote");
       }
     );
   }
@@ -342,34 +342,7 @@ getTimeDifference(
           countryOfCitizenship3: "",
         },
         referenceDetails: null,
-        bankDetails: {
-          settlementBankInfoId: 0,
-          currency: {
-            id: 105,
-            name: "New Zealand Dollars",
-            code: "NZD",
-          },
-          flowDirection: "Payment",
-          flowMethod: {
-            flowMethodId: 0,
-            name: "Direct Credit",
-            paymentMethod: "Direct Credit",
-          },
-          paymentRuleClassification: "",
-          reference: "",
-          bank: {
-            partyId: 28,
-            partyNo: 1000028,
-            reference: "",
-            extName: "Bank Not Required",
-          },
-          name: "",
-          description: "",
-          accountCategory: "",
-          accountNumber: "",
-          accountClassification: "Personal",
-          branchCode: "",
-        },
+        bankDetails: null
       },
     };
 

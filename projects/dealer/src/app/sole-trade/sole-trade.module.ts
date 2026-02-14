@@ -32,7 +32,7 @@ import { SoleAccountantDetailsComponent } from './components/sole-contact-detail
 import { SoleBusinessContactDetailsComponent } from './components/sole-contact-details/business-contact-details/business-contact-details.component';
 import { SoleContactDetailsComponent } from './components/sole-contact-details/contact-details.component';
 import { SoleTradeBusinessContactDetailComponent } from './components/sole-trade-business-details/sole-trade-business-contact-detail/sole-trade-business-contact-detail.component';
-import { SoleTradeContactFormComponent } from './components/sole-trade-business-contact-detail/sole-trade-business-contact-detail.component';
+import { SoleTradeBusinessContactDetail2Component } from './components/sole-trade-business-contact-detail/sole-trade-business-contact-detail.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +56,7 @@ import { SoleTradeContactFormComponent } from './components/sole-trade-business-
     SoleTradeDriverLicenceDetailComponent,
     SoleTradePersonalDetailComponent,
     SoleTradeBusinessContactDetailComponent,
+    SoleTradeBusinessContactDetail2Component,
     TotalPaymentAmountComponent,
     SoleTradeBusinessCustomerRoleComponent,
     SoleTradeEmailContactDetailComponent,
@@ -64,8 +65,7 @@ import { SoleTradeContactFormComponent } from './components/sole-trade-business-
     SoleDetailsConfirmationComponent,
     SoleCustomerReferenceComponent,
     SoleBusinessContactDetailsComponent,
-    SoleAccountantDetailsComponent,
-    SoleTradeContactFormComponent
+    SoleAccountantDetailsComponent
   ],
   imports: [CommonModule, SoleTradeRoutingModule, AuroUiFrameWork],
 })

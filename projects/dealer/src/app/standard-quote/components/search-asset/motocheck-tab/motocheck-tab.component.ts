@@ -291,7 +291,7 @@ override formConfig: GenericFormConfig = {
         //call api
         // this.dataSvc.post('assets', this.assetData);
         // this.svc.router.navigateByUrl(
-        //   '/standard-quote/asset-search-result'
+        //   '/dealer/standard-quote/asset-search-result'
         // );
         // this.ref.close();
       }
@@ -372,7 +372,7 @@ override formConfig: GenericFormConfig = {
 
           if (this.addType == "Add Asset") {
           
-            this.svc.router.navigateByUrl("asset/addAsset/edit");
+            this.svc.router.navigateByUrl("dealer/asset/addAsset/edit");
            
           } else {
                       this.svc.router.navigateByUrl("dealer/asset/addTrade/edit");

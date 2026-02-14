@@ -18,7 +18,8 @@ import { StandardQuoteService } from "../../standard-quote/services/standard-quo
 import { BaseDealerClass } from "../../base/base-dealer.class";
 import { BaseDealerService } from "../../base/base-dealer.service";
 import { Validators } from "@angular/forms";
-import configure from "../../../../public/assets/configure.json";
+import configure from "src/assets/configure.json";
+import { isWorkflowStatusInView, isWorkflowStatusInViewOrEdit, isWorkflowStatusInEdit } from "../../standard-quote/utils/workflow-status.utils";
 
 
 
@@ -47,6 +48,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
   addNewContactCustomerId:any
   addNewContactcustomerNo:any
   maxSigningOrder: number = 0;
+  isSignatoryToggleDisabled: boolean = false;
   controlsToDisable = [
     "individualCustomerName",
     "individualRole",
@@ -96,6 +98,8 @@ export class CustomerTypeComponent extends BaseDealerClass {
       this.baseSvc.setBaseDealerFormData({
         AFworkflowStatus: data?.AFworkflowStatus
       });
+      // Set signatory toggle disabled flag
+      this.isSignatoryToggleDisabled = isWorkflowStatusInEdit(data?.AFworkflowStatus);
       return;
     });
 
@@ -316,10 +320,7 @@ export class CustomerTypeComponent extends BaseDealerClass {
   }
 
   isDisabled(){
-     if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
-    return true;
-  }
-  return false;
+     return isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus);
   }
 
   override async onFormReady(): Promise<void> {
@@ -475,8 +476,23 @@ export class CustomerTypeComponent extends BaseDealerClass {
       }
     }
 
+    // Disable signatory toggles when workflow status is in edit list
+    this.applySignatoryToggleDisabledState();
+
     await this.updateValidation("onInit");
     super.onFormReady();
+  }
+
+  // Helper method to apply signatory toggle disabled state
+  private applySignatoryToggleDisabledState(): void {
+    const shouldDisable = this.isSignatoryToggleDisabled || isWorkflowStatusInEdit(this.baseFormData?.AFworkflowStatus);
+    if (shouldDisable) {
+      this.isSignatoryToggleDisabled = true; 
+      this.mainForm?.updateProps("individualSignatory", { mode: Mode.view });
+      this.mainForm?.updateProps("businessSignatory", { mode: Mode.view });
+      this.mainForm?.updateProps("individualPartySignatory", { mode: Mode.view });
+      this.mainForm?.updateProps("businessPartySignatory", { mode: Mode.view });
+    }
   }
 
   private addNewContactCustomerOptions(){
@@ -1059,18 +1075,21 @@ else{
   }
 
   edit() {
-    if(configure?.workflowStatus?.view?.includes(this.baseFormData?.AFworkflowStatus)){
+    if(isWorkflowStatusInView(this.baseFormData?.AFworkflowStatus)){
       return;
     }
     this.isEditEnabled = !this.isEditEnabled;
+    const isSignatoryDisabled = this.isSignatoryToggleDisabled || isWorkflowStatusInEdit(this.baseFormData?.AFworkflowStatus);
     if (this.isEditEnabled) {
       this.mainForm?.form?.enable();
-      this.mainForm?.updateProps("individualSignatory", { mode: Mode.edit });
+      this.mainForm?.updateProps("individualSignatory", { mode: isSignatoryDisabled ? Mode.view : Mode.edit});
       this.mainForm?.updateProps("individualPartySignatory", {
-        mode: Mode.edit,
+        mode: isSignatoryDisabled ? Mode.view : Mode.edit
       });
-      this.mainForm?.updateProps("businessPartySignatory", { mode: Mode.edit });
-      this.mainForm?.updateProps("businessSignatory", { mode: Mode.edit });
+      this.mainForm?.updateProps("businessPartySignatory", { mode: isSignatoryDisabled ? Mode.view : Mode.edit });
+      this.mainForm?.updateProps("businessSignatory", { mode: isSignatoryDisabled ? Mode.view : Mode.edit });
+      // Re-apply disabled state after enabling the form
+      this.applySignatoryToggleDisabledState();
     } else {
       this.mainForm?.updateProps("individualSignatory", { mode: Mode.view });
       this.mainForm?.updateProps("individualPartySignatory", {

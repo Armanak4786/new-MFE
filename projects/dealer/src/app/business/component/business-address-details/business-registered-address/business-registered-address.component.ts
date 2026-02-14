@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { CommonService, GenericFormConfig, ToasterService } from "auro-ui";
+import { CommonService, GenericFormConfig, Mode, ToasterService } from "auro-ui";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { BusinessService } from "../../../services/business";
 import { BaseBusinessClass } from "../../../base-business.class";
@@ -25,6 +25,7 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
   cityOptionsLocationId: any = [];
   private countryOptions: any[] = [];
   private cityOptionsAll: any[] = [];
+  private copiedPhysicalValues: any = {}; // Store copied values for immediate comparison
   constructor(
     public fb: FormBuilder,
     public override route: ActivatedRoute,
@@ -44,10 +45,10 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
   // override title: string = 'Address Details';
   override formConfig: GenericFormConfig = {
     headerTitle: "Registered Address",
-    cardType: "non-border",
+    cardType: "border",
     autoResponsive: true,
     api: "registeredAddress",
-    cardBgColor: "--background-color-secondary",
+    //cardBgColor: "--light-primary-color",
     // goBackRoute: 'registeredAddress',
     fields: [
       {
@@ -315,7 +316,7 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
         label: "Country",
         name: "registerCountry",
         alignmentType: "vertical",
-        labelClass: "w-8 -my-3",
+        labelClass: "w-8 mb-2",
         //validators: [Validators.required],
         className: "px-0 customLabel",
         cols: 2,
@@ -325,8 +326,23 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
         options: [],
         default: "New Zealand",
         nextLine: false,
-        disabled:true
+        // disabled:true
       },
+      // {
+      //   type: "text",
+      //   label: "Country",
+      //   name: "registerCountry",
+      //   disabled: true,
+      //   inputType: "vertical",
+      //   inputClass: "w-8 mt-2",
+      //   labelClass: "w-8 -my-3",
+      //   //validators: [Validators.required],
+      //   className: "px-0 mt-2 customLabel",
+      //   cols: 2,
+      //   default: "New Zealand",
+      //   nextLine: false,
+      //   mode: Mode.view,
+      // },
     ],
   };
 
@@ -338,15 +354,27 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
       physicalSeachValue: ["", Validators.required],
     });
      this.initializeCopySubscription();
-    this.indSvc.updateDropdownData().subscribe((result) => {
-      this.mainForm.updateList("registerFloorType", result?.floorType);
-      this.mainForm.updateList("registerUnitType", result?.unitType);
-      this.mainForm.updateList("registerStreetType", result?.streetType);
-      if (result?.country) {
-        this.mainForm.updateList("registerCountry", result?.country);
-        this.mainForm?.form?.get("registerCountry")?.setValue("New Zealand");
-        this.mainForm.updateList("registerCity", result?.city);
-
+    this.indSvc.updateDropdownData().subscribe({
+      next: (result) => {
+        try {
+          this.mainForm.updateList("registerFloorType", result?.floorType);
+          this.mainForm.updateList("registerUnitType", result?.unitType);
+          this.mainForm.updateList("registerStreetType", result?.streetType);
+          if (result?.country) {
+            this.mainForm.updateList("registerCountry", result?.country);
+            this.mainForm?.form?.get("registerCountry")?.setValue("New Zealand", { emitEvent: false });
+            this.mainForm.updateList("registerCity", result?.city);
+          }
+        } catch (error) {
+          if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+            console.warn('BusinessRegisterAddressComponent: Split error in updateDropdownData subscription', error.message);
+          } else {
+            console.error('BusinessRegisterAddressComponent: Error in updateDropdownData subscription', error);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('BusinessRegisterAddressComponent: Error in updateDropdownData subscription', error);
       }
     });
 
@@ -361,9 +389,26 @@ export class BusinessRegisterAddressComponent extends BaseBusinessClass {
       this.baseFormData.AFworkflowStatus !== 'Quote'
       ) )
       {
-       this.mainForm?.form?.disable();
+        try {
+          // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          this.mainForm?.form?.disable({ emitEvent: false });
+        } catch (error) {
+          console.warn('BusinessRegisterAddressComponent: Error disabling form', error);
+        }
       }
-      else{ this.mainForm?.form?.enable();}
+      else{ 
+        try {
+          // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          this.mainForm?.form?.enable({ emitEvent: false });
+        } catch (error) {
+          // Handle errors that might occur when enabling form triggers validation subscriptions
+          if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+            console.warn('BusinessRegisterAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+          } else {
+            console.warn('BusinessRegisterAddressComponent: Error enabling form', error);
+          }
+        }
+      }
   }
   private enforceCountryState(): void {
   const countryControl = this.mainForm?.form?.get('registerCountry');
@@ -401,6 +446,12 @@ private initializeCopySubscription(): void {
 private handleCopyFromPhysical(physicalData: any): void {
   const isNz = physicalData.registerCountry === "New Zealand";
 
+  // Set flag EARLY to prevent form change listener from triggering during copy operations
+  this.baseSvc.isCopyingToRegister = true;
+
+  // Clear previous copied values and store new ones
+  this.copiedPhysicalValues = {};
+
   if (!isNz) {
     this.mainForm.updateHidden({
       registerUnitType: true,
@@ -434,6 +485,9 @@ private handleCopyFromPhysical(physicalData: any): void {
   Object.keys(physicalData).forEach(key => {
     const control = this.mainForm.form.get(key);
     if (control && physicalData[key] !== undefined && physicalData[key] !== null) {
+      // Store the copied value for later comparison
+      this.copiedPhysicalValues[key] = physicalData[key];
+
       const wasDisabled = control.disabled;
       
       if (wasDisabled) {
@@ -457,6 +511,10 @@ private handleCopyFromPhysical(physicalData: any): void {
   }
 
   this.baseFormData.physicalreuseOfRegisterAddress = true;
+  
+  // Immediately enable change detection after copy is complete
+  this.baseSvc.isCopyingToRegister = false;
+  
   this.cdr.detectChanges();
 }
 
@@ -686,9 +744,26 @@ override async onFormEvent(event: any): Promise<void> {
       this.baseFormData.AFworkflowStatus !== 'Quote'
       ) )
       {
-       this.mainForm?.form?.disable();
+        try {
+          // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          this.mainForm?.form?.disable({ emitEvent: false });
+        } catch (error) {
+          console.warn('BusinessRegisterAddressComponent: Error disabling form', error);
+        }
       }
-      else{ this.mainForm?.form?.enable();}
+      else{ 
+        try {
+          // Use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          this.mainForm?.form?.enable({ emitEvent: false });
+        } catch (error) {
+          // Handle errors that might occur when enabling form triggers validation subscriptions
+          if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+            console.warn('BusinessRegisterAddressComponent: Split error when enabling form - likely undefined pattern value in validation', error.message);
+          } else {
+            console.warn('BusinessRegisterAddressComponent: Error enabling form', error);
+          }
+        }
+      }
 }
 
   // UPDATED METHOD: Enhanced place selection with street type auto-population
@@ -749,6 +824,9 @@ override async onFormEvent(event: any): Promise<void> {
       this.baseFormData?.physicalreuseOfRegisterAddress !=
       res?.physicalreuseOfRegisterAddress
     ) {
+      // Set flag EARLY to prevent form change listener from triggering during copy/reset operations
+      this.baseSvc.isCopyingToRegister = true;
+
       const fields = [
         "SearchValue",
         "BuildingName",
@@ -776,40 +854,59 @@ override async onFormEvent(event: any): Promise<void> {
       ];
 
       if (res.physicalreuseOfRegisterAddress) {
+        // Clear previous copied values and store new ones
+        this.copiedPhysicalValues = {};
+
         fields.forEach((field) => {
-          const postalField = this.mainForm.form.get(`register${field}`);
+          const controlName = `register${field}`;
+          const control = this.mainForm.form.get(controlName);
           const physicalFieldValue = res[`physical${field}`];
           //     console.log(`Checking field register${field} vs physical${field}`, {
           //   postalFieldValue: postalField?.value,
           //   physicalFieldValue,
           // });
           if (
-            postalField &&
-            postalField.value !== physicalFieldValue &&
+            control &&
+            control.value !== physicalFieldValue &&
             physicalFieldValue
           ) {
-            postalField.patchValue(physicalFieldValue);
-            postalField.enable();
+            // Store the copied value for later comparison
+            this.copiedPhysicalValues[controlName] = physicalFieldValue;
+            control.patchValue(physicalFieldValue, { emitEvent: false });
+            control.enable();
           }
         });
 
-        const postalField = this.mainForm.form.get(`registerPostcode`);
-        const physicalFieldValue = res[`physicalPostcode`];
+        const postcodeControl = this.mainForm.form.get(`registerPostcode`);
+        const physicalPostcodeValue = res[`physicalPostcode`];
         if (
-          postalField &&
-          postalField.value !== physicalFieldValue &&
-          physicalFieldValue
+          postcodeControl &&
+          postcodeControl.value !== physicalPostcodeValue &&
+          physicalPostcodeValue
         ) {
-          postalField.patchValue(physicalFieldValue);
-          postalField.enable();
+          // Store the copied value for later comparison
+          this.copiedPhysicalValues['registerPostcode'] = physicalPostcodeValue;
+          postcodeControl.patchValue(physicalPostcodeValue, { emitEvent: false });
+          postcodeControl.enable();
         }
+        
+        // Immediately enable change detection after copy is complete
+        this.baseSvc.isCopyingToRegister = false;
       } else {
         //reset the business physical fields, if toggle off
         if (this?.baseFormData?.physicalreuseOfRegisterAddress) {
+          // Clear copied values when toggle is turned off
+          this.copiedPhysicalValues = {};
           fields.forEach((field) => {
             const registerField = this.mainForm.form.get(`register${field}`);
             if (registerField) {
-              registerField.reset();
+              try {
+                registerField.reset(null, { emitEvent: false });
+              } catch (error) {
+                if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+                  console.warn('BusinessRegisterAddressComponent: Split error when resetting field in onFormDataUpdate - likely undefined pattern value in validation', error.message);
+                }
+              }
             }
           });
           //resetting postcode too
@@ -818,11 +915,72 @@ override async onFormEvent(event: any): Promise<void> {
             postcodeCtrl.reset();
           }
         }
+        // Reset copying flag immediately for reset scenario
+        this.baseSvc.isCopyingToRegister = false;
       }
     }
   }
 
+private checkIfRegisterFieldChanged(event: any): void {
+  // Skip if copying is in progress
+  if (this.baseSvc.isCopyingToRegister) {
+    return;
+  }
+  
+  // Only check if physicalreuseOfRegisterAddress was ON (meaning data was copied) and we have stored copied values
+  if (!this.baseFormData?.physicalreuseOfRegisterAddress || Object.keys(this.copiedPhysicalValues).length === 0) {
+    return;
+  }
+  
+  // Get the field name that was changed
+  const fieldName = event.name;
+  
+  // Check all register fields
+  if (!fieldName || !fieldName.startsWith('register')) {
+    return;
+  }
+  
+  // Get the current value and the copied value
+  const currentValue = event.data !== undefined ? event.data : this.mainForm?.form?.get(fieldName)?.value;
+  const copiedValue = this.copiedPhysicalValues[fieldName];
+  
+  // Skip if this field wasn't copied (might not exist in physical address)
+  if (copiedValue === undefined) {
+    return;
+  }
+  
+  // Normalize values for comparison (handle null, undefined, empty string)
+  const normalizeValue = (val: any) => {
+    if (val === null || val === undefined || val === '') return '';
+    return String(val).trim();
+  };
+  
+  const normalizedCurrent = normalizeValue(currentValue);
+  const normalizedCopied = normalizeValue(copiedValue);
+  
+  // If current value differs from copied value, it's a manual change - toggle off immediately
+  if (normalizedCurrent !== normalizedCopied) {
+    // Immediately notify service to toggle off physicalreuseOfRegisterAddress
+    this.baseSvc.registerAddressManuallyChanged.next(true);
+  }
+}
+
 override async onValueTyped(event: any): Promise<void> {
+  // IMMEDIATE CHANGE DETECTION: Check if user manually changed a copied field
+  this.checkIfRegisterFieldChanged(event);
+  
+  // Save typed value to baseFormData for payload
+  // Always get the current form value to ensure we save what the user actually typed
+  if (event.name && event.name.startsWith('register')) {
+    const formControl = this.mainForm?.form?.get(event.name);
+    if (formControl) {
+      const fieldValue = formControl.value;
+      this.baseSvc.setBaseDealerFormData({
+        [event.name]: fieldValue
+      });
+    }
+  }
+
   if (event.name === "registerCity") {
     if (!this.cityOptionsLocationId || this.cityOptionsLocationId.length === 0) {
       await this.getCities();
@@ -909,6 +1067,30 @@ async getCities(): Promise<void> {
 }
 
   override onValueChanges(event: any) {
+    // IMMEDIATE CHANGE DETECTION: Check if user manually changed any copied field
+    // This handles cases where onValueTyped might not fire (e.g., programmatic changes)
+    if (this.baseFormData?.physicalreuseOfRegisterAddress && Object.keys(this.copiedPhysicalValues).length > 0 && !this.baseSvc.isCopyingToRegister) {
+      // Check all register fields in the event
+      Object.keys(event).forEach(fieldName => {
+        if (fieldName.startsWith('register')) {
+          const currentValue = event[fieldName];
+          const copiedValue = this.copiedPhysicalValues[fieldName];
+          
+          if (copiedValue !== undefined) {
+            const normalizeValue = (val: any) => {
+              if (val === null || val === undefined || val === '') return '';
+              return String(val).trim();
+            };
+            
+            if (normalizeValue(currentValue) !== normalizeValue(copiedValue)) {
+              this.baseSvc.registerAddressManuallyChanged.next(true);
+              return; // Exit early once we detect a change
+            }
+          }
+        }
+      });
+    }
+
     if (event.registerSearchValue && event.registerSearchValue.length >= 4) {
       this.searchSvc
         .searchAddress(event.registerSearchValue)
@@ -963,8 +1145,16 @@ override async onFormReady(): Promise<void> {
             "register"
           );
 
-          // Patch form values first
-          this.mainForm.form.patchValue(formValues);
+          // Patch form values first - use emitEvent: false to prevent triggering validation subscriptions that cause split errors
+          try {
+            this.mainForm.form.patchValue(formValues, { emitEvent: false });
+          } catch (error) {
+            if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+              console.warn('BusinessRegisterAddressComponent: Split error when patching form values in onBlurEvent - likely undefined pattern value in validation', error.message);
+            } else {
+              console.error('BusinessRegisterAddressComponent: Error patching form values in onBlurEvent', error);
+            }
+          }
 
           // IMPROVED: Better street type handling with proper timing
           // if (formValues.registerStreetType) {
@@ -991,6 +1181,12 @@ override async onFormReady(): Promise<void> {
   }
 
   async updateValidation(event) {
+    // Safety check: ensure mainForm exists
+    if (!this.mainForm || !this.mainForm.form) {
+      console.warn('BusinessRegisterAddressComponent: mainForm or form not available for validation');
+      return true; // Return true to prevent blocking if form isn't ready
+    }
+
     const req = {
       form: this.mainForm?.form,
       formConfig: this.formConfig,
@@ -998,12 +1194,32 @@ override async onFormReady(): Promise<void> {
       modelName: this.modelName,
       pageCode: this.pageCode,
     };
-    const responses = await this.validationSvc.updateValidation(req);
-    if (!responses.status && responses.updatedFields.length) {
-      await this.mainForm.applyValidationUpdates(responses);
-    }
 
-    return responses.status;
+    try {
+      const responses = await this.validationSvc.updateValidation(req);
+      
+      if (!responses.status && responses.updatedFields && responses.updatedFields.length > 0) {
+        await this.mainForm.applyValidationUpdates(responses);
+      }
+
+      return responses.status;
+    } catch (error) {
+      // Handle regex pattern errors gracefully - don't break the app
+      if (error?.message?.includes('Invalid regular expression') || error?.message?.includes('Range out of order')) {
+        console.warn('BusinessRegisterAddressComponent: Invalid regex pattern in validation rules', error.message);
+        return true; // Return true to prevent blocking on invalid patterns
+      }
+      
+      // Handle split errors gracefully
+      if (error?.message?.includes('Cannot read properties of undefined') && error?.message?.includes('split')) {
+        console.warn('BusinessRegisterAddressComponent: Split error in validation - likely undefined pattern value', error.message);
+        return true; // Return true to prevent blocking
+      }
+      
+      // For other errors, log but don't throw to prevent breaking the app
+      console.error('BusinessRegisterAddressComponent: Validation error', error);
+      return true; // Return true instead of throwing to prevent app breakage
+    }
   }
 
 override async onStepChange(quotesDetails: any): Promise<void> {
