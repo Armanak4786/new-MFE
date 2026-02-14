@@ -47,7 +47,7 @@ export class UserProfileOverlayComponent {
                     localStorage.clear();
                     sessionStorage.clear();
                     this.authSvc.clearAuth();
-                    this.router.navigate(["/authentication/login"]).then(() => {
+                    this.router.navigate(["/login"]).then(() => {
                         window.location.reload();
                     });
                 },

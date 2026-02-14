@@ -38,23 +38,22 @@ export class LoginComponent {
     setTimeout(() => {
       if (environment.production) {
         if (
-          this.router?.url == "/" ||
-          this.router?.url == "/authentication/login" ||
-          this.router?.url == "/authentication"
+          this.router?.url == "/login" ||
+          this.router?.url == "/landing"
         ) {
           this.oidcSecurityService
             .checkAuth()
             .subscribe(({ isAuthenticated }) => {
               console.log("welcome isAuthenticated", isAuthenticated);
               if (isAuthenticated) {
-                this.router.navigate(["/authentication/"]);
+                this.router.navigate(["/landing"]);
               } else {
-                this.router.navigate(["/authentication/login"]);
+                this.router.navigate(["/login"]);
               }
             });
         }
       } else {
-        this.router.navigate(["/authentication/"]);
+        this.router.navigate(["/landing"]);
       }
     }, 1000);
   }
