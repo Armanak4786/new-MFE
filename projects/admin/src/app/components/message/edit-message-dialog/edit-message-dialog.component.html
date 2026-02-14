@@ -1,0 +1,65 @@
+<div class="edit-message-dialog">
+  <!-- Close Button -->
+  <button class="close-btn" (click)="cancel()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 class="dialog-title">
+      {{ isEditMode ? "Edit Message" : "Create New Message" }}
+    </h2>
+    <p class="dialog-subtitle">
+      {{
+      isEditMode
+      ? "Update message properties and localized content"
+      : "Add a new message with localized content"
+      }}
+    </p>
+  </div>
+
+  <!-- Form Content -->
+  <div class="dialog-content">
+    <!-- Message Code & Title -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">MESSAGE TYPE</label>
+        <p-dropdown [options]="messageCodeOptions" [(ngModel)]="messageTypeCode" optionLabel="label" optionValue="value"
+          placeholder="Select message type" [style]="{ width: '100%' }">
+        </p-dropdown>
+      </div>
+      <div class="form-group">
+        <label class="form-label">MESSAGE TITLE</label>
+        <input type="text" class="form-input" [(ngModel)]="messageTitle" placeholder="Enter message title" />
+      </div>
+    </div>
+
+    <!-- Custom Text Content -->
+    <div class="form-group">
+      <div class="content-header">
+        <label class="form-label">CUSTOM TEXT CONTENT</label>
+      </div>
+      <textarea class="form-textarea" [(ngModel)]="customContent" placeholder="Enter message content..."
+        rows="4"></textarea>
+    </div>
+
+    <!-- Active Status -->
+    <div class="form-group status-group" [class.disabled]="!isEditMode">
+      <div class="status-info">
+        <label class="form-label">Active Status</label>
+        <p class="status-hint">{{ isEditMode ? 'Enable or disable this message globally' : 'Available after creating the message' }}</p>
+      </div>
+      <label class="toggle-switch" [class.disabled]="!isEditMode">
+        <input type="checkbox" [(ngModel)]="isActive" [disabled]="!isEditMode" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <gen-button [btnLabel]="'Cancel'" [btnType]="'border-btn'" (click)="cancel()"></gen-button>
+    <gen-button [btnLabel]="'Save Changes'" [btnType]="'bg-btn'" (click)="saveChanges()"></gen-button>
+  </div>
+</div>
+

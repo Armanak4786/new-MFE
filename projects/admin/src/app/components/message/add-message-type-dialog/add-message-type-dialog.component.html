@@ -1,0 +1,29 @@
+<div class="add-message-type-dialog">
+    <!-- Close Button -->
+    <button class="close-btn" (click)="cancel()">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <!-- Header -->
+    <div class="dialog-header">
+        <h2 class="dialog-title">Create New Message Type</h2>
+        <p class="dialog-subtitle">Add a new message type to the system</p>
+    </div>
+
+    <!-- Form Content -->
+    <div class="dialog-content">
+        <!-- Message Type Name -->
+        <div class="form-group">
+            <label class="form-label">MESSAGE TYPE NAME</label>
+            <input type="text" class="form-input" [(ngModel)]="messageTypeName" 
+                placeholder="Enter message type name" />
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="dialog-footer">
+        <gen-button [btnLabel]="'Cancel'" [btnType]="'border-btn'" (click)="cancel()"></gen-button>
+        <gen-button [btnLabel]="'Add Message Type'" [btnType]="'bg-btn'" (click)="save()"></gen-button>
+    </div>
+</div>
+

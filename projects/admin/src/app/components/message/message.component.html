@@ -1,0 +1,56 @@
+<div class="legal-messages-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <div class="title-row">
+                <h1 class="header-title">Global Messages Manager</h1>
+                <span class="portal-badge">{{ portalDisplayName }}</span>
+            </div>
+            <p class="header-subtitle">Manage messages data for {{ portalDisplayName }}.</p>
+        </div>
+        <div class="header-actions">
+            <gen-button [btnLabel]="'Create New Message'" [btnType]="'bg-btn'"
+                (click)="createNewMessage()"></gen-button>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <div class="filters-row">
+            <span class="filters-label">FILTERS:</span>
+
+            <!-- Status Dropdown -->
+            <div class="filter-dropdown">
+                <label>Status:</label>
+                <p-dropdown [options]="statusOptions" [(ngModel)]="selectedStatus" optionLabel="label"
+                    optionValue="value" (onChange)="onFilterChange()" [style]="{'min-width': '150px'}">
+                </p-dropdown>
+            </div>
+
+            <!-- Active Filter Chips -->
+            <div class="filter-chips">
+                <div class="filter-chip" *ngFor="let filter of activeFilters">
+                    <span>{{ filter.label }}: {{ filter.value }}</span>
+                    <button class="chip-remove" (click)="removeFilter(filter.key)">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Clear All -->
+            <button class="clear-all-btn" (click)="clearAllFilters()">
+                Clear All
+            </button>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-section">
+        <gen-table id="legal-messages-table" [columns]="columnDefs" [dataList]="legalMessages"
+            [tableStyle]="'stripped-rows'" [rowHeight]="'50px'" [colHeight]="'50px'" [paginatorFlag]="true"
+            [sortFlag]="true" [bodyClass]="'p-3'" [headingClass]="'p-2'" [filter]="false" [sortable]="false"
+            (onCellClick)="onCellClick($event)">
+        </gen-table>
+    </div>
+</div>
+
